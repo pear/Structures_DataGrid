@@ -90,14 +90,18 @@ class Structures_DataGrid_Core
      */
     function Structures_DataGrid_Core($limit = null, $page = null)
     {
+        // Set the defined rowlimit
         $this->rowLimit = $limit;
-        $this->page = $page;
         
-        // Automatic handling of GET/POST/COOKIE variables
-        $this->_parseHttpRequest();
-        
-        if ($this->page == null) {
-            $this->page = 1;
+        //Use set page number, otherwise automatically detect the page number
+        if ($page !== null) {
+            $this->page = $page;
+        } else {
+            // Automatic handling of GET/POST/COOKIE variables
+            $this->_parseHttpRequest();
+            if ($this->page == null) {
+                $this->page = 1;
+            }
         }
     }
 
