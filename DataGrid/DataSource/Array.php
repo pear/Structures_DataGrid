@@ -118,7 +118,8 @@ class Structures_DataGrid_DataSource_Array extends Structures_DataGrid_DataSourc
     {
         // sorting
         if ($sortField) {
-            $this->sort($sortField, $sortDir, $ar);
+            Structures_DataGrid_DataSource_Array::sort($sortField, $sortDir,
+                                                       $ar);
         }
         
         // slicing
