@@ -129,8 +129,8 @@ class Structures_DataGrid_Renderer_CSV
                 if ($column->formatter != null) {
                     $content = $column->formatter($row);
                 } elseif ($column->fieldName == null) {
-                    if ($column->autoFill != null) {
-                        $content = $column->autoFill;
+                    if ($column->autoFillValue != null) {
+                        $content = $column->autoFillValue;
                     } else {
                         $content = $column->columnName;
                     }
