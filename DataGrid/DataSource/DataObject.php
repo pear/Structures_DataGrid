@@ -132,9 +132,6 @@ class Structures_DataGrid_DataSource_DataObject
                             }
                         }
                     }
-                } else {
-                    //$mergeOptions['fields'] = array_keys($this->_dataobject->toArray());
-                    $mergeOptions['fields'] = array_filter(array_keys(get_object_vars($this->_dataobject)), array(&$this, '_fieldsFilter'));
                 }
             }
 
@@ -208,26 +205,21 @@ class Structures_DataGrid_DataSource_DataObject
                 $links = $this->_dataobject->links();
             }            
             while ($this->_dataobject->fetch()) {
-                // Determine fields to render
-                $fieldList = array();
-                if ($this->_options['fields']) {
-                    $fieldList = $this->_options['fields'];
-                } else {
-                    // Can't use this until DB_DO Bug 1315 is fixed
-                    //$fieldList = array_keys($this->_dataobject->toArray());
-                    
-                    // REPLACE ME WITH ABOVE
-                    $vars = get_object_vars($this->_dataobject);
-                    $keys = array_filter(array_keys($vars),
-                                         array(&$this, '_fieldsFilter'));
-                    $fieldList = array_filter(get_object_vars($this->_dataobject), 
-                                              array(&$this, '_fieldsFilter'));
+                // Determine Fields
+                if (!$this->_options['fields']) {
+                    $this->_options['fields'] =
+                        array_keys($this->_dataobject->toArray());
+                    //$this->_options['fields'] = array_filter(array_keys(get_object_vars($this->_dataobject)), array(&$this, '_fieldsFilter'));
                 }
-                    
-                // Build Fields
+                $fieldList = $this->_options['fields'];
+                // Build DataSet
                 $rec = array();
                 foreach ($fieldList as $fName) {
-                    if (isset($this->_dataobject->$fName)) {                        
+                    $getMethod = 'get'.$fName;
+                    if (method_exists($this->_dataobject, $getMethod)) {
+                        //$rec[$fName] = $this->_dataobject->$getMethod(&$this);
+                        $rec[$fName] = $this->_dataobject->$getMethod;
+                    } elseif (isset($this->_dataobject->$fName)) {                        
                         $rec[$fName] = $this->_dataobject->$fName;
                     } else {
                         $rec[$fName] = null;
