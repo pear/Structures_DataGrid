@@ -21,7 +21,7 @@
 require_once 'Structures/DataGrid/Source.php';
 
 /**
- * PEAR::DB Source Driver
+ * PEAR::DB Data Source Driver
  *
  * This class is a data source driver for the PEAR::DB::DB_Result object
  *
@@ -31,7 +31,7 @@ require_once 'Structures/DataGrid/Source.php';
  * @package  Structures_DataGrid
  * @category Structures
  */
-class Structures_DataGrid_Source_DB extends Structures_DataGrid_DataSource
+class Structures_DataGrid_DataSource_DB extends Structures_DataGrid_DataSource
 {   
     /**
      * Reference to the DB_Result object
@@ -41,6 +41,9 @@ class Structures_DataGrid_Source_DB extends Structures_DataGrid_DataSource
      */
     var $_result;
 
+    var $_offset = 0;
+    var $_limit  = null;    
+    
     /**
      * Constructor
      *
@@ -68,12 +71,28 @@ class Structures_DataGrid_Source_DB extends Structures_DataGrid_DataSource
         }
     }
 
-    function sort($sortArray)
+    /**
+     * Sort
+     *
+     * @access  public
+     * @param   string $field       The field to sort by
+     * @param   string $direction   The direction to sort, either ASC or DESC
+     */     
+    function sort($field, $direction='ASC')
     {
     }
-    
+
+    /**
+     * Limit
+     *
+     * @access  public
+     * @param   int $offset     The count offset
+     * @param   int $length     The amount to limit to
+     */         
     function limit($offset, $length)
     {
+        $this->_offset = $offset;
+        $this->_limit  = $length;        
     }
     
     /**
