@@ -359,6 +359,8 @@ class Structures_DataGrid_DataSource
      * @return  string              The type constant of this source or null if
      *                              it couldn't be detected
      * @access  private
+     * @todo    Add CSV detector.  Possible rewrite in IFs to allow for
+     *          heirarchy for seperating file handle sources from others
      */
     function _detectSourceType($source)
     {
@@ -379,6 +381,7 @@ class Structures_DataGrid_DataSource
                 break;
 
             // RSS
+            case (is_string($source) && stristr('<rss', $source)):
             case (is_string($source) and stristr('<rdf:RDF', $source)):
                 return DATAGRID_SOURCE_RSS;
                 break;
