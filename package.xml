@@ -5,8 +5,8 @@
   <summary>A tabular structure that contains a record set of data for paging and sorting purposes.</summary>
   <description>
     This package offers a toolkit to render out a datagrid in HTML format as well as
-    many other formats such as an XML Document, an Excel Spreadsheet, a Smarty Template and more.
-    It also offers paging and sorting functionallity to limit the data that is presented.
+    many other formats such as an XML Document, an Excel Spreadsheet, an XUL Document and more.
+    It also offers paging and sorting functionallity to limit the data that is presented and processed.
     This concept is based on the .NET Framework DataGrid control and works very well with database and XML result sets.
   </description>
   <maintainers>
@@ -44,14 +44,14 @@
         DataSources: DB_Result, DB_DataObject, Array, CSV, XML, RSS
       
       Many Bugfixes included as well:
-        Bug 2123: Allows to use db_dataobject extended classes
-        Bug 2124: Implement formbuilder options from db_dataobject
-        Bug 2125: Allow GET/POST/COOKIE varaibles for sorting to have prefixes
-        Bug 2128: Better error handling for setRecord method
-        Bug 2438: HTML Renderer better organized with render, toHTML, getTable
-                  methods
-        Bug 2499: Converted all ampersands to &amp;
-        Bug 2501: Implemented a sorting indicatior for HTMLTable renderer
+        Bug #2123: Allows to use db_dataobject extended classes
+        Bug #2124: Implement formbuilder options from db_dataobject
+        Bug #2125: Allow GET/POST/COOKIE varaibles for sorting to have prefixes
+        Bug #2128: Better error handling for setRecord method
+        Bug #2438: HTML Renderer better organized with render, toHTML, getTable
+                   methods
+        Bug #2499: Converted all ampersands to &amp;
+        Bug #2501: Implemented a sorting indicatior for HTMLTable renderer
     </notes>
     <deps>
       <dep type="pkg" rel="ge" version="1.2" optional="no">PEAR</dep>
@@ -59,43 +59,81 @@
       <dep type="pkg" rel="ge" version="2.2" optional="yes">Pager</dep>
       <dep type="pkg" rel="ge" version="0.6" optional="yes">Spreadsheet_Excel_Writer</dep>
       <dep type="pkg" rel="ge" version="0.5.2" optional="yes">XML_Util</dep>
+      <dep type="pkg" rel="ge" version="0.9.2" optional="yes">XML_RSS</dep>
+      <dep type="pkg" rel="ge" version="0.11.1" optional="yes">XML_Serializer</dep>
     </deps>
     <filelist>
-      <file role="php" baseinstalldir="Structures" name="DataGrid.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/Core.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/Column.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/Record.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/Renderer.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/Renderer/CSV.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/Renderer/HTMLTable.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/Renderer/Smarty.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/Renderer/XML.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/Renderer/XLS.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/Renderer/XUL.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/Source.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/DataSource/Array.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/DataSource/CSV.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/DataSource/DataObject.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/DataSource/DB.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/DataSource/RSS.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/DataSource/XML.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/Record/DB.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/Record/DataObject.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/Docs/Examples/example.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/Docs/Examples/example-xml.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/Docs/Examples/example-xls.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/Docs/Examples/example-xul.php"/>
-      <file role="php" baseinstalldir="Structures" name="DataGrid/Docs/Examples/example-smarty.php"/>
+      <dir name="/" baseinstalldir="Structures" role="php">
+        <file role="php" baseinstalldir="Structures" name="DataGrid.php"/>
+        <dir name="DataGrid" role="php">
+          <file role="php" name="Core.php"/>
+          <file role="php" name="Column.php"/>
+          <file role="php" name="Record.php"/>
+          <file role="php" name="Renderer.php"/>
+          <file role="php" name="Source.php"/>
+          <dir name="Renderer" role="php">
+            <file role="php" name="CSV.php"/>
+            <file role="php" name="HTMLTable.php"/>
+            <file role="php" name="Smarty.php"/>
+            <file role="php" name="XML.php"/>
+            <file role="php" name="XLS.php"/>
+            <file role="php" name="XUL.php"/>
+          </dir>
+          <dir name="DataSource" role="php">
+            <file role="php" name="Array.php"/>
+            <file role="php" name="CSV.php"/>
+            <file role="php" name="DataObject.php"/>
+            <file role="php" name="DB.php"/>
+            <file role="php" name="RSS.php"/>
+            <file role="php" name="XML.php"/>
+          </dir>
+          <dir name="Record" role="php">
+            <file role="php" name="DB.php"/>
+            <file role="php" name="DataObject.php"/>
+          </dir>
+          <dir name="Docs" role="php">
+            <dir name="Examples" role="php">
+              <file role="php" name="example.php"/>
+              <file role="php" name="example-xml.php"/>
+              <file role="php" name="example-xls.php"/>
+              <file role="php" name="example-xul.php"/>
+              <file role="php" name="example-smarty.php"/>
+            </dir>
+          </dir>
+        </dir>
+      </dir>
     </filelist>
   </release>
   <changelog>
     <release>
       <version>0.6.0</version>
-      <date>2004-12-01</date>
+      <date>2004-12-09</date>
       <license>PHP License</license>
       <state>beta</state>
       <notes>
-        New beta coming soon.
+      Initial Beta Release - Beware of many changes to the core API
+       
+      Implemented new data source layer to handle data manipluation with many
+      different data source types such as DB_DataObject, CSV, XML, etc.
+      The DataGrid now handles the data fetching, so if you are using
+      DataObjects, all you need to do is bind to the dataobject with out
+      fetching, the DataGrid will take care of the rest.  Same with a DB_Result
+      object, just simply create the result object and bind it to the datagrid.
+      
+      New Features:
+        Automatic GET/POST/Cookie handling for sorting and paging
+        Renderers: XUL, CSV
+        DataSources: DB_Result, DB_DataObject, Array, CSV, XML, RSS
+      
+      Many Bugfixes included as well:
+        Bug #2123: Allows to use db_dataobject extended classes
+        Bug #2124: Implement formbuilder options from db_dataobject
+        Bug #2125: Allow GET/POST/COOKIE varaibles for sorting to have prefixes
+        Bug #2128: Better error handling for setRecord method
+        Bug #2438: HTML Renderer better organized with render, toHTML, getTable
+                   methods
+        Bug #2499: Converted all ampersands to &amp;
+        Bug #2501: Implemented a sorting indicatior for HTMLTable renderer
       </notes>
     </release>
     <release>
