@@ -288,10 +288,10 @@ class Structures_DataGrid_Renderer_HTMLTable
                         $rowCnt = ($i-$begin)+1;
 
                         // Build Content
-                        if ($column->formatter != null) {
+                        if (isset($column->formatter)) {
                             $content = $column->formatter($row);
-                        } elseif ($column->fieldName == null) {
-                            if ($column->autoFill != null) {
+                        } elseif (!isset($column->fieldName)) {
+                            if ($column->autoFill != '') {
                                 $content = $column->autoFill;
                             } else {
                                 $content = $column->columnName;
