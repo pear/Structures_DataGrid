@@ -26,6 +26,18 @@ require_once 'Structures/DataGrid/Source.php';
  *
  * This class is a data source driver for a PEAR::DB::DB_DataObject object
  *
+ * Recognized options :
+ *
+ * <b>"labels_property" : </b> The name of a property that you can set
+ * within your DataObject. This property is expected to contain the
+ * same kind of information as the "labels" options. If the "labels" 
+ * option is set, this one will not be used. Default : "fb_fieldsLabels".
+ *
+ * <b>"fields_property" : </b> The name of a property that you can set
+ * within your DataObject. This property is expected to contain the
+ * same kind of information as the "fields" options. If the "fields"
+ * option is set, this one will not be used. Default : "fb_fieldsToRender".
+ * 
  * @version  $Revision$
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @author   Andrew Nagy <asnagy@webitecture.org>
@@ -53,24 +65,60 @@ class Structures_DataGrid_DataSource_DataObject
     function Structures_DataGrid_DataSource_DataObject()
     {
         parent::Structures_DataGrid_DataSource();
-        $this->_addDefaultOptions(array('generate_columns' => true,
-                                        'labels_property' => 
-                                            'fb_fieldLabels',
-                                        'render_property' => 
-                                            'fb_fieldsToRender'));
+        $this->_addDefaultOptions(array(
+                    'labels_property' => 'fb_fieldLabels',
+                    'fields_property' => 'fb_fieldsToRender'));
     }
   
     /**
      * Bind
      *
-     * @param   object DB_DataObject    The DB_DataObject object to bind
+     * @param   object DB_DataObject    $dataobject     The DB_DataObject object
+     *                                                  to bind
+     * @param   array                   $options        Associative array of 
+     *                                                  options.
      * @access  public
      * @return  mixed   True on success, PEAR_Error on failure
      */
-    function bind(&$dataobject)
+    function bind(&$dataobject, $options=array())
     {
+        if ($options) {
+            $test = $this->_setOptions($options); 
+            if (PEAR::isError($test)) {
+                return $test;
+            }
+        }
+
         if (is_subclass_of($dataobject, 'DB_DataObject')) {
             $this->_dataobject =& $dataobject;
+
+            $mergeOptions = array();
+            
+            // Merging the fields and fields_property options
+            if (!$this->_options['fields']) {
+                if ($fieldsVar = $this->_options['fields_property']
+                    and isset($this->_dataobject->$fieldsVar)) {
+                    
+                    $mergeOptions['fields'] = $this->_dataobject->$fieldsVar;    
+                } else {
+                    $mergeOptions['fields'] = 
+                        array_keys($this->_dataobject->toArray());
+                }
+            }
+
+            // Merging the labels and labels_property options
+            if (!$this->_options['labels'] 
+                and $labelsVar = $this->_options['labels_property']
+                and isset($this->_dataobject->$labelsVar)) {
+                
+                $mergeOptions['labels'] = $this->_dataobject->$labelsVar;
+
+            }
+
+            if ($mergeOptions) {
+                $this->_setOptions($mergeOptions);
+            }
+                
             return true;
         } else {
             return new PEAR_Error('The provided source must be a DB_DataObject');
@@ -78,83 +126,54 @@ class Structures_DataGrid_DataSource_DataObject
     }
 
     /**
-     * Sort
-     *
-     * @access  public
-     * @param   string $field       The field to sort by
-     * @param   string $direction   The direction to sort, either ASC or DESC
-     */    
-    function sort($field, $direction='ASC')
-    {
-        $this->_dataobject->orderBy("$field $direction");
-    }
-
-    /**
-     * Limit
-     *
-     * @access  public
-     * @param   int $offset     The count offset
-     * @param   int $length     The amount to limit to
-     */         
-    function limit($offset, $length)
-    {
-        if ($offset) {
-            $this->_dataobject->limit($offset, $length);
-        } else {
-            $this->_dataobject->limit($length);
-        }
-    }
-    
-    /**
      * Fetch
      *
+     * @param   integer $offset     Limit offset (starting from 0)
+     * @param   integer $len        Limit length
+     * @param   string  $sortField  Field to sort by
+     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
      * @access  public
-     * @return  array       The 2D Array of the records
+     * @return  array   The 2D Array of the records
      */    
-    function &fetch()
+    function &fetch($offset=0, $len=null, $sortField=null, $sortDir='ASC')
     {
-        $columns = array();
+        // Sorting
+        if ($sortField) {
+            $this->_dataobject->orderBy("$sortField $sortDir");
+        }
+        
+        // Limiting
+        if ($ofs) {
+            $this->_dataobject->limit($ofs, $len);
+        } elseif ($len) {
+            $this->_dataobject->limit($len);
+        }
+        
         $records = array();
 
-        /* Auto generating columns if required */
-        if ($this->_options['generate_columns']) {
-           
-            if ($fRender = $this->_options['render_property']) {
-                $fList = @$this->_dataobject->$fRender;
-            }
-            
-            if (!$fList) {
-                $fList = array_keys($this->_dataobject->toArray());
-            }
-
-            $labelVar = $this->_options['labels_property'];
-            $field2label = @$this->_dataobject->$labelVar
-            or $field2label = array();
-
-            include_once('Structures/DataGrid/Column.php');
-            
-            foreach ($fList as $field) {
-                $label = strtr($field,$field2label);
-                $col = new Structures_DataGrid_Column($label, $field, $field);
-                $columns[] = $col;
-            }
-
-        }
-
+        // Retrieving data
         if ($this->_dataobject->find()) {
             while ($this->_dataobject->fetch()) {
-                $records[] = $this->_dataobject->toArray();
+                // Only retrieve the fields to render, as set in $fList :
+                $rec = array();
+                foreach ($this->_options['fields'] as $fName) {
+                    $rec[$fName] = $this->_dataobject->$fName;
+                }
+                $records[] = $rec;
             }
         } else {
             return new PEAR_Error('Couldn\'t fetch data');
         }
        
-        return array('Columns' => $columns, 'Records' => $records);
+        return $records;
     }
 
     /**
      * Count
      *
+     * NOTE: This has to be called before fetch() !!
+     * This may be a DataObject bug. See test_dataobject_options.php. 
+     * 
      * @access  public
      * @return  int         The number or records
      */    
@@ -162,7 +181,6 @@ class Structures_DataGrid_DataSource_DataObject
     {
         return $this->_dataobject->count();
     }
-
 
 }
 ?>

@@ -41,9 +41,6 @@ class Structures_DataGrid_DataSource_DB extends Structures_DataGrid_DataSource
      */
     var $_result;
 
-    var $_offset = 0;
-    var $_limit  = null;    
-    
     /**
      * Constructor
      *
@@ -61,9 +58,16 @@ class Structures_DataGrid_DataSource_DB extends Structures_DataGrid_DataSource
      * @access  public
      * @return  mixed               True on success, PEAR_Error on failure
      */
-    function bind(&$result)
+    function bind(&$result, $options=array())
     {
-        if (is_subclass_of($result, 'DB_Result')) {
+        if ($options) {
+            $test = $this->_setOptions($options); 
+            if (PEAR::isError($test)) {
+                return $test;
+            }
+        }
+        
+        if (get_class($result) == 'db_result') {
             $this->_result =& $result;
             return true;
         } else {
@@ -72,61 +76,60 @@ class Structures_DataGrid_DataSource_DB extends Structures_DataGrid_DataSource
     }
 
     /**
-     * Sort
-     *
-     * @access  public
-     * @param   string $field       The field to sort by
-     * @param   string $direction   The direction to sort, either ASC or DESC
-     */     
-    function sort($field, $direction='ASC')
-    {
-    }
-
-    /**
-     * Limit
-     *
-     * @access  public
-     * @param   int $offset     The count offset
-     * @param   int $length     The amount to limit to
-     */         
-    function limit($offset, $length)
-    {
-        $this->_offset = $offset;
-        $this->_limit  = $length;        
-    }
-    
-    /**
      * Fetch
      *
+     * @param   integer $offset     Offset (starting from 0)
+     * @param   integer $limit      Limit
+     * @param   string  $sortField  Field to sort by
+     * @param   string  $sortDir    Sort direction : 'ASC' or 'DES     
      * @access  public
      * @return  array       The 2D Array of the records
      */
-    function &fetch()
+    function &fetch($offset=0, $limit=null, $sortField=null, $sortDir='ASC')
     {
         $recordSet = array();
 
         if ($numRows = $this->_result->numRows()) {
-            
+           
+            /*  We need to fetch everything in order to sort.
+             *  I comment that out :
+                         
             // Move database pointer for limiting
-            if (($this->_offset > $this->_limit) &&
-                ($numRows > $this->_offset)) {
-                for ($i = 0; $i < $this->_offset; $i++) {
+            if (($offset > $limit) &&
+                ($numRows > $offset)) {
+                for ($i = 0; $i < $offset; $i++) {
                     $this->_result->fetchRow();
                 }
             }
+            */
             
             // Fetch Records
             $i = 0;
-            while (($record = $this->_result->fetchRow(DB_FETCHMODE_ASSOC)) &&
-                   ($i < $this->_limit)) {
+            
+            
+            // Same thing as above.
+            // 
+            // By the way if you use 'and' instead of '&&' you don't need to put
+            // so many parenthesis. Operator precedence is : '&&' > '=' > 'and'
+            // 
+            // while (($record = $this->_result->fetchRow(DB_FETCHMODE_ASSOC)) &&
+            //       ($i < $limit)) {
+            //
+            while ($record = $this->_result->fetchRow(DB_FETCHMODE_ASSOC)) {
                 $recordSet[] = $record;
-                $i++
+                $i++;
             }
         } else {
+            // FIXME: This is no error (you have to return an empty set) :            
             return new PEAR_Error('No records found');
         }
        
-        return array('Records' => $recordSet);
+        // sort and limit the recordSet (nifty he ?) :
+        $recordSet =& Structures_DataGrid_DataSource_Array::staticFetch(
+                          $recordSet, $this->_options['fields'], $offset, 
+                          $limit, $sortField, $sortDir);
+
+        return $recordSet;
     }
 
     /**
