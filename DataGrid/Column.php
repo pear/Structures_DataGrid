@@ -56,20 +56,16 @@ class Structures_DataGrid_Column
     var $attribs;
 
     /**
-     * The URL for the link. Optional
-     * @var array
-    var $link;
-
-     * The field to be used as the id for the link
-     * @var array
-    var $linkField;
+     * Determine whether or not to use fill in empty cells
+     * @var boolean
      */
+    var $autoFill;
 
     /**
      * The value to be used if a cell contains a null value
      * @var array
      */
-    var $autoFill;
+    var $autoFillValue;
 
     /**
      * A function to be called for each cell to modify the output
@@ -82,23 +78,27 @@ class Structures_DataGrid_Column
      *
      * Creates default table style settings
      *
+     * @param  string   $columnName     The name of the column to br printed
+     * @param  string   $fieldName      The name of the field for the column to
+     *                                  be mapped to
+     * @param  string   $orderBy        Whether or not to use the autoFill
+     * @param  string   $attribs        Whether or not to use the autoFill
+     * @param  boolean  $autoFill       Whether or not to use the autoFill
+     * @param  string   $autoFillValue  Whether or not to use the autoFill
+     * @param  string   $formatter      Whether or not to use the autoFill
      * @access public
      */
-//    function DataGrid_Column($columnName, $fieldName, $orderBy = null,
-//                             $attribs = array(), $link = null,
-//                             $linkField = null, $autoFill = null,
-//                             $formatter = null)
-    function Structures_DataGrid_Column($columnName, $fieldName, $orderBy = null,
-                             $attribs = array(), $autoFill = null,
-                             $formatter = null)
+    function Structures_DataGrid_Column($columnName, $fieldName = null,
+                                        $orderBy = null, $attribs = array(),
+                                        $autoFill = null, $autoFillValue = null,
+                                        $formatter = null)
     {
         $this->columnName = $columnName;
         $this->fieldName = $fieldName;
         $this->orderBy = $orderBy;
         $this->attribs = $attribs;
-        //$this->link = $link;
-        //$this->linkField = $linkField;
         $this->autoFill = $autoFill;
+        $this->autoFillValue = $autoFillValue;
         $this->formatter = $formatter;
     }
 
@@ -107,11 +107,29 @@ class Structures_DataGrid_Column
      *
      * Defines a value to be printed if a cell in the column is null.
      *
+     * @param  boolean  $bool       Whether or not to use the autoFill
      * @access public
      */
-    function setAutoFill($str)
+    function setAutoFill($bool)
     {
-        $this->autoFill = $str;
+        if ($bool) {
+            $this->autoFill = true;
+        } else {
+            $this->autoFill = false;
+        }
+    }
+
+    /**
+     * Set Auto Fill Value
+     *
+     * Defines a value to be printed if a cell in the column is null.
+     *
+     * @param  string   $str        The value to use for the autoFill
+     * @access public
+     */
+    function setAutoFillValue($str)
+    {
+        $this->autoFillValue = $str;
     }
 
     /**
@@ -138,6 +156,8 @@ class Structures_DataGrid_Column
      */
     function formatter($record)
     {
+        print_r($record);
+
         // Define any parameters
         if ($size = strpos($this->formatter, '(')) {
             // Retrieve the name of the function
