@@ -18,7 +18,7 @@
 //
 // $Id$
 
-require_once ('DataGrid/Core.php');
+require_once 'DataGrid/Core.php';
 
 /**
  * Structures_DataGrid_Renderer Class

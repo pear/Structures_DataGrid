@@ -18,8 +18,8 @@
 //
 // $Id$
 
-require_once ('DataGrid/Column.php');
-require_once ('DataGrid/Record.php');
+require_once 'DataGrid/Column.php';
+require_once 'DataGrid/Record.php';
 
 /**
  * Structures_DataGrid_Core Class
@@ -203,7 +203,7 @@ class Structures_DataGrid_Core
     {
         $bool = strnatcmp($a[$this->sortArray[0]], $b[$this->sortArray[0]]);
 
-        if ($this->sortArray[1] == DATAGRID_SORT_DESC) {
+        if ($this->sortArray[1] == 'DESC') {
             $bool = $bool * -1;
         }
 

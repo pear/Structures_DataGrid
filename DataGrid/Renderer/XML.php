@@ -18,7 +18,7 @@
 //
 // $Id$
 
-require ('XML/Util.php');
+require_once 'XML/Util.php';
 
 /**
  * Structures_DataGrid_Renderer_XML Class

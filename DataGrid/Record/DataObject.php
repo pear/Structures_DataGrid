@@ -18,7 +18,7 @@
 //
 // $Id$
 
-require_once('DataGrid/Record.php');
+require_once 'DataGrid/Record.php';
 
 /**
  * Structures_DataGrid_Record_DataObject Class

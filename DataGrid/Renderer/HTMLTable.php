@@ -18,7 +18,7 @@
 //
 // $Id$
 
-require_once ('HTML/Table.php');
+require_once 'HTML/Table.php';
 
 /**
  * Structures_DataGrid_Renderer_HTMLTable Class

@@ -18,7 +18,7 @@
 //
 // $Id$
 
-require_once ('Smarty/Smarty.class.php');
+require_once 'Smarty/Smarty.class.php';
 
 /**
  * Structures_DataGrid_Renderer_Smarty Class
