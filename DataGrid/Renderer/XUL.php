@@ -63,12 +63,6 @@ class Structures_DataGrid_Renderer_XUL
     var $rowLimit = null;    
 
     /**
-     * GET parameters prefix
-     * @var string
-     */
-     var $requestPrefix;    
-    
-    /**
      * Constructor
      *
      * Build default values
@@ -153,7 +147,7 @@ class Structures_DataGrid_Renderer_XUL
         
         // Build Grid Header
         $xul .= "  <listhead>\n";
-        $prefix = $this->requestPrefix;        
+        $prefix = $this->_dg->_requestPrefix;        
         foreach ($this->_dg->columnSet as $column) {
             if ($this->_dg->sortArray[0] == $column->orderBy) {
                 if (strtoupper($this->_dg->sortArray[1]) == 'ASC') {
