@@ -419,7 +419,6 @@ class Structures_DataGrid_Renderer_HTMLTable
             $rowCnt = ($this->header) ? 1 : 0;
             for ($i = $begin; $i < $end; $i++) {
                 if (isset($this->_dg->recordSet[$i])) {
-                    $rowCnt++;
                     $cnt = 0;
                     $row = $this->_dg->recordSet[$i];
                     foreach ($this->_dg->columnSet as $column) {
@@ -453,6 +452,7 @@ class Structures_DataGrid_Renderer_HTMLTable
 
                         $cnt++;
                     }
+                    $rowCnt++;
                 } else {
                     // Determine if empty row should be printed
                     if ($this->allowEmptyRows) {
