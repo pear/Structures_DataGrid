@@ -113,7 +113,7 @@ class Structures_DataGrid_DataSource_DataObject
             }
 
             if ($mergeOptions) {
-                $this->_setOptions($mergeOptions);
+                $this->setOptions($mergeOptions);
             }
                 
             return true;
@@ -140,8 +140,8 @@ class Structures_DataGrid_DataSource_DataObject
         }
         
         // Limiting
-        if ($ofs) {
-            $this->_dataobject->limit($ofs, $len);
+        if ($offset) {
+            $this->_dataobject->limit($offset, $len);
         } elseif ($len) {
             $this->_dataobject->limit($len);
         }
