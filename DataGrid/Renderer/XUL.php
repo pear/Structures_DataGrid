@@ -73,10 +73,12 @@ class Structures_DataGrid_Renderer_XUL
      *
      * Build default values
      *
+     * @param   object Structures_DataGrid  $dg     The datagrid to render.
      * @access public
      */
-    function Structures_DataGrid_Renderer_XUL()
+    function Structures_DataGrid_Renderer_XUL(&$dg)
     {
+        $this->_dg =& $dg;
     }
 
     /**
@@ -107,26 +109,25 @@ class Structures_DataGrid_Renderer_XUL
      * @access  public
      * @return  string      The XUL of the DataGrid
      */
-    function render(&$dg)
+    function render()
     {
         header('Content-type: application/vnd.mozilla.xul+xml');
         
         //$doc &= $this->toXUL($dg);
         //$doc->send();
         
-        echo $this->toXUL($dg);
+        echo $this->toXUL();
     }
        
     /**
      * Generates the XUL for the DataGrid
      *
      * @access  public
-     * @param   object Structures_DataGrid  $dg     The DataGrid to render
      * @return  string      The XUL of the DataGrid
      */
-    function toXUL(&$dg)
+    function toXUL()
     {
-        $this->_dg = &$dg;
+        $dg =& $this->_dg;
         
         // Get the data to be rendered
         $dg->fetchDataSource();        

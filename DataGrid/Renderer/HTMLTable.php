@@ -124,10 +124,12 @@ class Structures_DataGrid_Renderer_HTMLTable
      *
      * Build default values
      *
-     * @access public
+     * @param   object Structures_DataGrid  $dg     The datagrid to render.
+     * @access  public
      */
-    function Structures_DataGrid_Renderer_HTMLTable()
+    function Structures_DataGrid_Renderer_HTMLTable(&$dg)
     {
+        $this->_dg =& $dg;
         $this->_table = new HTML_Table();
     }
 
@@ -245,21 +247,20 @@ class Structures_DataGrid_Renderer_HTMLTable
      *
      * @access  public
      */
-    function render(&$dg)
+    function render()
     {
-        echo $this->toHTML($dg);
+        echo $this->toHTML();
     }
 
     /**
      * Generates the HTML for the DataGrid
      *
      * @access  public
-     * @param   object Structures_DataGrid  $dg     The DataGrid to render
      * @return  string      The HTML of the DataGrid
      */
-    function toHTML(&$dg)
+    function toHTML()
     {
-        $table =& $this->getTable($dg);
+        $table =& $this->getTable();
 
         return $table->toHTML();
     } 
@@ -268,12 +269,11 @@ class Structures_DataGrid_Renderer_HTMLTable
      * Gets the HTML_Table object for the DataGrid
      *
      * @access  public
-     * @param   object Structures_DataGrid  $dg     The DataGrid to render
      * @return  object HTML_Table   The HTML Table object for the DataGrid
      */
-    function &getTable(&$dg)
+    function &getTable()
     {
-        $this->_dg = &$dg;
+        $dg =& $this->_dg;
 
         if (!$this->_rendered) {
             // Get the data to be rendered
@@ -427,9 +427,9 @@ class Structures_DataGrid_Renderer_HTMLTable
                             //Use Formatter                            
                             $content = $column->formatter($row); 
                         } elseif (!isset($column->fieldName)) {
-                            if ($column->autoFill != '') {
+                            if ($column->autoFillValue != '') {
                                 // Use AutoFill                                
-                                $content = $column->autoFill; 
+                                $content = $column->autoFillValue; 
                             } else {
                                 // Use Column Name                                
                                 $content = $column->columnName;

@@ -72,10 +72,13 @@ class Structures_DataGrid_Renderer_XLS
      *
      * Build default values
      *
+     * @param   object Structures_DataGrid  $dg     The datagrid to render.
      * @access public
      */
-    function Structures_DataGrid_Renderer_XLS()
+    function Structures_DataGrid_Renderer_XLS(&$dg)
     {
+        $this->_dg =& $dg;
+        
         $this->_workbook = new Spreadsheet_Excel_Writer();
         $this->setFilename();
         $this->_worksheet =& $this->_workbook->addWorksheet();
@@ -119,12 +122,11 @@ class Structures_DataGrid_Renderer_XLS
     /**
      * Force download the spreadsheet
      *
-     * @param   object Structures_DataGrid  $dg     The DataGrid to render
      * @access  public
      */
-    function render(&$dg)
+    function render()
     {
-        $this->getSpreadsheet($dg);
+        $this->getSpreadsheet();
        
         $this->_workbook->close();
     }
@@ -132,12 +134,11 @@ class Structures_DataGrid_Renderer_XLS
     /**
      * Get the spreadsheet object
      *
-     * @param   object Structures_DataGrid  $dg     The DataGrid to render
      * @access  public
      */
-    function &getSpreadsheet(&$dg)
+    function &getSpreadsheet()
     {
-        $this->_dg = &$dg;
+        $dg =& $this->_dg;
 
         if (!$this->_rendered) {        
             // Get the data to be rendered

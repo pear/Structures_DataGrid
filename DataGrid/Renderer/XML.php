@@ -42,10 +42,12 @@ class Structures_DataGrid_Renderer_XML
      *
      * Build default values
      *
+     * @param   object Structures_DataGrid  $dg     The datagrid to render.
      * @access public
      */
-    function Structures_DataGrid_Renderer_XML()
+    function Structures_DataGrid_Renderer_XML($dg)
     {
+        $this->_dg =& $dg;
     }
 
     /**
@@ -54,23 +56,22 @@ class Structures_DataGrid_Renderer_XML
      * @access  public
      * @return  string      The XML of the DataGrid
      */
-    function render(&$dg)
+    function render()
     {
         header('Content-type: text/xml');
         
-        echo $this->toXML($dg);
+        echo $this->toXML();
     }
        
     /**
      * Generates the XML for the DataGrid
      *
      * @access  public
-     * @param   object Structures_DataGrid  $dg     The DataGrid to render
      * @return  string      The XML of the DataGrid
      */
-    function toXML(&$dg)
+    function toXML()
     {
-        $this->_dg = &$dg;
+        $dg =& $this->_dg;
 
         // Get the data to be rendered
         $dg->fetchDataSource();

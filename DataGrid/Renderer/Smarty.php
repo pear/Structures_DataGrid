@@ -42,10 +42,13 @@ class Structures_DataGrid_Renderer_Smarty
      *
      * Build default values
      *
+     * @param   object Structures_DataGrid  $dg     The datagrid to render.
      * @access public
      */
-    function Structures_DataGrid_Renderer_Smarty()
+    function Structures_DataGrid_Renderer_Smarty(&$dg)
     {
+        $this->_dg =& $dg;
+        
         $this->_smarty = new Smarty();
         $this->_smarty->template_dir = dirname($_SERVER['SCRIPT_FILENAME']);
         $this->_smarty->compile_dir = dirname($_SERVER['SCRIPT_FILENAME']) . '/compile';
@@ -66,9 +69,9 @@ class Structures_DataGrid_Renderer_Smarty
         }
     }
 
-    function render(&$dg)
+    function render()
     {
-        $this->_dg = &$dg;
+        $dg =& $this->_dg;
 
         // Get the data to be rendered
         $dg->fetchDataSource();

@@ -52,10 +52,12 @@ class Structures_DataGrid_Renderer_CSV
      *
      * Build default values
      *
+     * @param   object Structures_DataGrid  $dg     The datagrid to render.
      * @access public
      */
-    function Structures_DataGrid_Renderer_CSV()
+    function Structures_DataGrid_Renderer_CSV(&$dg)
     {
+        $this->_dg =& $dg;
     }
 
     /**
@@ -64,11 +66,11 @@ class Structures_DataGrid_Renderer_CSV
      * @access  public
      * @return  string      The CSV data of the DataGrid
      */
-    function render(&$dg)
+    function render()
     {
         header('Content-type: text/csv');
         
-        echo $this->toCSV($dg);
+        echo $this->toCSV();
     }
     
     /**
@@ -98,12 +100,11 @@ class Structures_DataGrid_Renderer_CSV
      * Generates the CSV format for the DataGrid
      *
      * @access  public
-     * @param   object Structures_DataGrid  $dg     The DataGrid to render
      * @return  string      The CSV of the DataGrid
      */
-    function toCSV(&$dg)
+    function toCSV()
     {
-        $this->_dg = &$dg;
+        $dg =& $this->_dg;
 
         // Get the data to be rendered
         $dg->fetchDataSource();
