@@ -178,7 +178,7 @@ class Structures_DataGrid_Column
                 $param = str_replace('$', '', $param);
                 if (strpos($param, '=') != false) {
                     $vars = split('=', $param);
-                    $paramList[$vars[0]] = $vars[1];
+                    $paramList[trim($vars[0])] = trim($vars[1]);
                 } else {
                     $paramList[$param] = $$param;
                 }
