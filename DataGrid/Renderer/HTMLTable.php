@@ -410,27 +410,13 @@ class Structures_DataGrid_Renderer_HTMLTable
     function _buildHTMLTableBody()
     {
         if ($this->_dg->recordSet) {
-
-            // Determine looping values
-            /*
-            if ($this->_dg->page > 1) {
-                $begin = ($this->_dg->page - 1) * $this->_dg->rowLimit;
-                $limit = $this->_dg->page * $this->_dg->rowLimit;
-            } else {
-                $begin = 0;
-                if ($this->_dg->rowLimit == null) {
-                    $limit = count($this->_dg->recordSet);
-                } else {
-                    $limit = $this->_dg->rowLimit;
-                }
+            if (!isset($this->_dg->rowLimit)) {
+                $this->_dg->rowLimit = count($this->_dg->recordSet);
             }
-            */
-
+            
             // Begin loop
-            //for ($i = $begin; $i < $limit; $i++) {
             for ($i = 0; $i < $this->_dg->rowLimit; $i++) {
                 if (isset($this->_dg->recordSet[$i])) {
-                    // Print Row
                     $cnt = 0;
                     $row = $this->_dg->recordSet[$i];
                     foreach ($this->_dg->columnSet as $column) {
@@ -438,18 +424,22 @@ class Structures_DataGrid_Renderer_HTMLTable
 
                         // Build Content
                         if (isset($column->formatter)) {
-                            $content = $column->formatter($row);
+                            //Use Formatter                            
+                            $content = $column->formatter($row); 
                         } elseif (!isset($column->fieldName)) {
                             if ($column->autoFill != '') {
-                                $content = $column->autoFill;
+                                // Use AutoFill                                
+                                $content = $column->autoFill; 
                             } else {
+                                // Use Column Name                                
                                 $content = $column->columnName;
                             }
                         } else {
+                            // Use Record Data
                             $content = $row[$column->fieldName];
                         }
 
-                        // Print Content to HTML_Table
+                        // Set Content in HTML_Table
                         $this->_table->setCellContents($rowCnt, $cnt, $content);
                         $this->_table->setCellAttributes($rowCnt, $cnt,
                                                          $column->attribs);
