@@ -167,8 +167,8 @@ class Structures_DataGrid_Core
      */
     function bind(&$source)
     {
-        if (is_subclass_of($source, 'structures_datagrid_source')) {
-            $this->_dataSource &= $source;
+        if (is_subclass_of($source, 'structures_datagrid_datasource')) {
+            $this->_dataSource =& $source;
             $source->limit($this->page, $this->rowLimit);
             if ($this->sortArray != null) {
                 $source->sort($this->sortArray);
@@ -182,7 +182,6 @@ class Structures_DataGrid_Core
                     $this->columnSet = $data['Columns'];
                 }
             }
-            
         } else {
             return new PEAR_Error('Invalid source type, ' . 
                                   'must be a valid data source driver class');
