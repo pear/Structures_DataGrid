@@ -33,13 +33,13 @@ class Structures_DataGrid_Column
 {
     /**
      * The name of the column
-     * @var array
+     * @var string
      */
     var $columnName;
 
     /**
      * The name of the field to map to
-     * @var array
+     * @var string
      */
     var $fieldName;
 
@@ -50,20 +50,20 @@ class Structures_DataGrid_Column
     var $orderBy;
 
     /**
-     * The attributes of the td tag. Optional
+     * The attributes to use for the cell. Optional
      * @var array
      */
     var $attribs;
 
     /**
-     * Determine whether or not to use fill in empty cells
+     * Determine whether or not to fill in empty cells
      * @var boolean
      */
     var $autoFill;
 
     /**
-     * The value to be used if a cell contains a null value
-     * @var array
+     * The value to be used if a cell is empty
+     * @var string
      */
     var $autoFillValue;
 
@@ -147,9 +147,25 @@ class Structures_DataGrid_Column
     /**
      * Formatter
      *
-     * Calls a predefined function to develop custom output for the column. It
-     * can accepts paramaters so that each cell in the column can be unique
-     * based on the record.
+     * Calls a predefined function to develop custom output for the column. The
+     * defined function can accept paramaters so that each cell in the column
+     * can be unique based on the record.  The function will also automatically
+     * receive the record array as a parameter.  All parameters passed into the
+     * function will be in one array.
+     *
+     * Example:
+     * <?php
+     * ...
+     * $linkTitle = 'Edit';
+     * $column->formatter = 'printLink($linkTitle)';
+     * $dg->addColumn($column);
+     * $dg->render();
+     * function printLink($params) {
+     *      extract($params);
+     *      return '<a href="edit.php?id=' . $record['id'] . ">' . $linkTitle . 
+     *             '</a>';
+     * }
+     * ?>
      *
      * @access public
      * @todo   This method needs to be intuituve and more flexible,
@@ -174,7 +190,7 @@ class Structures_DataGrid_Column
 
             // Process the parameters
             $paramList = array();
-            $paramList['record'] = $record;  // Automatically pass the record array in
+            $paramList['record'] = $record;  // Auto pass the record array in
             foreach($parameters as $param) {
                 $param = str_replace('$', '', $param);
                 if (strpos($param, '=') != false) {
@@ -195,7 +211,8 @@ class Structures_DataGrid_Column
         } else {
             //$result = new PEAR_Error('Unable to process formatter');
             $result = false;
-            PEAR::raiseError('Unable to process formatter', '1', PEAR_ERROR_TRIGGER);
+            PEAR::raiseError('Unable to process formatter', '1',
+                             PEAR_ERROR_TRIGGER);
         }
 
         return $result;
