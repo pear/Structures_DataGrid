@@ -18,9 +18,9 @@
 //
 // $Id$
 
-require_once ('PEAR.php');
+require_once 'PEAR.php';
 
-require_once ('DataGrid/Renderer.php');
+require_once 'DataGrid/Renderer.php';
 
 define ('DATAGRID_RENDER_TABLE',    'HTMLTable');
 define ('DATAGRID_RENDER_SMARTY',   'Smarty');
@@ -30,8 +30,9 @@ define ('DATAGRID_RENDER_XLS',      'XLS');
 define ('DATAGRID_RECORD_DATAOBJECT', 'DataObject');
 define ('DATAGRID_RECORD_DBRESULT',   'DBResult');
 
-define ('DATAGRID_SORT_ASC',  'ASC');
-define ('DATAGRID_SORT_DESC', 'DESC');
+// Unnecessary?
+//define ('DATAGRID_SORT_ASC',  'ASC');
+//define ('DATAGRID_SORT_DESC', 'DESC');
 
 /**
  * Structures_DataGrid Class
