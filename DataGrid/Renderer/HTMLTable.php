@@ -348,7 +348,8 @@ class Structures_DataGrid_Renderer_HTMLTable
                     foreach($qString as $element) {
                         if ($element != '') {
                             if (stristr($element, $this->requestPrefix . 'orderBy')) {
-                                $url .= $this->requestPrefix . 'orderBy=' . $column->orderBy;
+                                $url .= $this->requestPrefix . 'orderBy=' .
+                                        $column->orderBy;
                                 $orderByExists = true;
                             } elseif (stristr($element, $this->requestPrefix . 'direction')) {
                                 $url .= $direction;
@@ -379,7 +380,8 @@ class Structures_DataGrid_Renderer_HTMLTable
                             $column->orderBy . '&amp;' . $direction;
                 }
 
-                $iconVar = "sortIcon" . $this->_dg->sortArray[1];
+                $iconVar = "sortIcon" . 
+                           ($this->_dg->sortArray[1] ? $this->_dg->sortArray[1] : 'ASC');
                 $str = '<a href="' . $url . '">' . $column->columnName;
                 if (($this->$iconVar != '') && 
                     ($this->_dg->sortArray[0] == $column->orderBy)) {
