@@ -13,7 +13,8 @@
 // | obtain it through the world-wide-web, please send a note to          |
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
-// | Author: Olivier Guilyardi <olivier@samalyse.com>                     |
+// | Authors: Olivier Guilyardi <olivier@samalyse.com>                    |
+// |          Andrew Nagy <asnagy@webitecture.org>                        |
 // +----------------------------------------------------------------------+
 //
 // $Id $
@@ -65,6 +66,7 @@ define('DATAGRID_SOURCE_XML',           'XML');
 * to do this.
 *
 * @author   Olivier Guilyardi <olivier@samalyse.com>
+* @author   Andrew Nagy <asnagy@webitecture.org>
 * @package  Structures_DataGrid
 * @category Structures
 * @version  $Revision $
