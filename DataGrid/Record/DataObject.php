@@ -46,7 +46,7 @@ class Structures_DataGrid_Record_DataObject extends Structures_DataGrid_Record
 
     function setRecord($data)
     {
-        if (strtolower(get_parent_class($data)) == 'db_dataobject') {
+        if (strtolower(is_subclass_of($data)) == 'db_dataobject') {
             parent::setRecord($data->toArray());
         } else {
             return new PEAR_Error('Invalid data type. ' . 
