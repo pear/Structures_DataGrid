@@ -436,7 +436,7 @@ class Structures_DataGrid_Renderer_HTMLTable
                     $cnt = 0;
                     $row = $this->_dg->recordSet[$i];
                     foreach ($this->_dg->columnSet as $column) {
-                        $rowCnt = ($i-$begin)+1;
+                        $rowCnt = $i+1;
 
                         // Build Content
                         if (isset($column->formatter)) {
@@ -526,7 +526,7 @@ class Structures_DataGrid_Renderer_HTMLTable
         }
         $defaults = array('totalItems' => $count,
                           'perPage' => $this->_dg->rowLimit,
-                          'urlVar' => $this->requirePrefix . 'page');
+                          'urlVar' => $this->requestPrefix . 'page');
         $options = array_merge($defaults, $options);
         $this->pager =& Pager::factory($options);
     }    
