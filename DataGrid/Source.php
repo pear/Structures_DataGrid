@@ -175,7 +175,7 @@ class Structures_DataGrid_DataSource
         
         $classname = "Structures_DataGrid_DataSource_$type";
         $driver = new $classname();
-        $driver->setOptions($options);        
+        $driver->bind($source, $options);
        
         return $driver;
     }
@@ -201,7 +201,7 @@ class Structures_DataGrid_DataSource
      * @access public
      * @return array Array of Column objects. Empty array if irrelevant.
      */
-    function &getColumns()
+    function getColumns()
     {
         $columns = array();
         if ($this->_options['generate_columns'] 
