@@ -26,18 +26,33 @@ define('DATAGRID_SOURCE_XML',           'XML');
 
 /**
 * Base abstract class for data source drivers
+* Recognized options (valid for all drivers) :
 *
+* <b>"generate_columns" : </b> Generate Structures_DataGrid_Column objects 
+* with labels. (default : true) 
+* 
+* <b>"labels" : </b> How to translate the field names to column labels. 
+* Only used when "generate_columns" is true. Default : array().
+* This is an associative array of the form :
+* <code> 
+* array ("fieldName" => "fieldLabel", ...) 
+* </code>
+* 
+* <b>"fields" : </b> Which fields should be rendered (Only used when
+* "generate_columns" is true. The default is an empty array : all of
+* the DataObject's fields will be rendered.
+* This is an array of the form :
+* <code>
+* array ("fieldName1", "fieldName2", ...)
+* </code>
+* 
 * Users may want to see the create() factory method
 *
 * Developers :
 *
 * <b>HOWTO develop a new source driver</b>
 *
-* Create a file for your new driver. For example :
-*
-*     Structures/DataGrid/Source/Foo.php
-*
-* In there, subclass this Structures_DataGrid_Source class :
+* Subclass this Structures_DataGrid_Source class :
 * <code>
 * class Structures_DataGrid_Source_Foo extends Structures_DataGrid_Source
 * </code>
@@ -53,15 +68,16 @@ define('DATAGRID_SOURCE_XML',           'XML');
 *     }
 * </code>
 *
-* Expose the sort(), limit(), fetch(), count() and bind() methods,
-* overloading the provided skeleton. See the corresponding prototypes
+* Expose the fetch(), count() and bind() methods, overloading 
+* the provided skeleton. See the corresponding prototypes
 * for more information on how to do this.
 *
 * Eventually, use the dump() debugging method to test your brand new
 * driver
 *
-* There are some cases where you will want to use the
-* Structures_DataGrid_Source_Array as base class instead of this one.
+* There are some cases where you will want to reuse the
+* Structures_DataGrid_Source_Array::staticFetch() method, in order to
+* provide standard array sorting and limiting features to your driver.
 * See the Structures_DataGrid_Source_xml class for an example on how
 * to do this.
 *
@@ -78,8 +94,8 @@ class Structures_DataGrid_DataSource
      *
      * @var array
      * @access protected
-     * @see Structures_DataGrid_Source::setOption()
-     * @see Structures_DataGrid_Source::addDefaultOptions()
+     * @see Structures_DataGrid_DataSource::_setOption()
+     * @see Structures_DataGrid_DataSource::addDefaultOptions()
      */
     var $_options = array();
 
@@ -89,6 +105,9 @@ class Structures_DataGrid_DataSource
      */
     function Structures_DataGrid_DataSource()
     {
+        $this->_options = array('generate_columns' => true,
+                                'labels'           => array(),
+                                'fields'           => array());
     }
 
     /**
@@ -96,13 +115,13 @@ class Structures_DataGrid_DataSource
      *
      * This method is meant to be called by drivers. It allows adding some
      * default options. Additionally to setting default values the options
-     * names (keys) are used by setOption() to validate its input.
+     * names (keys) are used by _setOptions() to validate its input.
      *
      * @access protected
      * @param array $options An associative array of the from:
      *                       array(optionName => optionValue, ...)
      * @return void
-     * @see Structures_DataGrid_Source::setOption
+     * @see Structures_DataGrid_DataSource::_setOption
      */
     function _addDefaultOptions($options)
     {
@@ -114,51 +133,52 @@ class Structures_DataGrid_DataSource
      *
      * A clever method which loads and instantiate data source drivers.
      *
-     * Basic Example :
-     * <code>  
-     * require_once 'Structures/DataGrid/Source';
-     * $source =& Structures_DataGrid_Source::create($array,DATAGRID_SOURCE_ARRAY);
-     * </code>
+     * Can be called in various ways :
      *
-     * This is stricly equivalent to :
-     * <code>  
-     * require_once 'Structures/DataGrid/Source/array.php
-     * $source = new Structures_DataGrid_Source_Array();
-     * $source->bind($array);
-     * </code>
-     *
-     * This factory method is not considered to be the preferred way to load a
-     * driver. Both of the above methods are valid, choice is yours.
-     *
-     * But, it provides a handy shortcut for setting options. For example :
+     * Detect the source type and load the appropriate driver with default
+     * options :
      * <code>
-     * require_once 'Structures/DataGrid/Source';
-     * $source =& Structures_DataGrid_Source::create($array,DATAGRID_SOURCE_ARRAY,$options);
+     * $driver =& Structures_DataGrid_DataSource::create($source);
      * </code>
      *
-     * And, it is clever, it can analyse its input and load the right
-     * driver. This feature implies a little overhead, but allows simplifying
-     * code by making the following statement :
+     * Detect the source type and load the appropriate driver with custom
+     * options :
      * <code>
-     * require_once 'Structures/DataGrid/Source';
-     * $source =& Structures_DataGrid_Source::create($array);
+     * $driver =& Structures_DataGrid_DataSource::create($source,$options);
      * </code>
      *
-     * which will detect that its source is an array and automatically load the
-     * array driver with its default options.
+     * Load a driver for an explicit type (faster, bypasses detection routine) :
+     * <code>
+     * $driver =& Structures_DataGrid_DataSource::create($source,$type);
+     * </code>
+     *
+     * Explicit type and custom options :
+     * <code>
+     * $driver =& Structures_DataGrid_DataSource::create($source,$type,$options);
+     * </code>
      *
      * @access  public
-     * @param   mixed   $source     The data source respective to the driver
-     * @param   string  $type       The optional data source type constant
-     * @param   array   $options    An associative array of the from:
-     *                              array(optionName => optionValue, ...)
+     * @param   mixed   $source        The data source respective to the 
+     *                                 driver
+     * @param   string  $typeOrOptions The data source type constant (of 
+     *                                 the form DATAGRID_DATASOURCE_*) or 
+     *                                 the options
+     * @param   array   $options       An associative array of the form :
+     *                                 array(optionName => optionValue, ...)
      * @uses    Structures_DataGrid_Source::_detectSourceType()
-     * @return  mixed               Returns the source driver object or 
-     *                              PEAR_Error on failure
+     * @return  mixed                  Returns the source driver object or 
+     *                                 PEAR_Error on failure
      * @static
      */
-    function &create($source, $type=null, $options=array())
+    function &create($source, $typeOrOptions=null, $options=array())
     {
+        if (is_array($typeOrOptions)) {
+            $options = $typeOrOptions;
+            $type = null;
+        } else {
+            $type = $typeOrOptions;
+        }
+        
         if (is_null($type) &&
             !($type = Structures_DataGrid_DataSource::_detectSourceType($source))) {
             return new PEAR_Error('Unable to determine the data source type. '.
@@ -171,14 +191,6 @@ class Structures_DataGrid_DataSource
         $classname = "Structures_DataGrid_DataSource_$type";
         $driver = new $classname();
        
-        $test = $driver->setOption($options);
-        if (PEAR::isError($test)) {
-            return $test;
-        }
-       
-        // Is this necessary?
-        $test = $driver->bind($source);
-
         return PEAR::isError($test) ? $test : $driver;
     }
     
@@ -186,41 +198,50 @@ class Structures_DataGrid_DataSource
     /**
      * Set options
      *
-     * This method can be called either to set a single options a in :
-     * <code>$source->setOption($optionName,$optionValue)</code>
-     * Or with an associative array to set multiple options :
-     * <code>$source->setOption($options)</code>
-     *
-     * Note : should be called before bind()
-     *
-     * @param   mixed   $name   An option name string or an associative array
-     *                          of the form :
-     *                          array("option_name" => "option_value",...)
-     * @param   mixed   $value  The optional value if parameter $name is a 
-     *                          string
-     * @return  mixed           true or a PEAR_error object upon failure
-     * @access  public
+     * @param   mixed   $options An associative array of the form :
+     *                           array("option_name" => "option_value",...)
+     * @return  mixed            true or a PEAR_error object upon failure
+     * @access  protected
      */
-    function setOption($name, $value=null)
+    function _setOptions($options)
     {
-        if (is_null($value) and is_array($name)) {
-            // Handle setting multiple options when passed an associative array
-            foreach ($name as $key => $val) {
-                if (!isset($this->_options[$key])) {
-                    return new PEAR_error("No such option : '$key'");
-                }
-                $this->_options[$key] = $val;
+        foreach ($options as $key => $val) {
+            if (!isset($this->_options[$key])) {
+                return new PEAR_error("No such option : '$key'");
             }
-        } else {
-            if (!isset($this->_options[$name])) {
-                return new PEAR_error("No such option : '$name'");
-            }
-            $this->_options[$name] = $value;
+            $this->_options[$key] = $val;
         }
         
         return true;
     }
 
+    /**
+     * Generate columns if options are properly set
+     *
+     * Note : must be called after fetch()
+     * 
+     * @access public
+     * @return array Array of Column objects. Empty array if irrelevant.
+     */
+    function &getColumns()
+    {
+        $columns = array();
+        if ($this->_options['generate_columns'] 
+            and $fList = $this->_options['fields']) {
+                             
+            include_once('Structures/DataGrid/Column.php');
+            
+            foreach ($fList as $field) {
+                $label = strtr($field,$this->_options['labels']);
+                $col = new Structures_DataGrid_Column($label, $field, $field);
+                $columns[] = $col;
+            }
+        }
+        
+        return $columns;
+    }
+    
+    
     // Begin driver method prototypes DocBook template
      
     /**#@+
@@ -231,54 +252,25 @@ class Structures_DataGrid_DataSource
      *
      * It is intended to be overloaded by drivers.
      */
-    
-    /**
-     * Sorting method prototype
-     *
-     * When overloaded, should either return true or a PEAR_Error
-     *
-     * @param   string  $field      The field name to sort by
-     * @param   string  $direction  Either ASC or DESC
-     * @return  object PEAR_Error   An error with message
-     *                              'No data source driver loaded'
-     * @access public                          
-     */
-    function sort($field, $direction)
-    {
-        return new PEAR_Error('No data source driver loaded');
-    }
-
-    /**
-     * Limiting method prototype
-     *
-     * When overloaded, should either return true or a PEAR_Error
-     *
-     * @param   string  $offset     The offset where to fetch data from,
-     *                              starting from 0
-     * @param   string  $length     The number of rows (optional)
-     * @return  object PEAR_Error   An error with message
-     *                              'No data source driver loaded'
-     * @access public                          
-     */
-    function limit($offset, $length=null)
-    {
-        return new PEAR_Error("No data source driver loaded");
-    }
    
     /**
      * Fetching method prototype
      *
      * When overloaded, should either return a PEAR_Error or a <b>reference</b>
      * to an array of the form :
-     *    array($columns,$records)
+     *    array("Columns" => $columns, "Records" => $records)
      * where $columns is an array of Structures_DataGrid_Column objects and
-     * $records an array of Structures_DataGrid_Record objects
+     * $records an assoc array of rows
      *
+     * @param   integer $offset     Limit offset (starting from 0)
+     * @param   integer $len        Limit length
+     * @param   string  $sortField  Field to sort by
+     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
      * @return  object PEAR_Error   An error with message
      *                              'No data source driver loaded'
      * @access  public                          
      */
-    function &fetch()
+    function &fetch($offset=0, $len=null, $sortField=null, $sortDir='ASC')
     {
         $err = new PEAR_Error("No data source driver loaded");
         return $err;
@@ -287,6 +279,8 @@ class Structures_DataGrid_DataSource
     /**
      * Counting method prototype
      *
+     * Note : must be called before fetch() 
+     * 
      * When overloaded, should either return a numeric value indicating the
      * total number of rows in the data source, or a PEAR_Error object
      *
@@ -325,14 +319,18 @@ class Structures_DataGrid_DataSource
      * would return to its DataGrid host as a nicely formatted console-style
      * table.
      *
-     * @return  string      The table string, ready to be printed
+     * @param   integer $offset     Limit offset (starting from 0)
+     * @param   integer $len        Limit length
+     * @param   string  $sortField  Field to sort by
+     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
+     * @return  string              The table string, ready to be printed
      * @uses    Structures_DataGrid_Source::fetch()
      * @access  public
      */
-    function dump()
+    function dump($offset=0, $len=null, $sortField=null, $sortDir='ASC')
     {
-        $data =& $this->fetch();
-        list($columns,$records) = $data;
+        $records =& $this->fetch($ofs, $len, $sortField, $sortDir);
+        $columns = $this->getColumns();
 
         if (!$columns and !$records) {
             return "<Empty set>\n";
@@ -349,13 +347,13 @@ class Structures_DataGrid_DataSource
                             : "{$col->columnName} ({$col->fieldName})";
             }
         } else {
-            $headers = array_keys($records[0]->getRecord());
+            $headers = array_keys($records[0]);
         }
 
         $table->setHeaders($headers);
         
         foreach ($records as $rec) {
-            $table->addRow($rec->getRecord());
+            $table->addRow($rec);
         }
        
         return $table->getTable();
@@ -379,7 +377,7 @@ class Structures_DataGrid_DataSource
 
             // DB_Result
             case (strtolower(get_class($source)) == 'db_result'):
-                return DATAGRID_SOURCE_DBRESULT;
+                return DATAGRID_SOURCE_DB;
                 break;
                 
             // Array
