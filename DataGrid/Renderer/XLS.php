@@ -50,7 +50,7 @@ class Structures_DataGrid_Renderer_XLS
         $this->_worksheet =& $this->_workbook->addWorksheet();
     }
 
-    function render($dg)
+    function render(&$dg)
     {
         $this->_dg = &$dg;
 
