@@ -24,36 +24,27 @@
     </maintainer>
   </maintainers>
   <release>
-    <version>0.6.0</version>
-    <date>2004-12-21</date>
+    <version>0.6.1</version>
+    <date>2005-01-24</date>
     <license>PHP License</license>
     <state>beta</state>
     <notes>
-      Initial Beta Release - Beware of many changes to the core API
+      This release contains many bug fixes, please continue to test and submit
+      bug reports.
       
-      ********* Warning: You must now instantiate as a reference **********
-       
-      Implemented new data source layer to handle data manipluation with many
-      different data source types such as DB_DataObject, CSV, XML, etc.
-      The DataGrid now handles the data fetching, so if you are using
-      DataObjects, all you need to do is bind to the dataobject with out
-      fetching, the DataGrid will take care of the rest.  Same with a DB_Result
-      object, just simply create the result object and bind it to the datagrid.
+      * Bug #3028: XUL Renderer now converts XML entities in column headers
+      * The requestPrefix value is now used in the automatic handeling of sorting paging variables
+      * Bug #3086: sortRecordSet method fixed
+      * Bug #3088: Array datasource staticFetch method fixed
+      * Bug #3097: setAutoFill method in HTML renderer fixed
+      * Bug #3139: Formatter now allows to use whitespace in callback
+      * Bug #3140: Added additional FormBuilder options for the DO datasource
+      * Bug #3151: Syntax issue fixed in DataObject record type class
+      * Bug #3156: Fixed issue with printing data from last page
+      * Bug #3157: Implemented get* for dataobject fetching
+      * Bug #3191: Typo with Smarty Renderer
       
-      New Features:
-        Automatic GET/POST/Cookie handling for sorting and paging
-        Renderers: XUL, CSV, Console Table
-        DataSources: DB_Result, DB_DataObject, Array, CSV, XML, RSS
-      
-      Many Bugfixes included as well:
-        Bug #2123: Allows to use db_dataobject extended classes
-        Bug #2124: Implement formbuilder options from db_dataobject
-        Bug #2125: Allow GET/POST/COOKIE varaibles for sorting to have prefixes
-        Bug #2128: Better error handling for setRecord method
-        Bug #2438: HTML Renderer better organized with render, toHTML, getTable
-                   methods.  Other renderers reflect similiar changes
-        Bug #2499: Converted all ampersands to &amp;
-        Bug #2501: Implemented a sorting icon indicatior for HTMLTable renderer
+      Added getSmarty method for Smarty Renderer to gain access to the rendered Smarty Object.
     </notes>
     <deps>
       <dep type="pkg" rel="ge" version="1.2" optional="no">PEAR</dep>
@@ -109,6 +100,30 @@
     </filelist>
   </release>
   <changelog>
+    <release>
+      <version>0.6.1</version>
+      <date>2005-01-05</date>
+      <license>PHP License</license>
+      <state>beta</state>
+      <notes>
+        This release contains many bug fixes, please continue to test and submit
+        bug reports.
+      
+        * Bug #3028: XUL Renderer now converts XML entities in column headers
+        * The requestPrefix value is now used in the automatic handeling of sorting paging variables
+        * Bug #3086: sortRecordSet method fixed
+        * Bug #3088: Array datasource staticFetch method fixed
+        * Bug #3097: setAutoFill method in HTML renderer fixed
+        * Bug #3139: Formatter now allows to use whitespace in callback
+        * Bug #3140: Added additional FormBuilder options for the DO datasource
+        * Bug #3151: Syntax issue fixed in DataObject record type class
+        * Bug #3156: Fixed issue with printing data from last page
+        * Bug #3157: Implemented get* for dataobject fetching
+        * Bug #3191: Typo with Smarty Renderer
+      
+        Added getSmarty method for Smarty Renderer to gain access to the rendered Smarty Object.
+      </notes>
+    </release>
     <release>
       <version>0.6.0</version>
       <date>2004-12-21</date>
