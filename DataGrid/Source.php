@@ -17,7 +17,7 @@
 // |          Andrew Nagy <asnagy@webitecture.org>                        |
 // +----------------------------------------------------------------------+
 //
-// $Id $
+// $Id$
 
 
 // Data Source Drivers
@@ -271,6 +271,20 @@ class Structures_DataGrid_DataSource
     {
         return PEAR_Error("No data source driver loaded");
     }
+    
+    /**
+     * Sorting method prototype
+     *
+     * Note : must be called before fetch() 
+     * 
+     * @return  object PEAR_Error       An error with message
+     *                                  'No data source driver loaded'
+     * @access  public                          
+     */
+    function sort()
+    {
+        return PEAR_Error("No data source driver loaded");
+    }    
   
     /**
      * Datasource binding method prototype
