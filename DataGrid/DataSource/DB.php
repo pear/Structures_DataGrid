@@ -118,6 +118,20 @@ class Structures_DataGrid_DataSource_DB extends Structures_DataGrid_DataSource
     {
         return $this->_result->numRows();
     }
+    
+    /**
+     * This should not be used due to performance issues, but is available for
+     * compatability.
+     * 
+     * @access  public
+     * @param   string  $sortField  Field to sort by
+     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
+     */
+    function sort($sortField, $sortDir)
+    {
+        return new PEAR_Error('Cannot sort a DB_Result Object');
+    }
+
 
 }
 ?>
