@@ -65,7 +65,7 @@ class Structures_DataGrid_Core
      * Limit of records to show per page.
      * @var string
      */
-    var $rowlimit;
+    var $rowLimit;
 
     /**
      * The current page to show.
