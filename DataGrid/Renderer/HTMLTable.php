@@ -39,32 +39,20 @@ class Structures_DataGrid_Renderer_HTMLTable
     var $header = true;
 
     /**
-     * The table header background color
-     * @var string
-     */
-    var $headerBgColor;
-
-    /**
-     * The dark row background color
-     * @var string
-     */
-    var $rowDarkBgColor;
-
-    /**
-     * The light row background color
-     * @var string
-     */
-    var $rowLightBgColor;
-
-    /**
-     * An associative array containing each attribute of the table
+     * An associative array containing each attribute of the even rows
      * @var array
      */
-    var $attrs;
+    var $evenRowAttributes;
+
+    /**
+     * An associative array containing each attribute of the odd rows
+     * @var array
+     */
+    var $oddRowAttributes;
 
     /**
      * A boolean value to determine if empty rows should be printed.
-     * @var array
+     * @var bool
      */
     var $allowEmptyRows;
 
@@ -73,6 +61,12 @@ class Structures_DataGrid_Renderer_HTMLTable
      * @var array
      */
     var $emptyRowAttributes = array();
+
+    /**
+     * The complete path for the paging links.  If not defined, PHP_SELF is used
+     * @var string
+     */
+    var $path;
 
     /**
      * The structures_datagrid object
@@ -95,14 +89,7 @@ class Structures_DataGrid_Renderer_HTMLTable
      */
     function Structures_DataGrid_Renderer_HTMLTable()
     {
-        $this->headerBgColor = '#FFFFFF';
-        $this->rowDarkBgColor = '#FFFFFF';
-        $this->rowLightBgColor = '#FFFFFF';
-
-        $this->attrs = array('cellpadding' => 4,
-                             'cellspacing' => 0,
-                             'border' => 0);
-        $this->_table = new HTML_Table($this->attrs);
+        $this->_table = new HTML_Table();
     }
 
     /**
@@ -113,19 +100,18 @@ class Structures_DataGrid_Renderer_HTMLTable
      */
     function setTableAttribute($attr, $value)
     {
-        $this->attrs[$attr] = $value;
-        $this->_table->_attributes = $this->attrs;
+        $this->_table->_attributes[$attr] = $value;
     }
 
     /**
-     * Define the table's header bgcolor
+     * Define the table's header row attrbiutes
      *
      * @access public
-     * @param  string    $bgColor   The header bgcolor to use for the table.
+     * @param  array     $attribs   The attributes for the table header row.
      */
-    function setTableHeaderBgColor($bgColor)
+    function setTableHeaderAttributes($attribs)
     {
-        $this->headerBgColor = $bgColor;
+        $this->_table->setRowAttributes(0, $attribs);
     }
 
     /**
@@ -134,9 +120,9 @@ class Structures_DataGrid_Renderer_HTMLTable
      * @access public
      * @param  string    $bgColor   The color to use for the dark table row.
      */
-    function setTableRowDarkBgColor($bgColor)
+    function setTableOddRowAttributes($attribs)
     {
-        $this->rowDarkBgColor = $bgColor;
+        $this->oddRowAttributes = $attribs;
     }
 
     /**
@@ -145,9 +131,9 @@ class Structures_DataGrid_Renderer_HTMLTable
      * @access public
      * @param  string    $bgColor   The color to use for the light table row.
      */
-    function setTableRowLightBgColor($bgColor)
+    function setTableEvenRowAttributes($attribs)
     {
-        $this->rowLightBgColor = $bgColor;
+        $this->evenRowAttributes = $attribs;
     }
 
     /**
@@ -161,6 +147,7 @@ class Structures_DataGrid_Renderer_HTMLTable
     {
         $this->table->setAutoFill($value);
     }
+
 
     /**
      * Generates the HTML for the DataGrid
@@ -181,9 +168,9 @@ class Structures_DataGrid_Renderer_HTMLTable
         $this->_buildHTMLTableBody();
 
         // Define Alternating Row attributes
-        $lightRow = array('bgcolor' => $this->rowLightBgColor);
-        $darkRow = array('bgcolor' => $this->rowDarkBgColor);
-        $this->_table->altRowAttributes(1, $lightRow, $darkRow);
+        $this->_table->altRowAttributes(1,
+                                        $this->evenRowAttributes,
+                                        $this->oddRowAttributes);
 
         // Print the table
         return $this->_table->toHTML();
@@ -210,7 +197,11 @@ class Structures_DataGrid_Renderer_HTMLTable
                 }
 
                 // Build URL -- This needs much refinement :)
-                $url = $_SERVER['PHP_SELF'] . '?';
+                if (isset($this->path)) {
+                    $url = $this->path . '?';
+                } else {
+                    $url = $_SERVER['PHP_SELF'] . '?';
+                }
                 if (isset($_SERVER['QUERY_STRING'])) {
                     $qString = explode('&', $_SERVER['QUERY_STRING']);
                     $i = 0;
@@ -251,8 +242,8 @@ class Structures_DataGrid_Renderer_HTMLTable
         }
 
         // Define Table Header attributes
-        $attr = array('bgcolor' => $this->headerBgColor);
-        $this->_table->setRowAttributes(0, $attr);
+        //$attr = array('bgcolor' => $this->headerBgColor);
+        //$this->_table->setRowAttributes(0, $attr);
     }
 
     /**
@@ -331,11 +322,12 @@ class Structures_DataGrid_Renderer_HTMLTable
      * @param   string $next        The string for the forward page link
      * @param   string $delta       The number of pages to display before and
      *                              after the current page
+     * @param   array $attrs        Additional attributes for the Pager class
      * @return  void
      * @see     HTML::Pager
      */
     function getPaging($mode = 'Sliding', $separator = '|', $prev = '<<',
-                       $next = '>>', $delta = 5)
+                       $next = '>>', $delta = 5, $attrs = null)
     {
         // Generate Paging
         $options = array('mode' => $mode,
@@ -343,6 +335,9 @@ class Structures_DataGrid_Renderer_HTMLTable
                          'separator' => $separator,
                          'prevImg' => $prev,
                          'nextImg' => $next);
+        if (is_array($attrs)) {
+            $options = array_merge($options, $attrs);
+        }
         $this->_dg->buildPaging($options);
 
         // Return paging html
