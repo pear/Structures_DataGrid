@@ -49,7 +49,7 @@ class Structures_DataGrid_Core
     var $recordSet = array();
 
     /**
-     * The Data Source object
+     * The Data Source Driver object
      * @var object Structures_DataGrid_DataSource
      */
     var $_dataSource;    
@@ -142,38 +142,41 @@ class Structures_DataGrid_Core
     }
 
     /**
-     * A simple way to add an associative array record set to the data grid.
+     * A simple way to add set of data to the datagrid
      *
      * @access  public
-     * @param   array   $rs     The associative array recordset
-     * @return  bool            True if successful, otherwise false.
+     * @param   mixed   $rs     The record set in any of the supported data
+     *                          source types
+     * @return  bool            True if successful, otherwise PEAR_Error.
+     */
     function bind($rs)
     {
-        if (is_array($rs)) {
-            $this->recordSet = $rs;
-            return true;
+        require_once 'Structures/DataGrid/Source.php';
+        
+        $source =& Structures_DataGrid_DataSource::create($rs);
+        if (!PEAR::isError($source)) {
+            return $this->bindDataSource($source);
         } else {
             return new PEAR_Error('Recordset must be an associative array');
         }
     }
-     */
 
     /**
      * Allows binding to a data source driver.
      *
      * @access  public
-     * @param   mixed   $source     The data source driver object
-     * @return  mixed               True if successful, otherwise PEAR_Error.
+     * @param   mixed   $dataSource     The data source driver object
+     * @return  mixed                   True if successful, otherwise PEAR_Error
      */
-    function bind(&$source)
+    function bindDataSource(&$dataSource)
     {
         if (is_subclass_of($source, 'structures_datagrid_datasource')) {
-            $this->_dataSource =& $source;
-            $source->limit($this->page, $this->rowLimit);
+            $this->_dataSource =& $driver;
+            $driver->limit($this->page, $this->rowLimit);
             if ($this->sortArray != null) {
-                $source->sort($this->sortArray);
+                $driver->sort($this->sortArray);
             }
-            $data = $source->fetch();
+            $data = $driver->fetch();
             if (PEAR::isError($data)) {
                 return $data;
             } else {
@@ -183,7 +186,7 @@ class Structures_DataGrid_Core
                 }
             }
         } else {
-            return new PEAR_Error('Invalid source type, ' . 
+            return new PEAR_Error('Invalid data source type, ' . 
                                   'must be a valid data source driver class');
         }
         
