@@ -208,7 +208,7 @@ class Structures_DataGrid_DataSource_DataObject
             while ($this->_dataobject->fetch()) {
                 // Determine Fields
                 if (!$this->_options['fields']) {
-                    if ($this->options['use_private_vars']) {
+                    if ($this->_options['use_private_vars']) {
                         $this->_options['fields'] =
                             array_keys(get_object_vars($this->_dataobject));
                     } else {
