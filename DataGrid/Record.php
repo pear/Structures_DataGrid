@@ -39,7 +39,7 @@ class Structures_DataGrid_Record
     /**
      * Constructor
      *
-     * Builds the record.  Accepts data as either an Array or a DB_DataObject.
+     * Builds the record.  Accepts the data as an Array.
      *
      * @access  public
      * @todo    Allow more data types.
@@ -57,7 +57,8 @@ class Structures_DataGrid_Record
      * Retrieves the value for the column name specified
      *
      * @access  public
-     * @param   string    $key    The name of the column to retrieve the value for.
+     * @param   string     $key    The name of the column to retrieve the value
+     *                             for.
      * @return  void
      */
     function getValue($key)
@@ -71,8 +72,8 @@ class Structures_DataGrid_Record
      * Sets the value for the column name specified
      *
      * @access  public
-     * @param   string    $key    The name of the column to work on.
-     * @param   string    $data   The data to set the specific cell to.
+     * @param   string     $key    The name of the column to work on.
+     * @param   string     $data   The data to set the specific cell to.
      * @return  void
      */
     function setValue($key, $data)

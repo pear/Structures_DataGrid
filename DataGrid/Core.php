@@ -120,9 +120,10 @@ class Structures_DataGrid_Core
      * Adds a DataGridColumn object to this DataGrid object
      *
      * @access  public
-     * @param   object $column      The column object to add. This object should be
-     *                              a HTML_DataGridColumn object.
-     * @return  bool                True if successful, otherwise false.
+     * @param   object Structures_DataGrid_Column   $column     The column
+     *          object to add. This object should be a
+     *          Structures_DataGrid_Column object.
+     * @return  bool    True if successful, otherwise false.
      */
     function addColumn($column)
     {
@@ -138,8 +139,8 @@ class Structures_DataGrid_Core
      * A simple way to add an associative array record set to the data grid.
      *
      * @access  public
-     * @param   array $rs     The associative array recordset
-     * @return  bool          True if successful, otherwise false.
+     * @param   array   $rs     The associative array recordset
+     * @return  bool            True if successful, otherwise false.
      */
     function bind($rs)
     {
@@ -155,8 +156,9 @@ class Structures_DataGrid_Core
      * Adds a DataGrid_Record object to this DataGrid object
      *
      * @access  public
-     * @param   object $record  The record object to add. This object must be
-     *                          a HTML_DataGridRecord object.
+     * @param   object Structures_DataGrid_Record   $record     The record
+     *          object to add. This object must be a Structures_DataGrid_Record
+     *          object.
      * @return  bool            True if successful, otherwise false.
      */
     function addRecord($record)
@@ -171,13 +173,12 @@ class Structures_DataGrid_Core
     }
 
     /**
-     * Drops a DataGridRecord object from this DataGrid object
+     * Drops a DataGrid_Record object from this DataGrid object
      *
      * @access  public
-     * @param   object DataGrid_Record    $record     The record object to drop.
-     *                                                This object must be a
-     *                                                Structures_DataGridRecord
-     *                                                object.
+     * @param   object Structures_DataGrid_Record   $record     The record
+     *          object to drop. This object must be a Structures_DataGrid_Record
+     *          object.
      * @return void
      */
     function dropRecord($record)

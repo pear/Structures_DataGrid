@@ -23,8 +23,8 @@ require_once 'Structures/DataGrid/Core.php';
 /**
  * Structures_DataGrid_Renderer Class
  *
- * This class handles mangeing the output for the DataGrid.
- * By default, the output is handled by the HTML Table renderer.
+ * This class handles managing the output for the DataGrid.
+ * By default, the output is handled by the HTML_Table renderer.
  *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
@@ -42,7 +42,7 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
      * Determins the appropriate renderer to use.  Uses the HTML_Table renderer
      * as the default.
      *
-     * @param  string   $renderer  The renderer to use.
+     * @param  string   $renderer   The renderer to use.
      * @access public
      */
     function Structures_DataGrid_Renderer($renderer = DATAGRID_RENDER_TABLE)
@@ -55,7 +55,7 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
     /**
      * Render
      *
-     * This calls the spcified renderer's render method.
+     * Renders that output by calling the specified renderer's render method.
      *
      * @param  string   $limit  The row limit per page.
      * @param  string   $page   The current page viewed.
