@@ -158,16 +158,16 @@ class Structures_DataGrid_DataSource
     function &create($source, $type=null, $options=array())
     {
         if (is_null($type) &&
-            $type != Structures_DataGrid_Source::_detectSourceType($source)) {
+            !($type = Structures_DataGrid_DataSource::_detectSourceType($source))) {
             return new PEAR_Error('Unable to determine the data source type. '.
                                   'You may want to explicitly specify it.');
         }
-        
-        if (@include_once "Source/$type.php") {
+
+        if (!@include_once "Structures/DataGrid/DataSource/$type.php") {
             return new PEAR_Error("No such data source driver: '$type'");
         }
-        $classname = "Structures_DataGrid_Source_$type";
-        $driver =& new $classname();
+        $classname = "Structures_DataGrid_DataSource_$type";
+        $driver = new $classname();
        
         $test = $driver->setOption($options);
         if (PEAR::isError($test)) {
