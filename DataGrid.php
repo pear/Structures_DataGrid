@@ -104,7 +104,7 @@ class Structures_DataGrid extends Structures_DataGrid_Renderer
      */
     function apiVersion()
     {
-        return $Name$;
+        return '$Name$';
     }
 
 }
