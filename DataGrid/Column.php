@@ -56,12 +56,6 @@ class Structures_DataGrid_Column
     var $attribs;
 
     /**
-     * Determine whether or not to fill in empty cells
-     * @var boolean
-     */
-    var $autoFill;
-
-    /**
      * The value to be used if a cell is empty
      * @var string
      */
@@ -95,33 +89,15 @@ class Structures_DataGrid_Column
      */
     function Structures_DataGrid_Column($columnName, $fieldName = null,
                                         $orderBy = null, $attribs = array(),
-                                        $autoFill = null, $autoFillValue = null,
+                                        $autoFillValue = null,
                                         $formatter = null)
     {
         $this->columnName = $columnName;
         $this->fieldName = $fieldName;
         $this->orderBy = $orderBy;
         $this->attribs = $attribs;
-        $this->autoFill = $autoFill;
         $this->autoFillValue = $autoFillValue;
         $this->formatter = $formatter;
-    }
-
-    /**
-     * Set Auto Fill
-     *
-     * Defines a value to be printed if a cell in the column is null.
-     *
-     * @param   boolean     $bool       Whether or not to use the autoFill
-     * @access  public
-     */
-    function setAutoFill($bool)
-    {
-        if ($bool) {
-            $this->autoFill = true;
-        } else {
-            $this->autoFill = false;
-        }
     }
 
     /**
