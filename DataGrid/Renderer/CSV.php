@@ -71,11 +71,24 @@ class Structures_DataGrid_Renderer_CSV
         echo $this->toCSV($dg);
     }
     
+    /**
+     * Define the CSV delimiter
+     *
+     * @access  public
+     * @return  string      The CSV delimiter to use
+     */
     function setDelimiter($delimiter)
     {
         $this->delimiter = $delimiter;
     }
 
+    /**
+     * Set the switch to encapsulate the values with quotes
+     *
+     * @access  public
+     * @return  boolean     The boolean value to determine whether or not to
+     *                      wrap values with quotes
+     */
     function setUseQuotes($bool)
     {
         $this->useQuotes = (bool)$bool;
