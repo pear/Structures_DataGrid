@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE package SYSTEM "http://pear.php.net/dtd/package-1.0">
+<package version="1.0">
+  <name>Structures_DataGrid</name>
+  <license>PHP License</license>
+  <summary>
+    A package to create a grid like structure based on a record set of data that will output in many formats including an HTML Table.
+  </summary>
+  <description>
+    This package offers a toolkit to render out a datagrid in HTML format as well as
+    many other formats such as an XML Document, an Excel Spreadsheet, a Smarty Template and more.
+    It also offers paging and sorting functionallity to limit the data that is presented.
+    This concept is based on the .NET Framework DataGrid
+  </description>
+  <maintainers>
+    <maintainer>
+      <user>asnagy</user>
+      <name>Andrew S. Nagy</name>
+      <email>asnagy@webitecture.org</email>
+      <role>lead</role>
+    </maintainer>
+  </maintainers>
+
+  <release>
+    <version>0.4.1</version>
+    <date>2004-03-16</date>
+    <state>alpha</state>
+    <notes>
+      Implemented name change from "DataGrid" to "Structures_DataGrid"
+      Removed html link elements from column class as to not be hard coded for html output 
+    </notes>
+    <filelist>
+      <dir name="/" baseinstalldir="">
+        <file role="php">DataGrid.php</file>
+        <dir name="DataGrid">
+          <file role="php">Core.php</file>
+          <file role="php">Column.php</file>
+          <file role="php">Record.php</file>
+          <file role="php">Renderer.php</file>
+          <dir name="Renderer">
+            <file role="php">HTMLTable.php</file>
+            <file role="php">Smarty.php</file>
+            <file role="php">XML.php</file>
+            <file role="php">XLS.php</file>
+          </dir>
+          <dir name="Record">
+            <file role="php">DB.php</file>
+            <file role="php">DataObject.php</file>
+          </dir>
+          <dir name="Docs">
+            <dir name="Examples">
+              <file role="php">example.php</file>
+              <file role="php">example-smarty.php</file>
+              <file role="php">example.tpl</file>
+              <file role="php">example-xml.php</file>
+              <file role="php">example-xls.php</file>
+            </dir>
+          </dir>
+        </dir>
+      </dir>
+    </filelist>
+  </release>
+  
+  <deps>
+    <dep type="pkg" rel="ge" version="1.2" optional="No">PEAR</dep>
+    <dep type="pkg" rel="ge" version="1.5" optional="Yes">HTML_Table</dep>
+    <dep type="pkg" rel="ge" version="0.6" optional="Yes">Spreadsheet_Excel_Writer</dep>
+    <dep type="pkg" rel="ge" version="0.5.2" optional="Yes">XML_Util</dep>
+  </deps>
+
+  <changelog>
+    <release>
+      <version>0.4.1</version>
+      <date>2004-03-16</date>
+      <state>alpha</state>
+      <notes>
+        Implemented name change from "DataGrid" to "Structures_DataGrid".
+        Also removed the link components from the DataGrid_Column.
+      </notes>
+    </release>
+    <release>
+      <version>0.4</version>
+      <date>2004-03-10</date>
+      <state>alpha</state>
+      <notes>
+        This is the first public release.
+      </notes>
+    </release>
+  </changelog>
+</package>
