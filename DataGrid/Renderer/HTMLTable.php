@@ -278,7 +278,11 @@ class Structures_DataGrid_Renderer_HTMLTable
         if (!$this->_rendered) {
             // Get the data to be rendered
             $dg->fetchDataSource();
-            
+
+            // Check to see if column headers exist, if not create them
+            // This must follow after any fetch method call
+            $dg->_setDefaultHeaders();
+                        
             // Define Table Header
             if ($this->header) {
                 $this->_buildHTMLTableHeader();
@@ -374,11 +378,12 @@ class Structures_DataGrid_Renderer_HTMLTable
                     $url .= $this->requestPrefix . 'orderBy=' . 
                             $column->orderBy . '&amp;' . $direction;
                 }
-                
-                $icon = "sortIcon" . $direction;
+
+                $iconVar = "sortIcon" . $this->_dg->sortArray[1];
                 $str = '<a href="' . $url . '">' . $column->columnName;
-                if ($this->$icon != '') {
-                    $str .= ' ' . $this->$icon;
+                if (($this->$iconVar != '') && 
+                    ($this->_dg->sortArray[0] == $column->orderBy)) {
+                    $str .= ' ' . $this->$iconVar;
                 }
                 $str .= '</a>';
                 
