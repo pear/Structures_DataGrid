@@ -16,9 +16,9 @@
 // | Author: Andrew Nagy <asnagy@webitecture.org>                         |
 // +----------------------------------------------------------------------+
 //
-// $Id $
+// $Id$
 
-require_once 'Structures/DataGrid/Source.php';
+require_once 'Structures/DataGrid/Array.php';
 
 /**
  * Comma Seperated Value (CSV) Data Source Driver
