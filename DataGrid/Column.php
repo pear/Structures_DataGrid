@@ -78,15 +78,20 @@ class Structures_DataGrid_Column
      *
      * Creates default table style settings
      *
-     * @param  string   $columnName     The name of the column to br printed
-     * @param  string   $fieldName      The name of the field for the column to
-     *                                  be mapped to
-     * @param  string   $orderBy        Whether or not to use the autoFill
-     * @param  string   $attribs        Whether or not to use the autoFill
-     * @param  boolean  $autoFill       Whether or not to use the autoFill
-     * @param  string   $autoFillValue  Whether or not to use the autoFill
-     * @param  string   $formatter      Whether or not to use the autoFill
-     * @access public
+     * @param   string      $columnName     The name of the column to be printed
+     * @param   string      $fieldName      The name of the field for the column
+     *                                      to be mapped to
+     * @param   string      $orderBy        The field to order the data by
+     * @param   string      $attribs        The HTML attributes for the TR tag
+     * @param   boolean     $autoFill       Whether or not to use the autoFill
+     * @param   string      $autoFillValue  The value to use for the autoFill
+     * @param   string      $formatter      A defined function to call upon
+     *                                      rendering to allow for special
+     *                                      formatting.  This allows for
+     *                                      call-back function to print out a 
+     *                                      link or a form element, or whatever 
+     *                                      you can possibly think of.
+     * @access  public
      */
     function Structures_DataGrid_Column($columnName, $fieldName = null,
                                         $orderBy = null, $attribs = array(),
@@ -107,8 +112,8 @@ class Structures_DataGrid_Column
      *
      * Defines a value to be printed if a cell in the column is null.
      *
-     * @param  boolean  $bool       Whether or not to use the autoFill
-     * @access public
+     * @param   boolean     $bool       Whether or not to use the autoFill
+     * @access  public
      */
     function setAutoFill($bool)
     {
@@ -124,8 +129,8 @@ class Structures_DataGrid_Column
      *
      * Defines a value to be printed if a cell in the column is null.
      *
-     * @param  string   $str        The value to use for the autoFill
-     * @access public
+     * @param   string      $str        The value to use for the autoFill
+     * @access  public
      */
     function setAutoFillValue($str)
     {
@@ -137,7 +142,7 @@ class Structures_DataGrid_Column
      *
      * Defines the function and paramters to be called by the formatter method.
      *
-     * @access public
+     * @access  public
      */
     function setFormatter($str)
     {
@@ -154,6 +159,7 @@ class Structures_DataGrid_Column
      * function will be in one array.
      *
      * Example:
+     * <code>
      * <?php
      * ...
      * $linkTitle = 'Edit';
@@ -166,10 +172,11 @@ class Structures_DataGrid_Column
      *             '</a>';
      * }
      * ?>
+     * </code>
      *
-     * @access public
-     * @todo   This method needs to be intuituve and more flexible,
-     *         possibly a seperate column object?
+     * @access  public
+     * @todo    This method needs to be intuituve and more flexible,
+     *          possibly a seperate column object?
      */
     function formatter($record)
     {
