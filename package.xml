@@ -24,27 +24,12 @@
     </maintainer>
   </maintainers>
   <release>
-    <version>0.6.1</version>
+    <version>0.6.2</version>
     <date>2005-01-26</date>
     <license>PHP License</license>
     <state>beta</state>
     <notes>
-      This release contains many bug fixes, please continue to test and submit
-      bug reports.
-      
-      * Bug #3028: XUL Renderer now converts XML entities in column headers
-      * The requestPrefix value is now used in the automatic handeling of sorting paging variables
-      * Bug #3086: sortRecordSet method fixed
-      * Bug #3088: Array datasource staticFetch method fixed
-      * Bug #3097: setAutoFill method in HTML renderer fixed
-      * Bug #3139: Formatter now allows to use whitespace in callback
-      * Bug #3140: Added additional FormBuilder options for the DO datasource
-      * Bug #3151: Syntax issue fixed in DataObject record type class
-      * Bug #3156: Fixed issue with printing data from last page
-      * Bug #3157: Implemented get* for dataobject fetching
-      * Bug #3191: Typo with Smarty Renderer
-      
-      Added getSmarty method for Smarty Renderer to gain access to the rendered Smarty Object.
+      Fixed unexpected parse error
     </notes>
     <deps>
       <dep type="pkg" rel="ge" version="1.2" optional="no">PEAR</dep>
@@ -100,6 +85,15 @@
     </filelist>
   </release>
   <changelog>
+    <release>
+      <version>0.6.2</version>
+      <date>2005-01-26</date>
+      <license>PHP License</license>
+      <state>beta</state>
+      <notes>
+        Fixed parse error
+      </notes>
+    </release>
     <release>
       <version>0.6.1</version>
       <date>2005-01-26</date>
