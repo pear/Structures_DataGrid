@@ -189,8 +189,6 @@ class Structures_DataGrid_Column
             $paramList = null;
         }
 
-        print_r($paramList);
-
         // Call the formatter
         if (is_callable($formatter)) {
             $result = call_user_func($formatter, $paramList);
