@@ -89,7 +89,7 @@ if (isset($_GET['orderBy'])) {
 }
 
 // Print the DataGrid
-echo $dg->render();
+$dg->render();
 echo $dg->renderer->getPaging();
 ?>
 
