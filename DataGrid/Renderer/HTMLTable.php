@@ -19,7 +19,6 @@
 // $Id$
 
 require_once 'HTML/Table.php';
-require_once 'Pager/Pager.php';
 
 /**
  * Structures_DataGrid_Renderer_HTMLTable Class
@@ -365,6 +364,8 @@ class Structures_DataGrid_Renderer_HTMLTable
     function getPaging($mode = 'Sliding', $separator = '|', $prev = '<<',
                        $next = '>>', $delta = 5, $attrs = null)
     {
+        require_once 'Pager/Pager.php';
+
         // Generate Paging
         $options = array('mode' => $mode,
                          'delta' => $delta,
