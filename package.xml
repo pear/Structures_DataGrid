@@ -16,14 +16,42 @@
       <email>asnagy@webitecture.org</email>
       <role>lead</role>
     </maintainer>
+    <maintainer>
+      <user>olivierg</user>
+      <name>Olivier Guilyardi</name>
+      <email>olivier@samalyse.com</email>
+      <role>helper</role>
+    </maintainer>
   </maintainers>
   <release>
     <version>0.6.0</version>
-    <date>2004-12-01</date>
+    <date>2004-12-09</date>
     <license>PHP License</license>
     <state>beta</state>
     <notes>
-      New beta coming soon.
+      Initial Beta Release - Beware of many changes to the core API
+       
+      Implemented new data source layer to handle data manipluation with many
+      different data source types such as DB_DataObject, CSV, XML, etc.
+      The DataGrid now handles the data fetching, so if you are using
+      DataObjects, all you need to do is bind to the dataobject with out
+      fetching, the DataGrid will take care of the rest.  Same with a DB_Result
+      object, just simply create the result object and bind it to the datagrid.
+      
+      New Features:
+        Automatic GET/POST/Cookie handling for sorting and paging
+        Renderers: XUL, CSV
+        DataSources: DB_Result, DB_DataObject, Array, CSV, XML, RSS
+      
+      Many Bugfixes included as well:
+        Bug 2123: Allows to use db_dataobject extended classes
+        Bug 2124: Implement formbuilder options from db_dataobject
+        Bug 2125: Allow GET/POST/COOKIE varaibles for sorting to have prefixes
+        Bug 2128: Better error handling for setRecord method
+        Bug 2438: HTML Renderer better organized with render, toHTML, getTable
+                  methods
+        Bug 2499: Converted all ampersands to &amp;
+        Bug 2501: Implemented a sorting indicatior for HTMLTable renderer
     </notes>
     <deps>
       <dep type="pkg" rel="ge" version="1.2" optional="no">PEAR</dep>
