@@ -101,7 +101,7 @@ class Structures_DataGrid_DataSource_XML extends Structures_DataGrid_DataSource
         }
 
         if ($this->_ar and !$this->_options['fields']) {
-            $this->_setOptions(array('fields' => array_keys($this->_ar[0])));
+            $this->setOptions(array('fields' => array_keys($this->_ar[0])));
         }
 
         
