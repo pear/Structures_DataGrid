@@ -31,9 +31,28 @@ require_once 'Spreadsheet/Excel/Writer.php';
  */
 class Structures_DataGrid_Renderer_XLS
 {
+    /**
+     * The Datagrid object to render
+     * @var object Structures_DataGrid
+     */
     var $_dg;
+    
+    /**
+     * The spreadsheet object
+     * @var object Spreadsheet_Excel_Writer
+     */
     var $_workbook;
+    
+    /**
+     * The worksheet object
+     * @var object Spreadsheet_Excel_Writer
+     */
     var $_worksheet;
+    
+    /**
+     * The filename of the spreadsheet
+     * @var string
+     */
     var $_filename = 'spreadsheet.xls';
 
     /**
@@ -50,12 +69,24 @@ class Structures_DataGrid_Renderer_XLS
         $this->_worksheet =& $this->_workbook->addWorksheet();
     }
 
+    /**
+     * Sets the name of the file to create
+     *
+     * @param  string   $filename   The name of the file
+     * @access public
+     */
     function setFilename($filename = 'spreadsheet.xls')
     {
         $this->_filename = $filename;
         $this->_workbook->send($filename);
     }
 
+    /**
+     * Force download the spreadsheet
+     *
+     * @param  object Structures_DataGrid   $dg     The datagrid object
+     * @access public
+     */
     function render(&$dg)
     {
         $this->getSpreadsheet($dg);
@@ -63,6 +94,12 @@ class Structures_DataGrid_Renderer_XLS
         $this->_workbook->close();
     }
 
+    /**
+     * Get the spreadsheet object
+     *
+     * @param  object Structures_DataGrid   $dg     The datagrid object
+     * @access public
+     */
     function getSpreadsheet(&$dg)
     {
         $this->_dg = &$dg;
