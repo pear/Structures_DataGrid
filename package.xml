@@ -18,14 +18,12 @@
     </maintainer>
   </maintainers>
   <release>
-    <version>0.5.3</version>
-    <date>2004-08-10</date>
+    <version>0.6.0</version>
+    <date>2004-12-01</date>
     <license>PHP License</license>
-    <state>alpha</state>
+    <state>beta</state>
     <notes>
-      This release is to be the final Alpha release.
-      Moved setRendered method from XML renderer to XLS renderer
-      Numerous documentation cleanups
+      New beta coming soon.
     </notes>
     <deps>
       <dep type="pkg" rel="ge" version="1.2" optional="no">PEAR</dep>
@@ -40,18 +38,38 @@
       <file role="php" baseinstalldir="Structures" name="DataGrid/Column.php"/>
       <file role="php" baseinstalldir="Structures" name="DataGrid/Record.php"/>
       <file role="php" baseinstalldir="Structures" name="DataGrid/Renderer.php"/>
+      <file role="php" baseinstalldir="Structures" name="DataGrid/Renderer/CSV.php"/>
       <file role="php" baseinstalldir="Structures" name="DataGrid/Renderer/HTMLTable.php"/>
       <file role="php" baseinstalldir="Structures" name="DataGrid/Renderer/Smarty.php"/>
       <file role="php" baseinstalldir="Structures" name="DataGrid/Renderer/XML.php"/>
       <file role="php" baseinstalldir="Structures" name="DataGrid/Renderer/XLS.php"/>
+      <file role="php" baseinstalldir="Structures" name="DataGrid/Renderer/XUL.php"/>
+      <file role="php" baseinstalldir="Structures" name="DataGrid/Source.php"/>
+      <file role="php" baseinstalldir="Structures" name="DataGrid/DataSource/Array.php"/>
+      <file role="php" baseinstalldir="Structures" name="DataGrid/DataSource/CSV.php"/>
+      <file role="php" baseinstalldir="Structures" name="DataGrid/DataSource/DataObject.php"/>
+      <file role="php" baseinstalldir="Structures" name="DataGrid/DataSource/DB.php"/>
+      <file role="php" baseinstalldir="Structures" name="DataGrid/DataSource/RSS.php"/>
+      <file role="php" baseinstalldir="Structures" name="DataGrid/DataSource/XML.php"/>
       <file role="php" baseinstalldir="Structures" name="DataGrid/Record/DB.php"/>
       <file role="php" baseinstalldir="Structures" name="DataGrid/Record/DataObject.php"/>
       <file role="php" baseinstalldir="Structures" name="DataGrid/Docs/Examples/example.php"/>
       <file role="php" baseinstalldir="Structures" name="DataGrid/Docs/Examples/example-xml.php"/>
       <file role="php" baseinstalldir="Structures" name="DataGrid/Docs/Examples/example-xls.php"/>
+      <file role="php" baseinstalldir="Structures" name="DataGrid/Docs/Examples/example-xul.php"/>
+      <file role="php" baseinstalldir="Structures" name="DataGrid/Docs/Examples/example-smarty.php"/>
     </filelist>
   </release>
   <changelog>
+    <release>
+      <version>0.6.0</version>
+      <date>2004-12-01</date>
+      <license>PHP License</license>
+      <state>beta</state>
+      <notes>
+        New beta coming soon.
+      </notes>
+    </release>
     <release>
       <version>0.5.3</version>
       <date>2004-08-10</date>
