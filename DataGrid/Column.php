@@ -163,7 +163,7 @@ class Structures_DataGrid_Column
      * <?php
      * ...
      * $linkTitle = 'Edit';
-     * $column->formatter = 'printLink($linkTitle)';
+     * $column->formatter = 'printLink($linkTitle=' . $linkTitle . ')';
      * $dg->addColumn($column);
      * $dg->render();
      * function printLink($params) {
