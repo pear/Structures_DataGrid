@@ -173,11 +173,14 @@ class Structures_DataGrid_Core
             if ($this->sortArray != null) {
                 $source->sort($this->sortArray);
             }
-            $rs = $source->fetch();
-            if (PEAR::isError($rs)) {
-                return $rs;
+            $data = $source->fetch();
+            if (PEAR::isError($data)) {
+                return $data;
             } else {
-                $this->recordSet = $rs;
+                $this->recordSet = $data['Records'];
+                if (isset($data['Columns'])) {
+                    $this->columnSet = $data['Columns'];
+                }
             }
             
         } else {
