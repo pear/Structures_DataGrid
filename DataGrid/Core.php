@@ -142,7 +142,7 @@ class Structures_DataGrid_Core
     }
 
     /**
-     * A simple way to add set of data to the datagrid
+     * A simple way to add a recod set to the datagrid
      *
      * @access  public
      * @param   mixed   $rs     The record set in any of the supported data
@@ -176,10 +176,10 @@ class Structures_DataGrid_Core
                                    $this->rowLimit, $this->sortArray[0], 
                                    this->sortArray[1]);
             if (PEAR::isError($recordSet)) {
-                return $data;
+                return $recordSet;
             } else {
                 $this->recordSet = $recordSet;
-                if ($columnSet = $source->getColumns()) {
+                if (count($columnSet = $source->getColumns())) {
                     $this->columnSet = $columnSet;
                 }
             }
