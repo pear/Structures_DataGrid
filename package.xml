@@ -4,13 +4,13 @@
   <name>Structures_DataGrid</name>
   <license>PHP License</license>
   <summary>
-    A package to create a grid like structure based on a record set of data that will output in many formats including an HTML Table.
+    A tabular structure that contains a record set of data for paging and sorting purposes.
   </summary>
   <description>
     This package offers a toolkit to render out a datagrid in HTML format as well as
     many other formats such as an XML Document, an Excel Spreadsheet, a Smarty Template and more.
     It also offers paging and sorting functionallity to limit the data that is presented.
-    This concept is based on the .NET Framework DataGrid
+    This concept is based on the .NET Framework DataGrid control and works very well with database and XML result sets.
   </description>
   <maintainers>
     <maintainer>
@@ -22,15 +22,17 @@
   </maintainers>
 
   <release>
-    <version>0.4.1</version>
-    <date>2004-03-16</date>
+    <version>0.5</version>
+    <date>2004-05-03</date>
     <state>alpha</state>
     <notes>
-      Implemented name change from "DataGrid" to "Structures_DataGrid"
-      Removed html link elements from column class as to not be hard coded for html output 
+      Implemented the HTML::pager class into the HTML Table renderer class (Bug 1025)
+      The "formatter" method in the Column object is now stable, but still needs more work or rewriting.
+      HTML Render method now return HTML instead of echo HTML (Bug 1063)
+      Querystring overwriting during sorting is fixed (Bug 1181)
     </notes>
     <filelist>
-      <dir name="/" baseinstalldir="">
+      <dir name="/" baseinstalldir="Structures">
         <file role="php">DataGrid.php</file>
         <dir name="DataGrid">
           <file role="php">Core.php</file>
@@ -50,8 +52,6 @@
           <dir name="Docs">
             <dir name="Examples">
               <file role="php">example.php</file>
-              <file role="php">example-smarty.php</file>
-              <file role="php">example.tpl</file>
               <file role="php">example-xml.php</file>
               <file role="php">example-xls.php</file>
             </dir>
@@ -60,15 +60,27 @@
       </dir>
     </filelist>
   </release>
-  
+
   <deps>
     <dep type="pkg" rel="ge" version="1.2" optional="No">PEAR</dep>
     <dep type="pkg" rel="ge" version="1.5" optional="Yes">HTML_Table</dep>
+    <dep type="pkg" rel="ge" version="2.2" optional="Yes">Pager</dep>
     <dep type="pkg" rel="ge" version="0.6" optional="Yes">Spreadsheet_Excel_Writer</dep>
     <dep type="pkg" rel="ge" version="0.5.2" optional="Yes">XML_Util</dep>
   </deps>
 
   <changelog>
+    <release>
+      <version>0.5</version>
+      <date>2004-05-03</date>
+      <state>alpha</state>
+      <notes>
+        Implemented the HTML::pager class into the HTML Table renderer class (Bug 1025)
+        The "formatter" method in the Column object is now stable, but still needs more work or rewriting.
+        HTML Render method now return HTML instead of echo HTML (Bug 1063)
+        Querystring overwriting during sorting is fixed (Bug 1181)
+      </notes>
+    </release>
     <release>
       <version>0.4.1</version>
       <date>2004-03-16</date>
