@@ -169,7 +169,7 @@ class Structures_DataGrid_Column
             // Build the list of parameters
             $length = strlen($this->formatter) - $size - 2;
             $parameters = substr($this->formatter, $size + 1, $length);
-            $parameters = split(',', $parameters);
+            $parameters = ($parameters === '') ? array() : split(',', $parameters);
 
             // Process the parameters
             $paramList = array();
