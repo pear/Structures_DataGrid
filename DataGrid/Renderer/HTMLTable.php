@@ -63,7 +63,7 @@ class Structures_DataGrid_Renderer_HTMLTable
     var $emptyRowAttributes = array();
 
     /**
-     * The complete path for the paging links.  If not defined, PHP_SELF is used
+     * The complete path for the sorting links.  If not defined, PHP_SELF is used
      * @var string
      */
     var $path;
@@ -160,7 +160,7 @@ class Structures_DataGrid_Renderer_HTMLTable
         $this->_dg = &$dg;
 
         // Define Table Header
-        if ($this->header) { 
+        if ($this->header) {
             $this->_buildHTMLTableHeader();
         }
 
@@ -206,7 +206,7 @@ class Structures_DataGrid_Renderer_HTMLTable
                     $qString = explode('&', $_SERVER['QUERY_STRING']);
                     $i = 0;
                     foreach($qString as $element) {
-                        if ($element != '') { 
+                        if ($element != '') {
                             if (stristr($element, 'orderBy')) {
                                 $url .= 'orderBy=' . $column->orderBy;
                                 $orderByExists = true;
