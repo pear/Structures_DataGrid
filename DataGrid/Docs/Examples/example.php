@@ -47,9 +47,9 @@ if (isset($_GET['page'])) {
 }
 
 // Define DataGrid Color Attributes
-$dg->renderer->setTableHeaderBgColor('#3399FF');
-$dg->renderer->setTableRowDarkBgColor('#CCCCCC');
-$dg->renderer->setTableRowLightBgColor('#EEEEEE');
+$dg->renderer->setTableHeaderAttributes(array('bgcolor' => '#3399FF'));
+$dg->renderer->setTableOddRowAttributes(array('bgcolor' => '#CCCCCC'));
+$dg->renderer->setTableEvenRowAttributes(array('bgcolor' => '#EEEEEE'));
 
 // Define DataGrid Table Attributes
 $dg->renderer->setTableAttribute('width', '50%');
@@ -96,7 +96,6 @@ echo $dg->renderer->getPaging();
 <p>
   View as:
   <b>HTML Table</b> |
-  <a href="example-dump.php">Debug View</a> |
   <a href="example-xls.php">Excel Spreadsheet</a> |
   <a href="example-xml.php">XML Document</a> |
   <a href="example-smarty.php">Smarty Template</a>
