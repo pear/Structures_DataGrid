@@ -509,8 +509,13 @@ class Structures_DataGrid_Renderer_HTMLTable
      */
     function _buildPaging($options)
     {
-        $defaults = array('totalItems' => count($this->recordSet),
-                          'perPage' => $this->rowLimit,
+        if ($this->_dg->_dataSource != null) {
+            $count = $this->_dg->_dataSource->count();
+        } else {
+            $count = count($this->_dg->recordSet);
+        }
+        $defaults = array('totalItems' => $count,
+                          'perPage' => $this->_dg->rowLimit,
                           'urlVar' => $this->requirePrefix . 'page');
         $options = array_merge($defaults, $options);
         $this->pager =& Pager::factory($options);
