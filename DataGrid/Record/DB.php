@@ -37,7 +37,6 @@ class Structures_DataGrid_Record_DB extends Structures_DataGrid_Record
      * Builds the record.  Accepts data as an DB_Result object.
      *
      * @access  public
-     * @todo    Allow more data types.
      */
     function Structures_DataGrid_Record_DB($data = null)
     {
