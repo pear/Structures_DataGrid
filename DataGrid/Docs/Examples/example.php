@@ -9,6 +9,7 @@
 
 <?php
 require_once('Structures/DataGrid.php');
+require_once('Structures/DataGrid/Source.php');
 
 class Printer {
     function printLink($params)
@@ -60,6 +61,9 @@ $dg->renderer->setTableAttribute('cellspacing', '1');
 $dg->renderer->setTableAttribute('cellpadding', '4');
 $dg->renderer->setTableAttribute('class', 'datagrid');
 
+$dg->renderer->sortIconASC = "&uArr;";
+$dg->renderer->sortIconDESC = "&dArr;";
+
 // Set empty row table attributes
 $dg->renderer->allowEmptyRows(true, array('bgcolor' => '#FFFFFF'));
 
@@ -74,7 +78,8 @@ $dg->addColumn($column);
 $column = new Structures_DataGrid_Column('Delete', null, null, array('align' => 'center'));
 $dg->addColumn($column);
 
-// Add rows to the DataGrid
+/* Add rows to the DataGrid
+Option #1
 foreach ($rs as $row) {
     $row = new Structures_DataGrid_Record($row);
     $result = $dg->addRecord($row);
@@ -82,6 +87,16 @@ foreach ($rs as $row) {
         echo $result->getMessage();
     }
 }
+*/
+
+/* Bind a datasource object
+Option #2
+$source = Structures_DataGrid_DataSource::create($rs);
+$dg->bindDataSource($source);
+*/
+
+// Option #3 Bind directly to any data type
+$dg->bind($rs);
 
 // Sort the array based on the field
 if (isset($_GET['orderBy'])) {
@@ -92,14 +107,6 @@ if (isset($_GET['orderBy'])) {
 $dg->render();
 echo $dg->renderer->getPaging();
 ?>
-
-<p>
-  View as:
-  <b>HTML Table</b> |
-  <a href="example-xls.php">Excel Spreadsheet</a> |
-  <a href="example-xml.php">XML Document</a> |
-  <a href="example-smarty.php">Smarty Template</a>
-</p>
 
 </body>
 </html>
