@@ -93,18 +93,18 @@ class Structures_DataGrid_DataSource_DB extends Structures_DataGrid_DataSource
             while ($record = $this->_result->fetchRow(DB_FETCHMODE_ASSOC)) {
                 $recordSet[] = $record;
             }
+
+            // Determine fields to render
+            if (!$this->_options['fields']) {
+                $this->setOptions(array('fields' => array_keys($recordSet[0])));
+            }
+
+            // Limit and Sort the Data
+            $recordSet =& Structures_DataGrid_DataSource_Array::staticFetch(
+                              $recordSet, $this->_options['fields'], $offset, 
+                              $limit, $sortField, $sortDir);
         }
-
-        // Determine fields to render
-        if (!$this->_options['fields']) {
-            $this->setOptions(array('fields' => array_keys($recordSet[0])));
-        }                
         
-        // Limit and Sort the Data
-        $recordSet =& Structures_DataGrid_DataSource_Array::staticFetch(
-                          $recordSet, $this->_options['fields'], $offset, 
-                          $limit, $sortField, $sortDir);
-
         return $recordSet;
     }
 
