@@ -115,11 +115,12 @@ class Structures_DataGrid_Renderer_HTMLTable
     }
 
     /**
-     * Define the table's row dark color
+     * Define the table's odd row attributes
      *
      * @access public
      * @param  array    $attribs    The associative array of attributes for the
      *                              odd table row.
+     * @see HTML_Table::setCellAttributes
      */
     function setTableOddRowAttributes($attribs)
     {
@@ -127,11 +128,12 @@ class Structures_DataGrid_Renderer_HTMLTable
     }
 
     /**
-     * Define the table's row light color
+     * Define the table's even row attrbiutes
      *
      * @access public
      * @param  array    $attribs    The associative array of attributes for the
      *                              even table row.
+     * @see HTML_Table::setCellAttributes
      */
     function setTableEvenRowAttributes($attribs)
     {
@@ -151,20 +153,18 @@ class Structures_DataGrid_Renderer_HTMLTable
     }
 
     /**
-     * In order for the DataGrid to render "Empty Rows" to allow for
-     * uniformity across pages with varying results, set this option
-     * to true.  An example of this would be when you have 11 results
-     * and have the DataGrid show 10 records per page. The last page
-     * will only show one row in the table, unless this option is
-     * turned on in which it will render 10 rows, 9 of which will be
-     * empty.
+     * In order for the DataGrid to render "Empty Rows" to allow for uniformity
+     * across pages with varying results, set this option to true.  An example
+     * of this would be when you have 11 results and have the DataGrid show 10 
+     * records per page. The last page will only show one row in the table, 
+     * unless this option is turned on in which it will render 10 rows, 9 of 
+     * which will be empty.
      *
      * @access public
-     * @param  bool      $value          A boolean value to determine
-     *                                   whether or not to display the
-     *                                   empty rows.
-     * @param  array     $attributes     The empty row attributes
-     *                                   defined in an array.
+     * @param  bool      $value          A boolean value to determine whether or
+     *                                   not to display the empty rows.
+     * @param  array     $attributes     The empty row attributes defined in an 
+     *                                   array.
      */
     function allowEmptyRows($value, $attributes = array())
     {      
@@ -178,13 +178,22 @@ class Structures_DataGrid_Renderer_HTMLTable
     }
 
     /**
+     * Prints the HTML for the DataGrid
+     *
+     * @access  public
+     */
+    function render(&$dg)
+    {
+        echo $this->toHTML($dg);
+    }
+
+    /**
      * Generates the HTML for the DataGrid
      *
      * @access  public
      * @return  string      The HTML of the DataGrid
      */
-
-    function render(&$dg)
+    function toHTML(&$dg)
     {
         $this->_dg = &$dg;
 
@@ -202,10 +211,10 @@ class Structures_DataGrid_Renderer_HTMLTable
                                         $this->oddRowAttributes,
                                         TRUE);
 
-        // Print the table
+        // Build the HTML
         return $this->_table->toHTML();
-    }
-
+    }    
+    
     /**
      * Handles building the header of the DataGrid
      *
@@ -303,10 +312,10 @@ class Structures_DataGrid_Renderer_HTMLTable
 
             // Begin loop
             for ($i = $begin; $i < $limit; $i++) {
-                $row = $this->_dg->recordSet[$i];
-                if ($row != null) {
+                if (isset($this->_dg->recordSet[$i])) {
                     // Print Row
                     $cnt = 0;
+                    $row = $this->_dg->recordSet[$i];
                     foreach ($this->_dg->columnSet as $column) {
                         $rowCnt = ($i-$begin)+1;
 
@@ -358,7 +367,7 @@ class Structures_DataGrid_Renderer_HTMLTable
      * @param   string $delta       The number of pages to display before and
      *                              after the current page
      * @param   array $attrs        Additional attributes for the Pager class
-     * @return  void
+     * @return  string              The HTML for the page links
      * @see     HTML::Pager
      */
     function getPaging($mode = 'Sliding', $separator = '|', $prev = '<<',
