@@ -67,25 +67,31 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
         $this->_setDefaultHeaders();
 
         // Fetch the data from the dataSource if necessary
+        // This must be called by the renderer's themselves
+        //$this->fetchDataSource();
+        
+        // Render out the data
+        return $this->renderer->render($this);
+    }
+
+    function fetchDataSource()
+    {
         if ($this->_dataSource != null) {
             $recordSet = $this->_dataSource->fetch(
-                            ($this->page*$this->rowLimit),
+                            (($this->page-1)*$this->rowLimit),
                             $this->rowLimit, $this->sortArray[0],
                             $this->sortArray[1]);
             if (PEAR::isError($recordSet)) {
                 return $recordSet;
             } else {
                 $this->recordSet = $recordSet;
-                if (count($columnSet = $source->getColumns())) {
+                if (count($columnSet = $this->_dataSource->getColumns())) {
                     $this->columnSet = $columnSet;
                 }
             }
         }
-        
-        // Render out the data
-        return $this->renderer->render($this);
     }
-
+    
     /**
      * Get Renderer
      *

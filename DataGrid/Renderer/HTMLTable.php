@@ -276,6 +276,9 @@ class Structures_DataGrid_Renderer_HTMLTable
         $this->_dg = &$dg;
 
         if (!$this->_rendered) {
+            // Get the data to be rendered
+            $dg->fetchDataSource();
+            
             // Define Table Header
             if ($this->header) {
                 $this->_buildHTMLTableHeader();
@@ -398,9 +401,10 @@ class Structures_DataGrid_Renderer_HTMLTable
      */
     function _buildHTMLTableBody()
     {
-        if (count($this->_dg->recordSet)) {
+        if ($this->_dg->recordSet) {
 
             // Determine looping values
+            /*
             if ($this->_dg->page > 1) {
                 $begin = ($this->_dg->page - 1) * $this->_dg->rowLimit;
                 $limit = $this->_dg->page * $this->_dg->rowLimit;
@@ -412,9 +416,11 @@ class Structures_DataGrid_Renderer_HTMLTable
                     $limit = $this->_dg->rowLimit;
                 }
             }
+            */
 
             // Begin loop
-            for ($i = $begin; $i < $limit; $i++) {
+            //for ($i = $begin; $i < $limit; $i++) {
+            for ($i = 0; $i < $this->_dg->rowLimit; $i++) {
                 if (isset($this->_dg->recordSet[$i])) {
                     // Print Row
                     $cnt = 0;

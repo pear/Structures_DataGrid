@@ -72,6 +72,9 @@ class Structures_DataGrid_Renderer_XML
     {
         $this->_dg = &$dg;
 
+        // Get the data to be rendered
+        $dg->renderer->fetchDataSource();
+                
         $xml = XML_Util::getXMLDeclaration() . "\n";
 
         $xml .= "<DataGrid>\n";

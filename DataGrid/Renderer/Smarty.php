@@ -70,6 +70,9 @@ class Structures_DataGrid_Renderer_Smarty
     {
         $this->_dg = &$dg;
 
+        // Get the data to be rendered
+        $dg->renderer->fetchDataSource();
+                
         if ($this->_tpl != '') {
             $this->_smarty->assign('recordSet',   $this->_dg->recordSet);
             $this->_smarty->assign('columnSet',   $this->_dg->columnSet);

@@ -54,7 +54,14 @@ class Structures_DataGrid_Renderer_XUL
      * @var array
      */
     var $css = array('chrome://global/skin/');
-    
+
+    /**
+     * Number of rows to display in the Listbox widget 
+     * @var integer
+     * @access public
+     */
+    var $listboxRowNum = null;    
+
     /**
      * Constructor
      *
@@ -114,6 +121,9 @@ class Structures_DataGrid_Renderer_XUL
     function toXUL(&$dg)
     {
         $this->_dg = &$dg;
+        
+        // Get the data to be rendered
+        $dg->renderer->fetchDataSource();        
         
         // Define XML
         $xul = XML_Util::getXMLDeclaration() . "\n";

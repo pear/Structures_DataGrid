@@ -140,6 +140,9 @@ class Structures_DataGrid_Renderer_XLS
         $this->_dg = &$dg;
 
         if (!$this->_rendered) {        
+            // Get the data to be rendered
+            $dg->renderer->fetchDataSource();            
+            
             if ($this->header) {
                 $this->_buildHeader();
             }
