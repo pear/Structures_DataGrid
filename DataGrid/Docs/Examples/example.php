@@ -10,11 +10,14 @@
 <?php
 require_once('Structures/DataGrid.php');
 
-function printLink($params)
-{
-    $id = $params['id'];
+class Printer {
+    function printLink($params)
+    {
+        extract($params);
+        $id = $record['id'];
 
-    return "<a href=\"edit_user.php?id=$id\">Edit</a>";
+        return "<a href=\"edit_user.php?id=$id\">$label</a>";
+    }
 }
 
 // Data to be printed by DataGrid
@@ -69,7 +72,7 @@ $column = new Structures_DataGrid_Column('Name', 'first_name', 'first_name',
 $dg->addColumn($column);
 $column = new Structures_DataGrid_Column('Age', 'age', 'age', array('width' => '25%'));
 $dg->addColumn($column);
-$column = new Structures_DataGrid_Column('Edit', null, null, array('align' => 'center'), null, null, 'printLink()');
+$column = new Structures_DataGrid_Column('Edit', null, null, array('align' => 'center'), null, null, 'Printer::printLink($label=Edit)');
 $dg->addColumn($column);
 $column = new Structures_DataGrid_Column('Delete', null, null, array('align' => 'center'));
 $dg->addColumn($column);
