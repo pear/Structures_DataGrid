@@ -152,14 +152,20 @@ class Structures_DataGrid_Column
      * based on the record.
      *
      * @access public
-     * @todo   add the record array to the formatter automatically
+     * @todo   This method needs to be intuituve and more flexible,
+     *         possibly a seperate column object?
      */
     function formatter($record)
     {
         // Define any parameters
         if ($size = strpos($this->formatter, '(')) {
-            // Retrieve the name of the function
+            // Retrieve the name of the function to call
             $formatter = substr($this->formatter, 0, $size);
+            if (strstr($formatter, '->')) { 
+                $formatter = explode('->', $formatter);
+            } elseif (strstr($formatter, '::')) {
+                $formatter = explode('::', $formatter);
+            }
 
             // Build the list of parameters
             $length = strlen($this->formatter) - $size - 2;
@@ -175,7 +181,7 @@ class Structures_DataGrid_Column
                     $vars = split('=', $param);
                     $paramList[$vars[0]] = $vars[1];
                 } else {
-                    $paramList[$param] = $result;
+                    $paramList[$param] = $$param;
                 }
             }
         } else {
@@ -183,11 +189,15 @@ class Structures_DataGrid_Column
             $paramList = null;
         }
 
+        print_r($paramList);
+
         // Call the formatter
         if (is_callable($formatter)) {
-            $result = call_user_func_array($formatter, $paramList);
+            $result = call_user_func($formatter, $paramList);
         } else {
-            $result = new PEAR_Error('Unable to process formatter');
+            //$result = new PEAR_Error('Unable to process formatter');
+            $result = false;
+            PEAR::raiseError('Unable to process formatter', '1', PEAR_ERROR_TRIGGER);
         }
 
         return $result;
