@@ -164,9 +164,7 @@ class Structures_DataGrid_DataSource_DataObject
                 $this->_dataobject->limit($len);
             }
             
-            if (!($result = $this->_dataobject->find())) { 
-                return new PEAR_Error('Couldn\'t fetch data');
-            }
+            $result = $this->_dataobject->find();
         }
         
         // Retrieving data
