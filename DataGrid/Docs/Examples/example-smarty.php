@@ -24,15 +24,10 @@ $rs = array(array('id' => 1,
                   'age' => '19'));
 
 // Define New DataGrid with a limit of 3 records
-if (isset($_GET['page'])) {
-    $dg = new Structures_DataGrid(3, $_GET['page'], DATAGRID_RENDER_SMARTY);
-} else {
-    $dg = new Structures_DataGrid(3, null, DATAGRID_RENDER_SMARTY);
-}
+$dg =& new Structures_DataGrid(3, null, DATAGRID_RENDER_SMARTY);
 
 // Define columns for the DataGrid
-$column = new Structures_DataGrid_Column('Name', 'first_name', 'first_name',
-                                  array('width' => '75%'));
+$column = new Structures_DataGrid_Column('Name', 'first_name', 'first_name', array('width' => '75%'));
 $dg->addColumn($column);
 $column = new Structures_DataGrid_Column('Age', 'age', 'age', array('width' => '25%'));
 $dg->addColumn($column);
@@ -41,19 +36,7 @@ $dg->addColumn($column);
 $column = new Structures_DataGrid_Column('Delete', null, null, array('align' => 'center'), 'delete');
 $dg->addColumn($column);
 
-// Add rows to the DataGrid
-foreach ($rs as $row) {
-    $row = new Structures_DataGrid_Record($row);
-    $result = $dg->addRecord($row);
-    if (PEAR::isError($result)) {
-        echo $result->getMessage();
-    }
-}
-
-// Sort the array based on the field
-if (isset($_GET['orderBy'])) {
-    $dg->sortRecordSet($_GET['orderBy'], $_GET['direction']);
-}
+$dg->bind($rs);
 
 // Print the DataGrid
 $result = $dg->renderer->setTemplate('example.tpl');

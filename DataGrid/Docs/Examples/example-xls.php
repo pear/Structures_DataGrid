@@ -24,7 +24,7 @@ $rs = array(array('id' => 1,
                   'age' => '19'));
 
 // Create DataGrid
-$dg = new Structures_DataGrid(null, null, DATAGRID_RENDER_XLS);
+$dg =& new Structures_DataGrid(null, null, DATAGRID_RENDER_XLS);
 
 // Define columns for the DataGrid
 $column = new Structures_DataGrid_Column('Name', 'first_name');

@@ -24,7 +24,7 @@ $rs = array(array('id' => 1,
                   'age' => '19'));
 
 // Define New DataGrid with a limit of 3 records
-$dg = new Structures_DataGrid(null, null, DATAGRID_RENDER_XML);
+$dg =& new Structures_DataGrid(null, null, DATAGRID_RENDER_XML);
 
 // Define columns for the DataGrid
 $column = new Structures_DataGrid_Column('Name', 'first_name');
