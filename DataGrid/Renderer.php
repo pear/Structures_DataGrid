@@ -67,7 +67,7 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
         $this->_setDefaultHeaders();
 
         // Render out the data
-        $this->renderer->render($this);
+        return $this->renderer->render($this);
     }
 
     /**
