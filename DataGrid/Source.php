@@ -26,6 +26,7 @@ define('DATAGRID_SOURCE_DATAOBJECT','DataObject');
 define('DATAGRID_SOURCE_DB',        'DB');
 define('DATAGRID_SOURCE_XML',       'XML');
 define('DATAGRID_SOURCE_RSS',       'RSS');
+define('DATAGRID_SOURCE_CSV',       'CSV');
 
 /**
 * Base abstract class for data source drivers
@@ -372,6 +373,11 @@ class Structures_DataGrid_DataSource
             case (is_string($source) and ereg('^ *<\?xml', $source)):
                 return DATAGRID_SOURCE_XML;
                 break;
+
+            // CSV
+            //case (is_string($source)):
+            //    return DATAGRID_SOURCE_CSV;
+            //    break;
                 
             default:
                 return null;
