@@ -60,23 +60,12 @@ class Structures_DataGrid_Renderer_XML
         
         echo $this->toXML($dg);
     }
-    
-    /**
-     * Sets the rendered status.  This can be used to "flush the cache" in case
-     * you need to render the datagrid twice with the second time having changes
-     *
-     * @access  public
-     * @params  bool        $status     The rendered status of the DataGrid
-     */
-    function setRendered($status)
-    {
-        $this->_rendered = (bool)$status;
-    }
-    
+       
     /**
      * Generates the XML for the DataGrid
      *
      * @access  public
+     * @param   object Structures_DataGrid  $dg     The DataGrid to render
      * @return  string      The XML of the DataGrid
      */
     function toXML(&$dg)

@@ -97,18 +97,30 @@ class Structures_DataGrid_Renderer_XLS
      * Determines whether or not to use the header
      *
      * @access  public
-     * @param   bool        value to determine to use the header or not.
+     * @param   bool    $bool   value to determine to use the header or not.
      */
     function useHeader($bool)
     {
         $this->header = (bool)$bool;
     }    
-    
+
+    /**
+     * Sets the rendered status.  This can be used to "flush the cache" in case
+     * you need to render the datagrid twice with the second time having changes
+     *
+     * @access  public
+     * @params  bool        $status     The rendered status of the DataGrid
+     */
+    function setRendered($status)
+    {
+        $this->_rendered = (bool)$status;
+    }
+        
     /**
      * Force download the spreadsheet
      *
-     * @param  object Structures_DataGrid   $dg     The datagrid object
-     * @access public
+     * @param   object Structures_DataGrid  $dg     The DataGrid to render
+     * @access  public
      */
     function render(&$dg)
     {
@@ -120,8 +132,8 @@ class Structures_DataGrid_Renderer_XLS
     /**
      * Get the spreadsheet object
      *
-     * @param  object Structures_DataGrid   $dg     The datagrid object
-     * @access public
+     * @param   object Structures_DataGrid  $dg     The DataGrid to render
+     * @access  public
      */
     function &getSpreadsheet(&$dg)
     {
