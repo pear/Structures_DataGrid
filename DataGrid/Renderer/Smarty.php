@@ -65,7 +65,7 @@ class Structures_DataGrid_Renderer_Smarty
             $this->_tpl = $tpl;
         } else {
             return new PEAR_Error('Error: Unable to find ' .
-                                  $this->smarty->template_dir . '/' . $tpl);
+                                  $this->_smarty->template_dir . '/' . $tpl);
         }
     }
 
