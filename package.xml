@@ -70,7 +70,7 @@
           <file role="php" name="Column.php"/>
           <file role="php" name="Record.php"/>
           <file role="php" name="Renderer.php"/>
-          <file role="php" name="Source.php"/>
+          <file role="php" name="DataSource.php"/>
           <dir name="Renderer" role="php">
             <file role="php" name="CSV.php"/>
             <file role="php" name="HTMLTable.php"/>
