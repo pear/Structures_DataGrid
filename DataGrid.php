@@ -26,7 +26,7 @@ define ('DATAGRID_RENDER_TABLE',    'HTMLTable');
 define ('DATAGRID_RENDER_SMARTY',   'Smarty');
 define ('DATAGRID_RENDER_XML',      'XML');
 define ('DATAGRID_RENDER_XLS',      'XLS');
-define ('DATAGRID_RENDER_XUL',      'XUL');
+define ('DATAGRID_RENDER_XUL',      'XUL');
 
 /**
  * Structures_DataGrid Class
