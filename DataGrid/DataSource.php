@@ -364,7 +364,7 @@ class Structures_DataGrid_DataSource
      */
     function _detectSourceType($source)
     {
-        switch($source) {
+        switch(true) {
             // DB_DataObject
             case (is_subclass_of($source, 'db_dataobject')):
                 return DATAGRID_SOURCE_DATAOBJECT;
