@@ -126,7 +126,8 @@ class Structures_DataGrid_DataSource_DataObject
                         }
                     }
                 } else {
-                    $mergeOptions['fields'] = array_keys($this->_dataobject->table());                    
+                    //$mergeOptions['fields'] = array_keys($this->_dataobject->toArray());
+                    $mergeOptions['fields'] = array_filter(array_keys(get_object_vars($this->_dataobject)), 'fieldsFilter');
                 }
             }
 
@@ -201,23 +202,30 @@ class Structures_DataGrid_DataSource_DataObject
             }            
             while ($this->_dataobject->fetch()) {
                 // Determine fields to render
-                $rec = array();
+                $fieldList = array();
                 if ($this->_options['fields']) {
-                    foreach ($this->_options['fields'] as $fName) {
-                        if (isset($this->_dataobject->$fName)) {                        
-                            $rec[$fName] = $this->_dataobject->$fName;
-                        } else {
-                            $rec[$fName] = null;
-                        }                            
-                    } 
+                    $fieldList = $this->_options['fields'];
                 } else {
                     // Can't use this until DB_DO Bug 1315 is fixed
-                    //$rec = $this->_dataobject->toArray());
+                    //$fieldList = array_keys($this->_dataobject->toArray());
                     
                     // REPLACE ME WITH ABOVE
-                    $rec = get_object_vars($this->_dataobject);
+                    $vars = get_object_vars($this->_dataobject);
+                    $keys = array_filter(array_keys($vars), '_fieldsFilter');
+                    $fieldList = array_filter(get_object_vars($this->_dataobject), '_fieldsFilter');
+                }
+                    
+                // Build Fields
+                $rec = array();
+                foreach ($fieldList as $fName) {
+                    if (isset($this->_dataobject->$fName)) {                        
+                        $rec[$fName] = $this->_dataobject->$fName;
+                    } else {
+                        $rec[$fName] = null;
+                    }
                 }
                 
+                // Get Linked FormBuilder Fields
                 if ($this->_options['formbuilder_integration']) {
                     foreach (array_keys($rec) as $field) {
                         if (isset($links[$field]) && $linkedDo =& $this->_dataobject->getLink($field)) {
@@ -270,6 +278,19 @@ class Structures_DataGrid_DataSource_DataObject
         } else {
             $this->_dataobject->orderBy($sortField . ' ' . $sortDir);
         }
+    }
+    
+    // This function is temporary until DB_DO bug #1315 is fixed
+    function _fieldsFilter($value)
+    {
+        if (substr($value, 0, 1) == '_') {
+            return false;
+        } else if (substr($value, 0, 3) == 'fb_') {
+            return false;
+        } else {
+            return true;
+        }
+        
     }
 
 }
