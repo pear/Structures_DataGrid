@@ -165,24 +165,22 @@ class Structures_DataGrid_Core
      * Allows binding to a data source driver.
      *
      * @access  public
-     * @param   mixed   $dataSource     The data source driver object
-     * @return  mixed                   True if successful, otherwise PEAR_Error
+     * @param   mixed   $source     The data source driver object
+     * @return  mixed               True if successful, otherwise PEAR_Error
      */
-    function bindDataSource(&$dataSource)
+    function bindDataSource(&$source)
     {
         if (is_subclass_of($source, 'structures_datagrid_datasource')) {
-            $this->_dataSource =& $driver;
-            $driver->limit($this->page, $this->rowLimit);
-            if ($this->sortArray != null) {
-                $driver->sort($this->sortArray);
-            }
-            $data = $driver->fetch();
-            if (PEAR::isError($data)) {
+            $this->_dataSource =& $source;
+            $recordSet = $source->fetch(($this->page*$this->rowLimit),
+                                   $this->rowLimit, $this->sortArray[0], 
+                                   this->sortArray[1]);
+            if (PEAR::isError($recordSet)) {
                 return $data;
             } else {
-                $this->recordSet = $data['Records'];
-                if (isset($data['Columns'])) {
-                    $this->columnSet = $data['Columns'];
+                $this->recordSet = $recordSet;
+                if ($columnSet = $source->getColumns()) {
+                    $this->columnSet = $columnSet;
                 }
             }
         } else {
