@@ -206,9 +206,8 @@ class Structures_DataGrid_DataSource_DataObject
                 $test = $this->_dataobject->count();
                 if ($test === false) {
                     return new PEAR_Error ('Can\'t count the number of rows');
-                } else {
-                    $this->_rowNum = $test;
                 }
+                $this->_rowNum = $test;
             }
         }
         
