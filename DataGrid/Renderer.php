@@ -63,6 +63,10 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
      */
     function render()
     {
+        if ((!count($this->sortArray)) && ($this->page == null)) {
+            $this->_parseHttpRequest();
+        }
+        
         return $this->renderer->render($this);
     }
 
@@ -136,6 +140,37 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
                                                                $width.'%'));
                 $this->addColumn($column);
             }
+        }
+    }
+    
+    /**
+     * Parse HTTP Request parameters
+     *
+     * @access  private
+     * @return  array      Associative array of parsed arguments, each of these 
+     *                     defaulting to null if not found. 
+     */
+    function _parseHttpRequest()
+    {
+        // Determine parameter prefix
+        if ((isset($this->renderer->requestPrefix)) &&
+            ($this->renderer->requestPrefix != '')) {
+            $prefix = $this->renderer->requestPrefix;
+        } else {
+            $prefix = null;
+        }
+
+        // Add values to arguments
+        if (isset($_REQUEST[$prefix . 'page'])) {
+            $this->page = $_REQUEST[$prefix . 'page'];
+        }
+        
+        if (isset($_REQUEST[$prefix . 'orderBy'])) {
+            $this->sortArray[0] = $_REQUEST[$prefix . 'orderBy'];
+        }
+        
+        if (isset($_REQUEST[$prefix . 'direction'])) {
+            $this->sortArray[1] = $_REQUEST[$prefix . 'direction'];
         }
     }
 
