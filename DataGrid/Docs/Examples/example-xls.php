@@ -32,20 +32,8 @@ $dg->addColumn($column);
 $column = new Structures_DataGrid_Column('Age', 'age');
 $dg->addColumn($column);
 
-
-// Add rows to the DataGrid
-foreach ($rs as $row) {
-    $row = new Structures_DataGrid_Record($row);
-    $result = $dg->addRecord($row);
-    if (PEAR::isError($result)) {
-        echo $result->getMessage();
-    }
-}
-
-// Sort the array based on the field
-if (isset($_GET['orderBy'])) {
-    $dg->sortRecordSet($_GET['orderBy'], $_GET['direction']);
-}
+// Bind to data set
+$dg->bind($rs);
 
 // Print the DataGrid
 $dg->renderer->setFilename('datagrid.xls');
