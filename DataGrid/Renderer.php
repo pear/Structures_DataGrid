@@ -79,7 +79,7 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
             if (PEAR::isError($recordSet)) {
                 return $recordSet;
             } else {
-                $this->recordSet = $recordSet;
+                $this->recordSet = array_merge($this->recordSet, $recordSet);
                 if (count($columnSet = $this->_dataSource->getColumns())) {
                     $this->columnSet = $columnSet;
                 }
@@ -105,12 +105,15 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
      * Defines which renderer to be used by the DataGrid
      *
      * @param  string   $renderer       The defined renderer string
+     * @param  string   $path           An optional value to change the path of
+     *                                  the location of the renderer class file.
+     *                                  Please set in the notation of '/my/path'
      * @access public
      */
-    function setRenderer($renderer)
+    function setRenderer($renderer, $path = 'Structures/DataGrid/Renderer')
     {
         $class = 'Structures_DataGrid_Renderer_' . $renderer;
-        $file = 'Structures/DataGrid/Renderer/' . $renderer . '.php';
+        $file = $path . '/' . $renderer . '.php';
 
         if (@include_once($file)) {
             $this->renderer = new $class($this);
