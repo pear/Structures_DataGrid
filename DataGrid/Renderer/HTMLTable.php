@@ -359,7 +359,7 @@ class Structures_DataGrid_Renderer_HTMLTable
                     }
 
                     if (!isset($orderByExists)) {
-                        $url .= '&' . $this->requestPrefix . 'orderBy=' . 
+                        $url .= '&amp;' . $this->requestPrefix . 'orderBy=' . 
                                 $column->orderBy . '&amp;' . $direction;
                     }
                 } else {
