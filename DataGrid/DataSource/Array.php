@@ -157,13 +157,12 @@ class Structures_DataGrid_DataSource_Array extends Structures_DataGrid_DataSourc
      * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
      * @param   array   $ar         The array to sort (Used for static calls)
      */
-    function sort($sortField, $sortDir, $ar = null)
+    function sort($sortField, $sortDir, $ar = array())
     {
-        if ($ar == null) {
+        if (!($numRows = count($ar))) {
             $ar = $this->_ar;
         }
         
-        $numRows = count($ar);
         $sortAr = array();
         for ($i = 0; $i < $numRows; $i++) {
             $sortAr[$i] = $ar[$i][$sortField];
