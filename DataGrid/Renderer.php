@@ -45,16 +45,14 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
      * @param  string   $renderer   The renderer to use.
      * @access public
      */
-    function Structures_DataGrid_Renderer($renderer = DATAGRID_RENDER_TABLE, $limit = null, $page = 1)
+    function Structures_DataGrid_Renderer($renderer = DATAGRID_RENDER_TABLE,
+                                          $limit = null, $page = 1)
     {
         if (PEAR::isError($this->setRenderer($renderer))) {
             $this->setRenderer(DATAGRID_RENDER_TABLE);
         }
         
         parent::Structures_DataGrid_Core($limit, $page);
-        
-        // Automatic handling of GET/POST/COOKIE variables
-        $this->_parseHttpRequest();
     }
 
     /**
@@ -144,37 +142,6 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
         }
     }
     
-    /**
-     * Parse HTTP Request parameters
-     *
-     * @access  private
-     * @return  array      Associative array of parsed arguments, each of these 
-     *                     defaulting to null if not found. 
-     */
-    function _parseHttpRequest()
-    {
-        // Determine parameter prefix
-        if ((isset($this->renderer->requestPrefix)) &&
-            ($this->renderer->requestPrefix != '')) {
-            $prefix = $this->renderer->requestPrefix;
-        } else {
-            $prefix = null;
-        }
-
-        // Add values to arguments
-        if (isset($_REQUEST[$prefix . 'page'])) {
-            $this->page = $_REQUEST[$prefix . 'page'];
-        }
-        
-        if (isset($_REQUEST[$prefix . 'orderBy'])) {
-            $this->sortArray[0] = $_REQUEST[$prefix . 'orderBy'];
-        }
-        
-        if (isset($_REQUEST[$prefix . 'direction'])) {
-            $this->sortArray[1] = $_REQUEST[$prefix . 'direction'];
-        }
-    }
-
 }
 
 ?>

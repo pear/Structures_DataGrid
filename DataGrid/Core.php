@@ -74,10 +74,10 @@ class Structures_DataGrid_Core
     var $page;
 
     /**
-     * The array of available pages.
-     * @var array
+     * GET/POST/Cookie parameters prefix
+     * @var string
      */
-    var $pageList = array();
+     var $requestPrefix;    
 
     /**
      * Constructor
@@ -92,6 +92,9 @@ class Structures_DataGrid_Core
     {
         $this->rowLimit = $limit;
         $this->page = $page;
+        
+        // Automatic handling of GET/POST/COOKIE variables
+        $this->_parseHttpRequest();
     }
 
     /**
@@ -116,6 +119,21 @@ class Structures_DataGrid_Core
         $this->page = $page;
     }
 
+    /**
+     * If you need to change the request variables, you can define a prefix.
+     * This is extra useful when using multiple datagrids.
+     *
+     * @access  public
+     * @param   string $prefix      The prefix to use on request variables;
+     */
+    function setRequestPrefix($prefix)
+    {
+        $this->requestPrefix = $prefix;
+        
+        // Automatic handling of GET/POST/COOKIE variables
+        $this->_parseHttpRequest();
+    }    
+    
     /**
      * Adds a DataGridColumn object to this DataGrid object
      *
@@ -223,8 +241,8 @@ class Structures_DataGrid_Core
      */
     function sortRecordSet($sortBy, $direction = 'ASC')
     {
-        if ($this->_datasource) {
-            $this->_datasource->sort($sortBy, $direction);
+        if ($this->_dataSource) {
+            $this->_dataSource->sort($sortBy, $direction);
         } else {
             usort($this->recordSet, array($this, '_sort'));
         }
@@ -241,7 +259,37 @@ class Structures_DataGrid_Core
         }
         
         return $bool;
-    }    
+    }
+    
+    /**
+     * Parse HTTP Request parameters
+     *
+     * @access  private
+     * @return  array      Associative array of parsed arguments, each of these 
+     *                     defaulting to null if not found. 
+     */
+    function _parseHttpRequest()
+    {
+        // Determine parameter prefix
+        if ((isset($this->requestPrefix)) && ($this->requestPrefix != '')) {
+            $prefix = $this->requestPrefix;
+        } else {
+            $prefix = null;
+        }
+        
+        // Add values to arguments
+        if (isset($_REQUEST[$prefix . 'page'])) {
+            $this->page = $_REQUEST[$prefix . 'page'];
+        }
+        
+        if (isset($_REQUEST[$prefix . 'orderBy'])) {
+            $this->sortArray[0] = $_REQUEST[$prefix . 'orderBy'];
+        }
+        
+        if (isset($_REQUEST[$prefix . 'direction'])) {
+            $this->sortArray[1] = $_REQUEST[$prefix . 'direction'];
+        }
+    }     
 }
 
 ?>
