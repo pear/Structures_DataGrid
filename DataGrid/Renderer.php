@@ -66,6 +66,22 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
         // Check to see if column headers exist, if not create them
         $this->_setDefaultHeaders();
 
+        // Fetch the data from the dataSource if necessary
+        if ($this->_dataSource != null) {
+            $recordSet = $this->_dataSource->fetch(
+                            ($this->page*$this->rowLimit),
+                            $this->rowLimit, $this->sortArray[0],
+                            $this->sortArray[1]);
+            if (PEAR::isError($recordSet)) {
+                return $recordSet;
+            } else {
+                $this->recordSet = $recordSet;
+                if (count($columnSet = $source->getColumns())) {
+                    $this->columnSet = $columnSet;
+                }
+            }
+        }
+        
         // Render out the data
         return $this->renderer->render($this);
     }
