@@ -44,11 +44,28 @@ class Structures_DataGrid_Renderer_XML
     {
     }
 
+    /**
+     * Generates the XML for the DataGrid
+     *
+     * @access  public
+     * @return  string      The XML of the DataGrid
+     */
     function render(&$dg)
     {
-        $this->_dg = &$dg;
-
         header('Content-type: text/xml');
+        
+        echo $this->toXML($dg);
+    }
+    
+    /**
+     * Generates the XML for the DataGrid
+     *
+     * @access  public
+     * @return  string      The XML of the DataGrid
+     */
+    function toXML(&$dg)
+    {
+        $this->_dg = &$dg;
 
         $xml = XML_Util::getXMLDeclaration() . "\n";
 
@@ -79,7 +96,7 @@ class Structures_DataGrid_Renderer_XML
         }
         $xml .= "</DataGrid>\n";
 
-        echo $xml;
+        return $xml;
     }
 
 }
