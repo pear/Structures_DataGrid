@@ -81,6 +81,21 @@ class Structures_DataGrid_Renderer_HTMLTable
      var $requestPrefix;
 
     /**
+     * The icon to define that sorting is currently Ascending.  Can be text or
+     * HTML to define an image.
+     * @var string
+     */
+     var $sortIconASC;
+
+    /**
+     * The icon to define that sorting is currently Descending.  Can be text or
+     * HTML to define an image.
+     * @var string
+     */
+     var $sortIconDESC;
+          
+     
+    /**
      * The HTML::Pager object that controls paging logic.
      * @var object Pager
      */
@@ -339,23 +354,23 @@ class Structures_DataGrid_Renderer_HTMLTable
                         }
                         $i++;
                         if ($i < count($qString)) {
-                            $url .= '&';
+                            $url .= '&amp;';
                         }
                     }
 
                     if (!isset($orderByExists)) {
                         $url .= '&' . $this->requestPrefix . 'orderBy=' . 
-                                $column->orderBy . '&' . $direction;
+                                $column->orderBy . '&amp;' . $direction;
                     }
                 } else {
                     $url .= $this->requestPrefix . 'orderBy=' . 
-                            $column->orderBy . '&' . $direction;
+                            $column->orderBy . '&amp;' . $direction;
                 }
 
-                $str = '<a href="' . $url . '"><b>' . $column->columnName .
-                       '</b></a>';
+                $str = '<a href="' . $url . '">' . $column->columnName .
+                       ' ' . $sortIcon{$direction} . '</a>';
             } else {
-                $str = '<b>' . $column->columnName . '</b>';
+                $str = $column->columnName;
             }
 
             // Print Content to HTML_Table
