@@ -414,7 +414,7 @@ class Structures_DataGrid_Renderer_HTMLTable
             }
 
             // Begin loop
-            $rowCnt = ($this->header) ? 1 : 0
+            $rowCnt = ($this->header) ? 1 : 0;
             for ($i = $begin; $i < $end; $i++) {
                 if (isset($this->_dg->recordSet[$i])) {
                     $rowCnt++;
