@@ -112,22 +112,29 @@ class Structures_DataGrid_DataSource_DataObject
                     if ($this->_options['formbuilder_integration']) {
                         if (isset($this->_dataobject->fb_preDefOrder)) {
                             $ordered = array();
-                            foreach ($this->_dataobject->fb_preDefOrder as $orderField) {
-                                if (in_array($orderField, $mergeOptions['fields'])) {
+                            foreach ($this->_dataobject->fb_preDefOrder as
+                                     $orderField) {
+                                if (in_array($orderField,
+                                             $mergeOptions['fields'])) {
                                     $ordered[] = $orderField;
                                 }
                             }
-                            $mergeOptions['fields'] = array_merge($ordered, array_diff($mergeOptions['fields'], $ordered));
+                            $mergeOptions['fields'] =
+                                array_merge($ordered,
+                                            array_diff($mergeOptions['fields'],
+                                                       $ordered));
                         }
                         foreach ($mergeOptions['fields'] as $num => $field) {
-                            if (strstr($field, '__tripleLink_') || strstr($field, '__crossLink_') || strstr($field, '__reverseLink_')) {
+                            if (strstr($field, '__tripleLink_') ||
+                                strstr($field, '__crossLink_') || 
+                                strstr($field, '__reverseLink_')) {
                                 unset($mergeOptions['fields'][$num]);
                             }
                         }
                     }
                 } else {
                     //$mergeOptions['fields'] = array_keys($this->_dataobject->toArray());
-                    $mergeOptions['fields'] = array_filter(array_keys(get_object_vars($this->_dataobject)), 'fieldsFilter');
+                    $mergeOptions['fields'] = array_filter(array_keys(get_object_vars($this->_dataobject)), array(&$this, '_fieldsFilter'));
                 }
             }
 
@@ -211,8 +218,10 @@ class Structures_DataGrid_DataSource_DataObject
                     
                     // REPLACE ME WITH ABOVE
                     $vars = get_object_vars($this->_dataobject);
-                    $keys = array_filter(array_keys($vars), '_fieldsFilter');
-                    $fieldList = array_filter(get_object_vars($this->_dataobject), '_fieldsFilter');
+                    $keys = array_filter(array_keys($vars),
+                                         array(&$this, '_fieldsFilter'));
+                    $fieldList = array_filter(get_object_vars($this->_dataobject), 
+                                              array(&$this, '_fieldsFilter'));
                 }
                     
                 // Build Fields
@@ -228,7 +237,8 @@ class Structures_DataGrid_DataSource_DataObject
                 // Get Linked FormBuilder Fields
                 if ($this->_options['formbuilder_integration']) {
                     foreach (array_keys($rec) as $field) {
-                        if (isset($links[$field]) && $linkedDo =& $this->_dataobject->getLink($field)) {
+                        if (isset($links[$field]) &&
+                            $linkedDo =& $this->_dataobject->getLink($field)) {
                             $rec[$field] = DB_DataObject_FormBuilder::getDataObjectString($linkedDo);
                         }
                     }
@@ -281,11 +291,14 @@ class Structures_DataGrid_DataSource_DataObject
     }
     
     // This function is temporary until DB_DO bug #1315 is fixed
+    // This removeds and variables from the DataObject that begins with _ or fb_
     function _fieldsFilter($value)
     {
         if (substr($value, 0, 1) == '_') {
             return false;
         } else if (substr($value, 0, 3) == 'fb_') {
+            return false;
+        } else if ($value == 'N') {
             return false;
         } else {
             return true;
