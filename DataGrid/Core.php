@@ -237,9 +237,23 @@ class Structures_DataGrid_Core
     {
         if ($this->_datasource) {
             $this->_datasource->sort($sortBy, $direction);
+        } else {
+            usort($this->recordSet, array($this, '_sort'));
         }
         $this->sortArray = array($sortBy, $direction);
     }
+    
+    function _sort($a, $b, $i = 0)
+    {
+        //$bool = strnatcmp($a[$this->sortArray[0]], $b[$this->sortArray[0]]);
+        $bool = strnatcasecmp($a[$this->sortArray[0]], $b[$this->sortArray[0]]);
+        
+        if ($this->sortArray[1] == 'DESC') {
+            $bool = $bool * -1;
+        }
+        
+        return $bool;
+    }    
 }
 
 ?>
