@@ -366,9 +366,14 @@ class Structures_DataGrid_Renderer_HTMLTable
                     $url .= $this->requestPrefix . 'orderBy=' . 
                             $column->orderBy . '&amp;' . $direction;
                 }
-
-                $str = '<a href="' . $url . '">' . $column->columnName .
-                       ' ' . $sortIcon{$direction} . '</a>';
+                
+                $icon = "sortIcon" . $direction;
+                $str = '<a href="' . $url . '">' . $column->columnName;
+                if ($this->$icon != '') {
+                    $str .= ' ' . $this->$icon;
+                }
+                $str .= '</a>';
+                
             } else {
                 $str = $column->columnName;
             }
