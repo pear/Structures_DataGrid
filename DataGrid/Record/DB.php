@@ -45,7 +45,7 @@ class Structures_DataGrid_Record_DB extends Structures_DataGrid_Record
 
     function setRecord($data)
     {
-        if (get_class($data) == 'db_result') {
+        if (strtolower(get_class($data)) == 'db_result') {
             parent::setRecord($data->fetchRow(DB_FETCHMODE_ASSOC));
         } else {
             return new PEAR_Error('Invalid data type. Data must be a DB_Result record');

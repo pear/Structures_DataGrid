@@ -34,7 +34,8 @@ class Structures_DataGrid_Record_DataObject extends Structures_DataGrid_Record
     /**
      * Constructor
      *
-     * Builds the record if sepcified. Accepts data as either an Array or a DB_DataObject.
+     * Builds the record if sepcified. Accepts data as either an Array or a DB
+     * DataObject.
      *
      * @access  public
      */
@@ -45,10 +46,10 @@ class Structures_DataGrid_Record_DataObject extends Structures_DataGrid_Record
 
     function setRecord($data)
     {
-        if (get_parent_class($data) == 'db_dataobject') {
+        if (strtolower(get_parent_class($data)) == 'db_dataobject') {
             parent::setRecord($data->toArray());
         } else {
-            return new PEAR_Error('Invalid data type. Data must be a DB_DataObject record');
+            return new PEAR_Error('Invalid data type. Data must be of type DB_DataObject');
         }
     }
 }
