@@ -50,6 +50,9 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
         if (PEAR::isError($this->setRenderer($renderer))) {
             $this->setRenderer(DATAGRID_RENDER_TABLE);
         }
+        
+        // Automatic handling of GET/POST/COOKIE variables
+        $this->_parseHttpRequest();
     }
 
     /**
@@ -63,10 +66,6 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
      */
     function render()
     {
-        if ((!count($this->sortArray)) && ($this->page == null)) {
-            $this->_parseHttpRequest();
-        }
-        
         return $this->renderer->render($this);
     }
 
