@@ -180,7 +180,8 @@ class Structures_DataGrid_Renderer_XUL
             $onClick = "location.href='" . $_SERVER['PHP_SELF'] . 
                        '?' . $prefix . 'orderBy=' . $column->orderBy .
                        "&amp;" . $prefix . "direction=$dirArg';";
-            $xul .= '    <listheader label="' . $column->columnName . '" ' . 
+            $label = XML_Util::replaceEntities($column->columnName);
+            $xul .= '    <listheader label="' . $label . '" ' . 
                     "sortDirection=\"$dirCur\" onCommand=\"$onClick\" />\n";            
         }
         $xul .= "  </listhead>\n";
