@@ -190,7 +190,7 @@ class Structures_DataGrid_Renderer_HTMLTable
      */
     function setAutoFill($value)
     {
-        $this->table->setAutoFill($value);
+        $this->_table->setAutoFill($value);
     }
 
     /**
@@ -331,9 +331,9 @@ class Structures_DataGrid_Renderer_HTMLTable
                 // Determine Direction
                 if ($this->_dg->sortArray[0] == $column->orderBy && 
                     $this->_dg->sortArray[1] == 'ASC') {
-                    $direction = $this->requestPrefix . 'direction=DESC';
+                    $direction = $this->_dg->requestPrefix . 'direction=DESC';
                 } else {
-                    $direction = $this->requestPrefix . 'direction=ASC';
+                    $direction = $this->_dg->requestPrefix . 'direction=ASC';
                 }
 
                 // Build URL -- This needs much refinement :)
@@ -347,15 +347,15 @@ class Structures_DataGrid_Renderer_HTMLTable
                     $i = 0;
                     foreach($qString as $element) {
                         if ($element != '') {
-                            if (stristr($element, $this->requestPrefix . 'orderBy')) {
-                                $url .= $this->requestPrefix . 'orderBy=' .
+                            if (stristr($element, $this->_dg->requestPrefix . 'orderBy')) {
+                                $url .= $this->_dg->requestPrefix . 'orderBy=' .
                                         $column->orderBy;
                                 $orderByExists = true;
-                            } elseif (stristr($element, $this->requestPrefix . 'direction')) {
+                            } elseif (stristr($element, $this->_dg->requestPrefix . 'direction')) {
                                 $url .= $direction;
-                            } elseif (stristr($element, $this->requestPrefix . 'page') && 
+                            } elseif (stristr($element, $this->_dg->requestPrefix . 'page') && 
                                       $this->sortingResetsPaging) {
-                                $url .= $this->requestPrefix . 'page=1';
+                                $url .= $this->_dg->requestPrefix . 'page=1';
                             } else {
                                 $url .= $element;
                             }
@@ -368,15 +368,15 @@ class Structures_DataGrid_Renderer_HTMLTable
 
                     if (!isset($orderByExists)) {
                         if ($qString[0] != '') {
-                            $url .= '&amp;' . $this->requestPrefix . 'orderBy=' . 
+                            $url .= '&amp;' . $this->_dg->requestPrefix . 'orderBy=' . 
                                     $column->orderBy . '&amp;' . $direction;
                         } else {
-                            $url .= $this->requestPrefix . 'orderBy=' . 
+                            $url .= $this->_dg->requestPrefix . 'orderBy=' . 
                                     $column->orderBy . '&amp;' . $direction;
                         }
                     }
                 } else {
-                    $url .= $this->requestPrefix . 'orderBy=' . 
+                    $url .= $this->_dg->requestPrefix . 'orderBy=' . 
                             $column->orderBy . '&amp;' . $direction;
                 }
 
@@ -414,14 +414,31 @@ class Structures_DataGrid_Renderer_HTMLTable
                 $this->_dg->rowLimit = count($this->_dg->recordSet);
             }
             
+            // Determine looping values
+            if ($this->_dg->rowLimit == count($this->_dg->recordSet)) {
+                $begin = 0;
+                $end = $this->_dg->rowLimit;
+            } else {
+                if ($this->_dg->page > 1) {
+                    $begin = ($this->_dg->page - 1) * $this->_dg->rowLimit;
+                    $end = $this->_dg->page * $this->_dg->rowLimit;
+                } else {
+                    $begin = 0;
+                    if ($this->_dg->rowLimit == null) {
+                        $end = count($this->_dg->recordSet);
+                    } else {
+                        $end = $this->_dg->rowLimit;
+                    }
+                }
+            }
+                      
             // Begin loop
-            for ($i = 0; $i < $this->_dg->rowLimit; $i++) {
+            $rowCnt = 1;
+            for ($i = $begin; $i < $end; $i++) {
                 if (isset($this->_dg->recordSet[$i])) {
                     $cnt = 0;
                     $row = $this->_dg->recordSet[$i];
                     foreach ($this->_dg->columnSet as $column) {
-                        $rowCnt = $i+1;
-
                         // Build Content
                         if (isset($column->formatter)) {
                             //Use Formatter                            
@@ -446,6 +463,7 @@ class Structures_DataGrid_Renderer_HTMLTable
 
                         $cnt++;
                     }
+                    $rowCnt++;
                 } else {
                     // Determine if empty row should be printed
                     if ($this->allowEmptyRows) {
@@ -514,7 +532,7 @@ class Structures_DataGrid_Renderer_HTMLTable
         }
         $defaults = array('totalItems' => $count,
                           'perPage' => $this->_dg->rowLimit,
-                          'urlVar' => $this->requestPrefix . 'page');
+                          'urlVar' => $this->_dg->requestPrefix . 'page');
         $options = array_merge($defaults, $options);
         $this->pager =& Pager::factory($options);
     }    
