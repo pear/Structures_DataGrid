@@ -75,6 +75,10 @@ class Structures_DataGrid_Core
      */
     var $pageList = array();
 
+    /**
+     * The HTML::Pager object that controls paging logic.
+     * @var object Pager
+     */
     var $pager;
 
     /**
@@ -216,7 +220,7 @@ class Structures_DataGrid_Core
     /**
      * Handles building the paging of the DataGrid
      *
-     * @params  array        $options        Array of HTML::Pager options
+     * @param   array        $options        Array of HTML::Pager options
      * @access  private
      * @return  void
      */
@@ -226,7 +230,7 @@ class Structures_DataGrid_Core
                           'perPage' => $this->rowLimit,
                           'urlVar' => 'page');
         $options = array_merge($defaults, $options);
-        $this->pager = new Pager($options);
+        $this->pager =& Pager::factory($options);
     }
 
 }
