@@ -85,6 +85,7 @@ class Structures_DataGrid_Renderer_XLS
     function _buildBody()
     {
         if (count($this->_dg->recordSet)) {
+
             // Determine looping values
             if ($this->_dg->page > 1) {
                 $begin = ($this->_dg->page - 1) * $this->_dg->rowLimit;
@@ -98,11 +99,12 @@ class Structures_DataGrid_Renderer_XLS
                 }
             }
 
+            // Begin loop
             for ($i = $begin; $i < $limit; $i++) {
-                $row = $this->_dg->recordSet[$i];
                 $cnt = 0;
+                $row = $this->_dg->recordSet[$i];
                 foreach ($this->_dg->columnSet as $column) {
-                    $rowCnt = ($i-$begin) + 1;
+                    $rowCnt = ($i-$begin)+1;
 
                     // Build Content
                     if ($column->formatter != null) {
@@ -117,7 +119,7 @@ class Structures_DataGrid_Renderer_XLS
                         $content = $row[$column->fieldName];
                     }
 
-                    $this->_worksheet->write($rowCnt, $cnt, $str);
+                    $this->_worksheet->write($rowCnt, $cnt, $content);
 
                     $cnt++;
                 }
