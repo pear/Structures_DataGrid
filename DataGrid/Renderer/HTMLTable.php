@@ -187,7 +187,7 @@ class Structures_DataGrid_Renderer_HTMLTable
      * Determines whether or not to use the Header
      *
      * @access  public
-     * @param   bool        value to determine to use the header or not.
+     * @param   bool    $bool   value to determine to use the header or not.
      */
     function useHeader($bool)
     {
@@ -208,6 +208,7 @@ class Structures_DataGrid_Renderer_HTMLTable
      * Generates the HTML for the DataGrid
      *
      * @access  public
+     * @param   object Structures_DataGrid  $dg     The DataGrid to render
      * @return  string      The HTML of the DataGrid
      */
     function toHTML(&$dg)
@@ -221,6 +222,7 @@ class Structures_DataGrid_Renderer_HTMLTable
      * Gets the HTML_Table object for the DataGrid
      *
      * @access  public
+     * @param   object Structures_DataGrid  $dg     The DataGrid to render
      * @return  object HTML_Table   The HTML Table object for the DataGrid
      */
     function &getTable(&$dg)
