@@ -69,27 +69,35 @@ class Structures_DataGrid_Renderer_Smarty
         }
     }
 
-    function render()
+    function getSmarty()
     {
-        $dg =& $this->_dg;
-
         // Get the data to be rendered
-        $dg->fetchDataSource();
+        $this->_dg->fetchDataSource();
         
         // Check to see if column headers exist, if not create them
         // This must follow after any fetch method call
-        $dg->_setDefaultHeaders();
+        $this->_dg->_setDefaultHeaders();
                 
         if ($this->_tpl != '') {
             $this->_smarty->assign('recordSet',   $this->_dg->recordSet);
             $this->_smarty->assign('columnSet',   $this->_dg->columnSet);
             $this->_smarty->assign('recordLimit', $this->_dg->rowLimit);
-            $this->_smarty->assign('pageList',    $this->_dg->pageList);
             $this->_smarty->assign('currentPage', $this->_dg->page);
 
-            $this->_smarty->display($this->_tpl);
+            return $smarty;
         } else {
             return new PEAR_Error('Error: No template defined');
+        }
+    }
+    
+    function render()
+    {
+        $smarty = $this->getSmarty();
+        
+        if (PEAR::isError($smarty)) {
+            return $smarty;
+        } else {
+            $smarty->display($this->_tpl);
         }
     }
 
