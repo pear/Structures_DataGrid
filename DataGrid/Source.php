@@ -19,6 +19,14 @@
 //
 // $Id $
 
+
+// Data Source Drivers
+define('DATAGRID_SOURCE_ARRAY',     'Array');
+define('DATAGRID_SOURCE_DATAOBJECT','DataObject');
+define('DATAGRID_SOURCE_DB',        'DB');
+define('DATAGRID_SOURCE_XML',       'XML');
+define('DATAGRID_SOURCE_RSS',       'RSS');
+
 /**
 * Base abstract class for data source drivers
 * Recognized options (valid for all drivers) :
@@ -367,8 +375,13 @@ class Structures_DataGrid_DataSource
                 return DATAGRID_SOURCE_ARRAY;
                 break;
 
+            // RSS
+            case (is_string($source) and stristr('<rdf:RDF', $source)):
+                return DATAGRID_SOURCE_RSS;
+                break;
+
             // XML
-            case (is_string($source) and ereg('^ *<\?xml',$source)):
+            case (is_string($source) and ereg('^ *<\?xml', $source)):
                 return DATAGRID_SOURCE_XML;
                 break;
                 
