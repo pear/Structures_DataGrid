@@ -40,7 +40,7 @@
       
       New Features:
         Automatic GET/POST/Cookie handling for sorting and paging
-        Renderers: XUL, CSV
+        Renderers: XUL, CSV, Console Table
         DataSources: DB_Result, DB_DataObject, Array, CSV, XML, RSS
       
       Many Bugfixes included as well:
@@ -72,6 +72,7 @@
           <file role="php" name="Renderer.php"/>
           <file role="php" name="DataSource.php"/>
           <dir name="Renderer" role="php">
+            <file role="php" name="Console.php"/>
             <file role="php" name="CSV.php"/>
             <file role="php" name="HTMLTable.php"/>
             <file role="php" name="Smarty.php"/>

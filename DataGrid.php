@@ -29,6 +29,7 @@ define ('DATAGRID_RENDER_XML',      'XML');
 define ('DATAGRID_RENDER_XLS',      'XLS');
 define ('DATAGRID_RENDER_XUL',      'XUL');
 define ('DATAGRID_RENDER_CSV',      'CSV');
+define ('DATAGRID_RENDER_CONSOLE',  'Console');
 
 /**
  * Structures_DataGrid Class
