@@ -147,8 +147,7 @@ class Structures_DataGrid_DataSource_DataObject extends Structures_DataGrid_Sour
             return new PEAR_Error('Couldn\'t fetch data');
         }
        
-        $ret = array($columns,$records);
-        return $ret;
+        return array('Columns' => $columns, 'Records' => $records);
     }
 
     /**

@@ -116,15 +116,13 @@ class Structures_DataGrid_DataSource_Array extends Structures_DataGrid_DataSourc
      */
     function &fetch()
     {
-        $recordSet = array();
-        
         if (is_null($this->_limit)) {
             $slice = array_slice($this->_ar, $this->_offset);
         } else {
             $slice = array_slice($this->_ar, $this->_offset, $this->_limit);
         }
 
-        return $slice;
+        return array('Records' => $slice);
     }
 }
 

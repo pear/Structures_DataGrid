@@ -105,17 +105,15 @@ class Structures_DataGrid_DataSource_DB extends Structures_DataGrid_DataSource
     {
         $recordSet = array();
 
-        include_once 'Structures/DataGrid/Record/DB.php';
-
         if ($this->_result->numRows()) {
             while ($record = $this->_result->fetchRow(DB_FETCHMODE_ASSOC)) {
-                $recordSet[] = new Structures_DataGrid_Record_DB($record);
+                $recordSet[] = $record;
             }
         } else {
             return new PEAR_Error('No records found');
         }
        
-        return $recordSet;
+        return array('Records' => $recordSet);
     }
 
     /**
