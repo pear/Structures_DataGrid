@@ -46,7 +46,7 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
      * @access public
      */
     function Structures_DataGrid_Renderer($renderer = DATAGRID_RENDER_TABLE,
-                                          $limit = null, $page = 1)
+                                          $limit = null, $page = null)
     {
         if (PEAR::isError($this->setRenderer($renderer))) {
             $this->setRenderer(DATAGRID_RENDER_TABLE);
