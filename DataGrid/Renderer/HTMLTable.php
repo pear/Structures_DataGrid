@@ -81,6 +81,12 @@ class Structures_DataGrid_Renderer_HTMLTable
     var $_table;
 
     /**
+     * A switch to determine the state of the table
+     * @var bool
+     */
+    var $_rendered = false;
+    
+    /**
      * Constructor
      *
      * Build default values
@@ -206,24 +212,28 @@ class Structures_DataGrid_Renderer_HTMLTable
      * @access  public
      * @return  object HTML_Table   The HTML Table object for the DataGrid
      */
-    function getTable(&$dg)
+    function &getTable(&$dg)
     {
         $this->_dg = &$dg;
 
-        // Define Table Header
-        if ($this->header) {
-            $this->_buildHTMLTableHeader();
+        if (!$this->_rendered) {
+            // Define Table Header
+            if ($this->header) {
+                $this->_buildHTMLTableHeader();
+            }
+    
+            // Build Table Data
+            $this->_buildHTMLTableBody();
+    
+            // Define Alternating Row attributes
+            $this->_table->altRowAttributes(1,
+                                            $this->evenRowAttributes,
+                                            $this->oddRowAttributes,
+                                            TRUE);
+                                            
+            $this->_rendered = true;
         }
-
-        // Build Table Data
-        $this->_buildHTMLTableBody();
-
-        // Define Alternating Row attributes
-        $this->_table->altRowAttributes(1,
-                                        $this->evenRowAttributes,
-                                        $this->oddRowAttributes,
-                                        TRUE);
-
+        
         return $this->_table;
     }   
     

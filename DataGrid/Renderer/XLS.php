@@ -54,6 +54,12 @@ class Structures_DataGrid_Renderer_XLS
      * @var string
      */
     var $_filename = 'spreadsheet.xls';
+    
+    /**
+     * A switch to determine the state of the spreadsheet
+     * @var bool
+     */
+    var $_rendered = false;    
 
     /**
      * Constructor
@@ -100,12 +106,15 @@ class Structures_DataGrid_Renderer_XLS
      * @param  object Structures_DataGrid   $dg     The datagrid object
      * @access public
      */
-    function getSpreadsheet(&$dg)
+    function &getSpreadsheet(&$dg)
     {
         $this->_dg = &$dg;
-        
-        $this->_buildHeader();
-        $this->_buildBody();
+
+        if (!$this->_rendered) {        
+            $this->_buildHeader();
+            $this->_buildBody();
+            $this->_rendered = true;
+        }
         
         return $this->_workbook;
     }
