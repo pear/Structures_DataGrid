@@ -18,17 +18,19 @@
     </maintainer>
   </maintainers>
   <release>
-    <version>0.5.1</version>
-    <date>2004-06-25</date>
+    <version>0.5.2</version>
+    <date>2004-08-10</date>
     <license>PHP License</license>
     <state>alpha</state>
     <notes>
-      The &quot;formatter&quot; method in the Column object now supports OO calls (Bug #1584).
-      The allowEmptyRows attribute in the column object now has a method.
-      The HTML Renderer class methods were modified to allow setting of all attributes instead of hardcoded to individual attributes.
-      Fixed notice errors (Bug #1545)
-      Added more functionality to working with the Pager object (Bug #1501)
-      Fixed Pager class instantiation to work with PHP5 (Bug #1371)
+      This release is to be the final Alpha release (hopefully).
+      Warning: API Changes!
+      Reorganized renderer APIs for HTML_Table, XML, and XLS to allow for a toHTML and a toXML and getSpreadsheet methods.  The render methods now print, and the to* return strings. (Bug #2102)
+      Added rendered variable and setRendered methods in Renderer classes (Bertrand)
+      Fixed Record Drivers to work with PHP 5 (Bug #1739)
+      Moved require statement for the Pager class for more optimization (Bug #2027) 
+      Fixed undefined offset warning, again :) (Bug #1545)
+      Numerous documentation cleanups
     </notes>
     <deps>
       <dep type="pkg" rel="ge" version="1.2" optional="no">PEAR</dep>
@@ -56,6 +58,22 @@
   </release>
   <changelog>
     <release>
+      <version>0.5.2</version>
+      <date>2004-08-10</date>
+      <license>PHP License</license>
+      <state>alpha</state>
+      <notes>
+        This release is to be the final Alpha release.
+        Warning: API Changes!
+        Reorganized renderer APIs for HTML_Table, XML, and XLS to allow for a toHTML and a toXML and getSpreadsheet methods.  The render methods now print, and the to* return strings. (Bug #2102)
+        Added rendered variable and setRendered methods in Renderer classes (Bertrand)
+        Fixed Record Drivers to work with PHP 5 (Bug #1739)
+        Moved require statement for the Pager class for more optimization (Bug #2027) 
+        Fixed undefined offset warning, again :) (Bug #1545)
+        Numerous documentation cleanups
+      </notes>
+    </release>
+    <release>
       <version>0.5.1</version>
       <date>2004-06-25</date>
       <state>alpha</state>
@@ -72,11 +90,12 @@
       <version>0.5</version>
       <date>2004-05-03</date>
       <state>alpha</state>
-      <notes>Implemented the HTML::pager class into the HTML Table renderer class (Bug 1025)
-The &quot;formatter&quot; method in the Column object is now stable, but still needs more work or rewriting.
-HTML Render method now return HTML instead of echo HTML (Bug 1063)
-Querystring overwriting during sorting is fixed (Bug 1181)
-</notes>
+      <notes>
+        Implemented the HTML::pager class into the HTML Table renderer class (Bug 1025)
+        The &quot;formatter&quot; method in the Column object is now stable, but still needs more work or rewriting.
+        HTML Render method now return HTML instead of echo HTML (Bug 1063)
+        Querystring overwriting during sorting is fixed (Bug 1181)
+      </notes>
     </release>
     <release>
       <version>0.4.1</version>
