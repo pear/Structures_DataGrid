@@ -156,8 +156,6 @@ class Structures_DataGrid_Column
      */
     function formatter($record)
     {
-        print_r($record);
-
         // Define any parameters
         if ($size = strpos($this->formatter, '(')) {
             // Retrieve the name of the function
@@ -169,25 +167,25 @@ class Structures_DataGrid_Column
             $parameters = split(',', $parameters);
 
             // Process the parameters
-            $params = array();
-            $param['record'] = $record;  // Automatically pass the record array in
+            $paramList = array();
+            $paramList['record'] = $record;  // Automatically pass the record array in
             foreach($parameters as $param) {
                 $param = str_replace('$', '', $param);
                 if (strpos($param, '=') != false) {
                     $vars = split('=', $param);
-                    $params[$vars[0]] = $vars[1];
+                    $paramList[$vars[0]] = $vars[1];
                 } else {
-                    $params[$param] = $result;
+                    $paramList[$param] = $result;
                 }
             }
         } else {
             $formatter = $this->formatter;
-            $params = null;
+            $paramList = null;
         }
 
         // Call the formatter
         if (is_callable($formatter)) {
-            $result = call_user_func_array($formatter, $params);
+            $result = call_user_func_array($formatter, $paramList);
         } else {
             $result = new PEAR_Error('Unable to process formatter');
         }
