@@ -17,7 +17,7 @@
 // |         Andrew Nagy <asnagy@webitecture.org>                         |
 // +----------------------------------------------------------------------+
 //
-// $Id $
+// $Id$
 
 require_once 'Structures/DataGrid/Source.php';
 
@@ -118,13 +118,7 @@ class Structures_DataGrid_DataSource_Array extends Structures_DataGrid_DataSourc
     {
         // sorting
         if ($sortField) {
-            $numRows = count($ar);
-            $sortAr = array();
-            for ($i = 0; $i < $numRows; $i++) {
-                $sortAr[$i] = $ar[$i][$sortField];
-            }
-            $sortDir = strtoupper($sortDir) == 'ASC' ? SORT_ASC : SORT_DESC;
-            array_multisort($sortAr, $sortDir, $ar);
+            $this->sort($sortField, $sortDir, $ar);
         }
         
         // slicing
@@ -151,6 +145,30 @@ class Structures_DataGrid_DataSource_Array extends Structures_DataGrid_DataSourc
         }
         
         return $records;
+    }
+    
+    /**
+     * Sorts the array.  Can be called statically if the ar parameter is
+     * specified
+     * 
+     * @access  public
+     * @param   string  $sortField  Field to sort by
+     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
+     * @param   array   $ar         The array to sort (Used for static calls)
+     */
+    function sort($sortField, $sortDir, $ar = null)
+    {
+        if ($ar == null) {
+            $ar = $this->_ar;
+        }
+        
+        $numRows = count($ar);
+        $sortAr = array();
+        for ($i = 0; $i < $numRows; $i++) {
+            $sortAr[$i] = $ar[$i][$sortField];
+        }
+        $sortDir = strtoupper($sortDir) == 'ASC' ? SORT_ASC : SORT_DESC;
+        array_multisort($sortAr, $sortDir, $ar);
     }
 }
 
