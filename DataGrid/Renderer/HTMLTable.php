@@ -111,7 +111,7 @@ class Structures_DataGrid_Renderer_HTMLTable
      */
     function setTableHeaderAttributes($attribs)
     {
-        $this->_table->setRowAttributes(0, $attribs);
+        $this->_table->setRowAttributes(0, $attribs, true);
     }
 
     /**
