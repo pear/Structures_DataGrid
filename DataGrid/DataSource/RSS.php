@@ -16,7 +16,7 @@
 // | Author: Andrew Nagy <asnagy@webitecture.org>                         |
 // +----------------------------------------------------------------------+
 //
-// $Id $
+// $Id$
 
 require_once 'Structures/DataGrid/DataSource/Array.php';
 require_once 'XML/RSS.php';
@@ -29,17 +29,16 @@ require_once 'XML/RSS.php';
  * @category    Structures
  * @version     $Revision $
  */
-class Structures_DataGrid_DataSource_RSS extends Structures_DataGrid_DataSource
+class Structures_DataGrid_DataSource_RSS extends
+    Structures_DataGrid_DataSource_Array
 {
-    var $_ar = array();
-
     /**
      * Constructor
      * 
      */
     function Structures_DataGrid_DataSource_RSS()
     {
-        parent::Structures_DataGrid_DataSource();
+        parent::Structures_DataGrid_DataSource_Array();
     }
 
     /**
@@ -48,7 +47,7 @@ class Structures_DataGrid_DataSource_RSS extends Structures_DataGrid_DataSource
      * @access  public
      * @param   string $file        RSS file
      * @param   array $options      Options as an associative array
-     * @return  void on success, PEAR_Error on failure 
+     * @return  mixed               true on success, PEAR_Error on failure 
      */
     function bind($file, $options=array())
     {
@@ -67,35 +66,6 @@ class Structures_DataGrid_DataSource_RSS extends Structures_DataGrid_DataSource
         return true;
     }
 
-    /**
-     * Count
-     *
-     * @access  public
-     * @return  int         The number or records
-     */
-    function count()
-    {
-        return count($this->_ar);
-    }
-
-
-    /**
-     * Fetch
-     *
-     * @param   integer $offset     Limit offset (starting from 0)
-     * @param   integer $len        Limit length
-     * @param   string  $sortField  Field to sort by
-     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
-     * @access  public
-     * @return  array       The 2D Array of the records
-     */
-    function &fetch($offset=0, $len=null, $sortField='', $sortDir='ASC')
-    {
-        $records =& Structures_DataGrid_DataSource_Array::staticFetch(
-                        $this->_ar, $this->_options['fields'], $offset, 
-                        $len, $sortField, $sortDir);
-        return $records;
-    }
 }
 
 ?>
