@@ -141,7 +141,11 @@ class Structures_DataGrid_Renderer_XLS
 
         if (!$this->_rendered) {        
             // Get the data to be rendered
-            $dg->fetchDataSource();            
+            $dg->fetchDataSource();
+            
+            // Check to see if column headers exist, if not create them
+            // This must follow after any fetch method call
+            $dg->_setDefaultHeaders();
             
             if ($this->header) {
                 $this->_buildHeader();
