@@ -14,6 +14,7 @@
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
 // | Author: Andrew Nagy <asnagy@webitecture.org>                         |
+// |         Olivier Guilyardi <olivier@samalyse.com>                     |
 // +----------------------------------------------------------------------+
 //
 // $Id $
@@ -27,6 +28,7 @@ require_once 'Structures/DataGrid/DataSource/Array.php';
  *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
+ * @author   Olivier Guilyardi <olivier@samalyse.com> 
  * @access   public
  * @package  Structures_DataGrid
  * @category Structures
@@ -64,7 +66,7 @@ class Structures_DataGrid_DataSource_DB extends Structures_DataGrid_DataSource
             $this->setOptions($options); 
         }
         
-        if (get_class($result) == 'db_result') {
+        if (strtolower(get_class($result)) == 'db_result') { 
             $this->_result =& $result;
             return true;
         } else {
@@ -90,7 +92,6 @@ class Structures_DataGrid_DataSource_DB extends Structures_DataGrid_DataSource
         if ($numRows = $this->_result->numRows()) {
             while ($record = $this->_result->fetchRow(DB_FETCHMODE_ASSOC)) {
                 $recordSet[] = $record;
-                $i++;
             }
         }
         
