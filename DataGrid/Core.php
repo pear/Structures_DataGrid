@@ -80,12 +80,6 @@ class Structures_DataGrid_Core
     var $pageList = array();
 
     /**
-     * The HTML::Pager object that controls paging logic.
-     * @var object Pager
-     */
-    var $pager;
-
-    /**
      * Constructor
      *
      * Creates default table style settings
@@ -172,6 +166,9 @@ class Structures_DataGrid_Core
     {
         if (is_subclass_of($source, 'structures_datagrid_datasource')) {
             $this->_dataSource =& $source;
+            
+            // ***************** FIXME *******************
+            // The following code needs to be moved into the rendering stages
             $recordSet = $source->fetch(($this->page*$this->rowLimit),
                                    $this->rowLimit, $this->sortArray[0], 
                                    this->sortArray[1]);
@@ -237,40 +234,11 @@ class Structures_DataGrid_Core
      */
     function sortRecordSet($sortBy, $direction = 'ASC')
     {
-        // Define sorting values
-        $this->sortArray = array($sortBy, $direction);
-
-        // Sort the recordset
-        usort($this->recordSet, array($this, '_sort'));
-    }
-
-    function _sort($a, $b, $i = 0)
-    {
-        $bool = strnatcmp($a[$this->sortArray[0]], $b[$this->sortArray[0]]);
-
-        if ($this->sortArray[1] == 'DESC') {
-            $bool = $bool * -1;
+        if ($this->_datasource) {
+            $this->_datasource->sort($sortBy, $direction);
         }
-
-        return $bool;
+        $this->sortArray = array($sortBy, $direction);
     }
-
-    /**
-     * Handles building the paging of the DataGrid
-     *
-     * @param   array        $options        Array of HTML::Pager options
-     * @access  private
-     * @return  void
-     */
-    function buildPaging($options)
-    {
-        $defaults = array('totalItems' => count($this->recordSet),
-                          'perPage' => $this->rowLimit,
-                          'urlVar' => 'page');
-        $options = array_merge($defaults, $options);
-        $this->pager =& Pager::factory($options);
-    }
-
 }
 
 ?>
