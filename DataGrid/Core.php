@@ -216,16 +216,16 @@ class Structures_DataGrid_Core
     /**
      * Handles building the paging of the DataGrid
      *
+     * @params  array        $options        Array of HTML::Pager options
      * @access  private
      * @return  void
      */
-    function buildPaging($options = null)
+    function buildPaging($options)
     {
-        if ($options == null) {
-            $options = array('totalItems' => count($this->recordSet),
-                             'perPage' => $this->rowLimit,
-                             'urlVar' => 'page');
-        }
+        $defaults = array('totalItems' => count($this->recordSet),
+                          'perPage' => $this->rowLimit,
+                          'urlVar' => 'page');
+        $options = array_merge($defaults, $options);
         $this->pager = new Pager($options);
     }
 

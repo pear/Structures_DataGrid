@@ -334,18 +334,16 @@ class Structures_DataGrid_Renderer_HTMLTable
      * @return  void
      * @see     HTML::Pager
      */
-    function getPaging($mode = 'pager', $separator = '|', $prev = '<<',
-                       $next = '>>', $delta = null)
+    function getPaging($mode = 'Sliding', $separator = '|', $prev = '<<',
+                       $next = '>>', $delta = 5)
     {
         // Generate Paging
-        $this->_dg->buildPaging();
-
-        // Set additional paging options
-        $options = array('delta' => $delta,
+        $options = array('mode' => $mode,
+                         'delta' => $delta,
                          'separator' => $separator,
                          'prevImg' => $prev,
                          'nextImg' => $next);
-        $this->_dg->pager->_setOptions($options);
+        $this->_dg->buildPaging($options);
 
         // Return paging html
         return $this->_dg->pager->links;
