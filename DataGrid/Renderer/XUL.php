@@ -60,8 +60,14 @@ class Structures_DataGrid_Renderer_XUL
      * @var integer
      * @access public
      */
-    var $listboxRowNum = null;    
+    var $rowLimit = null;    
 
+    /**
+     * GET parameters prefix
+     * @var string
+     */
+     var $requestPrefix;    
+    
     /**
      * Constructor
      *
@@ -123,7 +129,7 @@ class Structures_DataGrid_Renderer_XUL
         $this->_dg = &$dg;
         
         // Get the data to be rendered
-        $dg->renderer->fetchDataSource();        
+        $dg->fetchDataSource();        
         
         // Define XML
         $xul = XML_Util::getXMLDeclaration() . "\n";
@@ -142,10 +148,35 @@ class Structures_DataGrid_Renderer_XUL
         
         // Build Grid Header
         $xul .= "  <listhead>\n";
+        $prefix = $this->requestPrefix;        
         foreach ($this->_dg->columnSet as $column) {
-            $xul .= '    ' . XML_Util::createTag('listheader', 
-                    array('label' => $column->columnName,
-                    'sortDirection' => 'natural')) . "\n";
+            if ($this->_dg->sortArray[0] == $column->orderBy) {
+                if (strtoupper($this->_dg->sortArray[1]) == 'ASC') {
+                    // The data is currently sorted by $column, ascending.
+                    // That means we want $dirArg set to 'DESC', for the next
+                    // click to trigger a reverse order sort, and we need 
+                    // $dirCur set to 'ascending' so that a neat xul arrow 
+                    // shows the current "ASC" direction.
+                    $dirArg = 'DESC'; 
+                    $dirCur = 'ascending'; 
+                } else {
+                    // Next click will do ascending sort, and we show a reverse
+                    // arrow because we're currently descending.
+                    $dirArg = 'ASC';
+                    $dirCur = 'descending';
+                }
+            } else {
+                // No current sort on this column. Next click will ascend. We
+                // show no arrow.
+                $dirArg = 'ASC';
+                $dirCur = 'natural';
+            }
+
+            $onClick = "location.href='" . $_SERVER['PHP_SELF'] . 
+                       '?' . $prefix . 'orderBy=' . $column->orderBy .
+                       "&amp;" . $prefix . "direction=$dirArg';";
+            $xul .= '    <listheader label="' . $column->columnName . '" ' . 
+                    "sortDirection=\"$dirCur\" onCommand=\"$onClick\" />\n";            
         }
         $xul .= "  </listhead>\n";
 
