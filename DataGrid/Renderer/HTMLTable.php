@@ -148,6 +148,32 @@ class Structures_DataGrid_Renderer_HTMLTable
         $this->table->setAutoFill($value);
     }
 
+    /**
+     * In order for the DataGrid to render "Empty Rows" to allow for
+     * uniformity across pages with varying results, set this option
+     * to true.  An example of this would be when you have 11 results
+     * and have the DataGrid show 10 records per page. The last page
+     * will only show one row in the table, unless this option is
+     * turned on in which it will render 10 rows, 9 of which will be
+     * empty.
+     *
+     * @access public
+     * @param  bool      $value          A boolean value to determine
+     *                                   whether or not to display the
+     *                                   empty rows.
+     * @param  array     $attributes     The empty row attributes
+     *                                   defined in an array.
+     */
+    function allowEmptyRows($value, $attributes = array())
+    {      
+        if ($value) {
+            $this->allowEmptyRows = true;
+        } else {
+            $this->allowEmptyRows = false;
+        }
+ 
+        $this->emptyRowAttributes = $attributes;
+    }
 
     /**
      * Generates the HTML for the DataGrid
@@ -155,6 +181,7 @@ class Structures_DataGrid_Renderer_HTMLTable
      * @access  public
      * @return  string      The HTML of the DataGrid
      */
+
     function render(&$dg)
     {
         $this->_dg = &$dg;
@@ -170,7 +197,8 @@ class Structures_DataGrid_Renderer_HTMLTable
         // Define Alternating Row attributes
         $this->_table->altRowAttributes(1,
                                         $this->evenRowAttributes,
-                                        $this->oddRowAttributes);
+                                        $this->oddRowAttributes,
+                                        TRUE);
 
         // Print the table
         return $this->_table->toHTML();
@@ -302,9 +330,10 @@ class Structures_DataGrid_Renderer_HTMLTable
                     // Determine if empty row should be printed
                     if ($this->allowEmptyRows) {
                         $rowCnt++;
-                        $this->_table->setRowAttributes($rowCnt,
-                            $this->emptyRowAttributes, false);
-                        $this->_table->setCellContents($rowCnt, 0, '&nbsp;');
+                        for ($j=0; $j<count($this->_dg->columnSet); $j++) {
+                            $this->_table->setCellAttributes($rowCnt, $j, $this->emptyRowAttributes);
+                            $this->_table->setCellContents($rowCnt, $j, '&nbsp;');
+                        }
                     }
                 }
             }
