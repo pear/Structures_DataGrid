@@ -57,6 +57,17 @@ class Structures_DataGrid_DataSource_DataObject
     var $_dataobject;
     
     /**
+     * Total number of rows 
+     * 
+     * This property caches the result of DataObject::count(), that 
+     * can't be called after DataObject::fetch() (DataObject bug ?).
+     *
+     * @var int
+     * @access private
+     */
+     var $_rowNum = null;    
+    
+    /**
      * Constructor
      *
      * @param object DB_DataObject
@@ -134,6 +145,13 @@ class Structures_DataGrid_DataSource_DataObject
      */    
     function &fetch($offset=0, $len=null, $sortField=null, $sortDir='ASC')
     {
+        // Caching the number of rows
+        if (PEAR::isError($count = $this->_dataobject->count())) {
+            return $count;
+        } else {
+            $this->_rowNum = $count;
+        }
+                
         // Sorting
         if ($sortField) {
             $this->_dataobject->orderBy("$sortField $sortDir");
@@ -168,15 +186,19 @@ class Structures_DataGrid_DataSource_DataObject
     /**
      * Count
      *
-     * NOTE: This has to be called before fetch() !!
-     * This may be a DataObject bug. See test_dataobject_options.php. 
-     * 
      * @access  public
-     * @return  int         The number or records
+     * @return  int         The number of records or a PEAR_Error
      */    
     function count()
     {
-        return $this->_dataobject->count();
+        if (is_null($this->_rowNum)) {
+            $test = $this->_dataobject->count();
+            if ($test === false) {
+                return new PEAR_Error ('Can\'t count the number of rows');
+            } else {
+                $this->_rowNum = $test;
+            }
+        }
     }
 
 }
