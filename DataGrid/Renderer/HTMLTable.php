@@ -63,7 +63,8 @@ class Structures_DataGrid_Renderer_HTMLTable
     var $emptyRowAttributes = array();
 
     /**
-     * The complete path for the sorting links.  If not defined, PHP_SELF is used
+     * The complete path for the sorting links.  If not defined, PHP_SELF is
+     * used.
      * @var string
      */
     var $path;
@@ -118,7 +119,8 @@ class Structures_DataGrid_Renderer_HTMLTable
      * Define the table's row dark color
      *
      * @access public
-     * @param  array    $attribs    The associative array of attributes for the odd table row.
+     * @param  array    $attribs    The associative array of attributes for the
+     *                              odd table row.
      */
     function setTableOddRowAttributes($attribs)
     {
@@ -129,7 +131,8 @@ class Structures_DataGrid_Renderer_HTMLTable
      * Define the table's row light color
      *
      * @access public
-     * @param  array    $attribs    The associative array of attributes for the even table row.
+     * @param  array    $attribs    The associative array of attributes for the
+     *                              even table row.
      */
     function setTableEvenRowAttributes($attribs)
     {
@@ -251,13 +254,15 @@ class Structures_DataGrid_Renderer_HTMLTable
                     }
 
                     if (!isset($orderByExists)) {
-                        $url .= '&orderBy=' . $column->orderBy . '&' . $direction;
+                        $url .= '&orderBy=' . $column->orderBy . '&' .
+                                $direction;
                     }
                 } else {
                     $url .= 'orderBy=' . $column->orderBy . '&' . $direction;
                 }
 
-                $str = '<a href="' . $url . '"><b>' . $column->columnName . '</b></a>';
+                $str = '<a href="' . $url . '"><b>' . $column->columnName .
+                       '</b></a>';
             } else {
                 $str = '<b>' . $column->columnName . '</b>';
             }
@@ -331,8 +336,10 @@ class Structures_DataGrid_Renderer_HTMLTable
                     if ($this->allowEmptyRows) {
                         $rowCnt++;
                         for ($j=0; $j<count($this->_dg->columnSet); $j++) {
-                            $this->_table->setCellAttributes($rowCnt, $j, $this->emptyRowAttributes);
-                            $this->_table->setCellContents($rowCnt, $j, '&nbsp;');
+                            $this->_table->setCellAttributes($rowCnt, $j,
+                                                     $this->emptyRowAttributes);
+                            $this->_table->setCellContents($rowCnt, $j,
+                                                           '&nbsp;');
                         }
                     }
                 }
