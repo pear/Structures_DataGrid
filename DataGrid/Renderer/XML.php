@@ -50,11 +50,11 @@ class Structures_DataGrid_Renderer_XML
 
         header('Content-type: text/xml');
 
-        echo XML_Util::getXMLDeclaration() . "\n";
+        $xml = XML_Util::getXMLDeclaration() . "\n";
 
-        echo "<DataGrid>\n";
+        $xml .= "<DataGrid>\n";
         foreach ($this->_dg->recordSet as $row) {
-            echo "  <Row>\n";
+            $xml .= "  <Row>\n";
 
             foreach ($this->_dg->columnSet as $column) {
                 // Build Content
@@ -70,14 +70,16 @@ class Structures_DataGrid_Renderer_XML
                     $content = $row[$column->fieldName];
                 }
 
-                echo '    ' .
-                     XML_Util::createTag($column->columnName,
+                $xml .= '    ' .
+                        XML_Util::createTag($column->columnName,
                                          null, $content) . "\n";
             }
 
-            echo "  </Row>\n";
+            $xml .= "  </Row>\n";
         }
-        echo "</DataGrid>\n";
+        $xml .= "</DataGrid>\n";
+
+        echo $xml;
     }
 
 }
