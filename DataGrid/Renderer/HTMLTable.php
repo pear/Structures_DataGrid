@@ -415,7 +415,7 @@ class Structures_DataGrid_Renderer_HTMLTable
             }
             
             // Determine looping values
-            if ($this->_dg->rowLimit == count($this->_dg->recordSet)) {
+            if ($this->_dg->rowLimit >= count($this->_dg->recordSet)) {
                 $begin = 0;
                 $end = $this->_dg->rowLimit;
             } else {
@@ -454,6 +454,12 @@ class Structures_DataGrid_Renderer_HTMLTable
                         } else {
                             // Use Record Data
                             $content = $row[$column->fieldName];
+                            
+                            if (($content == '') && 
+                                ($column->autoFillValue != '')) {
+                                // Use AutoFill
+                                $content = $column->autoFillValue;
+                            }
                         }
 
                         // Set Content in HTML_Table
