@@ -118,7 +118,7 @@ class Structures_DataGrid_Renderer_HTMLTable
      * Define the table's row dark color
      *
      * @access public
-     * @param  string    $bgColor   The color to use for the dark table row.
+     * @param  array    $attribs    The associative array of attributes for the odd table row.
      */
     function setTableOddRowAttributes($attribs)
     {
@@ -129,7 +129,7 @@ class Structures_DataGrid_Renderer_HTMLTable
      * Define the table's row light color
      *
      * @access public
-     * @param  string    $bgColor   The color to use for the light table row.
+     * @param  array    $attribs    The associative array of attributes for the even table row.
      */
     function setTableEvenRowAttributes($attribs)
     {
