@@ -236,7 +236,19 @@ class Structures_DataGrid_Renderer_HTMLTable
         
         return $this->_table;
     }   
-    
+
+    /**
+     * Sets the rendered status.  This can be used to "flush the cache" in case
+     * you need to render the datagrid twice with the second time having changes
+     *
+     * @access  public
+     * @params  bool        $status     The rendered status of the DataGrid
+     */
+    function setRendered($status)
+    {
+        $this->_rendered = (bool)$status;
+    }   
+        
     /**
      * Handles building the header of the DataGrid
      *
