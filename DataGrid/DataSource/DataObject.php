@@ -77,6 +77,7 @@ class Structures_DataGrid_DataSource_DataObject
     {
         parent::Structures_DataGrid_DataSource();
         $this->_addDefaultOptions(array(
+                    'use_private_vars' => false,
                     'labels_property' => 'fb_fieldLabels',
                     'fields_property' => 'fb_fieldsToRender',
                     'sort_property' => 'fb_linkOrderFields',
@@ -207,9 +208,15 @@ class Structures_DataGrid_DataSource_DataObject
             while ($this->_dataobject->fetch()) {
                 // Determine Fields
                 if (!$this->_options['fields']) {
-                    $this->_options['fields'] =
-                        array_keys($this->_dataobject->toArray());
-                    //$this->_options['fields'] = array_filter(array_keys(get_object_vars($this->_dataobject)), array(&$this, '_fieldsFilter'));
+                    if ($this->options['use_private_vars']) {
+                        $this->_options['fields'] =
+                            array_keys(get_object_vars($this->_dataobject));
+                    } else {
+                        $this->_options['fields'] =
+                            array_keys($this->_dataobject->toArray());
+                    }
+                    //$this->_options['fields'] =
+                    //    array_filter(array_keys(get_object_vars($this->_dataobject)), array(&$this, '_fieldsFilter'));
                 }
                 $fieldList = $this->_options['fields'];
                 // Build DataSet
@@ -218,7 +225,7 @@ class Structures_DataGrid_DataSource_DataObject
                     $getMethod = 'get'.$fName;
                     if (method_exists($this->_dataobject, $getMethod)) {
                         //$rec[$fName] = $this->_dataobject->$getMethod(&$this);
-                        $rec[$fName] = $this->_dataobject->$getMethod;
+                        $rec[$fName] = $this->_dataobject->$getMethod();
                     } elseif (isset($this->_dataobject->$fName)) {                        
                         $rec[$fName] = $this->_dataobject->$fName;
                     } else {
@@ -262,7 +269,7 @@ class Structures_DataGrid_DataSource_DataObject
                 $this->_rowNum = $test;
             }
         }
-        
+
         return $this->_rowNum;
     }
     
