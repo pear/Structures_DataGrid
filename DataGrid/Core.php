@@ -49,6 +49,12 @@ class Structures_DataGrid_Core
     var $recordSet = array();
 
     /**
+     * The Data Source object
+     * @var object Structures_DataGrid_DataSource
+     */
+    var $_dataSource;    
+    
+    /**
      * An array of fields to sort by.  Each field is an array of the field name
      * and the direction, either ASC or DESC.
      * @var array
@@ -141,7 +147,6 @@ class Structures_DataGrid_Core
      * @access  public
      * @param   array   $rs     The associative array recordset
      * @return  bool            True if successful, otherwise false.
-     */
     function bind($rs)
     {
         if (is_array($rs)) {
@@ -151,7 +156,30 @@ class Structures_DataGrid_Core
             return new PEAR_Error('Recordset must be an associative array');
         }
     }
+     */
 
+    /**
+     * Allows binding to a data source driver.
+     *
+     * @access  public
+     * @param   mixed   $source     The data source driver object
+     * @return  mixed               True if successful, otherwise PEAR_Error.
+     */
+    function bind(&$source)
+    {
+        if (is_subclass_of($source, 'structures_datagrid_source')) {
+            $this->_dataSource &= $source;
+            $source->limit($this->page, $this->rowLimit);
+            if ($this->sortArray != null) {
+                $source->sort($this->sortArray);
+            }
+            $source->fetch();
+        } else {
+            return new PEAR_Error('Invalid source type, ' . 
+                                  'must be a valid data source driver class');
+        }
+    }
+    
     /**
      * Adds a DataGrid_Record object to this DataGrid object
      *
