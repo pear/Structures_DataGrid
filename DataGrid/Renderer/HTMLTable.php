@@ -214,7 +214,7 @@ class Structures_DataGrid_Renderer_HTMLTable
     {
         $table =& $this->getTable($dg);
 
-        $table->toHTML();
+        return $table->toHTML();
     } 
     
     /**
