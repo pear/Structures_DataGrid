@@ -14,6 +14,7 @@
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
 // | Author: Olivier Guilyardi <olivier@samalyse.com>                     |
+// |         Andrew Nagy <asnagy@webitecture.org>                         |
 // +----------------------------------------------------------------------+
 //
 // $Id $
@@ -27,11 +28,13 @@ require_once 'Structures/DataGrid/Source.php';
  *
  * @version  $Revision$
  * @author   Olivier Guilyardi <olivier@samalyse.com>
+ * @author   Andrew Nagy <asnagy@webitecture.org>
  * @access   public
  * @package  Structures_DataGrid
  * @category Structures
  */
-class Structures_DataGrid_DataSource_DataObject extends Structures_DataGrid_Source
+class Structures_DataGrid_DataSource_DataObject
+    extends Structures_DataGrid_DataSource
 {   
     /**
      * Reference to the DataObject
@@ -120,7 +123,9 @@ class Structures_DataGrid_DataSource_DataObject extends Structures_DataGrid_Sour
                 $fList = @$this->_dataobject->$fRender;
             }
             
-            if (!$fList) $fList = array_keys($this->_dataobject->toArray());
+            if (!$fList) {
+                $fList = array_keys($this->_dataobject->toArray());
+            }
 
             $labelVar = $this->_options['labels_property'];
             $field2label = @$this->_dataobject->$labelVar
@@ -130,18 +135,15 @@ class Structures_DataGrid_DataSource_DataObject extends Structures_DataGrid_Sour
             
             foreach ($fList as $field) {
                 $label = strtr($field,$field2label);
-                $col = new Structures_DataGrid_Column($label,$field,$field);
+                $col = new Structures_DataGrid_Column($label, $field, $field);
                 $columns[] = $col;
             }
 
         }
 
-        include_once 'Structures/DataGrid/Record/DataObject.php';
-
         if ($this->_dataobject->find()) {
             while ($this->_dataobject->fetch()) {
-                $records[] = new Structures_DataGrid_Record_DataObject
-                              ($this->_dataobject);
+                $records[] = $this->_dataobject->toArray();
             }
         } else {
             return new PEAR_Error('Couldn\'t fetch data');
@@ -158,8 +160,7 @@ class Structures_DataGrid_DataSource_DataObject extends Structures_DataGrid_Sour
      */    
     function count()
     {
-        return $this->_dataobject->N;
-        //return $this->_dataobject->count();
+        return $this->_dataobject->count();
     }
 
 
