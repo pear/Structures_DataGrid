@@ -18,7 +18,7 @@
 //
 // $Id$
 
-require_once 'Structures/DataGrid/Array.php';
+require_once 'Structures/DataGrid/DataSource/Array.php';
 
 /**
  * Comma Seperated Value (CSV) Data Source Driver
