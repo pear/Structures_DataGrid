@@ -63,14 +63,6 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
      */
     function render()
     {
-        // Check to see if column headers exist, if not create them
-        $this->_setDefaultHeaders();
-
-        // Fetch the data from the dataSource if necessary
-        // This must be called by the renderer's themselves
-        //$this->fetchDataSource();
-        
-        // Render out the data
         return $this->renderer->render($this);
     }
 
