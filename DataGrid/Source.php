@@ -103,9 +103,11 @@ class Structures_DataGrid_DataSource
      */
     function Structures_DataGrid_DataSource()
     {
+        /*
         $this->_options = array('generate_columns' => true,
                                 'labels'           => array(),
                                 'fields'           => array());
+        */
     }
 
     /**
@@ -205,12 +207,12 @@ class Structures_DataGrid_DataSource
     {
         $columns = array();
         if ($this->_options['generate_columns'] 
-            and $fList = $this->_options['fields']) {
+            and $fieldList = $this->_options['fields']) {
                              
             include_once('Structures/DataGrid/Column.php');
             
-            foreach ($fList as $field) {
-                $label = strtr($field,$this->_options['labels']);
+            foreach ($fieldList as $field) {
+                $label = strtr($field, $this->_options['labels']);
                 $col = new Structures_DataGrid_Column($label, $field, $field);
                 $columns[] = $col;
             }
