@@ -78,7 +78,7 @@ class Structures_DataGrid extends Structures_DataGrid_Renderer
     function Structures_DataGrid($limit = null, $page = 1,
                                  $renderer = DATAGRID_RENDER_TABLE)
     {
-        Structures_DataGrid_Renderer::Structures_DataGrid_Renderer($renderer, $limit, $page);
+        parent::Structures_DataGrid_Renderer($renderer, $limit, $page);
     }
 
     /**
