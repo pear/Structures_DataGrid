@@ -31,7 +31,7 @@ require_once 'Structures/DataGrid/DataSource/Array.php';
  * @package  Structures_DataGrid
  * @category Structures
  */
-class Structures_DataGrid_DataSource_DB extends Structures_DataGrid_DataSource_Array
+class Structures_DataGrid_DataSource_DB extends Structures_DataGrid_DataSource
 {   
     /**
      * Reference to the DB_Result object
@@ -61,10 +61,7 @@ class Structures_DataGrid_DataSource_DB extends Structures_DataGrid_DataSource_A
     function bind(&$result, $options=array())
     {
         if ($options) {
-            $test = $this->_setOptions($options); 
-            if (PEAR::isError($test)) {
-                return $test;
-            }
+            $this->setOptions($options); 
         }
         
         if (get_class($result) == 'db_result') {

@@ -58,10 +58,7 @@ class Structures_DataGrid_DataSource_XML extends Structures_DataGrid_DataSource
     function bind($xml, $options=array())
     {
         if ($options) {
-            $test = $this->_setOptions($options); 
-            if (PEAR::isError($test)) {
-                return $test;
-            }
+            $this->setOptions($options); 
         }
         
         // Extract a subset from the XML data if an XPath is provided :
@@ -135,7 +132,7 @@ class Structures_DataGrid_DataSource_XML extends Structures_DataGrid_DataSource
     function &fetch($offset=0, $len=null, $sortField='', $sortDir='ASC')
     {
         $records =& Structures_DataGrid_DataSource_Array::staticFetch(
-                        $this->_ar, $this->_options['fields'], $ofs, 
+                        $this->_ar, $this->_options['fields'], $offset, 
                         $len, $sortField, $sortDir);
         return $records;
     }

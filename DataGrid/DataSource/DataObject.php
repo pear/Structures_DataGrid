@@ -83,10 +83,7 @@ class Structures_DataGrid_DataSource_DataObject
     function bind(&$dataobject, $options=array())
     {
         if ($options) {
-            $test = $this->_setOptions($options); 
-            if (PEAR::isError($test)) {
-                return $test;
-            }
+            $this->setOptions($options); 
         }
 
         if (is_subclass_of($dataobject, 'DB_DataObject')) {
