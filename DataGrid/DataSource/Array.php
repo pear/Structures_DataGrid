@@ -59,7 +59,7 @@ class Structures_DataGrid_DataSource_Array extends Structures_DataGrid_DataSourc
     function bind($ar)
     {
         if (is_array($ar)) {
-            $this->_ar =& $ar;
+            $this->_ar = $ar;
             return true;
         } else {
             return new PEAR_Error('The provided source must be an array');
