@@ -18,7 +18,7 @@
 //
 // $Id $
 
-require_once 'Structures/DataGrid/Source.php';
+require_once 'Structures/DataGrid/DataSource/Array.php';
 
 /**
  * PEAR::DB Data Source Driver
@@ -31,7 +31,7 @@ require_once 'Structures/DataGrid/Source.php';
  * @package  Structures_DataGrid
  * @category Structures
  */
-class Structures_DataGrid_DataSource_DB extends Structures_DataGrid_DataSource
+class Structures_DataGrid_DataSource_DB extends Structures_DataGrid_DataSource_Array
 {   
     /**
      * Reference to the DB_Result object
@@ -48,7 +48,7 @@ class Structures_DataGrid_DataSource_DB extends Structures_DataGrid_DataSource
      */
     function Structures_DataGrid_DataSource_DB()
     {
-        parent::Structures_DataGrid_DataSource();
+        parent::Structures_DataGrid_DataSource_Array();
     }
   
     /**
@@ -89,42 +89,15 @@ class Structures_DataGrid_DataSource_DB extends Structures_DataGrid_DataSource
     {
         $recordSet = array();
 
+        // Fetch the Data
         if ($numRows = $this->_result->numRows()) {
-           
-            /*  We need to fetch everything in order to sort.
-             *  I comment that out :
-                         
-            // Move database pointer for limiting
-            if (($offset > $limit) &&
-                ($numRows > $offset)) {
-                for ($i = 0; $i < $offset; $i++) {
-                    $this->_result->fetchRow();
-                }
-            }
-            */
-            
-            // Fetch Records
-            $i = 0;
-            
-            
-            // Same thing as above.
-            // 
-            // By the way if you use 'and' instead of '&&' you don't need to put
-            // so many parenthesis. Operator precedence is : '&&' > '=' > 'and'
-            // 
-            // while (($record = $this->_result->fetchRow(DB_FETCHMODE_ASSOC)) &&
-            //       ($i < $limit)) {
-            //
             while ($record = $this->_result->fetchRow(DB_FETCHMODE_ASSOC)) {
                 $recordSet[] = $record;
                 $i++;
             }
-        } else {
-            // FIXME: This is no error (you have to return an empty set) :            
-            return new PEAR_Error('No records found');
         }
-       
-        // sort and limit the recordSet (nifty he ?) :
+        
+        // Limit and Sort the Data
         $recordSet =& Structures_DataGrid_DataSource_Array::staticFetch(
                           $recordSet, $this->_options['fields'], $offset, 
                           $limit, $sortField, $sortDir);

@@ -125,14 +125,14 @@ class Structures_DataGrid_DataSource_XML extends Structures_DataGrid_DataSource
     /**
      * Fetch
      *
-     * @param   integer $ofs Limit offset (starting from 0)
-     * @param   integer $len Limit length
-     * @param   string  $sortField Field to sort by
-     * @param   string  $sortDir Sort direction : 'ASC' or 'DESC'
+     * @param   integer $offset     Limit offset (starting from 0)
+     * @param   integer $len        Limit length
+     * @param   string  $sortField  Field to sort by
+     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
      * @access  public
      * @return  array       The 2D Array of the records
      */
-    function &fetch($ofs=0, $len=null, $sortField='', $sortDir='ASC')
+    function &fetch($offset=0, $len=null, $sortField='', $sortDir='ASC')
     {
         $records =& Structures_DataGrid_DataSource_Array::staticFetch(
                         $this->_ar, $this->_options['fields'], $ofs, 

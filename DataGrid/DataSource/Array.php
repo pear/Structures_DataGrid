@@ -14,6 +14,7 @@
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
 // | Author: Olivier Guilyardi <olivier@samalyse.com>                     |
+// |         Andrew Nagy <asnagy@webitecture.org>                         |
 // +----------------------------------------------------------------------+
 //
 // $Id $
@@ -27,6 +28,7 @@ require_once 'Structures/DataGrid/Source.php';
  *
  * @version  $Revision$
  * @author   Olivier Guilyardi <olivier@samalyse.com>
+ * @author   Andrew Nagy <asnagy@webitecture.org>
  * @access   public
  * @package  Structures_DataGrid
  * @category Structures
@@ -135,7 +137,7 @@ class Structures_DataGrid_DataSource_Array extends Structures_DataGrid_DataSourc
             $slice = array_slice($ar, $ofs, $len);
         }
 
-        // filtering fields 
+        // Filter out fields that are to not be rendered
         //
         // With the new array_intersect_key() the following would be :
         // $records = array_intersect_key($slice, array_flip ($fieldList));
