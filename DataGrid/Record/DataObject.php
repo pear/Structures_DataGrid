@@ -41,7 +41,10 @@ class Structures_DataGrid_Record_DataObject extends Structures_DataGrid_Record
      */
     function Structures_DataGrid_Record_DataObject($data = null)
     {
-        $this->setRecord($data);
+        $result = $this->setRecord($data);
+        if (PEAR::isError($result)) {
+            PEAR::raiseError($result->toString());
+        }
     }
 
     function setRecord($data)
