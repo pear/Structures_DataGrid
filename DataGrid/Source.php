@@ -19,11 +19,6 @@
 //
 // $Id $
 
-define('DATAGRID_SOURCE_ARRAY',         'Array');
-define('DATAGRID_SOURCE_DATAOBJECT',    'DataObject');
-define('DATAGRID_SOURCE_DB',            'DB');
-define('DATAGRID_SOURCE_XML',           'XML');
-
 /**
 * Base abstract class for data source drivers
 * Recognized options (valid for all drivers) :
@@ -170,15 +165,8 @@ class Structures_DataGrid_DataSource
      *                                 PEAR_Error on failure
      * @static
      */
-    function &create($source, $typeOrOptions=null, $options=array())
+    function &create($source, $options=array(), $type=null)
     {
-        if (is_array($typeOrOptions)) {
-            $options = $typeOrOptions;
-            $type = null;
-        } else {
-            $type = $typeOrOptions;
-        }
-        
         if (is_null($type) &&
             !($type = Structures_DataGrid_DataSource::_detectSourceType($source))) {
             return new PEAR_Error('Unable to determine the data source type. '.
@@ -188,10 +176,12 @@ class Structures_DataGrid_DataSource
         if (!@include_once "Structures/DataGrid/DataSource/$type.php") {
             return new PEAR_Error("No such data source driver: '$type'");
         }
+        
         $classname = "Structures_DataGrid_DataSource_$type";
         $driver = new $classname();
+        $driver->setOptions($options);        
        
-        return PEAR::isError($test) ? $test : $driver;
+        return $driver;
     }
     
 
@@ -200,19 +190,11 @@ class Structures_DataGrid_DataSource
      *
      * @param   mixed   $options An associative array of the form :
      *                           array("option_name" => "option_value",...)
-     * @return  mixed            true or a PEAR_error object upon failure
-     * @access  protected
+     * @access  public
      */
-    function _setOptions($options)
+    function setOptions($options)
     {
-        foreach ($options as $key => $val) {
-            if (!isset($this->_options[$key])) {
-                return new PEAR_error("No such option : '$key'");
-            }
-            $this->_options[$key] = $val;
-        }
-        
-        return true;
+        $this->_options = $options;
     }
 
     /**
