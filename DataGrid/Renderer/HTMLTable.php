@@ -435,7 +435,7 @@ class Structures_DataGrid_Renderer_HTMLTable
                             }
                         } else {
                             // Use Record Data
-                            $content = $row[$column->fieldName];
+                            $content = htmlentities(stripslashes($row[$column->fieldName]));
                             
                             if (($content == '') && 
                                 ($column->autoFillValue != '')) {
@@ -496,11 +496,35 @@ class Structures_DataGrid_Renderer_HTMLTable
         if (is_array($attrs)) {
             $options = array_merge($options, $attrs);
         }
-        $this->_buildPaging($options);
+        
+        if ($mode == 'Alpha') {
+            $this->_buildAlphaPaging($options);
+        } else {
+            $this->_buildNumericPaging($options);
+        }
 
         // Return paging html
         return $this->pager->links;
     }
+    
+    function _buildAlphaPaging($options)
+    {
+        // This needs to be defined;
+        $pagedColumn = 'title';
+        
+        $letters = array();
+        foreach ($this->_dg->recordSet as $record) {
+            $letters[] = substr(trim($record[$pagedColumn]), 0, 1);
+        }
+        $letters = array_unique($letters);
+        
+        // Build HTML
+        foreach ($letters as $letter) {
+            $html .= "<a href=\"?page=$letter\">$letter</a> " . $options['separator'] . ' ';
+        }
+        $this->pager = new Pager();
+        $this->pager->links = $html;
+    }    
     
 
     /**
@@ -510,7 +534,7 @@ class Structures_DataGrid_Renderer_HTMLTable
      * @access  private
      * @return  void
      */
-    function _buildPaging($options)
+    function _buildNumericPaging($options)
     {
         if ($this->_dg->_dataSource != null) {
             $count = $this->_dg->_dataSource->count();

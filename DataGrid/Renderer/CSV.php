@@ -146,8 +146,13 @@ class Structures_DataGrid_Renderer_CSV
                 
                 // Add content to CSV
                 if ($this->useQuotes) {
-                    $csv .= '"' . $content . '"';
+                    $content = '"' . str_replace('"', '""', $content) . '"';
                 } else {
+                    if (strstr($content, '"')) {
+                        $content = '"' . str_replace('"', '""', $content) . '"';
+                    } elseif (strstr($content, ',')) {
+                        $content = '"' . $content . '"';
+                    }
                     $csv .= $content;
                 }
                 $i++;
