@@ -156,7 +156,11 @@ class Structures_DataGrid_Column
      */
     function formatter($record)
     {
-        // Define any parameters
+        // Define the Parameter list
+        $paramList = array();
+        $paramList['record'] = $record;
+        
+        // Determine callback and additional parameters
         if ($size = strpos($this->formatter, '(')) {
             // Retrieve the name of the function to call
             $formatter = substr($this->formatter, 0, $size);
@@ -172,8 +176,6 @@ class Structures_DataGrid_Column
             $parameters = ($parameters === '') ? array() : split(',', $parameters);
 
             // Process the parameters
-            $paramList = array();
-            $paramList['record'] = $record;  // Auto pass the record array in
             foreach($parameters as $param) {
                 $param = str_replace('$', '', $param);
                 if (strpos($param, '=') != false) {
@@ -185,7 +187,6 @@ class Structures_DataGrid_Column
             }
         } else {
             $formatter = $this->formatter;
-            $paramList = null;
         }
 
         // Call the formatter
