@@ -61,10 +61,7 @@ $dg->renderer->setTableAttribute('cellpadding', '4');
 $dg->renderer->setTableAttribute('class', 'datagrid');
 
 // Set empty row table attributes
-// Clean me!
-$dg->renderer->allowEmptyRows = true;
-$dg->renderer->emptyRowAttributes = array('bgcolor' => '#FFFFFF');
-
+$dg->renderer->allowEmptyRows(true, array('bgcolor' => '#FFFFFF'));
 
 // Define columns for the DataGrid
 $column = new Structures_DataGrid_Column('Name', 'first_name', 'first_name',
