@@ -21,6 +21,8 @@
 require_once 'DataGrid/Column.php';
 require_once 'DataGrid/Record.php';
 
+require_once 'Pager/Pager.php';
+
 /**
  * Structures_DataGrid_Core Class
  *
@@ -73,6 +75,8 @@ class Structures_DataGrid_Core
      */
     var $pageList = array();
 
+    var $pager;
+
     /**
      * Constructor
      *
@@ -120,7 +124,7 @@ class Structures_DataGrid_Core
      */
     function addColumn($column)
     {
-        if (get_class($column) == 'structures_datagrid_column') {
+        if (is_a($column, 'structures_datagrid_column')) {
             $this->columnSet = array_merge($this->columnSet, array($column));
             return true;
         } else {
@@ -155,8 +159,7 @@ class Structures_DataGrid_Core
      */
     function addRecord($record)
     {
-        if ((get_class($record) == 'structures_datagrid_record') ||
-            (get_parent_class($record) == 'structures_datagrid_record')) {
+        if (is_a($record, 'structures_datagrid_record')) {
             $this->recordSet = array_merge($this->recordSet,
                                            array($record->getRecord()));
             return true;
@@ -216,19 +219,14 @@ class Structures_DataGrid_Core
      * @access  private
      * @return  void
      */
-    function buildPaging()
+    function buildPaging($options = null)
     {
-        if (($this->rowLimit > 0) &&
-            (count($this->recordSet) > $this->rowLimit)) {
-            $pageCount = ceil(count(($this->recordSet))/($this->rowLimit));
-            for ($i = 1; $i <= $pageCount; $i++) {
-                if ($this->page == $i) {
-                    $this->pageList[$i] = null;
-                } else {
-                    $this->pageList[$i] = "page=$i";
-                }
-            }
+        if ($options == null) {
+            $options = array('totalItems' => count($this->recordSet),
+                             'perPage' => $this->rowLimit,
+                             'urlVar' => 'page');
         }
+        $this->pager = new Pager($options);
     }
 
 }
