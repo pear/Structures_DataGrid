@@ -18,18 +18,13 @@
     </maintainer>
   </maintainers>
   <release>
-    <version>0.5.2</version>
+    <version>0.5.3</version>
     <date>2004-08-10</date>
     <license>PHP License</license>
     <state>alpha</state>
     <notes>
-      This release is to be the final Alpha release (hopefully).
-      Warning: API Changes!
-      Reorganized renderer APIs for HTML_Table, XML, and XLS to allow for a toHTML and a toXML and getSpreadsheet methods.  The render methods now print, and the to* return strings. (Bug #2102)
-      Added rendered variable and setRendered methods in Renderer classes (Bertrand)
-      Fixed Record Drivers to work with PHP 5 (Bug #1739)
-      Moved require statement for the Pager class for more optimization (Bug #2027) 
-      Fixed undefined offset warning, again :) (Bug #1545)
+      This release is to be the final Alpha release.
+      Moved setRendered method from XML renderer to XLS renderer
       Numerous documentation cleanups
     </notes>
     <deps>
@@ -57,6 +52,17 @@
     </filelist>
   </release>
   <changelog>
+    <release>
+      <version>0.5.3</version>
+      <date>2004-08-10</date>
+      <license>PHP License</license>
+      <state>alpha</state>
+      <notes>
+        This release is to be the final Alpha release.
+        Moved setRendered method from XML renderer to XLS renderer
+        Numerous documentation cleanups
+      </notes>
+    </release>
     <release>
       <version>0.5.2</version>
       <date>2004-08-10</date>
