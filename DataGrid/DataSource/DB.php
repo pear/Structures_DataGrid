@@ -105,9 +105,22 @@ class Structures_DataGrid_DataSource_DB extends Structures_DataGrid_DataSource
     {
         $recordSet = array();
 
-        if ($this->_result->numRows()) {
-            while ($record = $this->_result->fetchRow(DB_FETCHMODE_ASSOC)) {
+        if ($numRows = $this->_result->numRows()) {
+            
+            // Move database pointer for limiting
+            if (($this->_offset > $this->_limit) &&
+                ($numRows > $this->_offset)) {
+                for ($i = 0; $i < $this->_offset; $i++) {
+                    $this->_result->fetchRow();
+                }
+            }
+            
+            // Fetch Records
+            $i = 0;
+            while (($record = $this->_result->fetchRow(DB_FETCHMODE_ASSOC)) &&
+                   ($i < $this->_limit)) {
                 $recordSet[] = $record;
+                $i++
             }
         } else {
             return new PEAR_Error('No records found');
