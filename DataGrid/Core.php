@@ -166,8 +166,6 @@ class Structures_DataGrid_Core
     {
         if (is_subclass_of($source, 'structures_datagrid_datasource')) {
             $this->_dataSource =& $source;
-
-            // Should the datasource bind method go here?
             
             /* The following code has been moved to the renderer
             
