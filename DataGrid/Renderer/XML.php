@@ -31,6 +31,10 @@ require_once 'XML/Util.php';
  */
 class Structures_DataGrid_Renderer_XML
 {
+    /**
+     * The Datagrid object to render
+     * @var object Structures_DataGrid
+     */
     var $_dg;
 
     /**
