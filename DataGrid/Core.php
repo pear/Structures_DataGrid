@@ -139,15 +139,18 @@ class Structures_DataGrid_Core
      * A simple way to add a recod set to the datagrid
      *
      * @access  public
-     * @param   mixed   $rs     The record set in any of the supported data
-     *                          source types
-     * @return  bool            True if successful, otherwise PEAR_Error.
+     * @param   mixed   $rs         The record set in any of the supported data
+     *                              source types
+     * @param   array   $options    Optional. The options to be used for the
+     *                              data source
+     * @param   string  $type       Optional. The data source type
+     * @return  bool                True if successful, otherwise PEAR_Error.
      */
-    function bind($rs)
+    function bind($rs, $options = array(), $type = null)
     {
         require_once 'Structures/DataGrid/DataSource.php';
         
-        $source =& Structures_DataGrid_DataSource::create($rs);
+        $source =& Structures_DataGrid_DataSource::create($rs, $options, $type);
         if (!PEAR::isError($source)) {
             return $this->bindDataSource($source);
         } else {
@@ -166,21 +169,6 @@ class Structures_DataGrid_Core
     {
         if (is_subclass_of($source, 'structures_datagrid_datasource')) {
             $this->_dataSource =& $source;
-            
-            /* The following code has been moved to the renderer
-            
-            $recordSet = $source->fetch(($this->page*$this->rowLimit),
-                                   $this->rowLimit, $this->sortArray[0], 
-                                   $this->sortArray[1]);
-            if (PEAR::isError($recordSet)) {
-                return $recordSet;
-            } else {
-                $this->recordSet = $recordSet;
-                if (count($columnSet = $source->getColumns())) {
-                    $this->columnSet = $columnSet;
-                }
-            }
-            */
         } else {
             return new PEAR_Error('Invalid data source type, ' . 
                                   'must be a valid data source driver class');
