@@ -48,14 +48,14 @@ define ('DATAGRID_RECORD_DBRESULT',   'DBResult');
  *
  * Quick Example:
  * <?php
- * require('DataGrid.php');
+ * require('Structures/DataGrid.php');
  * $dg = new Structures_DataGrid();
  * $result = mysql_query('SELECT * FROM users');
  * while ($rs = mysql_fetch_assoc($result)) {
  *     $dataSet[] = $rs;
  * }
  * $dg->bind($dataSet);
- * $dg->render();
+ * echo $dg->render();
  * ?>
  *
  * @version  $Revision$
