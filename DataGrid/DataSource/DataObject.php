@@ -106,11 +106,7 @@ class Structures_DataGrid_DataSource_DataObject
             if (!$this->_options['fields']) {
                 if ($fieldsVar = $this->_options['fields_property']
                     and isset($this->_dataobject->$fieldsVar)) {
-                    
                     $mergeOptions['fields'] = $this->_dataobject->$fieldsVar;    
-                } else {
-                    $mergeOptions['fields'] = 
-                        array_keys($this->_dataobject->toArray());
                 }
             }
 
@@ -145,39 +141,53 @@ class Structures_DataGrid_DataSource_DataObject
      */    
     function &fetch($offset=0, $len=null, $sortField=null, $sortDir='ASC')
     {
-        // Caching the number of rows
-        if (PEAR::isError($count = $this->count())) {
-            return $count;
+        // Check to see if QUery has already been submitted
+        if ($this->_dataobject->_DB_resultid != '') {
+            $this->_rowNum = $this->_dataobject->N;
         } else {
-            $this->_rowNum = $count;
-        }
-                
-        // Sorting
-        if ($sortField) {
-            $this->sort($sortField, $sortDir);
+            // Caching the number of rows
+            if (PEAR::isError($count = $this->count())) {
+                return $count;
+            } else {
+                $this->_rowNum = $count;
+            }
+                    
+            // Sorting
+            if ($sortField) {
+                $this->sort($sortField, $sortDir);
+            }
+            
+            // Limiting
+            if ($offset) {
+                $this->_dataobject->limit($offset, $len);
+            } elseif ($len) {
+                $this->_dataobject->limit($len);
+            }
+            
+            if (!($result = $this->_dataobject->find())) { 
+                return new PEAR_Error('Couldn\'t fetch data');
+            }
         }
         
-        // Limiting
-        if ($offset) {
-            $this->_dataobject->limit($offset, $len);
-        } elseif ($len) {
-            $this->_dataobject->limit($len);
-        }
-        
-        $records = array();
-
         // Retrieving data
-        if ($this->_dataobject->find()) {
+        $records = array();
+        if ($this->_rowNum) {
             while ($this->_dataobject->fetch()) {
-                // Only retrieve the fields to render, as set in $fList :
+                // Determine fields to render
                 $rec = array();
-                foreach ($this->_options['fields'] as $fName) {
-                    $rec[$fName] = $this->_dataobject->$fName;
+                if ($this->_options['fields']) {
+                    foreach ($this->_options['fields'] as $fName) {
+                        $rec[$fName] = $this->_dataobject->$fName;
+                    } 
+                } else {
+                    // Can't use this until DB_DO Bug 1315 is fixed
+                    //$rec = $this->_dataobject->toArray());
+                    
+                    // REPLACE ME WITH ABOVE
+                    $rec = get_object_vars($this->_dataobject);
                 }
                 $records[] = $rec;
             }
-        } else {
-            return new PEAR_Error('Couldn\'t fetch data');
         }
        
         return $records;
@@ -192,12 +202,15 @@ class Structures_DataGrid_DataSource_DataObject
     function count()
     {
         if ($this->_rowNum == null) {
-            $test = $this->_dataobject->count();
-            if ($test === false) {
-                return new PEAR_Error ('Can\'t count the number of rows');
+            if ($this->_dataobject->N) {
+                $this->_rowNum = $this->_dataobject->N;
             } else {
-                $this->_rowNum = $test;
-                return $test;
+                $test = $this->_dataobject->count();
+                if ($test === false) {
+                    return new PEAR_Error ('Can\'t count the number of rows');
+                } else {
+                    $this->_rowNum = $test;
+                }
             }
         }
         
