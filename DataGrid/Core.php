@@ -151,7 +151,7 @@ class Structures_DataGrid_Core
         if (!PEAR::isError($source)) {
             return $this->bindDataSource($source);
         } else {
-            return new PEAR_Error('Recordset must be an associative array');
+            return $source;
         }
     }
 
