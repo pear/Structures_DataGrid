@@ -62,12 +62,30 @@ class Structures_DataGrid_Renderer_HTMLTable
     var $emptyRowAttributes = array();
 
     /**
+     * Wether or not to reset paging on sorting request
+     * @var bool
+     */
+    var $sortingResetsPaging = true;    
+    
+    /**
      * The complete path for the sorting links.  If not defined, PHP_SELF is
      * used.
      * @var string
      */
     var $path;
 
+    /**
+     * GET parameters prefix
+     * @var string
+     */
+     var $requestPrefix;
+
+    /**
+     * The HTML::Pager object that controls paging logic.
+     * @var object Pager
+     */
+    var $pager;
+         
     /**
      * The structures_datagrid object
      * @var object Structures_DataGrid
@@ -195,6 +213,19 @@ class Structures_DataGrid_Renderer_HTMLTable
     }
     
     /**
+     * If you need to change the request variables, you can define a prefix.
+     * This is extra useful when using multiple datagrids.
+     *
+     * @access  public
+     * @param   string $prefix      The prefix to use on request variables;
+     */
+    function setRequestPrefix($prefix)
+    {
+        $this->requestPrefix = $prefix;
+    }
+    
+    
+    /**
      * Prints the HTML for the DataGrid
      *
      * @access  public
@@ -276,10 +307,11 @@ class Structures_DataGrid_Renderer_HTMLTable
             //Define Content
             if ($column->orderBy != null) {
                 // Determine Direction
-                if ($this->_dg->sortArray[1] == 'ASC') {
-                    $direction = 'direction=DESC';
+                if ($this->_dg->sortArray[0] == $column->orderBy && 
+                    $this->_dg->sortArray[1] == 'ASC') {
+                    $direction = $this->requestPrefix . 'direction=DESC';
                 } else {
-                    $direction = 'direction=ASC';
+                    $direction = $this->requestPrefix . 'direction=ASC';
                 }
 
                 // Build URL -- This needs much refinement :)
@@ -293,11 +325,14 @@ class Structures_DataGrid_Renderer_HTMLTable
                     $i = 0;
                     foreach($qString as $element) {
                         if ($element != '') {
-                            if (stristr($element, 'orderBy')) {
-                                $url .= 'orderBy=' . $column->orderBy;
+                            if (stristr($element, $this->requestPrefix . 'orderBy')) {
+                                $url .= $this->requestPrefix . 'orderBy=' . $column->orderBy;
                                 $orderByExists = true;
-                            } elseif (stristr($element, 'direction')) {
+                            } elseif (stristr($element, $this->requestPrefix . 'direction')) {
                                 $url .= $direction;
+                            } elseif (stristr($element, $this->requestPrefix . 'page') && 
+                                      $this->sortingResetsPaging) {
+                                $url .= $this->requestPrefix . 'page=1';
                             } else {
                                 $url .= $element;
                             }
@@ -309,11 +344,12 @@ class Structures_DataGrid_Renderer_HTMLTable
                     }
 
                     if (!isset($orderByExists)) {
-                        $url .= '&orderBy=' . $column->orderBy . '&' .
-                                $direction;
+                        $url .= '&' . $this->requestPrefix . 'orderBy=' . 
+                                $column->orderBy . '&' . $direction;
                     }
                 } else {
-                    $url .= 'orderBy=' . $column->orderBy . '&' . $direction;
+                    $url .= $this->requestPrefix . 'orderBy=' . 
+                            $column->orderBy . '&' . $direction;
                 }
 
                 $str = '<a href="' . $url . '"><b>' . $column->columnName .
@@ -431,11 +467,28 @@ class Structures_DataGrid_Renderer_HTMLTable
         if (is_array($attrs)) {
             $options = array_merge($options, $attrs);
         }
-        $this->_dg->buildPaging($options);
+        $this->_buildPaging($options);
 
         // Return paging html
-        return $this->_dg->pager->links;
+        return $this->pager->links;
     }
+    
+
+    /**
+     * Handles generating the paging object
+     *
+     * @param   array        $options        Array of HTML::Pager options
+     * @access  private
+     * @return  void
+     */
+    function _buildPaging($options)
+    {
+        $defaults = array('totalItems' => count($this->recordSet),
+                          'perPage' => $this->rowLimit,
+                          'urlVar' => $this->requirePrefix . 'page');
+        $options = array_merge($defaults, $options);
+        $this->pager =& Pager::factory($options);
+    }    
 
 }
 
