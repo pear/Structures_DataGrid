@@ -57,7 +57,7 @@ class Structures_DataGrid_DataSource_Array extends Structures_DataGrid_DataSourc
      */    
     function bind($ar, $options=array())
     {
-        if (count($options)) {
+        if ($options) {
             $this->setOptions($options); 
         } 
                
@@ -93,7 +93,7 @@ class Structures_DataGrid_DataSource_Array extends Structures_DataGrid_DataSourc
     function &fetch($offset=0, $len=null, $sortField='', $sortDir='ASC')
     {
         if ($this->_ar && !$this->_options['fields']) {
-            $this->_setOptions(array('fields' => array_keys($this->_ar[0])));
+            $this->setOptions(array('fields' => array_keys($this->_ar[0])));
         }
         $records =& $this->staticFetch($this->_ar, $this->_options['fields'],
                                        $offset, $len, $sortField, $sortDir);
@@ -129,9 +129,9 @@ class Structures_DataGrid_DataSource_Array extends Structures_DataGrid_DataSourc
         
         // slicing
         if (is_null($len)) {
-            $slice = array_slice($ar, $ofs);
+            $slice = array_slice($ar, $offset);
         } else {
-            $slice = array_slice($ar, $ofs, $len);
+            $slice = array_slice($ar, $offset, $len);
         }
 
         // Filter out fields that are to not be rendered
