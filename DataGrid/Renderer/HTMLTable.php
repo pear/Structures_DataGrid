@@ -399,10 +399,6 @@ class Structures_DataGrid_Renderer_HTMLTable
 
             $cnt++;
         }
-
-        // Define Table Header attributes
-        //$attr = array('bgcolor' => $this->headerBgColor);
-        //$this->_table->setRowAttributes(0, $attr);
     }
 
     /**
