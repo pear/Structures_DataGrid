@@ -33,6 +33,12 @@ require_once 'Pager/Pager.php';
 class Structures_DataGrid_Renderer_HTMLTable
 {
     /**
+     * Use the table header
+     * @var bool
+     */
+    var $header = true;
+
+    /**
      * The table header background color
      * @var string
      */
@@ -167,7 +173,9 @@ class Structures_DataGrid_Renderer_HTMLTable
         $this->_dg = &$dg;
 
         // Define Table Header
-        $this->_buildHTMLTableHeader();
+        if ($this->header) { 
+            $this->_buildHTMLTableHeader();
+        }
 
         // Build Table Data
         $this->_buildHTMLTableBody();
@@ -186,6 +194,7 @@ class Structures_DataGrid_Renderer_HTMLTable
      *
      * @access  private
      * @return  void
+     * @todo    Redesign/Rework the header URL building.
      */
     function _buildHTMLTableHeader()
     {
@@ -193,22 +202,43 @@ class Structures_DataGrid_Renderer_HTMLTable
         foreach ($this->_dg->columnSet as $column) {
             //Define Content
             if ($column->orderBy != null) {
-                if (strlen($_SERVER['QUERY_STRING'])) {
-                    $url = $_SERVER['PHP_SELF'] . '?' .
-                           $_SERVER['QUERY_STRING'] . '&orderBy=';
-                } else {
-                    $url = $_SERVER['PHP_SELF'] . '?orderBy=';
-                }
-
+                // Determine Direction
                 if ($this->_dg->sortArray[1] == 'ASC') {
-                    $direction = '&direction=DESC';
+                    $direction = 'direction=DESC';
                 } else {
-                    $direction = '&direction=ASC';
+                    $direction = 'direction=ASC';
                 }
 
-                $str = '<a href="' . $url . $column->orderBy . $direction .
-                       '"><b>' .
-                       $column->columnName . '</b></a>';
+                // Build URL -- This needs much refinement :)
+                $url = $_SERVER['PHP_SELF'] . '?';
+                if (isset($_SERVER['QUERY_STRING'])) {
+                    $qString = explode('&', $_SERVER['QUERY_STRING']);
+                    $i = 0;
+                    foreach($qString as $element) {
+                        if ($element != '') { 
+                            if (stristr($element, 'orderBy')) {
+                                $url .= 'orderBy=' . $column->orderBy;
+                                $orderByExists = true;
+                            } elseif (stristr($element, 'direction')) {
+                                $url .= $direction;
+                            } else {
+                                $url .= $element;
+                            }
+                        }
+                        $i++;
+                        if ($i < count($qString)) {
+                            $url .= '&';
+                        }
+                    }
+
+                    if (!isset($orderByExists)) {
+                        $url .= '&orderBy=' . $column->orderBy . '&' . $direction;
+                    }
+                } else {
+                    $url .= 'orderBy=' . $column->orderBy . '&' . $direction;
+                }
+
+                $str = '<a href="' . $url . '"><b>' . $column->columnName . '</b></a>';
             } else {
                 $str = '<b>' . $column->columnName . '</b>';
             }
