@@ -191,14 +191,17 @@ class Structures_DataGrid_DataSource_DataObject
      */    
     function count()
     {
-        if (is_null($this->_rowNum)) {
+        if ($this->_rowNum == null) {
             $test = $this->_dataobject->count();
             if ($test === false) {
                 return new PEAR_Error ('Can\'t count the number of rows');
             } else {
                 $this->_rowNum = $test;
+                return $test;
             }
         }
+        
+        return $this->_rowNum;
     }
 
 }
