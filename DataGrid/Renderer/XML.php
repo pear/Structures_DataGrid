@@ -44,7 +44,7 @@ class Structures_DataGrid_Renderer_XML
     {
     }
 
-    function render(&$dg)
+    function render($dg)
     {
         $this->_dg = &$dg;
 

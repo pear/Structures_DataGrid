@@ -66,7 +66,7 @@ class Structures_DataGrid_Renderer_Smarty
         }
     }
 
-    function render(&$dg)
+    function render($dg)
     {
         $this->_dg = &$dg;
 

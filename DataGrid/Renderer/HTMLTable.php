@@ -160,7 +160,7 @@ class Structures_DataGrid_Renderer_HTMLTable
      * @access  public
      * @return  void
      */
-    function render(&$dg)
+    function render($dg)
     {
         $this->_dg = &$dg;
 
