@@ -75,11 +75,10 @@ class Structures_DataGrid extends Structures_DataGrid_Renderer
      * @return void
      * @access public
      */
-    function Structures_DataGrid($limit = null, $page = 1,
+    function Structures_DataGrid($limit = null, $page = null,
                                  $renderer = DATAGRID_RENDER_TABLE)
     {
-        Structures_DataGrid_Renderer::Structures_DataGrid_Renderer($renderer);
-        Structures_DataGrid_Core::Structures_DataGrid_Core($limit, $page);
+        Structures_DataGrid_Renderer::Structures_DataGrid_Renderer($renderer, $limit, $page);
     }
 
     /**
