@@ -78,7 +78,9 @@ class Structures_DataGrid_DataSource_DataObject
         parent::Structures_DataGrid_DataSource();
         $this->_addDefaultOptions(array(
                     'labels_property' => 'fb_fieldLabels',
-                    'fields_property' => 'fb_fieldsToRender'));
+                    'fields_property' => 'fb_fieldsToRender',
+                    'sort_property' => 'fb_linkOrderFields',
+                    'formbuilder_integration' => false));
     }
   
     /**
@@ -106,7 +108,25 @@ class Structures_DataGrid_DataSource_DataObject
             if (!$this->_options['fields']) {
                 if ($fieldsVar = $this->_options['fields_property']
                     and isset($this->_dataobject->$fieldsVar)) {
-                    $mergeOptions['fields'] = $this->_dataobject->$fieldsVar;    
+                    $mergeOptions['fields'] = $this->_dataobject->$fieldsVar;
+                    if ($this->_options['formbuilder_integration']) {
+                        if (isset($this->_dataobject->fb_preDefOrder)) {
+                            $ordered = array();
+                            foreach ($this->_dataobject->fb_preDefOrder as $orderField) {
+                                if (in_array($orderField, $mergeOptions['fields'])) {
+                                    $ordered[] = $orderField;
+                                }
+                            }
+                            $mergeOptions['fields'] = array_merge($ordered, array_diff($mergeOptions['fields'], $ordered));
+                        }
+                        foreach ($mergeOptions['fields'] as $num => $field) {
+                            if (strstr($field, '__tripleLink_') || strstr($field, '__crossLink_') || strstr($field, '__reverseLink_')) {
+                                unset($mergeOptions['fields'][$num]);
+                            }
+                        }
+                    }
+                } else {
+                    $mergeOptions['fields'] = array_keys($this->_dataobject->table());                    
                 }
             }
 
@@ -155,6 +175,11 @@ class Structures_DataGrid_DataSource_DataObject
             // Sorting
             if ($sortField) {
                 $this->sort($sortField, $sortDir);
+            } elseif (($sortProperty = $this->_options['sort_property'])
+                      && isset($this->_dataobject->$sortProperty)) {
+                foreach ($this->_dataobject->$sortProperty as $sort) {
+                    $this->sort($sort);
+                }
             }
             
             // Limiting
@@ -170,12 +195,20 @@ class Structures_DataGrid_DataSource_DataObject
         // Retrieving data
         $records = array();
         if ($this->_rowNum) {
+            if ($this->_options['formbuilder_integration']) {
+                require_once('DB/DataObject/FormBuilder.php');
+                $links = $this->_dataobject->links();
+            }            
             while ($this->_dataobject->fetch()) {
                 // Determine fields to render
                 $rec = array();
                 if ($this->_options['fields']) {
                     foreach ($this->_options['fields'] as $fName) {
-                        $rec[$fName] = $this->_dataobject->$fName;
+                        if (isset($this->_dataobject->$fName)) {                        
+                            $rec[$fName] = $this->_dataobject->$fName;
+                        } else {
+                            $rec[$fName] = null;
+                        }                            
                     } 
                 } else {
                     // Can't use this until DB_DO Bug 1315 is fixed
@@ -184,6 +217,15 @@ class Structures_DataGrid_DataSource_DataObject
                     // REPLACE ME WITH ABOVE
                     $rec = get_object_vars($this->_dataobject);
                 }
+                
+                if ($this->_options['formbuilder_integration']) {
+                    foreach (array_keys($rec) as $field) {
+                        if (isset($links[$field]) && $linkedDo =& $this->_dataobject->getLink($field)) {
+                            $rec[$field] = DB_DataObject_FormBuilder::getDataObjectString($linkedDo);
+                        }
+                    }
+                }
+                                
                 $records[] = $rec;
             }
         }
@@ -221,9 +263,13 @@ class Structures_DataGrid_DataSource_DataObject
      * @param   string  $sortField  Field to sort by
      * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
      */
-    function sort($sortField, $sortDir)
+    function sort($sortField, $sortDir = null)
     {
-        $this->_dataobject->orderBy("$sortField $sortDir");
+        if ($sortDir === null) {
+            $this->_dataobject->orderBy($sortField);
+        } else {
+            $this->_dataobject->orderBy($sortField . ' ' . $sortDir);
+        }
     }
 
 }
