@@ -48,7 +48,7 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
     function Structures_DataGrid_Renderer($renderer = DATAGRID_RENDER_TABLE)
     {
         if (PEAR::isError($this->setRenderer($renderer))) {
-            $this->setRenderer(DATAGRID_RENDER_TABLE); 
+            $this->setRenderer(DATAGRID_RENDER_TABLE);
         }
     }
 
@@ -67,14 +67,29 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
         $this->_setDefaultHeaders();
 
         // Render out the data
-        $this->renderer->render(&$this);
+        $this->renderer->render($this);
     }
 
+    /**
+     * Get Renderer
+     *
+     * Retrieves the renderer object as a reference
+     *
+     * @access public
+     */
     function &getRenderer()
     {
         return $this->renderer;
     }
 
+    /**
+     * Set Renderer
+     *
+     * Defines which renderer to be used by the DataGrid
+     *
+     * @param  string   $renderer       The defined renderer string
+     * @access public
+     */
     function setRenderer($renderer)
     {
         $class = 'Structures_DataGrid_Renderer_' . $renderer;
