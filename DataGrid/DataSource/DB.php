@@ -94,6 +94,11 @@ class Structures_DataGrid_DataSource_DB extends Structures_DataGrid_DataSource
                 $recordSet[] = $record;
             }
         }
+
+        // Determine fields to render
+        if (!$this->_options['fields']) {
+            $this->setOptions(array('fields' => array_keys($recordSet[0])));
+        }                
         
         // Limit and Sort the Data
         $recordSet =& Structures_DataGrid_DataSource_Array::staticFetch(
