@@ -57,6 +57,11 @@ class Structures_DataGrid_DataSource_RSS extends Structures_DataGrid_DataSource
         }
         
         $rss = new XML_RSS($file);
+        $result = $rss->parse();
+        if (PEAR::isError($result)) { 
+            return $result;
+        }
+        
         $this->_ar = $rss->getItems();
         
         return true;
