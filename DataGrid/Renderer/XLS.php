@@ -46,8 +46,14 @@ class Structures_DataGrid_Renderer_XLS
     function Structures_DataGrid_Renderer_XLS()
     {
         $this->_workbook = new Spreadsheet_Excel_Writer();
-        $this->_workbook->send($this->_filename);
+        $this->setFilename();
         $this->_worksheet =& $this->_workbook->addWorksheet();
+    }
+
+    function setFilename($filename = 'spreadsheet.xls')
+    {
+        $this->_filename = $filename;
+        $this->_workbook->send($filename);
     }
 
     function render(&$dg)
