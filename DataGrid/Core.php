@@ -166,9 +166,11 @@ class Structures_DataGrid_Core
     {
         if (is_subclass_of($source, 'structures_datagrid_datasource')) {
             $this->_dataSource =& $source;
+
+            // Should the datasource bind method go here?
             
-            // ***************** FIXME *******************
-            // The following code needs to be moved into the rendering stages
+            /* The following code has been moved to the renderer
+            
             $recordSet = $source->fetch(($this->page*$this->rowLimit),
                                    $this->rowLimit, $this->sortArray[0], 
                                    $this->sortArray[1]);
@@ -180,6 +182,7 @@ class Structures_DataGrid_Core
                     $this->columnSet = $columnSet;
                 }
             }
+            */
         } else {
             return new PEAR_Error('Invalid data source type, ' . 
                                   'must be a valid data source driver class');
