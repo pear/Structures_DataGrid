@@ -58,10 +58,7 @@ class Structures_DataGrid_DataSource_Array extends Structures_DataGrid_DataSourc
     function bind($ar, $options=array())
     {
         if (count($options)) {
-            $test = $this->_setOptions($options); 
-            if (PEAR::isError($test)) {
-                return $test;
-            }
+            $this->setOptions($options); 
         } 
                
         if (is_array($ar)) {
