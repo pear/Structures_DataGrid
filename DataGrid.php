@@ -22,11 +22,19 @@ require_once 'PEAR.php';
 
 require_once 'Structures/DataGrid/Renderer.php';
 
+// Renderer Drivers
 define ('DATAGRID_RENDER_TABLE',    'HTMLTable');
 define ('DATAGRID_RENDER_SMARTY',   'Smarty');
 define ('DATAGRID_RENDER_XML',      'XML');
 define ('DATAGRID_RENDER_XLS',      'XLS');
 define ('DATAGRID_RENDER_XUL',      'XUL');
+
+// Data Source Drivers
+define('DATAGRID_SOURCE_ARRAY',     'Array');
+define('DATAGRID_SOURCE_DATAOBJECT','DataObject');
+define('DATAGRID_SOURCE_DB',        'DB');
+define('DATAGRID_SOURCE_XML',       'XML');
+
 
 /**
  * Structures_DataGrid Class
