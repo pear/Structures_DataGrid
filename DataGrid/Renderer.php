@@ -72,8 +72,9 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
     function fetchDataSource()
     {
         if ($this->_dataSource != null) {
+            $page = $this->page ? $this->page : $this->page - 1;
             $recordSet = $this->_dataSource->fetch(
-                            (($this->page-1)*$this->rowLimit),
+                            ($page*$this->rowLimit),
                             $this->rowLimit, $this->sortArray[0],
                             $this->sortArray[1]);
             if (PEAR::isError($recordSet)) {
