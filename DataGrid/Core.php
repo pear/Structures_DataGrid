@@ -171,7 +171,7 @@ class Structures_DataGrid_Core
             // The following code needs to be moved into the rendering stages
             $recordSet = $source->fetch(($this->page*$this->rowLimit),
                                    $this->rowLimit, $this->sortArray[0], 
-                                   this->sortArray[1]);
+                                   $this->sortArray[1]);
             if (PEAR::isError($recordSet)) {
                 return $recordSet;
             } else {
