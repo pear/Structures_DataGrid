@@ -58,13 +58,21 @@ class Structures_DataGrid_Renderer_XLS
 
     function render(&$dg)
     {
-        $this->_dg = &$dg;
-
-        $this->_buildHeader();
-        $this->_buildBody();
+        $this->getSpreadsheet($dg);
+       
         $this->_workbook->close();
     }
 
+    function getSpreadsheet(&$dg)
+    {
+        $this->_dg = &$dg;
+        
+        $this->_buildHeader();
+        $this->_buildBody();
+        
+        return $this->_workbook;
+    }
+    
     /**
      * Handles building the header of the DataGrid
      *
