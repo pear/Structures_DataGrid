@@ -76,7 +76,7 @@ class Structures_DataGrid extends Structures_DataGrid_Renderer
      * @return void
      * @access public
      */
-    function Structures_DataGrid($limit = null, $page = 1,
+    function Structures_DataGrid($limit = null, $page = null,
                                  $renderer = DATAGRID_RENDER_TABLE)
     {
         parent::Structures_DataGrid_Renderer($renderer, $limit, $page);
@@ -95,18 +95,6 @@ class Structures_DataGrid extends Structures_DataGrid_Renderer
         print_r($this);
         echo '</pre>';
     }
-    
-    /**
-     * Returns the current version of the package according to the CVS Tag
-     *
-     * @access  public
-     * @return  string      CVS Tag Version Number
-     */
-    function apiVersion()
-    {
-        return '$Name$';
-    }
-
 }
 
 ?>
