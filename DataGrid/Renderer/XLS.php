@@ -54,7 +54,13 @@ class Structures_DataGrid_Renderer_XLS
      * @var string
      */
     var $_filename = 'spreadsheet.xls';
-    
+
+    /**
+     * A switch to determine to use the header
+     * @var bool
+     */
+    var $header = true;    
+        
     /**
      * A switch to determine the state of the spreadsheet
      * @var bool
@@ -88,6 +94,17 @@ class Structures_DataGrid_Renderer_XLS
     }
 
     /**
+     * Determines whether or not to use the header
+     *
+     * @access  public
+     * @param   bool        value to determine to use the header or not.
+     */
+    function useHeader($bool)
+    {
+        $this->header = (bool)$bool;
+    }    
+    
+    /**
      * Force download the spreadsheet
      *
      * @param  object Structures_DataGrid   $dg     The datagrid object
@@ -111,7 +128,9 @@ class Structures_DataGrid_Renderer_XLS
         $this->_dg = &$dg;
 
         if (!$this->_rendered) {        
-            $this->_buildHeader();
+            if ($this->header) {
+                $this->_buildHeader();
+            }
             $this->_buildBody();
             $this->_rendered = true;
         }

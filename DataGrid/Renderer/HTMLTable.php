@@ -184,6 +184,17 @@ class Structures_DataGrid_Renderer_HTMLTable
     }
 
     /**
+     * Determines whether or not to use the Header
+     *
+     * @access  public
+     * @param   bool        value to determine to use the header or not.
+     */
+    function useHeader($bool)
+    {
+        $this->header = (bool)$bool;
+    }
+    
+    /**
      * Prints the HTML for the DataGrid
      *
      * @access  public
