@@ -146,7 +146,7 @@ class Structures_DataGrid_DataSource_DataObject
     function &fetch($offset=0, $len=null, $sortField=null, $sortDir='ASC')
     {
         // Caching the number of rows
-        if (PEAR::isError($count = $this->_dataobject->count())) {
+        if (PEAR::isError($count = $this->count())) {
             return $count;
         } else {
             $this->_rowNum = $count;
