@@ -26,13 +26,7 @@ define ('DATAGRID_RENDER_TABLE',    'HTMLTable');
 define ('DATAGRID_RENDER_SMARTY',   'Smarty');
 define ('DATAGRID_RENDER_XML',      'XML');
 define ('DATAGRID_RENDER_XLS',      'XLS');
-
-define ('DATAGRID_RECORD_DATAOBJECT', 'DataObject');
-define ('DATAGRID_RECORD_DBRESULT',   'DBResult');
-
-// Unnecessary?
-//define ('DATAGRID_SORT_ASC',  'ASC');
-//define ('DATAGRID_SORT_DESC', 'DESC');
+define ('DATAGRID_RENDER_XUL',      'XUL');
 
 /**
  * Structures_DataGrid Class
@@ -47,6 +41,7 @@ define ('DATAGRID_RECORD_DBRESULT',   'DBResult');
  * custom designed with alternating color rows.
  *
  * Quick Example:
+ * <code>
  * <?php
  * require('Structures/DataGrid.php');
  * $dg = new Structures_DataGrid();
@@ -57,6 +52,7 @@ define ('DATAGRID_RECORD_DBRESULT',   'DBResult');
  * $dg->bind($dataSet);
  * echo $dg->render();
  * ?>
+ * </code>
  *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
