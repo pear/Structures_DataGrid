@@ -19,6 +19,7 @@
 // $Id$
 
 require_once 'HTML/Table.php';
+require_once 'Pager/Pager.php';
 
 /**
  * Structures_DataGrid_Renderer_HTMLTable Class
@@ -144,7 +145,8 @@ class Structures_DataGrid_Renderer_HTMLTable
     }
 
     /**
-     * Define the table's autofill value.  This value appears only in an empty table cell.
+     * Define the table's autofill value.  This value appears only in an empty
+     * table cell.
      *
      * @access public
      * @param  string    $value     The value to use for empty cells.
@@ -158,7 +160,7 @@ class Structures_DataGrid_Renderer_HTMLTable
      * Generates the HTML for the DataGrid
      *
      * @access  public
-     * @return  void
+     * @return  string      The HTML of the DataGrid
      */
     function render(&$dg)
     {
@@ -176,7 +178,7 @@ class Structures_DataGrid_Renderer_HTMLTable
         $this->_table->altRowAttributes(1, $lightRow, $darkRow);
 
         // Print the table
-        echo $this->_table->toHTML();
+        return $this->_table->toHTML();
     }
 
     /**
@@ -191,8 +193,9 @@ class Structures_DataGrid_Renderer_HTMLTable
         foreach ($this->_dg->columnSet as $column) {
             //Define Content
             if ($column->orderBy != null) {
-                if (stristr($_SERVER['PHP_SELF'], '?')) {
-                    $url = $_SERVER['PHP_SELF'] . '&orderBy=';
+                if (strlen($_SERVER['QUERY_STRING'])) {
+                    $url = $_SERVER['PHP_SELF'] . '?' .
+                           $_SERVER['QUERY_STRING'] . '&orderBy=';
                 } else {
                     $url = $_SERVER['PHP_SELF'] . '?orderBy=';
                 }
@@ -203,7 +206,8 @@ class Structures_DataGrid_Renderer_HTMLTable
                     $direction = '&direction=ASC';
                 }
 
-                $str = '<a href="' . $url . $column->orderBy . $direction . '"><b>' .
+                $str = '<a href="' . $url . $column->orderBy . $direction .
+                       '"><b>' .
                        $column->columnName . '</b></a>';
             } else {
                 $str = '<b>' . $column->columnName . '</b>';
@@ -268,7 +272,8 @@ class Structures_DataGrid_Renderer_HTMLTable
 
                         // Print Content to HTML_Table
                         $this->_table->setCellContents($rowCnt, $cnt, $content);
-                        $this->_table->setCellAttributes($rowCnt, $cnt, $column->attribs);
+                        $this->_table->setCellAttributes($rowCnt, $cnt,
+                                                         $column->attribs);
 
                         $cnt++;
                     }
@@ -276,7 +281,8 @@ class Structures_DataGrid_Renderer_HTMLTable
                     // Determine if empty row should be printed
                     if ($this->allowEmptyRows) {
                         $rowCnt++;
-                        $this->_table->setRowAttributes($rowCnt, $this->emptyRowAttributes, false);
+                        $this->_table->setRowAttributes($rowCnt,
+                            $this->emptyRowAttributes, false);
                         $this->_table->setCellContents($rowCnt, 0, '&nbsp;');
                     }
                 }
@@ -285,55 +291,34 @@ class Structures_DataGrid_Renderer_HTMLTable
     }
 
     /**
-     * Handles the printing of the page list for the DataGrid in HTML.
+     * Handles the building of the page list for the DataGrid in HTML.
+     * This method uses the HTML::Pager class
      *
      * @access  public
-     * @param   string $seperator   The string to use to seperate each page link
+     * @param   string $mode        The mode of pager to use
+     * @param   string $separator   The string to use to separate each page link
+     * @param   string $prev        The string for the previous page link
+     * @param   string $next        The string for the forward page link
+     * @param   string $delta       The number of pages to display before and
+     *                              after the current page
      * @return  void
-     * @todo    Investigate HTML::Pager
+     * @see     HTML::Pager
      */
-    function printPaging($seperator = '|')
+    function getPaging($mode = 'pager', $separator = '|', $prev = '<<',
+                       $next = '>>', $delta = null)
     {
         // Generate Paging
         $this->_dg->buildPaging();
 
-        // Create base url for link
-        if (isset($_SERVER['QUERY_STRING'])) {
-            $url = $_SERVER['PHP_SELF'] . '?';
-            $queryString = explode('&', $_SERVER['QUERY_STRING']);
-            foreach ($queryString as $value) {
-                if (!strstr($value, 'page') && ($value != '')) {
-                    $url .= $value . '&';
-                }
-            }
-            $url .= 'page=';
-        } else {
-            $url = $_SERVER['PHP_SELF'] . '?page=';
-        }
+        // Set additional paging options
+        $options = array('delta' => $delta,
+                         'separator' => $separator,
+                         'prevImg' => $prev,
+                         'nextImg' => $next);
+        $this->_dg->pager->_setOptions($options);
 
-        // Print back link
-        if ($this->_dg->page > 1) {
-            echo '<a href="' . $url . ($this->_dg->page - 1) . '"><<</a>&nbsp;&nbsp;&nbsp;';
-        }
-
-        $cnt = 0;
-        foreach ($this->_dg->pageList as $page => $link) {
-            if ($link != '') {
-                echo '<a href="' . $url . $page . "\">&nbsp;$page&nbsp;</a>";
-            } else {
-                echo "<b>&nbsp;$page&nbsp;</b>";
-            }
-
-            if ($cnt+1 < count($this->_dg->pageList)) {
-                echo "&nbsp;$seperator&nbsp;";
-            }
-
-            $cnt++;
-        }
-
-        if ($this->_dg->page < count($this->_dg->pageList)) {
-            echo '&nbsp;&nbsp;&nbsp;<a href="' . $url . ($this->_dg->page + 1) . '">>></a>';
-        }
+        // Return paging html
+        return $this->_dg->pager->links;
     }
 
 }
