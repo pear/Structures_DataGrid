@@ -103,11 +103,9 @@ class Structures_DataGrid_DataSource
      */
     function Structures_DataGrid_DataSource()
     {
-        /*
-        $this->_options = array('generate_columns' => true,
+        $this->_options = array('generate_columns' => null,
                                 'labels'           => array(),
                                 'fields'           => array());
-        */
     }
 
     /**
