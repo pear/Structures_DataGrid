@@ -173,11 +173,19 @@ class Structures_DataGrid_Core
             if ($this->sortArray != null) {
                 $source->sort($this->sortArray);
             }
-            $source->fetch();
+            $rs = $source->fetch();
+            if (PEAR::isError($rs)) {
+                return $rs;
+            } else {
+                $this->recordSet = $rs;
+            }
+            
         } else {
             return new PEAR_Error('Invalid source type, ' . 
                                   'must be a valid data source driver class');
         }
+        
+        return true;
     }
     
     /**
