@@ -1,5 +1,5 @@
 <?php
-require_once('DataGrid.php');
+require_once('Structures/DataGrid.php');
 
 // Data to be printed by DataGrid
 $rs = array(array('id' => 1,

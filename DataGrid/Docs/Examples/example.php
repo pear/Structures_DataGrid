@@ -8,7 +8,7 @@
 <body>
 
 <?php
-require_once('DataGrid.php');
+require_once('Structures/DataGrid.php');
 
 function printLink($params)
 {

@@ -20,7 +20,7 @@
 
 require_once 'PEAR.php';
 
-require_once 'DataGrid/Renderer.php';
+require_once 'Structures/DataGrid/Renderer.php';
 
 define ('DATAGRID_RENDER_TABLE',    'HTMLTable');
 define ('DATAGRID_RENDER_SMARTY',   'Smarty');

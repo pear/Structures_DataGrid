@@ -18,8 +18,8 @@
 //
 // $Id$
 
-require_once 'DataGrid/Column.php';
-require_once 'DataGrid/Record.php';
+require_once 'Structures/DataGrid/Column.php';
+require_once 'Structures/DataGrid/Record.php';
 
 require_once 'Pager/Pager.php';
 

@@ -18,7 +18,7 @@
 //
 // $Id$
 
-require_once 'DataGrid/Core.php';
+require_once 'Structures/DataGrid/Core.php';
 
 /**
  * Structures_DataGrid_Renderer Class
@@ -93,7 +93,7 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
     function setRenderer($renderer)
     {
         $class = 'Structures_DataGrid_Renderer_' . $renderer;
-        $file = 'DataGrid/Renderer/' . $renderer . '.php';
+        $file = 'Structures/DataGrid/Renderer/' . $renderer . '.php';
 
         if (@include_once($file)) {
             $this->renderer = new $class();
