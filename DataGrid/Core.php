@@ -145,7 +145,7 @@ class Structures_DataGrid_Core
      */
     function bind($rs)
     {
-        require_once 'Structures/DataGrid/Source.php';
+        require_once 'Structures/DataGrid/DataSource.php';
         
         $source =& Structures_DataGrid_DataSource::create($rs);
         if (!PEAR::isError($source)) {

@@ -9,7 +9,6 @@
 
 <?php
 require_once('Structures/DataGrid.php');
-require_once('Structures/DataGrid/Source.php');
 
 class Printer {
     function printLink($params)
@@ -91,6 +90,7 @@ foreach ($rs as $row) {
 
 /* Bind a datasource object
 Option #2
+require_once('Structures/DataGrid/DataSource.php');
 $source = Structures_DataGrid_DataSource::create($rs);
 $dg->bindDataSource($source);
 */

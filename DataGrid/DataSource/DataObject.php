@@ -19,7 +19,7 @@
 //
 // $Id$
 
-require_once 'Structures/DataGrid/Source.php';
+require_once 'Structures/DataGrid/DataSource.php';
 
 /**
  * PEAR::DB_DataObject Data Source Driver
@@ -141,7 +141,7 @@ class Structures_DataGrid_DataSource_DataObject
      */    
     function &fetch($offset=0, $len=null, $sortField=null, $sortDir='ASC')
     {
-        // Check to see if QUery has already been submitted
+        // Check to see if Query has already been submitted
         if ($this->_dataobject->_DB_resultid != '') {
             $this->_rowNum = $this->_dataobject->N;
         } else {

@@ -19,7 +19,7 @@
 //
 // $Id$
 
-require_once 'Structures/DataGrid/Source.php';
+require_once 'Structures/DataGrid/DataSource.php';
 
 /**
  * Array Data Source Driver
