@@ -95,6 +95,17 @@ class Structures_DataGrid extends Structures_DataGrid_Renderer
         print_r($this);
         echo '</pre>';
     }
+    
+    /**
+     * Returns the current version of the package according to the CVS Tag
+     *
+     * @access  public
+     * @return  string      CVS Tag Version Number
+     */
+    function apiVersion()
+    {
+        return $Name$;
+    }
 
 }
 
