@@ -34,15 +34,25 @@ class Structures_DataGrid_Record_DB extends Structures_DataGrid_Record
     /**
      * Constructor
      *
-     * Builds the record.  Accepts data as an DB_Result object.
+     * Builds the record.  Data must be of type DB::DB_Result.
      *
      * @access  public
+     * @param   object DB_Result    $data   The DB_Result object. Optional.
      */
     function Structures_DataGrid_Record_DB($data = null)
     {
         $this->setRecord($data);
     }
 
+    /**
+     * Set Record
+     *
+     * Converts the DB_Record object into a format that the DataGrid object
+     * understands.
+     *
+     * @access  public
+     * @param   object DB_Result    $data   The DB_Result object.
+     */
     function setRecord($data)
     {
         if (strtolower(get_class($data)) == 'db_result') {
