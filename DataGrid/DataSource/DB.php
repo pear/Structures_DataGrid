@@ -48,7 +48,7 @@ class Structures_DataGrid_DataSource_DB extends Structures_DataGrid_DataSource
      */
     function Structures_DataGrid_DataSource_DB()
     {
-        parent::Structures_DataGrid_DataSource_Array();
+        parent::Structures_DataGrid_DataSource();
     }
   
     /**
