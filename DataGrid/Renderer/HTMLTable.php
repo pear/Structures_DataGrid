@@ -195,6 +195,19 @@ class Structures_DataGrid_Renderer_HTMLTable
      */
     function toHTML(&$dg)
     {
+        $table =& $this->getTable($dg);
+
+        $table->toHTML();
+    } 
+    
+    /**
+     * Gets the HTML_Table object for the DataGrid
+     *
+     * @access  public
+     * @return  object HTML_Table   The HTML Table object for the DataGrid
+     */
+    function getTable(&$dg)
+    {
         $this->_dg = &$dg;
 
         // Define Table Header
@@ -211,9 +224,8 @@ class Structures_DataGrid_Renderer_HTMLTable
                                         $this->oddRowAttributes,
                                         TRUE);
 
-        // Build the HTML
-        return $this->_table->toHTML();
-    }    
+        return $this->_table;
+    }   
     
     /**
      * Handles building the header of the DataGrid
