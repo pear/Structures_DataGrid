@@ -17,7 +17,7 @@
 // |         Andrew Nagy <asnagy@webitecture.org>                         |
 // +----------------------------------------------------------------------+
 //
-// $Id $
+// $Id$
 
 require_once 'Structures/DataGrid/Source.php';
 
@@ -154,7 +154,7 @@ class Structures_DataGrid_DataSource_DataObject
                 
         // Sorting
         if ($sortField) {
-            $this->_dataobject->orderBy("$sortField $sortDir");
+            $this->sort($sortField, $sortDir);
         }
         
         // Limiting
@@ -202,6 +202,18 @@ class Structures_DataGrid_DataSource_DataObject
         }
         
         return $this->_rowNum;
+    }
+    
+    /**
+     * Sorts the dataobject.  This MUST be called before fetch.
+     * 
+     * @access  public
+     * @param   string  $sortField  Field to sort by
+     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
+     */
+    function sort($sortField, $sortDir)
+    {
+        $this->_dataobject->orderBy("$sortField $sortDir");
     }
 
 }
