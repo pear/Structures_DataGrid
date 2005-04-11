@@ -55,7 +55,7 @@ class Structures_DataGrid_DataSource_CSV extends
             $this->setOptions($options); 
         }
         
-        if (is_file($csv)) {
+        if (@is_file($csv)) {
             if (!$rowList = file($csv)) {
                 return new PEAR_Error('Could not read file');
             }
