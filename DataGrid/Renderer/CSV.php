@@ -114,6 +114,7 @@ class Structures_DataGrid_Renderer_CSV
         $dg->_setDefaultHeaders();
         
         $i = 0;
+        $csv = '';
         foreach ($this->_dg->columnSet as $column) {
             if ($i > 0) {
                 $csv .= $this->delimiter . ' ';
