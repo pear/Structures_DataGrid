@@ -38,6 +38,7 @@ class Structures_DataGrid_DataSource_CSV extends
     function Structures_DataGrid_DataSource_CSV()
     {
         parent::Structures_DataGrid_DataSource_Array();
+        $this->_addDefaultOptions(array('delimiter' => ','));
     }
 
     /**
@@ -52,7 +53,7 @@ class Structures_DataGrid_DataSource_CSV extends
     {
         if ($options) {
             $this->setOptions($options); 
-        } 
+        }
         
         if (is_file($csv)) {
             if (!$rowList = file($csv)) {
@@ -63,7 +64,7 @@ class Structures_DataGrid_DataSource_CSV extends
         }
 
         for($i=0; $i<count($rowList); $i++) {
-            $this->_ar[] = explode($options['delimiter'], $rowList[$i]);
+            $this->_ar[] = explode($this->_options['delimiter'], $rowList[$i]);
         }
         
         return true;
