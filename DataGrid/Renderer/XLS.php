@@ -184,27 +184,10 @@ class Structures_DataGrid_Renderer_XLS
     function _buildBody()
     {
         if (count($this->_dg->recordSet)) {
-
-            // Determine looping values
-            if ($this->_dg->page > 1) {
-                $begin = ($this->_dg->page - 1) * $this->_dg->rowLimit;
-                $limit = $this->_dg->page * $this->_dg->rowLimit;
-            } else {
-                $begin = 0;
-                if ($this->_dg->rowLimit == null) {
-                    $limit = count($this->_dg->recordSet);
-                } else {
-                    $limit = $this->_dg->rowLimit;
-                }
-            }
-
-            // Begin loop
-            for ($i = $begin; $i < $limit; $i++) {
+            $rowCnt = 0;
+            foreach ($this->_dg->recordSet as $row) {
                 $cnt = 0;
-                $row = $this->_dg->recordSet[$i];
                 foreach ($this->_dg->columnSet as $column) {
-                    $rowCnt = ($i-$begin)+1;
-
                     // Build Content
                     if ($column->formatter != null) {
                         $content = $column->formatter($row);
@@ -222,6 +205,7 @@ class Structures_DataGrid_Renderer_XLS
 
                     $cnt++;
                 }
+                $rowCnt++;
             }
         }
     }
