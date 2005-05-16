@@ -41,7 +41,7 @@ class Structures_DataGrid_DataSource_Array extends Structures_DataGrid_DataSourc
      * @var array
      * @access private
      */
-    var $_ar;
+    var $_ar = array();
      
     function Structures_DataGrid_DataSource_Array()
     {
