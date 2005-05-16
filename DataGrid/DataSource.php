@@ -176,9 +176,13 @@ class Structures_DataGrid_DataSource
         
         $classname = "Structures_DataGrid_DataSource_$type";
         $driver = new $classname();
-        $driver->bind($source, $options);
+        $result = $driver->bind($source, $options);
        
-        return $driver;
+        if (PEAR::isError($result)) {
+            return $result;
+        } else {
+            return $driver;
+        }
     }
     
 
