@@ -31,7 +31,7 @@
 * @package  Structures_DataGrid
 * @category Structures
 */
-class Structures_DataGrid_DataSource_DB_Table
+class Structures_DataGrid_DataSource_DBTable
     extends Structures_DataGrid_DataSource
 {   
     /**
