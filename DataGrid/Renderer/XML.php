@@ -45,7 +45,7 @@ class Structures_DataGrid_Renderer_XML
      * @param   object Structures_DataGrid  $dg     The datagrid to render.
      * @access public
      */
-    function Structures_DataGrid_Renderer_XML($dg)
+    function Structures_DataGrid_Renderer_XML(&$dg)
     {
         $this->_dg =& $dg;
     }
