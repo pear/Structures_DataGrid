@@ -76,20 +76,22 @@ class Structures_DataGrid_DataSource_XML extends
             
         }
        
-        // Unserialize that up :
+        // Instantiate XML_Unserializer Object
         $unserializer = &new XML_Unserializer();
-        $test = $unserializer->unserialize($xml, false); 
+        $unserializer->setOption('parseAttributes', true);
+        $unserializer->setOption('attributesArray', 'attributes');
         
+        // Unserialize the XML Data
+        $test = $unserializer->unserialize($xml, false);
         if (PEAR::isError($test)) {
             return $test;
         }
         
+        // Fetch the unserialized Data
         $data = $unserializer->getUnserializedData();
 
-        list($junk,$data) = each($data);
-
         // Build a simple array  :
-        $this->_ar = array();
+        list($junk,$data) = each($data);
         foreach ($data as $index => $row)
         {
             if (!is_array($row) or !is_numeric($index)) {
