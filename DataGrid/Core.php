@@ -126,7 +126,73 @@ class Structures_DataGrid_Core
     {
         $this->page = $page;
     }
+    
+    /**
+     * Returns the total number of pages
+     * (returns 0 if there are no records, returns 1 if there is no row limit)
+     *
+     * @return string    the total number of pages
+     * @access public
+     */
+    function getPageCount()
+    {
+        if (is_null($this->rowLimit) || $this->getRecordCount() == 0) {
+            return 1;
+        } else {
+            return ceil($this->getRecordCount() / $this->rowLimit);
+        }
+    }
+    
+    /**
+     * Returns the total number of records
+     *
+     * @return string    the total number of records
+     * @access public
+     */
+    function getRecordCount()
+    {
+        if ($this->_dataSource != null) {
+            return $this->_dataSource->count();
+        } else {
+            return count($this->recordSet);
+        }
+    }    
+    
+    /**
+     * Returns the number of the first record of the current page
+     * (returns 0 if there are no records, returns 1 if there is no row limit)
+     *
+     * @return string    the number of the first record currently shown
+     * @access public
+     */
+    function getCurrentRecordNumberStart()
+    {
+        if (is_null($this->page)) {
+            return 1;
+        } elseif ($this->getRecordCount() == 0) {
+            return 0;
+        } else {
+            return ($this->page - 1) * $this->rowLimit + 1;
+        }
+    }
 
+    /**
+     * Returns the number of the last record of the current page
+     *
+     * @return string    the number of the last record currently shown
+     * @access public
+     */
+    function getCurrentRecordNumberEnd()
+    {
+        if (is_null($this->rowLimit)) {
+            return $this->getRecordCount();
+        } else {
+            return
+                min($this->getCurrentRecordNumberStart() + $this->rowLimit - 1,
+                    $this->getRecordCount());
+        }
+    }    
+    
     /**
      * If you need to change the request variables, you can define a prefix.
      * This is extra useful when using multiple datagrids.
