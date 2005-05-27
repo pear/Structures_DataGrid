@@ -237,7 +237,9 @@ class Structures_DataGrid_DataSource_DataObject
                 if ($this->_options['formbuilder_integration']) {
                     foreach (array_keys($rec) as $field) {
                         if (isset($links[$field]) &&
-                            $linkedDo =& $this->_dataobject->getLink($field)) {
+                            isset($this->_dataobject->$field) &&
+                            $linkedDo =& $this->_dataobject->getLink($field) &&
+                            !PEAR::isError($linkedDo)) {
                             $rec[$field] = DB_DataObject_FormBuilder::getDataObjectString($linkedDo);
                         }
                     }
