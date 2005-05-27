@@ -71,7 +71,7 @@ class Structures_DataGrid_DataSource_DBTable
      *
      * @access public
      */
-    function Structures_DataGrid_DataSource_DB_Table()
+    function Structures_DataGrid_DataSource_DBTable()
     {
         parent::Structures_DataGrid_DataSource();
     }
@@ -79,9 +79,10 @@ class Structures_DataGrid_DataSource_DBTable
     /**
      * Bind
      *
-     * @param   object DB_Table     The object (subclass of DB_Table) to bind
-     * @param   mixed               Nothing or
-     *                              array('view' => [name of "view" key])
+     * @param   object DB_Table     $object     The object (subclass of
+     *                                          DB_Table) to bind
+     * @param   mixed               $options    array('view' => 
+     *                                          [name of "view" key])
      * @access  public
      * @return  mixed               True on success, PEAR_Error on failure
      */
@@ -99,8 +100,7 @@ class Structures_DataGrid_DataSource_DBTable
             $this->setOptions($options);
             return true;
         } else {
-            return new PEAR_Error(
-                'Invalid "view" specified ' . 
+            return new PEAR_Error('Invalid "view" specified ' . 
                 '[must be a key in array of DB_Table subclass]');
         }
     }
