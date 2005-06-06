@@ -161,6 +161,7 @@ class Structures_DataGrid_DataSource_Array extends Structures_DataGrid_DataSourc
     {
         if (!($numRows = count($ar))) {
             $ar = $this->_ar;
+            $numRows = count($ar);
         }
         
         $sortAr = array();
