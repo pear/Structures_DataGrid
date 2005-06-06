@@ -520,7 +520,8 @@ class Structures_DataGrid_Renderer_HTMLTable
             $count = count($this->_dg->recordSet);
         }
         $defaults = array('totalItems' => $count,
-                          'perPage' => $this->_dg->rowLimit,
+                          'perPage' => is_null($this->_dg->rowLimit) ? 
+                                            $count : $this->_dg->rowLimit,
                           'urlVar' => $this->_dg->_requestPrefix . 'page',
                           'currentPage' => $this->_dg->page);
         $options = array_merge($defaults, $options);
