@@ -56,6 +56,13 @@ class Structures_DataGrid_Renderer_XLS
     var $_filename = 'spreadsheet.xls';
 
     /**
+     * Whether the spreadsheet should be send to the browser
+     * or written to a file
+     * @var bool
+     */
+    var $_sendToBrowser = true;    
+    
+    /**
      * A switch to determine to use the header
      * @var bool
      */
@@ -78,22 +85,21 @@ class Structures_DataGrid_Renderer_XLS
     function Structures_DataGrid_Renderer_XLS(&$dg)
     {
         $this->_dg =& $dg;
-        
-        $this->_workbook = new Spreadsheet_Excel_Writer();
-        $this->setFilename();
-        $this->_worksheet =& $this->_workbook->addWorksheet();
     }
 
     /**
      * Sets the name of the file to create
      *
-     * @param  string   $filename   The name of the file
+     * @param  string   $filename        The name of the file
+     * @param  bool     $sendToBrowser   Whether the spreadsheet should
+     *                                   be send to the browser or written
+     *                                   to a file
      * @access public
      */
-    function setFilename($filename = 'spreadsheet.xls')
+    function setFilename($filename = 'spreadsheet.xls', $sendToBrowser = true)
     {
         $this->_filename = $filename;
-        $this->_workbook->send($filename);
+        $this->_sendToBrowser = $sendToBrowser;
     }
 
     /**
@@ -139,7 +145,15 @@ class Structures_DataGrid_Renderer_XLS
     function &getSpreadsheet()
     {
         $dg =& $this->_dg;
-
+        
+        if ($this->_sendToBrowser) {
+            $this->_workbook = new Spreadsheet_Excel_Writer();
+            $this->_workbook->send($this->_filename);
+        } else {
+            $this->_workbook = new Spreadsheet_Excel_Writer($this->_filename);
+        }
+        $this->_worksheet =& $this->_workbook->addWorksheet();        
+        
         if (!$this->_rendered) {        
             // Get the data to be rendered
             $dg->fetchDataSource();
