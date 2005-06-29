@@ -198,7 +198,7 @@ class Structures_DataGrid_Renderer_XLS
     function _buildBody()
     {
         if (count($this->_dg->recordSet)) {
-            $rowCnt = 0;
+            $rowCnt = $this->header ? 1 : 0;
             foreach ($this->_dg->recordSet as $row) {
                 $cnt = 0;
                 foreach ($this->_dg->columnSet as $column) {
