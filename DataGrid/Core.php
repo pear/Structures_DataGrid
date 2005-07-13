@@ -315,12 +315,12 @@ class Structures_DataGrid_Core
      */
     function sortRecordSet($sortBy, $direction = 'ASC')
     {
+        $this->sortArray = array($sortBy, $direction);
         if ($this->_dataSource) {
             $this->_dataSource->sort($sortBy, $direction);
         } else {
             usort($this->recordSet, array($this, '_sort'));
         }
-        $this->sortArray = array($sortBy, $direction);
     }
     
     function _sort($a, $b, $i = 0)
