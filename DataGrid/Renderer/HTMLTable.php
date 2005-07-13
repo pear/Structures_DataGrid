@@ -456,13 +456,13 @@ class Structures_DataGrid_Renderer_HTMLTable
                 } else {
                     // Determine if empty row should be printed
                     if ($this->allowEmptyRows) {
-                        $rowCnt++;
                         for ($j=0; $j<count($this->_dg->columnSet); $j++) {
                             $this->_table->setCellAttributes($rowCnt, $j,
                                                      $this->emptyRowAttributes);
                             $this->_table->setCellContents($rowCnt, $j,
                                                            '&nbsp;');
                         }
+                        $rowCnt++;
                     }
                 }
             }
