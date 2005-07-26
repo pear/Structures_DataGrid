@@ -222,7 +222,7 @@ class Structures_DataGrid_DataSource_DataObject
                 // Build DataSet
                 $rec = array();
                 foreach ($fieldList as $fName) {
-                    $getMethod = 'get'.$fName;
+                    $getMethod = 'get' . ucfirst($fName);
                     if (method_exists($this->_dataobject, $getMethod)) {
                         //$rec[$fName] = $this->_dataobject->$getMethod(&$this);
                         $rec[$fName] = $this->_dataobject->$getMethod();
