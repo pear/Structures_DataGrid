@@ -68,10 +68,11 @@ class Structures_DataGrid extends Structures_DataGrid_Renderer
     /**
      * Constructor
      *
-     * Acts somewhat as a factory and instantiates the Renderer and the Core
+     * Builds the DataGrid class.  The Core functionality and Renderer are
+     * seperated for maintainability and to keep cohesion high.
      *
      * @param  string   $limit      The row limit per page.
-     * @param  string   $page       The current page viewed.
+     * @param  int      $page       The current page viewed.
      * @param  string   $renderer   The renderer to use.
      * @return void
      * @access public
