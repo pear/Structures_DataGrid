@@ -40,7 +40,13 @@ class Structures_DataGrid_Renderer_CSV
      * @var string
      */
     var $delimiter = ',';
-    
+
+    /**
+     * The character to use for line breaks
+     * @var string
+     */
+    var $lineBreak = "\n";
+        
     /**
      * Whether or not to encapuslate the values with quotes
      * @var bool
@@ -85,6 +91,17 @@ class Structures_DataGrid_Renderer_CSV
     }
 
     /**
+     * Define the character to use for line breaks
+     *
+     * @access  public
+     * @return  string      The character to use for line breaks (e.g. \n)
+     */
+    function setLineBreak($lineBreak)
+    {
+        $this->lineBreak = $lineBreak;
+    }    
+    
+    /**
      * Set the switch to encapsulate the values with quotes
      *
      * @access  public
@@ -117,12 +134,12 @@ class Structures_DataGrid_Renderer_CSV
         $csv = '';
         foreach ($this->_dg->columnSet as $column) {
             if ($i > 0) {
-                $csv .= $this->delimiter . ' ';
+                $csv .= $this->delimiter;
             }
             $csv .= $column->columnName;
             $i++;
         }
-        $csv .= "\n";
+        $csv .= $this->lineBreak;
         
         foreach ($this->_dg->recordSet as $row) {
             $i = 0;
