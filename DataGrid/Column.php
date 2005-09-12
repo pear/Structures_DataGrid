@@ -177,12 +177,14 @@ class Structures_DataGrid_Column
 
             // Process the parameters
             foreach($parameters as $param) {
-                $param = str_replace('$', '', $param);
-                if (strpos($param, '=') != false) {
-                    $vars = split('=', $param);
-                    $paramList[trim($vars[0])] = trim($vars[1]);
-                } else {
-                    $paramList[$param] = $$param;
+                if ($param != '') {
+                    $param = str_replace('$', '', $param);
+                    if (strpos($param, '=') != false) {
+                        $vars = split('=', $param);
+                        $paramList[trim($vars[0])] = trim($vars[1]);
+                    } else {
+                        $paramList[$param] = $$param;
+                    }
                 }
             }
         } else {
