@@ -94,12 +94,12 @@ class Structures_DataGrid_Core
         $this->rowLimit = $limit;
         
         //Use set page number, otherwise automatically detect the page number
-        if ($page !== null) {
+        if (!is_null ($page)) {
             $this->page = $page;
         } else {
             // Automatic handling of GET/POST/COOKIE variables
             $this->_parseHttpRequest();
-            if ($this->page == null) {
+            if (is_null ($this->page)) {
                 $this->page = 1;
             }
         }
@@ -151,7 +151,7 @@ class Structures_DataGrid_Core
      */
     function getRecordCount()
     {
-        if ($this->_dataSource != null) {
+        if (!is_null ($this->_dataSource)) {
             return $this->_dataSource->count();
         } else {
             return count($this->recordSet);

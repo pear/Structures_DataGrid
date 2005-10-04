@@ -203,10 +203,10 @@ class Structures_DataGrid_Renderer_XLS
                 $cnt = 0;
                 foreach ($this->_dg->columnSet as $column) {
                     // Build Content
-                    if ($column->formatter != null) {
+                    if (!is_null ($column->formatter)) {
                         $content = $column->formatter($row);
-                    } elseif ($column->fieldName == null) {
-                        if ($column->autoFillValue != null) {
+                    } elseif (is_null ($column->fieldName)) {
+                        if (!is_null ($column->autoFillValue)) {
                             $content = $column->autoFillValue;
                         } else {
                             $content = $column->columnName;

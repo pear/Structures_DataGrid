@@ -185,10 +185,10 @@ class Structures_DataGrid_Renderer_XUL
             $xul .= "  <listitem>\n";
             foreach ($this->_dg->columnSet as $column) {
                 // Build Content
-                if ($column->formatter != null) {
+                if (!is_null ($column->formatter)) {
                     $content = $column->formatter($row);
-                } elseif ($column->fieldName == null) {
-                    if ($column->autoFillValue != null) {
+                } elseif (is_null ($column->fieldName)) {
+                    if (!is_null ($column->autoFillValue)) {
                         $content = $column->autoFillValue;
                     } else {
                         $content = $column->columnName;

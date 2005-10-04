@@ -260,7 +260,7 @@ class Structures_DataGrid_DataSource_DataObject
      */    
     function count()
     {
-        if ($this->_rowNum == null) {
+        if (is_null ($this->_rowNum)) {
             if ($this->_dataobject->N) {
                 $this->_rowNum = $this->_dataobject->N;
             } else {
@@ -284,7 +284,7 @@ class Structures_DataGrid_DataSource_DataObject
      */
     function sort($sortField, $sortDir = null)
     {
-        if ($sortDir === null) {
+        if (is_null ($sortDir)) {
             $this->_dataobject->orderBy($sortField);
         } else {
             $this->_dataobject->orderBy($sortField . ' ' . $sortDir);
