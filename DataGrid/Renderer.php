@@ -120,7 +120,7 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
         $class = 'Structures_DataGrid_Renderer_' . $renderer;
         $file = $path . '/' . $renderer . '.php';
 
-        if (@include_once($file)) {
+        if (include_once($file)) {
             $this->renderer = new $class($this);
         } else {
             return new PEAR_Error('Invalid renderer');
