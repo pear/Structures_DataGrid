@@ -20,14 +20,6 @@
 // $Id$
 
 
-// Data Source Drivers
-define('DATAGRID_SOURCE_ARRAY',     'Array');
-define('DATAGRID_SOURCE_DATAOBJECT','DataObject');
-define('DATAGRID_SOURCE_DB',        'DB');
-define('DATAGRID_SOURCE_XML',       'XML');
-define('DATAGRID_SOURCE_RSS',       'RSS');
-define('DATAGRID_SOURCE_CSV',       'CSV');
-
 /**
 * Base abstract class for data source drivers
 * 

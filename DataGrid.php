@@ -31,6 +31,14 @@ define ('DATAGRID_RENDER_XUL',      'XUL');
 define ('DATAGRID_RENDER_CSV',      'CSV');
 define ('DATAGRID_RENDER_CONSOLE',  'Console');
 
+// Data Source Drivers
+define('DATAGRID_SOURCE_ARRAY',     'Array');
+define('DATAGRID_SOURCE_DATAOBJECT','DataObject');
+define('DATAGRID_SOURCE_DB',        'DB');
+define('DATAGRID_SOURCE_XML',       'XML');
+define('DATAGRID_SOURCE_RSS',       'RSS');
+define('DATAGRID_SOURCE_CSV',       'CSV');
+
 /**
  * Structures_DataGrid Class
  *
