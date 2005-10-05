@@ -328,8 +328,27 @@ class Structures_DataGrid_Renderer_HTMLTable
                 if (isset($_SERVER['QUERY_STRING'])) {
                     $qString = explode('&', $_SERVER['QUERY_STRING']);
                     $i = 0;
+                    $prefix = $this->_dg->_requestPrefix;
                     foreach($qString as $element) {
                         if ($element != '') {
+                            $list = explode ('=', $element);
+                            $key = $list[0];
+                            switch ($key) {
+                                case $prefix . 'orderBy' :
+                                    $url .=  $prefix . 'orderBy=' . 
+                                             $column->orderBy;
+                                    $orderByExists = true;
+                                    break;
+                                case $prefix . 'direction' :   
+                                    $url .= $direction;
+                                    break;
+                                case $prefix . 'page' :    
+                                    $url .= $prefix . 'page=1';
+                                    break;
+                                default:    
+                                    $url .= $element;
+                            }
+                            /*
                             if (stristr($element, $this->_dg->_requestPrefix . 'orderBy')) {
                                 $url .= $this->_dg->_requestPrefix . 'orderBy=' .
                                         $column->orderBy;
@@ -342,6 +361,7 @@ class Structures_DataGrid_Renderer_HTMLTable
                             } else {
                                 $url .= $element;
                             }
+                            */
                         }
                         $i++;
                         if ($i < count($qString)) {
