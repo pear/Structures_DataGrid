@@ -63,8 +63,9 @@ class Structures_DataGrid_DataSource_CSV extends
             $rowList = explode("\n", $csv);
         }
 
-        for($i=0; $i<count($rowList); $i++) {
-            $this->_ar[] = explode($this->_options['delimiter'], $rowList[$i]);
+        foreach ($rowList as $row) {
+            $row = trim ($row); // to remove DOSish \r
+            $this->_ar[] = explode($this->_options['delimiter'], $row);
         }
         
         return true;
