@@ -194,7 +194,15 @@ class Structures_DataGrid_Renderer_XUL
                         $content = $column->columnName;
                     }
                 } else {
-                    $content = $row[$column->fieldName];
+                    if (!isset ($row[$column->fieldName])) {
+                        if (!is_null ($column->autoFillValue)) {
+                            $content = $column->autoFillValue;
+                        } else {
+                            $content = '';
+                        }
+                    } else {
+                        $content = $row[$column->fieldName];
+                    }
                 }
 
                 $xul .= '    ' .
