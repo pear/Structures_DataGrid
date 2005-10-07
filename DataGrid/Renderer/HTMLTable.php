@@ -112,6 +112,12 @@ class Structures_DataGrid_Renderer_HTMLTable
      * @var bool
      */
     var $_rendered = false;
+
+    /**
+     * Variables to be added to the generated links
+     * @var array
+     */
+    var $_extraVars = array();
     
     /**
      * Constructor
@@ -310,7 +316,7 @@ class Structures_DataGrid_Renderer_HTMLTable
         $cnt = 0;
         foreach ($this->_dg->columnSet as $column) {
             //Define Content
-            if ($column->orderBy != null) {
+            if (!is_null ($column->orderBy)) {
                 // Determine Direction
                 if ($this->_dg->sortArray[0] == $column->orderBy && 
                     $this->_dg->sortArray[1] == 'ASC') {
@@ -320,11 +326,7 @@ class Structures_DataGrid_Renderer_HTMLTable
                 }
 
                 // Build URL -- This needs much refinement :)
-                if (isset($this->path)) {
-                    $url = $this->path . '?';
-                } else {
-                    $url = $_SERVER['PHP_SELF'] . '?';
-                }
+                $get = array();
                 if (isset($_SERVER['QUERY_STRING'])) {
                     $qString = explode('&', $_SERVER['QUERY_STRING']);
                     $i = 0;
@@ -335,57 +337,51 @@ class Structures_DataGrid_Renderer_HTMLTable
                             $key = $list[0];
                             switch ($key) {
                                 case $prefix . 'orderBy' :
-                                    $url .=  $prefix . 'orderBy=' . 
-                                             $column->orderBy;
+                                    $get[] = $prefix . 'orderBy=' . 
+                                                   $column->orderBy;
                                     $orderByExists = true;
                                     break;
                                 case $prefix . 'direction' :   
-                                    $url .= $direction;
+                                    $get[] = $direction;
                                     break;
                                 case $prefix . 'page' :    
-                                    $url .= $prefix . 'page=1';
+                                    $get[] = $prefix . 'page=1';
                                     break;
-                                default:    
-                                    $url .= $element;
+                                default: 
+                                    if (!in_array ($key, array_keys ($this->_extraVars))) {
+                                        $get[] = $element;
+                                    }
                             }
-                            /*
-                            if (stristr($element, $this->_dg->_requestPrefix . 'orderBy')) {
-                                $url .= $this->_dg->_requestPrefix . 'orderBy=' .
-                                        $column->orderBy;
-                                $orderByExists = true;
-                            } elseif (stristr($element, $this->_dg->_requestPrefix . 'direction')) {
-                                $url .= $direction;
-                            } elseif (stristr($element, $this->_dg->_requestPrefix . 'page') && 
-                                      $this->sortingResetsPaging) {
-                                $url .= $this->_dg->_requestPrefix . 'page=1';
-                            } else {
-                                $url .= $element;
-                            }
-                            */
-                        }
-                        $i++;
-                        if ($i < count($qString)) {
-                            $url .= '&amp;';
                         }
                     }
 
                     if (!isset($orderByExists)) {
-                        if ($qString[0] != '') {
-                            $url .= '&amp;' . $this->_dg->_requestPrefix . 'orderBy=' . 
-                                    $column->orderBy . '&amp;' . $direction;
-                        } else {
-                            $url .= $this->_dg->_requestPrefix . 'orderBy=' . 
-                                    $column->orderBy . '&amp;' . $direction;
-                        }
+                        $get[] = $this->_dg->_requestPrefix . 'orderBy=' . 
+                                 $column->orderBy;
+                        $get[] = $direction;
                     }
                 } else {
-                    $url .= $this->_dg->_requestPrefix . 'orderBy=' . 
-                            $column->orderBy . '&amp;' . $direction;
+                    $get[] = $this->_dg->_requestPrefix . 'orderBy=' . 
+                             $column->orderBy;
+                    $get[] = $direction;
                 }
 
+                foreach ($this->_extraVars as $key => $val) {
+                    $val = urlencode ($val);
+                    $get[] = "$key=$val";
+                }
+
+                if (isset($this->path)) {
+                    $url = $this->path . '?';
+                } else {
+                    $url = $_SERVER['PHP_SELF'] . '?';
+                }
+                $url .= join ('&amp;', $get);
+
+                $str = '<a href="' . $url . '">' . $column->columnName;
+                
                 $iconVar = "sortIcon" . 
                            ($this->_dg->sortArray[1] ? $this->_dg->sortArray[1] : 'ASC');
-                $str = '<a href="' . $url . '">' . $column->columnName;
                 if (($this->$iconVar != '') && 
                     ($this->_dg->sortArray[0] == $column->orderBy)) {
                     $str .= ' ' . $this->$iconVar;
@@ -515,9 +511,17 @@ class Structures_DataGrid_Renderer_HTMLTable
                          'separator' => $separator,
                          'prevImg' => $prev,
                          'nextImg' => $next);
+                         
         if (is_array($attrs)) {
             $options = array_merge($options, $attrs);
         }
+        
+        if (isset ($options['extraVars'])) {
+            $options['extraVars'] = array_merge ($options['extraVars'], $this->_extraVars);
+        } else {
+            $options['extraVars'] = $this->_extraVars;
+        }
+        
         $this->_buildPaging($options);
 
         // Return paging html
@@ -548,6 +552,20 @@ class Structures_DataGrid_Renderer_HTMLTable
         $this->pager =& Pager::factory($options);
     }    
 
+    /**
+     * Add custom GET variables to the generated links
+     *
+     * This method adds the provided variables to the paging and sorting
+     * links. The variable values are automatically url encoded.
+     * 
+     * @param   array   $vars   Array of the form (key => value, ...) 
+     * @access  public
+     * @return  void
+     */
+    function setExtraVars ($vars)
+    {
+        $this->_extraVars = $vars;
+    }
 }
 
 ?>
