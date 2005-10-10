@@ -81,6 +81,8 @@ class Structures_DataGrid extends Structures_DataGrid_Renderer
      *
      * @param  string   $limit      The row limit per page.
      * @param  int      $page       The current page viewed.
+     *                              Note : if you specify this, the "page" GET 
+     *                              variable will be ignored.
      * @param  string   $renderer   The renderer to use.
      * @return void
      * @access public

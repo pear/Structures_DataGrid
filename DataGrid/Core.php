@@ -74,10 +74,17 @@ class Structures_DataGrid_Core
     var $page;
 
     /**
+     * Whether the page number was provided at instantiation or not
+     * @var bool
+     * @access private
+     */
+    var $_forcePage; 
+    
+    /**
      * GET/POST/Cookie parameters prefix
      * @var string
      */
-     var $_requestPrefix;    
+     var $_requestPrefix = '';    
 
     /**
      * Constructor
@@ -86,6 +93,8 @@ class Structures_DataGrid_Core
      *
      * @param  string   $limit  The row limit per page.
      * @param  string   $page   The current page viewed.
+     *                          Note : if you specify this, the "page" GET 
+     *                          variable will be ignored.
      * @access public
      */
     function Structures_DataGrid_Core($limit = null, $page = null)
@@ -96,13 +105,14 @@ class Structures_DataGrid_Core
         //Use set page number, otherwise automatically detect the page number
         if (!is_null ($page)) {
             $this->page = $page;
+            $this->_forcePage = true;
         } else {
-            // Automatic handling of GET/POST/COOKIE variables
-            $this->_parseHttpRequest();
-            if (is_null ($this->page)) {
-                $this->page = 1;
-            }
+            $this->page = 1;
+            $this->_forcePage = false;
         }
+
+        // Automatic handling of GET/POST/COOKIE variables
+        $this->_parseHttpRequest();
     }
 
     /**
@@ -344,24 +354,27 @@ class Structures_DataGrid_Core
      */
     function _parseHttpRequest()
     {
-        // Determine parameter prefix
-        if ((isset($this->_requestPrefix)) && ($this->_requestPrefix != '')) {
-            $prefix = $this->_requestPrefix;
-        } else {
-            $prefix = null;
-        }
+        $prefix = $this->_requestPrefix;
         
         // Determine page, sort and direction values
-        if (isset($_REQUEST[$prefix . 'page'])) {
-            // Use POST, GET, or COOKIE value in respective order
-            if (isset($_POST[$prefix . 'page'])) {
-                $this->page = $_POST[$prefix . 'page'];
-            } elseif (isset($_GET[$prefix . 'page'])) {
-                $this->page = $_GET[$prefix . 'page'];
-            } elseif (isset($_COOKIE[$prefix . 'page'])) {
-                $this->page = $_COOKIE[$prefix . 'page'];
+        
+        if (!$this->_forcePage) {
+            if (isset($_REQUEST[$prefix . 'page'])) {
+                // Use POST, GET, or COOKIE value in respective order
+                if (isset($_POST[$prefix . 'page'])) {
+                    $this->page = $_POST[$prefix . 'page'];
+                } elseif (isset($_GET[$prefix . 'page'])) {
+                    $this->page = $_GET[$prefix . 'page'];
+                } elseif (isset($_COOKIE[$prefix . 'page'])) {
+                    $this->page = $_COOKIE[$prefix . 'page'];
+                } 
+            } else {
+                $this->page = 1;
             }
-        }
+            if (!is_numeric ($this->page)) {
+                $this->page = 1;
+            }
+        } 
         
         if (isset($_REQUEST[$prefix . 'orderBy'])) {
             // Use POST, GET, or COOKIE value in respective order

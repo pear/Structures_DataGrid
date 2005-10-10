@@ -43,6 +43,10 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
      * as the default.
      *
      * @param  string   $renderer   The renderer to use.
+     * @param  int      $limit      The row limit per page
+     * @param  int      $page       The page to show (starting from 1). 
+     *                              Note : if you specify this, the "page" GET 
+     *                              variable will be ignored.
      * @access public
      */
     function Structures_DataGrid_Renderer($renderer = DATAGRID_RENDER_TABLE,
