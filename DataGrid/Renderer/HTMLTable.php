@@ -263,11 +263,12 @@ class Structures_DataGrid_Renderer_HTMLTable
         $dg =& $this->_dg;
 
         if (!$this->_rendered) {
+            /*
             // Get the data to be rendered
             if (PEAR::isError($result = $dg->fetchDataSource())) {
                 return $result;
             }
-
+            */
             // Check to see if column headers exist, if not create them
             // This must follow after any fetch method call
             $dg->_setDefaultHeaders();

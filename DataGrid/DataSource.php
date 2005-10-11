@@ -25,8 +25,8 @@
 * 
 * <b>Recognized options (valid for all drivers) :</b>
 *
-* <b>"generate_columns" : </b> Generate Structures_DataGrid_Column objects 
-* with labels. (default : true) 
+* <b>"generate_columns" (OBSOLETE, always true): </b> Generate 
+* Structures_DataGrid_Column objects with labels. (default : true)
 * 
 * <b>"labels" : </b> How to translate the field names to column labels. 
 * Only used when "generate_columns" is true. Default : array().
@@ -96,7 +96,7 @@ class Structures_DataGrid_DataSource
      */
     function Structures_DataGrid_DataSource()
     {
-        $this->_options = array('generate_columns' => null,
+        $this->_options = array('generate_columns' => true,
                                 'labels'           => array(),
                                 'fields'           => array());
     }

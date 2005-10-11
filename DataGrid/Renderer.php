@@ -73,29 +73,6 @@ class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
         return $this->renderer->render();
     }
 
-    function fetchDataSource()
-    {
-        if ($this->_dataSource != null) {
-            // Determine Page
-            $page = $this->page ? $this->page - 1 : 0;
-            
-            // Fetch the Data
-            $recordSet = $this->_dataSource->fetch(
-                            ($page*$this->rowLimit),
-                            $this->rowLimit, $this->sortArray[0],
-                            $this->sortArray[1]);
-                            
-            if (PEAR::isError($recordSet)) {
-                return $recordSet;
-            } else {
-                $this->recordSet = array_merge($this->recordSet, $recordSet);
-                if (count($columnSet = $this->_dataSource->getColumns())) {
-                    $this->columnSet = $columnSet;
-                }
-            }
-        }
-    }
-    
     /**
      * Get Renderer
      *

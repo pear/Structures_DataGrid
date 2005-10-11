@@ -271,6 +271,12 @@ class Structures_DataGrid_Core
     {
         if (is_subclass_of($source, 'structures_datagrid_datasource')) {
             $this->_dataSource =& $source;
+            if (PEAR::isError($result = $this->fetchDataSource())) {
+                return $result;
+            }
+            if ($columnSet = $this->_dataSource->getColumns()) {
+                $this->columnSet = array_merge($this->columnSet, $columnSet);
+            }
         } else {
             return new PEAR_Error('Invalid data source type, ' . 
                                   'must be a valid data source driver class');
@@ -278,6 +284,32 @@ class Structures_DataGrid_Core
         
         return true;
     }
+
+    function fetchDataSource()
+    {
+        if ($this->_dataSource != null) {
+            // Determine Page
+            $page = $this->page ? $this->page - 1 : 0;
+            
+            // Fetch the Data
+            $recordSet = $this->_dataSource->fetch(
+                            ($page*$this->rowLimit),
+                            $this->rowLimit, $this->sortArray[0],
+                            $this->sortArray[1]);
+                            
+            if (PEAR::isError($recordSet)) {
+                return $recordSet;
+            } else {
+                $this->recordSet = array_merge($this->recordSet, $recordSet);
+                /*
+                if (count($columnSet = $this->_dataSource->getColumns())) {
+                    $this->columnSet = $columnSet;
+                }
+                */
+            }
+        }
+    }
+    
     
     /**
      * Adds a DataGrid_Record object to this DataGrid object
