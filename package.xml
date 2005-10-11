@@ -20,16 +20,36 @@
       <user>olivierg</user>
       <name>Olivier Guilyardi</name>
       <email>olivier@samalyse.com</email>
-      <role>helper</role>
+      <role>developer</role>
     </maintainer>
   </maintainers>
   <release>
-    <version>0.6.2</version>
-    <date>2005-01-26</date>
+    <version>0.6.3</version>
+    <date>2005-10-11</date>
     <license>PHP License</license>
     <state>beta</state>
     <notes>
-      Fixed unexpected parse error
+      * Bug #3304 : fixed the requestPrefix handling. 
+                    thanks &lt;pm at phpshop dot org&gt;
+      * Bug #3306 : addColumn() is now compatible with bind()
+                    thanks E. Grace &lt;ej.grace at imperial dot ac dot uk&gt;
+      * Bug #4375 : new method to customize generated links: 
+                    HTMLTable::setExtraVars()
+                    thanks &lt;keith at setuplinux dot com&gt;
+      * Bug #4872 : fixed a notice when using formatters
+                    thanks &lt;pupeno at pupeno dot com&gt;   
+      * Bug #5255 : missing dependencies caused a silent bug
+                    thanks &lt;blcdhq at gmail dot com&gt;
+      * Bug #5535 : fixed XLS rendering
+                    thanks Aaron Wormus
+      * Bug #5292 : fixed HTMLTable header parsing and generation 
+      
+      * The $type argument of the bind() method was not usable because 
+        DATAGRID_SOURCE_* constants were defined in the wrong place : fixed
+      * Fixed some undefined variable notices in the XLS renderer, for empty 
+        data rows (related to bug #5535)
+      * The CSV datasource did not correctly strip DOS'ish carriage returns: 
+        fixed  
     </notes>
     <deps>
       <dep type="pkg" rel="ge" version="1.2" optional="no">PEAR</dep>
@@ -85,6 +105,35 @@
     </filelist>
   </release>
   <changelog>
+    <release>
+      <version>0.6.3</version>
+      <date>2005-10-11</date>
+      <license>PHP License</license>
+      <state>beta</state>
+      <notes>
+        * Bug #3304 : fixed the requestPrefix handling. 
+                      thanks &lt;pm at phpshop dot org&gt;
+        * Bug #3306 : addColumn() is now compatible with bind()
+                      thanks E. Grace &lt;ej.grace at imperial dot ac dot uk&gt;
+        * Bug #4375 : new method to customize generated links: 
+                      HTMLTable::setExtraVars()
+                      thanks &lt;keith at setuplinux dot com&gt;
+        * Bug #4872 : fixed a notice when using formatters
+                      thanks &lt;pupeno at pupeno dot com&gt;   
+        * Bug #5255 : missing dependencies caused a silent bug
+                      thanks &lt;blcdhq at gmail dot com&gt;
+        * Bug #5535 : fixed XLS rendering
+                      thanks Aaron Wormus
+        * Bug #5292 : fixed HTMLTable header parsing and generation 
+        
+        * The $type argument of the bind() method was not usable because 
+          DATAGRID_SOURCE_* constants were defined in the wrong place : fixed
+        * Fixed some undefined variable notices in the XLS renderer, for empty 
+          data rows (related to bug #5535)
+        * The CSV datasource did not correctly strip DOS'ish carriage returns:
+          fixed  
+      </notes>
+    </release>
     <release>
       <version>0.6.2</version>
       <date>2005-01-26</date>
