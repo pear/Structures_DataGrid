@@ -155,9 +155,10 @@ class Structures_DataGrid_Renderer_XLS
         $this->_worksheet =& $this->_workbook->addWorksheet();        
         
         if (!$this->_rendered) {        
+            /*
             // Get the data to be rendered
             $dg->fetchDataSource();
-            
+            */
             // Check to see if column headers exist, if not create them
             // This must follow after any fetch method call
             $dg->_setDefaultHeaders();
