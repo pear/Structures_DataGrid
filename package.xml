@@ -25,7 +25,7 @@
   </maintainers>
   <release>
     <version>0.6.3</version>
-    <date>2005-10-11</date>
+    <date>2005-10-24</date>
     <license>PHP License</license>
     <state>beta</state>
     <notes>
@@ -33,18 +33,68 @@
                     thanks &lt;pm at phpshop dot org&gt;
       * Bug #3306 : addColumn() is now compatible with bind()
                     thanks E. Grace &lt;ej.grace at imperial dot ac dot uk&gt;
+      * Bug #3588 : Handle quotes in CSV renderer correctly 
+                    thanks &lt;justinpatrin at php dot net&gt;
+      * Bug #3601 : Wrapped HTML output with htmlentities() 
+                    thanks &lt;maarten at xolphin dot nl&gt;
+      * Bug #3607 : Fixed fatal error when binding to a null data set 
+                    thanks &lt;nick at foobar dot org&gt;
+      * Bug #3617 : Fixed warning message when sorting with Array data source
+                    thanks &lt;rafal at friendlysol dot com&gt;
+      * Bug #3715 : Fixed notice message with column formatter
+                    thanks &lt;maarten at xolphin dot nl&gt;
+      * Bug #3769 : Fixed calling DataObject getters as a function instead of a property
+                    thanks &lt;listsdg at yahoo dot fr&gt;
+      * Bug #3781 : Fixed incorrect require_once path on CSV datasource
+                    thanks &lt;pear at felixdd dot de&gt;
+      * Bug #3847 : Fixed warning raised when the recordset is null
+                    thanks &lt;justinpatrin at php dot net&gt;
+      * Bug #3859 : Fixed useHeader method in HTML_Table renderer
+                    thanks &lt;daniel at assertio dot es&gt;
+      * Bug #4022 : Fixed issue with including record variable in column formatter when parameters are defined
+                    thanks &lt;justinpatrin at php dot net&gt;
+      * Bug #4350 : Fixed XML renderer constructor
+                    thanks &lt;tier at gregor-widuch dot de&gt;
       * Bug #4375 : new method to customize generated links: 
                     HTMLTable::setExtraVars()
                     thanks &lt;keith at setuplinux dot com&gt;
+      * Bug #4403 : Fixed sorting for non-datasource recordsets.
+                    thanks &lt;jessup at mrpath dot com&gt;
+      * Bug #4416 : Added 4 new methods to allow for retrieving of current display status of the DataGrid:
+                    SDG::getPageCount()
+                    SDG::getRecordCount()
+                    SDG::getCurrentRecordNumberStart()
+                    SDG::getCurrentRecordNumberEnd()
+                    thanks &lt;post at mark-wiesemann dot de&gt;
+      * Bug #4421 : Fixed error on DataObject data source with FormBuilder Integration
+                    thanks &lt;justinpatrin at php dot net&gt;
+      * Bug #4503 : Fixed error with sorting in Array DataSource
+                    thanks &lt;justinpatrin at php dot net&gt;
+      * Bug #4521 : Fixed the perpage limit with HTMLTable renderer to show all records instead of the default 10
+                    thanks &lt;wiesemann at php dot net&gt;
+      * Bug #4527 : Fixed allowEmptyRows() method in HTMLTable renderer to display correct number of rows
+                    thanks &lt;wiesemann at php dot net&gt;
+      * Bug #4557 : Fixed 1st row overwriting header row in XLS renderer
+                    thanks &lt;wiesemann at php dot net&gt;
+      * Bug #4558 : Modified render output for XLS renderer to allow saving to the local file system
+                    thanks &lt;wiesemann at php dot net&gt;
+      * Bug #4863 : Fixed notice in CSV renderer about the not intialized variable
+                    thanks &lt;info at borki dot ch&gt;
       * Bug #4872 : fixed a notice when using formatters
-                    thanks &lt;pupeno at pupeno dot com&gt;   
+                    thanks &lt;pupeno at pupeno dot com&gt;                       
+      * Bug #4874 : Fixed the name of the getter call in DataObject datasource
+                    thanks &lt;evt at infoware dot com dot au&gt;
       * Bug #5255 : missing dependencies caused a silent bug
                     thanks &lt;blcdhq at gmail dot com&gt;
-      * Bug #5535 : fixed XLS rendering
-                    thanks Aaron Wormus
       * Bug #5292 : fixed HTMLTable header parsing and generation 
+      * Bug #5300 : Fixed notice on column formatter
+                    thanks &lt;kick_tisho at yahoo dot com&gt;
+      * Bug #5327 : Can now define a custom lineBreak in CSV renderer.  Also removed extra white space between each element.
+                    thanks &lt;post at mark-wiesemann dot de&gt; and &lt;pnovess at mac dot com&gt;
+      * Bug #5535 : Fixed XLS and XUL renderers due to bad check for null
+                    thanks Aaron Wormus
       
-      * The $type argument of the bind() method was not usable because 
+      * The $type argument of the bind() method was not usable because
         DATAGRID_SOURCE_* constants were defined in the wrong place : fixed
       * Fixed some undefined variable notices in the XLS renderer, for empty 
         data rows (related to bug #5535)
@@ -107,7 +157,7 @@
   <changelog>
     <release>
       <version>0.6.3</version>
-      <date>2005-10-11</date>
+      <date>2005-10-24</date>
       <license>PHP License</license>
       <state>beta</state>
       <notes>
@@ -115,22 +165,72 @@
                       thanks &lt;pm at phpshop dot org&gt;
         * Bug #3306 : addColumn() is now compatible with bind()
                       thanks E. Grace &lt;ej.grace at imperial dot ac dot uk&gt;
+        * Bug #3588 : Handle quotes in CSV renderer correctly 
+                      thanks &lt;justinpatrin at php dot net&gt;
+        * Bug #3601 : Wrapped HTML output with htmlentities() 
+                      thanks &lt;maarten at xolphin dot nl&gt;
+        * Bug #3607 : Fixed fatal error when binding to a null data set 
+                      thanks &lt;nick at foobar dot org&gt;
+        * Bug #3617 : Fixed warning message when sorting with Array data source
+                      thanks &lt;rafal at friendlysol dot com&gt;
+        * Bug #3715 : Fixed notice message with column formatter
+                      thanks &lt;maarten at xolphin dot nl&gt;
+        * Bug #3769 : Fixed calling DataObject getters as a function instead of a property
+                      thanks &lt;listsdg at yahoo dot fr&gt;
+        * Bug #3781 : Fixed incorrect require_once path on CSV datasource
+                      thanks &lt;pear at felixdd dot de&gt;
+        * Bug #3847 : Fixed warning raised when the recordset is null
+                      thanks &lt;justinpatrin at php dot net&gt;
+        * Bug #3859 : Fixed useHeader method in HTML_Table renderer
+                      thanks &lt;daniel at assertio dot es&gt;
+        * Bug #4022 : Fixed issue with including record variable in column formatter when parameters are defined
+                      thanks &lt;justinpatrin at php dot net&gt;
+        * Bug #4350 : Fixed XML renderer constructor
+                      thanks &lt;tier at gregor-widuch dot de&gt;
         * Bug #4375 : new method to customize generated links: 
                       HTMLTable::setExtraVars()
                       thanks &lt;keith at setuplinux dot com&gt;
+        * Bug #4403 : Fixed sorting for non-datasource recordsets.
+                      thanks &lt;jessup at mrpath dot com&gt;
+        * Bug #4416 : Added 4 new methods to allow for retrieving of current display status of the DataGrid:
+                      SDG::getPageCount()
+                      SDG::getRecordCount()
+                      SDG::getCurrentRecordNumberStart()
+                      SDG::getCurrentRecordNumberEnd()
+                      thanks &lt;post at mark-wiesemann dot de&gt;
+        * Bug #4421 : Fixed error on DataObject data source with FormBuilder Integration
+                      thanks &lt;justinpatrin at php dot net&gt;
+        * Bug #4503 : Fixed error with sorting in Array DataSource
+                      thanks &lt;justinpatrin at php dot net&gt;
+        * Bug #4521 : Fixed the perpage limit with HTMLTable renderer to show all records instead of the default 10
+                      thanks &lt;wiesemann at php dot net&gt;
+        * Bug #4527 : Fixed allowEmptyRows() method in HTMLTable renderer to display correct number of rows
+                      thanks &lt;wiesemann at php dot net&gt;
+        * Bug #4557 : Fixed 1st row overwriting header row in XLS renderer
+                      thanks &lt;wiesemann at php dot net&gt;
+        * Bug #4558 : Modified render output for XLS renderer to allow saving to the local file system
+                      thanks &lt;wiesemann at php dot net&gt;
+        * Bug #4863 : Fixed notice in CSV renderer about the not intialized variable
+                      thanks &lt;info at borki dot ch&gt;
         * Bug #4872 : fixed a notice when using formatters
-                      thanks &lt;pupeno at pupeno dot com&gt;   
+                      thanks &lt;pupeno at pupeno dot com&gt;                       
+        * Bug #4874 : Fixed the name of the getter call in DataObject datasource
+                      thanks &lt;evt at infoware dot com dot au&gt;
         * Bug #5255 : missing dependencies caused a silent bug
                       thanks &lt;blcdhq at gmail dot com&gt;
-        * Bug #5535 : fixed XLS rendering
-                      thanks Aaron Wormus
         * Bug #5292 : fixed HTMLTable header parsing and generation 
-        
+        * Bug #5300 : Fixed notice on column formatter
+                      thanks &lt;kick_tisho at yahoo dot com&gt;
+        * Bug #5327 : Can now define a custom lineBreak in CSV renderer.  Also removed extra white space between each element.
+                      thanks &lt;post at mark-wiesemann dot de&gt; and &lt;pnovess at mac dot com&gt;
+        * Bug #5535 : Fixed XLS and XUL renderers due to bad check for null
+                      thanks Aaron Wormus
+      
         * The $type argument of the bind() method was not usable because 
           DATAGRID_SOURCE_* constants were defined in the wrong place : fixed
         * Fixed some undefined variable notices in the XLS renderer, for empty 
           data rows (related to bug #5535)
-        * The CSV datasource did not correctly strip DOS'ish carriage returns:
+        * The CSV datasource did not correctly strip DOS'ish carriage returns: 
           fixed  
       </notes>
     </release>
