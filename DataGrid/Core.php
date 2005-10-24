@@ -219,7 +219,7 @@ class Structures_DataGrid_Core
     }    
     
     /**
-     * Adds a DataGridColumn object to this DataGrid object
+     * Adds a DataGrid_Column object to this DataGrid object
      *
      * @access  public
      * @param   object Structures_DataGrid_Column   $column     The column
