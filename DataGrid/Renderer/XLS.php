@@ -74,6 +74,27 @@ class Structures_DataGrid_Renderer_XLS
      */
     var $_rendered = false;    
 
+    
+    /**
+     * Header format
+     *
+     * The 0 default value means "no format" as specified by the 
+     * Spreadsheet_Excel_Writer_Worksheet::write() method prototype
+     * 
+     * @var mixed Spreadsheet_Excel_Writer_Format object or 0
+     */
+    var $_headerFormat = 0;
+
+    /**
+     * Body format
+     *
+     * The 0 default value means "no format" as specified by the 
+     * Spreadsheet_Excel_Writer_Worksheet::write() method prototype
+     * 
+     * @var mixed Spreadsheet_Excel_Writer_Format object or 0
+     */
+    var $_bodyFormat = 0;
+    
     /**
      * Constructor
      *
@@ -90,11 +111,14 @@ class Structures_DataGrid_Renderer_XLS
     /**
      * Sets the name of the file to create
      *
+     * This is incompatible with the setCustomWriter() method
+     * 
      * @param  string   $filename        The name of the file
      * @param  bool     $sendToBrowser   Whether the spreadsheet should
      *                                   be send to the browser or written
      *                                   to a file
      * @access public
+     * @see Structures_DataGrid_Renderer_XLS::setCustomWriter()
      */
     function setFilename($filename = 'spreadsheet.xls', $sendToBrowser = true)
     {
@@ -102,6 +126,44 @@ class Structures_DataGrid_Renderer_XLS
         $this->_sendToBrowser = $sendToBrowser;
     }
 
+    /**
+     * Replace the internal Excel Writer with a custom one
+     *
+     * This is useful in order to customize your new XLS document
+     * before Structures_DataGrid fills it with data
+     * 
+     * This method is incompatible with setFilename() 
+     * 
+     * @param object $workbook  Spreadsheet_Excel_Writer_Workbook object
+     * @param object $worksheet Spreadsheet_Excel_Writer_Worksheet object
+     * @see Structures_DataGrid_Renderer_XLS::setFilename()
+     */
+    function setCustomWriter (&$workbook, &$worksheet)
+    {
+        $this->_workbook =& $workbook;
+        $this->_worksheet =& $worksheet;
+    }
+  
+    /**
+     * Set headers format
+     *
+     * @param object $format Spreadsheet_Excel_Writer_Format object
+     */
+    function setHeaderFormat (&$format)
+    {
+        $this->_headerFormat =& $format;
+    }
+
+    /**
+     * Set body format
+     *
+     * @param object $format Spreadsheet_Excel_Writer_Format object
+     */
+    function setBodyFormat (&$format)
+    {
+        $this->_bodyFormat =& $format;
+    }
+    
     /**
      * Determines whether or not to use the header
      *
@@ -145,20 +207,21 @@ class Structures_DataGrid_Renderer_XLS
     function &getSpreadsheet()
     {
         $dg =& $this->_dg;
-        
-        if ($this->_sendToBrowser) {
-            $this->_workbook = new Spreadsheet_Excel_Writer();
-            $this->_workbook->send($this->_filename);
-        } else {
-            $this->_workbook = new Spreadsheet_Excel_Writer($this->_filename);
+       
+        if (!isset ($this->_workbook)) {
+            if ($this->_sendToBrowser) {
+                $this->_workbook = new Spreadsheet_Excel_Writer();
+                $this->_workbook->send($this->_filename);
+            } else {
+                $this->_workbook = new Spreadsheet_Excel_Writer($this->_filename);
+            }
         }
-        $this->_worksheet =& $this->_workbook->addWorksheet();        
+
+        if (!isset ($this->_worksheet)) {
+            $this->_worksheet =& $this->_workbook->addWorksheet();        
+        }
         
         if (!$this->_rendered) {        
-            /*
-            // Get the data to be rendered
-            $dg->fetchDataSource();
-            */
             // Check to see if column headers exist, if not create them
             // This must follow after any fetch method call
             $dg->_setDefaultHeaders();
@@ -185,7 +248,7 @@ class Structures_DataGrid_Renderer_XLS
         foreach ($this->_dg->columnSet as $column) {
             //Define Content
             $str = $column->columnName;
-            $this->_worksheet->write(0, $cnt, $str);
+            $this->_worksheet->write(0, $cnt, $str, $this->_headerFormat);
             $cnt++;
         }
     }
@@ -224,7 +287,7 @@ class Structures_DataGrid_Renderer_XLS
                         }
                     }
 
-                    $this->_worksheet->write($rowCnt, $cnt, $content);
+                    $this->_worksheet->write($rowCnt, $cnt, $content, $this->_bodyFormat);
 
                     $cnt++;
                 }
