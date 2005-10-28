@@ -34,6 +34,10 @@ require_once 'Structures/DataGrid/Core.php';
  */
 class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
 {
+    /**
+     * Renderer driver
+     * @var object Structures_DataGrid_Renderer_* family
+     */ 
     var $renderer;
 
     /**
