@@ -146,8 +146,13 @@ class Structures_DataGrid_Renderer_XLS
   
     /**
      * Set headers format
+     * 
+     * It is required to use setCustomWriter() before calling this method. 
+     * The Format object provided to setHeaderFormat() has to be derived 
+     * from the Workbook passed to setCustomWriter().
      *
      * @param object $format Spreadsheet_Excel_Writer_Format object
+     * @see Structures_DataGrid_Renderer_XLS::setCustomWriter()
      */
     function setHeaderFormat (&$format)
     {
@@ -157,7 +162,12 @@ class Structures_DataGrid_Renderer_XLS
     /**
      * Set body format
      *
+     * It is required to use setCustomWriter() before calling this method. 
+     * The Format object provided to setBodyFormat() has to be derived 
+     * from the Workbook passed to setCustomWriter().
+     *
      * @param object $format Spreadsheet_Excel_Writer_Format object
+     * @see Structures_DataGrid_Renderer_XLS::setCustomWriter()
      */
     function setBodyFormat (&$format)
     {
