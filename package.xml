@@ -31,6 +31,8 @@
     <notes>
       Requests #5806 and #5808 : Added support for custom Excel Writer and Format objects
                                  Thanks Vincent Vermersch for these requests
+      Bug #5829 : The HTMLTable renderer is now compatible with multi-bytes caracters
+                  Thanks &lt;kenchou77 at gmail dot com&gt;
     </notes>
     <deps>
       <dep type="pkg" rel="ge" version="1.2" optional="no">PEAR</dep>

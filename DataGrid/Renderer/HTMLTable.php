@@ -453,7 +453,7 @@ class Structures_DataGrid_Renderer_HTMLTable
                             }
                         } else {
                             // Use Record Data
-                            $content = htmlentities($row[$column->fieldName]);
+                            $content = htmlspecialchars ($row[$column->fieldName]);
                             
                             if (($content == '') && 
                                 ($column->autoFillValue != '')) {
