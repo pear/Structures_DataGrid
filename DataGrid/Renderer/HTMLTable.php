@@ -476,7 +476,7 @@ class Structures_DataGrid_Renderer_HTMLTable
                           
                             /* Right-align the content if it is numeric (but don't
                              * touch the "align" attributes if it is already set) */
-                            if (is_numeric ($content) and $this->_autoAlign 
+                            if ($this->_autoAlign and is_numeric ($content)
                                 and (!isset($column->attribs['align']) 
                                      or empty($column->attribs['align']))) {
                                 $column->attribs['align'] = "right";
