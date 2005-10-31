@@ -69,6 +69,9 @@
 * the provided skeleton. See the corresponding prototypes
 * for more information on how to do this.
 *
+* Do not forget to call DataSource::setOptions() from your bind() method.
+* ex : if ($options) $this->setOptions($options);
+*
 * Eventually, use the dump() debugging method to test your brand new
 * driver
 *
