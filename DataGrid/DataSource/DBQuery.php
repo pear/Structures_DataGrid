@@ -90,11 +90,15 @@ class Structures_DataGrid_DataSource_DBQuery
      */
     function bind($query, $options=array())
     {
-        if (isset($options['connection']) &&
-            DB::isConnection($options['connection'])) {
-            $this->_db = &$options['connection'];
-        } elseif (isset($options['dsn'])) {
-            $this->_db =& DB::connect($options['dsn']);
+        if ($options) {
+            $this->setOptions($options); 
+        }
+
+        if (isset($this->_options['connection']) &&
+            DB::isConnection($this->_options['connection'])) {
+            $this->_db = &$this->_options['connection'];
+        } elseif (isset($this->_options['dsn'])) {
+            $this->_db =& DB::connect($this->_options['dsn']);
             if (PEAR::isError($this->_db)) {
                 return new PEAR_Error('Could not create connection: ' .
                                       $this->_db->getMessage());
