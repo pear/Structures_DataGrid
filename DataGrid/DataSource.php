@@ -386,6 +386,10 @@ class Structures_DataGrid_DataSource
             case (is_string($source) and ereg('^ *<\?xml', $source)):
                 return DATAGRID_SOURCE_XML;
                 break;
+            case (is_string($source) 
+                  and preg_match('#SELECT\s.*\sFROM#is', $source) === 1):
+                return DATAGRID_SOURCE_DBQUERY; 
+                break;
 
             // CSV
             //case (is_string($source)):

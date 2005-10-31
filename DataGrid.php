@@ -38,6 +38,7 @@ define('DATAGRID_SOURCE_DB',        'DB');
 define('DATAGRID_SOURCE_XML',       'XML');
 define('DATAGRID_SOURCE_RSS',       'RSS');
 define('DATAGRID_SOURCE_CSV',       'CSV');
+define('DATAGRID_SOURCE_DBQUERY',   'DBQuery');
 
 /**
  * Structures_DataGrid Class

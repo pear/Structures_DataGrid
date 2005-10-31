@@ -37,6 +37,8 @@
                   Thanks &lt;adrian dot rotea at gmail dot com&gt;
       Auto-alignment : The HTMLTable renderer now automatically align numeric values
                        to the right. This is configurable with HTMLTable::setAutoAlign()
+      Request #4379 : Completed integration of the DBQuery datasource driver
+                      Thanks Mark Wiesemann &lt;post at mark-wiesemann dot de&gt;
                   
     </notes>
     <deps>
