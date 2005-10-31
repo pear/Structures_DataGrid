@@ -71,11 +71,6 @@ class Structures_DataGrid_Renderer_Smarty
 
     function getSmarty()
     {
-        /*
-        // Get the data to be rendered
-        $this->_dg->fetchDataSource();
-        */
-        
         // Check to see if column headers exist, if not create them
         // This must follow after any fetch method call
         $this->_dg->_setDefaultHeaders();
@@ -86,7 +81,7 @@ class Structures_DataGrid_Renderer_Smarty
             $this->_smarty->assign('recordLimit', $this->_dg->rowLimit);
             $this->_smarty->assign('currentPage', $this->_dg->page);
 
-            return $smarty;
+            return $this->_smarty;
         } else {
             return new PEAR_Error('Error: No template defined');
         }
