@@ -118,6 +118,12 @@ class Structures_DataGrid_Renderer_HTMLTable
      * @var array
      */
     var $_extraVars = array();
+   
+    /**
+     * Wether to automagically right-align numeric values or not
+     * @var bool
+     */
+    var $_autoAlign = true;
     
     /**
      * Constructor
@@ -193,6 +199,19 @@ class Structures_DataGrid_Renderer_HTMLTable
         $this->_table->setAutoFill($value);
     }
 
+    /**
+     * Set wether to automatically right-align numeric values or not
+     *
+     * This is enabled by default.
+     *
+     * @access public
+     * @param  bool   $state   Auto-alignment state
+     */
+    function setAutoAlign ($state)
+    {
+        $this->_autoAlign = $state;
+    }
+    
     /**
      * In order for the DataGrid to render "Empty Rows" to allow for uniformity
      * across pages with varying results, set this option to true.  An example
@@ -454,7 +473,14 @@ class Structures_DataGrid_Renderer_HTMLTable
                         } else {
                             // Use Record Data
                             $content = htmlspecialchars ($row[$column->fieldName]);
-                            
+                          
+                            /* Right-align the content if it is numeric (but don't
+                             * touch the "align" attributes if it is already set) */
+                            if (is_numeric ($content) and $this->_autoAlign 
+                                and (!isset($column->attribs['align']) 
+                                     or empty($column->attribs['align']))) {
+                                $column->attribs['align'] = "right";
+                            }
                             if (($content == '') && 
                                 ($column->autoFillValue != '')) {
                                 // Use AutoFill
