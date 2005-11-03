@@ -34,7 +34,7 @@
         Thanks Mark Wiesemann &lt;wiesemann at php dot net&gt;
                   
       Req #4709 :  
-        Added support for grouping into <thead>, <tfoot> and <tbody> 
+        Added support for grouping into &lt;thead&gt;, &lt;tfoot&gt; and &lt;tbody&gt; 
         (HTMLTable renderer) 
         Thanks Mark Wiesemann &lt;wiesemann at php dot net&gt;
 
@@ -52,6 +52,7 @@
                   
       Bug #5858 :
         Removed @ before include() in DataSource.php (could crash silently)           
+        Thanks Mark Wiesemann &lt;wiesemann at php dot net&gt;
       
       Auto-alignment :  
         The HTMLTable renderer now automatically align numeric values
