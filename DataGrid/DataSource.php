@@ -165,7 +165,7 @@ class Structures_DataGrid_DataSource
                                   'You may want to explicitly specify it.');
         }
 
-        if (!@include_once "Structures/DataGrid/DataSource/$type.php") {
+        if (!include_once "Structures/DataGrid/DataSource/$type.php") {
             return new PEAR_Error("No such data source driver: '$type'");
         }
         
