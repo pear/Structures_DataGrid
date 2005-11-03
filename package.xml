@@ -55,7 +55,7 @@
         Thanks Mark Wiesemann &lt;wiesemann at php dot net&gt;
       
       Auto-alignment :  
-        The HTMLTable renderer now automatically align numeric values
+        The HTMLTable renderer now automatically aligns numeric values
         to the right. This is configurable with HTMLTable::setAutoAlign()
                   
     </notes>
