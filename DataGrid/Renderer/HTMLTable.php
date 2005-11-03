@@ -118,7 +118,13 @@ class Structures_DataGrid_Renderer_HTMLTable
      * @var array
      */
     var $_extraVars = array();
-   
+
+    /**
+     * Variables to be removed from the generated links
+     * @var array
+     */
+    var $_ignoreVars = array();
+       
     /**
      * Wether to automagically right-align numeric values or not
      * @var bool
@@ -251,6 +257,37 @@ class Structures_DataGrid_Renderer_HTMLTable
     }
     
     /**
+     * Add custom GET variables to the generated links
+     *
+     * This method adds the provided variables to the paging and sorting
+     * links. The variable values are automatically url encoded.
+     * 
+     * @param   array   $vars   Array of the form (key => value, ...) 
+     * @access  public
+     * @return  void
+     */
+    function setExtraVars($vars)
+    {
+        $this->_extraVars = $vars;
+    }
+    
+    /**
+     * Remove GET variables from the generated links
+     *
+     * This method removes the provided variables from the paging and sorting
+     * links. This is helpful when using variables that determine what page to
+     * show such as an 'action' variable, etc.
+     * 
+     * @param   array       $vars       An array of variables to remove
+     * @access  public
+     * @return  void
+     */
+    function removeExtraVars($vars)
+    {
+        $this->_ignoreVars = array_merge($this->_ignoreVars, $vars);
+    }    
+    
+    /**
      * Prints the HTML for the DataGrid
      *
      * @access  public
@@ -335,6 +372,8 @@ class Structures_DataGrid_Renderer_HTMLTable
      */
     function _buildHTMLTableHeader()
     {
+        $prefix = $this->_dg->_requestPrefix;
+       
         $cnt = 0;
         foreach ($this->_dg->columnSet as $column) {
             //Define Content
@@ -342,66 +381,60 @@ class Structures_DataGrid_Renderer_HTMLTable
                 // Determine Direction
                 if ($this->_dg->sortArray[0] == $column->orderBy && 
                     $this->_dg->sortArray[1] == 'ASC') {
-                    $direction = $this->_dg->_requestPrefix . 'direction=DESC';
+                    $direction = $prefix . 'direction=DESC';
                 } else {
-                    $direction = $this->_dg->_requestPrefix . 'direction=ASC';
+                    $direction = $prefix . 'direction=ASC';
                 }
 
-                // Build URL -- This needs much refinement :)
+                // Build list of GET variables
                 $get = array();
-                if (isset($_SERVER['QUERY_STRING'])) {
-                    $qString = explode('&', $_SERVER['QUERY_STRING']);
-                    $i = 0;
-                    $prefix = $this->_dg->_requestPrefix;
-                    foreach($qString as $element) {
-                        if ($element != '') {
-                            $list = explode ('=', $element);
-                            $key = $list[0];
-                            switch ($key) {
+                if (count($_GET)) {
+                    foreach($_GET as $getVar => $getValue) {
+                        if (!in_array($getVar, $this->_ignoreVars)) {
+                            switch ($getVar) {
                                 case $prefix . 'orderBy' :
-                                    $get[] = $prefix . 'orderBy=' . 
-                                                   $column->orderBy;
+                                    $get[] = $prefix . 'orderBy=' . $column->orderBy;
                                     $orderByExists = true;
                                     break;
-                                case $prefix . 'direction' :   
+                                case $prefix . 'direction' :
                                     $get[] = $direction;
                                     break;
-                                case $prefix . 'page' :    
+                                case $prefix . 'page' : 
                                     $get[] = $prefix . 'page=1';
                                     break;
-                                default: 
-                                    if (!in_array ($key, array_keys ($this->_extraVars))) {
-                                        $get[] = $element;
+                                default:
+                                    if (!in_array($getVar, array_keys($this->_extraVars))) {
+                                        $get[] = "$getVar=$getValue";
                                     }
                             }
                         }
                     }
 
                     if (!isset($orderByExists)) {
-                        $get[] = $this->_dg->_requestPrefix . 'orderBy=' . 
-                                 $column->orderBy;
+                        $get[] = $prefix . 'orderBy=' . $column->orderBy;
                         $get[] = $direction;
                     }
                 } else {
-                    $get[] = $this->_dg->_requestPrefix . 'orderBy=' . 
-                             $column->orderBy;
+                    $get[] = $prefix . 'orderBy=' . $column->orderBy;
                     $get[] = $direction;
                 }
 
+                // Add in extra variables
                 foreach ($this->_extraVars as $key => $val) {
                     $val = urlencode ($val);
                     $get[] = "$key=$val";
                 }
 
+                // Build Link URL
                 if (isset($this->path)) {
                     $url = $this->path . '?';
                 } else {
                     $url = $_SERVER['PHP_SELF'] . '?';
                 }
-                $url .= join ('&amp;', $get);
-
-                $str = '<a href="' . $url . '">' . $column->columnName;
+                $url .= implode('&amp;', $get);
                 
+                // Build HTML Link
+                $str = '<a href="' . $url . '">' . $column->columnName;
                 $iconVar = "sortIcon" . 
                            ($this->_dg->sortArray[1] ? $this->_dg->sortArray[1] : 'ASC');
                 if (($this->$iconVar != '') && 
@@ -474,10 +507,11 @@ class Structures_DataGrid_Renderer_HTMLTable
                             }
                         } else {
                             // Use Record Data
-                            $content = htmlspecialchars ($row[$column->fieldName]);
+                            $content = htmlspecialchars($row[$column->fieldName]);
                           
-                            /* Right-align the content if it is numeric (but don't
-                             * touch the "align" attributes if it is already set) */
+                            /* Right-align the content if it is numeric
+                               (but don't touch the "align" attributes if it is
+                               already set) */
                             if ($this->_autoAlign and is_numeric ($content)
                                 and (!isset($column->attribs['align']) 
                                      or empty($column->attribs['align']))) {
@@ -546,7 +580,8 @@ class Structures_DataGrid_Renderer_HTMLTable
         }
         
         if (isset ($options['extraVars'])) {
-            $options['extraVars'] = array_merge ($options['extraVars'], $this->_extraVars);
+            $options['extraVars'] = array_merge($options['extraVars'],
+                                                $this->_extraVars);
         } else {
             $options['extraVars'] = $this->_extraVars;
         }
@@ -581,20 +616,6 @@ class Structures_DataGrid_Renderer_HTMLTable
         $this->pager =& Pager::factory($options);
     }    
 
-    /**
-     * Add custom GET variables to the generated links
-     *
-     * This method adds the provided variables to the paging and sorting
-     * links. The variable values are automatically url encoded.
-     * 
-     * @param   array   $vars   Array of the form (key => value, ...) 
-     * @access  public
-     * @return  void
-     */
-    function setExtraVars ($vars)
-    {
-        $this->_extraVars = $vars;
-    }
 }
 
 ?>
