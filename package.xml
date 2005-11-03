@@ -29,22 +29,38 @@
     <license>PHP License</license>
     <state>beta</state>
     <notes>
-      Request #4379 : Completed integration of the DBQuery datasource driver
-                      Thanks Mark Wiesemann &lt;post at mark-wiesemann dot de&gt;
-      Bug #5723 : Fixed the return value of Renderer_Smarty::getSmarty() 
-                  Thanks &lt;adrian dot rotea at gmail dot com&gt;
-      Requests #5806 and #5808 : Added support for custom Excel Writer and Format objects
-                                 Thanks Vincent Vermersch for these requests
-      Bug #5829 : The HTMLTable renderer is now compatible with multi-bytes caracters
-                  Thanks &lt;kenchou77 at gmail dot com&gt;
-      Bug #5858 : Removed @ before include() in DataSource.php (could crash silently)           
-      Auto-alignment : The HTMLTable renderer now automatically align numeric values
-                       to the right. This is configurable with HTMLTable::setAutoAlign()
+      Req #4379 : 
+        Completed integration of the DBQuery datasource driver
+        Thanks Mark Wiesemann &lt;wiesemann at php dot net&gt;
+                  
+      Req #4709 :  
+        Added support for grouping into <thead>, <tfoot> and <tbody> 
+        (HTMLTable renderer) 
+        Thanks Mark Wiesemann &lt;wiesemann at php dot net&gt;
+
+      Bug #5723 : 
+        Fixed the return value of Renderer_Smarty::getSmarty() 
+        Thanks &lt;adrian dot rotea at gmail dot com&gt;
+                  
+      Req #5806 and #5808 :
+        Added support for custom Excel Writer and Format objects
+        Thanks Vincent Vermersch for these requests
+                  
+      Bug #5829 :
+        The HTMLTable renderer is now compatible with multi-bytes caracters
+        Thanks &lt;kenchou77 at gmail dot com&gt;
+                  
+      Bug #5858 :
+        Removed @ before include() in DataSource.php (could crash silently)           
+      
+      Auto-alignment :  
+        The HTMLTable renderer now automatically align numeric values
+        to the right. This is configurable with HTMLTable::setAutoAlign()
                   
     </notes>
     <deps>
       <dep type="pkg" rel="ge" version="1.2" optional="no">PEAR</dep>
-      <dep type="pkg" rel="ge" version="1.5" optional="yes">HTML_Table</dep>
+      <dep type="pkg" rel="ge" version="1.6.1" optional="yes">HTML_Table</dep>
       <dep type="pkg" rel="ge" version="2.2" optional="yes">Pager</dep>
       <dep type="pkg" rel="ge" version="0.6" optional="yes">Spreadsheet_Excel_Writer</dep>
       <dep type="pkg" rel="ge" version="0.5.2" optional="yes">XML_Util</dep>

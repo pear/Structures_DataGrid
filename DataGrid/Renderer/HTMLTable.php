@@ -136,7 +136,9 @@ class Structures_DataGrid_Renderer_HTMLTable
     function Structures_DataGrid_Renderer_HTMLTable(&$dg)
     {
         $this->_dg =& $dg;
-        $this->_table = new HTML_Table();
+        $this->_table = new HTML_Table(null, null, true);
+        $this->_tableHeader =& $this->_table->getHeader();
+        $this->_tableBody =& $this->_table->getBody();
     }
 
     /**
@@ -158,7 +160,7 @@ class Structures_DataGrid_Renderer_HTMLTable
      */
     function setTableHeaderAttributes($attribs)
     {
-        $this->_table->setRowAttributes(0, $attribs, true);
+        $this->_tableHeader->setRowAttributes(0, $attribs, true);
     }
 
     /**
@@ -196,7 +198,7 @@ class Structures_DataGrid_Renderer_HTMLTable
      */
     function setAutoFill($value)
     {
-        $this->_table->setAutoFill($value);
+        $this->_tableBody->setAutoFill($value);
     }
 
     /**
@@ -301,7 +303,7 @@ class Structures_DataGrid_Renderer_HTMLTable
             $this->_buildHTMLTableBody();
     
             // Define Alternating Row attributes
-            $this->_table->altRowAttributes(1,
+            $this->_tableBody->altRowAttributes(0,
                                             $this->evenRowAttributes,
                                             $this->oddRowAttributes,
                                             TRUE);
@@ -413,8 +415,8 @@ class Structures_DataGrid_Renderer_HTMLTable
             }
 
             // Print Content to HTML_Table
-            $this->_table->setHeaderContents(0, $cnt, $str);
-            $this->_table->setCellAttributes(0, $cnt, $column->attribs);
+            $this->_tableHeader->setHeaderContents(0, $cnt, $str);
+            $this->_tableHeader->setCellAttributes(0, $cnt, $column->attribs);
 
             $cnt++;
         }
@@ -452,7 +454,7 @@ class Structures_DataGrid_Renderer_HTMLTable
             }
 
             // Begin loop
-            $rowCnt = ($this->header) ? 1 : 0;
+            $rowCnt = 0;
             for ($i = $begin; $i < $end; $i++) {
                 if (isset($this->_dg->recordSet[$i])) {
                     $cnt = 0;
@@ -489,8 +491,8 @@ class Structures_DataGrid_Renderer_HTMLTable
                         }
 
                         // Set Content in HTML_Table
-                        $this->_table->setCellContents($rowCnt, $cnt, $content);
-                        $this->_table->setCellAttributes($rowCnt, $cnt,
+                        $this->_tableBody->setCellContents($rowCnt, $cnt, $content);
+                        $this->_tableBody->setCellAttributes($rowCnt, $cnt,
                                                          $column->attribs);
 
                         $cnt++;
@@ -500,9 +502,9 @@ class Structures_DataGrid_Renderer_HTMLTable
                     // Determine if empty row should be printed
                     if ($this->allowEmptyRows) {
                         for ($j=0; $j<count($this->_dg->columnSet); $j++) {
-                            $this->_table->setCellAttributes($rowCnt, $j,
+                            $this->_tableBody->setCellAttributes($rowCnt, $j,
                                                      $this->emptyRowAttributes);
-                            $this->_table->setCellContents($rowCnt, $j,
+                            $this->_tableBody->setCellContents($rowCnt, $j,
                                                            '&nbsp;');
                         }
                         $rowCnt++;
