@@ -14,6 +14,7 @@
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
 // | Author: Andrew Nagy <asnagy@webitecture.org>                         |
+// |         Olivier Guilyardi <olivier@samalyse.com>                     |
 // +----------------------------------------------------------------------+
 //
 // $Id$
