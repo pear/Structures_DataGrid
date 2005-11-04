@@ -405,45 +405,6 @@ class Structures_DataGrid_Renderer_HTMLTable
                 $get[$prefix . 'orderBy'] = $column->orderBy;
                 $get[$prefix . 'direction'] = $direction;
                 $get[$prefix . 'page'] = 1;
-                /*
-                if (count($_GET)) {
-                    foreach($_GET as $getVar => $getValue) {
-                        switch ($getVar) {
-                            case $prefix . 'orderBy' :
-                                $get[$prefix . 'orderBy'] = $column->orderBy;
-                                $orderByExists = true;
-                                break;
-                            case $prefix . 'direction' :
-                                $get[$prefix . 'direction'] = $direction;
-                                break;
-                            case $prefix . 'page' : 
-                                $get[$prefix . 'page'] = 1;
-                                break;
-                            default:
-                                if (!in_array($getVar, $this->_ignoreVars)
-                                    and !in_array($getVar, array_keys($this->_extraVars))) {
-
-                                    $getValue = $magic_quotes ? stripslashes($getValue) : $getValue;
-                                    echo "$getValue/" . rawurlencode ($getValue) . '|';
-                                    $get[] = rawurlencode ($getVar) . '='. rawurlencode ($getValue);
-                                    //$get[] = "$getVar=$getValue";
-                                }
-                        }
-                    }
-                    if (!isset($orderByExists)) {
-                        $get[] = $prefix . 'orderBy=' . $column->orderBy;
-                        $get[] = $direction;
-                    }
-                } else {
-                    $get[] = $prefix . 'orderBy=' . $column->orderBy;
-                    $get[] = $direction;
-                }
-
-                // Add in extra variables
-                foreach ($this->_extraVars as $key => $val) {
-                    $get[$key] = $val;
-                }
-                    */
 
                 // Build Link URL
                 if (isset($this->path)) {
@@ -451,6 +412,8 @@ class Structures_DataGrid_Renderer_HTMLTable
                 } else {
                     $url = $_SERVER['PHP_SELF'] . '?';
                 }
+
+                // Merge common and column-specific GET variables
                 $url .= http_build_query (array_merge ($common, $get));
                 
                 // Build HTML Link
