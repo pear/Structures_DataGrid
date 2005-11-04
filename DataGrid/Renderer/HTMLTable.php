@@ -13,8 +13,9 @@
 // | obtain it through the world-wide-web, please send a note to          |
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
-// | Author: Andrew Nagy <asnagy@webitecture.org>                         |
-// |         Olivier Guilyardi <olivier@samalyse.com>                     |
+// | Authors: Andrew Nagy <asnagy@webitecture.org>                        |
+// |          Olivier Guilyardi <olivier@samalyse.com>                    |
+// |          Mark Wiesemann <wiesemann@php.net>                          |
 // +----------------------------------------------------------------------+
 //
 // $Id$
