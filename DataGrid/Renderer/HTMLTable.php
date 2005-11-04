@@ -19,6 +19,7 @@
 // $Id$
 
 require_once 'HTML/Table.php';
+require_once 'PHP/Compat/Function/http_build_query.php';
 
 /**
  * Structures_DataGrid_Renderer_HTMLTable Class
@@ -123,7 +124,7 @@ class Structures_DataGrid_Renderer_HTMLTable
      * Variables to be removed from the generated links
      * @var array
      */
-    var $_ignoreVars = array();
+    var $_excludeVars = array();
        
     /**
      * Wether to automagically right-align numeric values or not
@@ -272,9 +273,9 @@ class Structures_DataGrid_Renderer_HTMLTable
     }
     
     /**
-     * Remove GET variables from the generated links
+     * Exclude GET variables from the generated links
      *
-     * This method removes the provided variables from the paging and sorting
+     * This method excludes the provided variables from the paging and sorting
      * links. This is helpful when using variables that determine what page to
      * show such as an 'action' variable, etc.
      * 
@@ -282,9 +283,9 @@ class Structures_DataGrid_Renderer_HTMLTable
      * @access  public
      * @return  void
      */
-    function removeExtraVars($vars)
+    function excludeVars($vars)
     {
-        $this->_ignoreVars = array_merge($this->_ignoreVars, $vars);
+        $this->_excludeVars = array_merge($this->_excludeVars, $vars);
     }    
     
     /**
@@ -375,41 +376,60 @@ class Structures_DataGrid_Renderer_HTMLTable
         $prefix = $this->_dg->_requestPrefix;
        
         $cnt = 0;
+       
+        // Build the list of common get parameters
+        $common   = $this->_extraVars;
+        $ignore   = $this->_excludeVars;
+        $ignore[] = $prefix . 'orderBy';
+        $ignore[] = $prefix . 'page';
+        $ignore[] = $prefix . 'direction';
+        foreach ($_GET as $key => $val) {
+            if (!in_array ($key, $ignore)) {
+                $common[$key] = $val;
+            }
+        }
+
         foreach ($this->_dg->columnSet as $column) {
             //Define Content
             if (!is_null ($column->orderBy)) {
                 // Determine Direction
                 if ($this->_dg->sortArray[0] == $column->orderBy && 
                     $this->_dg->sortArray[1] == 'ASC') {
-                    $direction = $prefix . 'direction=DESC';
+                    $direction = 'DESC';
                 } else {
-                    $direction = $prefix . 'direction=ASC';
+                    $direction = 'ASC';
                 }
 
                 // Build list of GET variables
                 $get = array();
+                $get[$prefix . 'orderBy'] = $column->orderBy;
+                $get[$prefix . 'direction'] = $direction;
+                $get[$prefix . 'page'] = 1;
+                /*
                 if (count($_GET)) {
                     foreach($_GET as $getVar => $getValue) {
-                        if (!in_array($getVar, $this->_ignoreVars)) {
-                            switch ($getVar) {
-                                case $prefix . 'orderBy' :
-                                    $get[] = $prefix . 'orderBy=' . $column->orderBy;
-                                    $orderByExists = true;
-                                    break;
-                                case $prefix . 'direction' :
-                                    $get[] = $direction;
-                                    break;
-                                case $prefix . 'page' : 
-                                    $get[] = $prefix . 'page=1';
-                                    break;
-                                default:
-                                    if (!in_array($getVar, array_keys($this->_extraVars))) {
-                                        $get[] = "$getVar=$getValue";
-                                    }
-                            }
+                        switch ($getVar) {
+                            case $prefix . 'orderBy' :
+                                $get[$prefix . 'orderBy'] = $column->orderBy;
+                                $orderByExists = true;
+                                break;
+                            case $prefix . 'direction' :
+                                $get[$prefix . 'direction'] = $direction;
+                                break;
+                            case $prefix . 'page' : 
+                                $get[$prefix . 'page'] = 1;
+                                break;
+                            default:
+                                if (!in_array($getVar, $this->_ignoreVars)
+                                    and !in_array($getVar, array_keys($this->_extraVars))) {
+
+                                    $getValue = $magic_quotes ? stripslashes($getValue) : $getValue;
+                                    echo "$getValue/" . rawurlencode ($getValue) . '|';
+                                    $get[] = rawurlencode ($getVar) . '='. rawurlencode ($getValue);
+                                    //$get[] = "$getVar=$getValue";
+                                }
                         }
                     }
-
                     if (!isset($orderByExists)) {
                         $get[] = $prefix . 'orderBy=' . $column->orderBy;
                         $get[] = $direction;
@@ -421,9 +441,9 @@ class Structures_DataGrid_Renderer_HTMLTable
 
                 // Add in extra variables
                 foreach ($this->_extraVars as $key => $val) {
-                    $val = urlencode ($val);
-                    $get[] = "$key=$val";
+                    $get[$key] = $val;
                 }
+                    */
 
                 // Build Link URL
                 if (isset($this->path)) {
@@ -431,7 +451,7 @@ class Structures_DataGrid_Renderer_HTMLTable
                 } else {
                     $url = $_SERVER['PHP_SELF'] . '?';
                 }
-                $url .= implode('&amp;', $get);
+                $url .= http_build_query (array_merge ($common, $get));
                 
                 // Build HTML Link
                 $str = '<a href="' . $url . '">' . $column->columnName;
@@ -584,6 +604,13 @@ class Structures_DataGrid_Renderer_HTMLTable
                                                 $this->_extraVars);
         } else {
             $options['extraVars'] = $this->_extraVars;
+        }
+        
+        if (isset ($options['excludeVars'])) {
+            $options['excludeVars'] = array_merge($options['excludeVars'],
+                                                  $this->_excludeVars);
+        } else {
+            $options['excludeVars'] = $this->_excludeVars;
         }
         
         $this->_buildPaging($options);
