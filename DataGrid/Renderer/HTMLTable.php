@@ -111,6 +111,18 @@ class Structures_DataGrid_Renderer_HTMLTable
     var $_table;
 
     /**
+     * The html_table_storage object for the table header
+     * @var object HTML_Table_Storage
+     */
+    var $_tableHeader;
+
+    /**
+     * The html_table_storage object for the table body
+     * @var object HTML_Table_Storage
+     */
+    var $_tableBody;
+        
+   /**
      * A switch to determine the state of the table
      * @var bool
      */
