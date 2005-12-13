@@ -22,6 +22,12 @@
       <email>olivier@samalyse.com</email>
       <role>developer</role>
     </maintainer>
+    <maintainer>
+      <user>wiesemann</user>
+      <name>Mark Wiesemann</name>
+      <email>wiesemann@php.net</email>
+      <role>developer</role>
+    </maintainer>
   </maintainers>
   <release>
     <version>?</version>
