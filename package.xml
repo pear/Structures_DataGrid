@@ -29,6 +29,9 @@
     <license>PHP License</license>
     <state>beta</state>
     <notes>
+      Req #4254 : 
+        Completed integration of the DBTable datasource driver
+
       Req #4379 : 
         Completed integration of the DBQuery datasource driver
         Thanks Mark Wiesemann &lt;wiesemann at php dot net&gt;

@@ -74,6 +74,7 @@ class Structures_DataGrid_DataSource_DBTable
     function Structures_DataGrid_DataSource_DBTable()
     {
         parent::Structures_DataGrid_DataSource();
+        $this->_addDefaultOptions(array('where' => null));
     }
   
     /**
@@ -119,17 +120,24 @@ class Structures_DataGrid_DataSource_DBTable
     {
         if (!is_null($sortField) && !is_null($sortDir)) {
             $this->_result = $this->_object->selectResult(
-                                $this->_options['view'], null,
+                                $this->_options['view'],
+                                $this->_options['where'],
                                 $sortField . ' ' . $sortDir, $offset, $limit);
         } elseif (!is_null($this->_sortField) && !is_null($this->_sortDir)) {
             $this->_result = $this->_object->selectResult(
-                                $this->_options['view'], null, 
+                                $this->_options['view'],
+                                $this->_options['where'], 
                                 $this->_sortField . ' ' . $this->_sortDir, 
                                 $offset, $limit);
         } else {
             $this->_result = $this->_object->selectResult(
-                                $this->_options['view'], null, null, 
-                                $offset, $limit);
+                                $this->_options['view'],
+                                $this->_options['where'],
+                                null, $offset, $limit);
+        }
+
+        if (PEAR::isError($this->_result)) {
+            return $this->_result;
         }
 
         $recordSet = array();
@@ -142,7 +150,7 @@ class Structures_DataGrid_DataSource_DBTable
         }
 
         // Determine fields to render
-        if (!$this->_options['fields']) {
+        if (!$this->_options['fields'] && count($recordSet)) {
             $this->setOptions(array('fields' => array_keys($recordSet[0])));
         }                
 
@@ -157,7 +165,8 @@ class Structures_DataGrid_DataSource_DBTable
      */
     function count()
     {
-        return $this->_object->selectCount($this->_options['view']);
+        return $this->_object->selectCount($this->_options['view'],
+                                           $this->_options['where']);
     }
     
     /**
