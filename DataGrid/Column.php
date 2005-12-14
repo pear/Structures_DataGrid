@@ -159,6 +159,10 @@ class Structures_DataGrid_Column
         // Define the Parameter list
         $paramList = array();
         $paramList['record'] = $record;
+        $paramList['fieldName'] = $this->fieldName;
+        $paramList['columnName'] = $this->columnName;
+        $paramList['orderBy'] = $this->orderBy;
+        $paramList['attribs'] = $this->attribs;
         
         // Determine callback and additional parameters
         if ($size = strpos($this->formatter, '(')) {

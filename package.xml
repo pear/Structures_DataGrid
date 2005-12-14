@@ -50,7 +50,11 @@
       Bug #5723 : 
         Fixed the return value of Renderer_Smarty::getSmarty() 
         Thanks &lt;adrian dot rotea at gmail dot com&gt;
-                  
+      
+      Req #5758 :
+        New parameters for Structures_DataGrid_Column::formatter() callback:
+        'fieldName', 'columnName', 'orderBy', 'attribs'
+
       Req #5806 and #5808 :
         Added support for custom Excel Writer and Format objects
         Thanks Vincent Vermersch for these requests
