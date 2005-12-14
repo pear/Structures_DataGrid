@@ -13,7 +13,8 @@
 // | obtain it through the world-wide-web, please send a note to          |
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
-// | Author: Andrew Nagy <asnagy@webitecture.org>                         |
+// | Authors: Andrew Nagy <asnagy@webitecture.org>                        |
+// |          Olivier Guilyardi <olivier@samalyse.com>                    |
 // +----------------------------------------------------------------------+
 //
 // $Id$
@@ -23,118 +24,28 @@ require_once 'Structures/DataGrid/Core.php';
 /**
  * Structures_DataGrid_Renderer Class
  *
- * This class handles managing the output for the DataGrid.
- * By default, the output is handled by the HTML_Table renderer.
+ * Base class of all Renderer drivers
  *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
+ * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @access   public
  * @package  Structures_DataGrid
  * @category Structures
  */
-class Structures_DataGrid_Renderer extends Structures_DataGrid_Core
+class Structures_DataGrid_Renderer 
 {
-    /**
-     * Renderer driver
-     * @var object Structures_DataGrid_Renderer_* family
-     */ 
-    var $renderer;
-
-    /**
-     * Constructor
-     *
-     * Determins the appropriate renderer to use.  Uses the HTML_Table renderer
-     * as the default.
-     *
-     * @param  string   $renderer   The renderer to use.
-     * @param  int      $limit      The row limit per page
-     * @param  int      $page       The page to show (starting from 1). 
-     *                              Note : if you specify this, the "page" GET 
-     *                              variable will be ignored.
-     * @access public
-     */
-    function Structures_DataGrid_Renderer($renderer = DATAGRID_RENDER_TABLE,
-                                          $limit = null, $page = null)
+    function header($labels) 
     {
-        if (PEAR::isError($this->setRenderer($renderer))) {
-            $this->setRenderer(DATAGRID_RENDER_TABLE);
-        }
-        
-        parent::Structures_DataGrid_Core($limit, $page);
-    }
-
-    /**
-     * Render
-     *
-     * Renders that output by calling the specified renderer's render method.
-     *
-     * @param  string   $limit  The row limit per page.
-     * @param  string   $page   The current page viewed.
-     * @access public
-     */
-    function render()
-    {
-        return $this->renderer->render();
-    }
-
-    /**
-     * Get Renderer
-     *
-     * Retrieves the renderer object as a reference
-     *
-     * @access public
-     */
-    function &getRenderer()
-    {
-        return $this->renderer;
-    }
-
-    /**
-     * Set Renderer
-     *
-     * Defines which renderer to be used by the DataGrid
-     *
-     * @param  string   $renderer       The defined renderer string
-     * @param  string   $path           An optional value to change the path of
-     *                                  the location of the renderer class file.
-     *                                  Please set in the notation of '/my/path'
-     * @access public
-     */
-    function setRenderer($renderer, $path = 'Structures/DataGrid/Renderer')
-    {
-        $class = 'Structures_DataGrid_Renderer_' . $renderer;
-        $file = $path . '/' . $renderer . '.php';
-
-        if (include_once($file)) {
-            $this->renderer = new $class($this);
-        } else {
-            return new PEAR_Error('Invalid renderer');
-        }
-
-        return true;
-    }
-
-    /**
-     * Set Default Headers
-     *
-     * This method handles determining if column headers need to be set.
-     *
-     * @access private
-     */
-    function _setDefaultHeaders()
-    {
-        if ((!count($this->columnSet)) && (count($this->recordSet))) {
-            $arrayKeys = array_keys($this->recordSet[0]);
-            foreach ($arrayKeys as $key) {
-                $width = ceil(100/count($arrayKeys));
-                $column = new Structures_DataGrid_Column($key, $key, $key,
-                                                         array('width' =>
-                                                               $width.'%'));
-                $this->addColumn($column);
-            }
-        }
     }
     
+    function row($content) 
+    {
+    }
+    
+    function footer($labels) 
+    {
+    }
 }
 
 ?>
