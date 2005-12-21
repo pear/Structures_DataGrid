@@ -19,7 +19,7 @@
 //
 // $Id$
 
-require_once 'Structures/DataGrid/DataSource.php';
+require_once 'Structures/DataGrid/DataSource/Common.php';
 
 /**
  * PEAR::DB_DataObject Data Source Driver
@@ -46,7 +46,7 @@ require_once 'Structures/DataGrid/DataSource.php';
  * @category Structures
  */
 class Structures_DataGrid_DataSource_DataObject
-    extends Structures_DataGrid_DataSource
+    extends Structures_DataGrid_DataSource_Common
 {   
     /**
      * Reference to the DataObject
@@ -75,7 +75,7 @@ class Structures_DataGrid_DataSource_DataObject
      */
     function Structures_DataGrid_DataSource_DataObject()
     {
-        parent::Structures_DataGrid_DataSource();
+        parent::Structures_DataGrid_DataSource_Common();
         $this->_addDefaultOptions(array(
                     'use_private_vars' => false,
                     'labels_property' => 'fb_fieldLabels',

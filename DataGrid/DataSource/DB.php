@@ -19,7 +19,7 @@
 //
 // $Id $
 
-require_once 'Structures/DataGrid/DataSource/Array.php';
+require_once 'Structures/DataGrid/DataSource/Common.php';
 
 /**
  * PEAR::DB Data Source Driver
@@ -33,7 +33,8 @@ require_once 'Structures/DataGrid/DataSource/Array.php';
  * @package  Structures_DataGrid
  * @category Structures
  */
-class Structures_DataGrid_DataSource_DB extends Structures_DataGrid_DataSource
+class Structures_DataGrid_DataSource_DB
+    extends Structures_DataGrid_DataSource_Common
 {   
     /**
      * Reference to the DB_Result object
@@ -50,7 +51,7 @@ class Structures_DataGrid_DataSource_DB extends Structures_DataGrid_DataSource
      */
     function Structures_DataGrid_DataSource_DB()
     {
-        parent::Structures_DataGrid_DataSource();
+        parent::Structures_DataGrid_DataSource_Common();
     }
   
     /**

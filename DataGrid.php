@@ -185,6 +185,92 @@ class Structures_DataGrid
     }
 
     /**
+     * checks if a file exists in the include path
+     *
+     * @access public
+     * @param  string   filename
+     *
+     * @return boolean true success and false on error
+     */
+    function fileExists($file)
+    {
+        $dirs = explode(PATH_SEPARATOR, ini_get('include_path'));
+        foreach ($dirs as $dir) {
+            if (is_readable($dir . DIRECTORY_SEPARATOR . $file)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Driver Factory
+     *
+     * A clever method which loads and instantiate data source drivers.
+     *
+     * Can be called in various ways :
+     *
+     * Detect the source type and load the appropriate driver with default
+     * options :
+     * <code>
+     * $driver =& Structures_DataGrid::datasourceFactory($source);
+     * </code>
+     *
+     * Detect the source type and load the appropriate driver with custom
+     * options :
+     * <code>
+     * $driver =& Structures_DataGrid::datasourceFactory($source, $options);
+     * </code>
+     *
+     * Load a driver for an explicit type (faster, bypasses detection routine) :
+     * <code>
+     * $driver =& Structures_DataGrid::datasourceFactory($source, $options, $type);
+     * </code>
+     *
+     * @access  public
+     * @param   mixed   $source     The data source respective to the driver
+     * @param   array   $options    An associative array of the form :
+     *                              array(optionName => optionValue, ...)
+     * @param   string  $type       The data source type constant (of the form 
+     *                              DATAGRID_DATASOURCE_*)  
+     * @uses    Structures_DataGrid_DataSource::_detectSourceType()     
+     * @return  mixed               Returns the source driver object or 
+     *                              PEAR_Error on failure
+     * @static
+     */
+    function &datasourceFactory($source, $options=array(), $type=null)
+    {
+        if (is_null($type) &&
+            !($type = Structures_DataGrid::_detectSourceType($source))) {
+            return new PEAR_Error('Unable to determine the data source type. '.
+                                  'You may want to explicitly specify it.');
+        }
+
+        $class_name = "Structures_DataGrid_DataSource_$type";
+
+        if (!class_exists($class_name)) {
+            $file_name = str_replace('_', DIRECTORY_SEPARATOR, $class_name) . '.php';
+            if (!include_once($file_name)) {
+                if (!Structures_DataGrid::fileExists($file_name)) {
+                    $msg = "unable to find package '$class_name' file '$file_name'";
+                } else {
+                    $msg = "unable to load driver class '$class_name' from file '$file_name'";
+                }
+                return new PEAR_Error($msg);
+            }
+        }
+
+        $driver =& new $class_name();
+        $result = $driver->bind($source, $options);
+       
+        if (PEAR::isError($result)) {
+            return $result;
+        } else {
+            return $driver;
+        }
+    }
+
+    /**
      * Render
      *
      * Renders that output by calling the specified renderer's render method.
@@ -379,7 +465,7 @@ class Structures_DataGrid
     }
 
     /**
-     * A simple way to add a recod set to the datagrid
+     * A simple way to add a record set to the datagrid
      *
      * @access  public
      * @param   mixed   $rs         The record set in any of the supported data
@@ -391,9 +477,7 @@ class Structures_DataGrid
      */
     function bind($rs, $options = array(), $type = null)
     {
-        require_once 'Structures/DataGrid/DataSource.php';
-        
-        $source =& Structures_DataGrid_DataSource::create($rs, $options, $type);
+        $source =& Structures_DataGrid::datasourceFactory($rs, $options, $type);
         if (!PEAR::isError($source)) {
             return $this->bindDataSource($source);
         } else {
@@ -410,7 +494,7 @@ class Structures_DataGrid
      */
     function bindDataSource(&$source)
     {
-        if (is_subclass_of($source, 'structures_datagrid_datasource')) {
+        if (is_subclass_of($source, 'structures_datagrid_datasource_common')) {
             $this->_dataSource =& $source;
             if (PEAR::isError($result = $this->fetchDataSource())) {
                 return $result;
@@ -571,6 +655,68 @@ class Structures_DataGrid
             }
         }
     }     
+
+    /**
+     * Detect source type
+     *
+     * @param   mixed   $source     Some kind of source
+     * @return  string              The type constant of this source or null if
+     *                              it couldn't be detected
+     * @access  private
+     * @todo    Add CSV detector.  Possible rewrite in IFs to allow for
+     *          heirarchy for seperating file handle sources from others
+     */
+    function _detectSourceType($source)
+    {
+        switch(true) {
+            // DB_DataObject
+            case (is_subclass_of($source, 'db_dataobject')):
+                return DATAGRID_SOURCE_DATAOBJECT;
+                break;
+
+            // DB_Result
+            case (strtolower(get_class($source)) == 'db_result'):
+                return DATAGRID_SOURCE_DB;
+                break;
+                
+            // Array
+            case (is_array($source)):
+                return DATAGRID_SOURCE_ARRAY;
+                break;
+
+            // RSS
+            case (is_string($source) && stristr('<rss', $source)):
+            case (is_string($source) and stristr('<rdf:RDF', $source)):
+                return DATAGRID_SOURCE_RSS;
+                break;
+
+            // XML
+            case (is_string($source) and ereg('^ *<\?xml', $source)):
+                return DATAGRID_SOURCE_XML;
+                break;
+            
+            // DBQuery
+            case (is_string($source) 
+                  and preg_match('#SELECT\s.*\sFROM#is', $source) === 1):
+                return DATAGRID_SOURCE_DBQUERY; 
+                break;
+
+            // DBTable
+            case (strtolower(get_parent_class($source)) == 'db_table'):
+                return DATAGRID_SOURCE_DBTABLE;
+                break;
+
+            // CSV
+            //case (is_string($source)):
+            //    return DATAGRID_SOURCE_CSV;
+            //    break;
+                
+            default:
+                return null;
+                break;
+        }
+    }
+
 }
 
 ?>
