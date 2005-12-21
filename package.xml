@@ -41,7 +41,11 @@
       Req #4379 : 
         Completed integration of the DBQuery datasource driver
         Thanks Mark Wiesemann &lt;wiesemann at php dot net&gt;
-                  
+
+      Bug #4415 :
+        Example files were installed in the package directory, now they
+        will be installed into DOCS/Structures_DataGrid/docs/examples/
+
       Req #4709 :  
         Added support for grouping into &lt;thead&gt;, &lt;tfoot&gt; and &lt;tbody&gt; 
         (HTMLTable renderer) 
@@ -125,15 +129,15 @@
             <file role="php" name="DB.php"/>
             <file role="php" name="DataObject.php"/>
           </dir>
-          <dir name="Docs" role="php">
-            <dir name="Examples" role="php">
-              <file role="php" name="example.php"/>
-              <file role="php" name="example-xml.php"/>
-              <file role="php" name="example-xls.php"/>
-              <file role="php" name="example-xul.php"/>
-              <file role="php" name="example-smarty.php"/>
-            </dir>
-          </dir>
+        </dir>
+      </dir>
+      <dir name="docs" role="doc">
+        <dir name="examples" role="doc">
+          <file role="doc" name="example.php"/>
+          <file role="doc" name="example-xml.php"/>
+          <file role="doc" name="example-xls.php"/>
+          <file role="doc" name="example-xul.php"/>
+          <file role="doc" name="example-smarty.php"/>
         </dir>
       </dir>
     </filelist>
