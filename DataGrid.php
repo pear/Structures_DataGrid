@@ -20,6 +20,7 @@
 
 require_once 'PEAR.php';
 
+require_once 'Structures/DataGrid/Column.php';
 require_once 'Structures/DataGrid/Renderer.php';
 
 // Renderer Drivers
