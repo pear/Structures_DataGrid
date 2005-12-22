@@ -31,19 +31,107 @@
  * @package  Structures_DataGrid
  * @category Structures
  */
-class Structures_DataGrid_Renderer 
+class Structures_DataGrid_Renderer_Common 
 {
-    function header($labels) 
+    var $currentSortField     = null;
+    var $currentSortDirection = null;
+   
+    var $columns = array();
+    var $records = array();
+    var $nColumns;
+    var $nRecords;
+    var $nRecordsTotal;
+    var $limit = null;
+    var $offset = 0;
+    var $output = null;
+    
+    function init ()
     {
     }
     
-    function row($content) 
+    function buildHeader () 
+    {
+    }
+   
+    function buildBody ()
     {
     }
     
-    function footer($labels) 
+    function buildFooter () 
     {
     }
+
+    function finalize ()
+    {
+    }
+    
+    function generate ()
+    {
+        if ($this->records)
+        {
+            if (is_null ($this->limit)) {
+                $this->limit = count ($this->records);
+            }
+            
+            for ($i = $this->offset; $i < $this->limit; $i++) {
+                $content = array ();
+                foreach ($this->columns as $column) {
+                    $content[] = $column->recordToValue ($this->record[$i]);
+                }
+                $this->records[$i - $this->offset] = $content;
+            }
+
+            $ii = count ($this->records);
+            for ($i = $this->limit - $this->offset; $i < $ii; $i++) {
+                unset ($this->records[$i];
+            }
+
+        }
+       
+        $this->nColumns = count ($this->columns);
+        $this->nRecords = count ($this->records);
+        
+        $this->init ();
+        
+        $this->buildHeader ();
+       
+        $this->buildBody ();
+        
+        $this->buildFooter ();
+
+        $this->finalize ();
+    }
+
+    function getOutput ()
+    {
+        if (is_null ($this->output)) {
+            $this->generate ();
+        }
+        return $this->output;
+    }
+
+    function render()
+    {
+        echo $this->getOutput ();
+    }
+    
+    /**
+     * Sets the rendered status.  This can be used to "flush the cache" in case
+     * you need to render the datagrid twice with the second time having changes
+     *
+     * This is quite an obsolete method...
+     * 
+     * @access  public
+     * @params  bool        $status     The rendered status of the DataGrid
+     */
+    function setRendered($status = false)
+    {
+        if (!$status) {
+            $this->output = null;
+        }
+        /* What are we supposed to do with $status = true ? */
+    }   
+        
 }
 
 ?>

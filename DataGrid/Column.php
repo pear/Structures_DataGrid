@@ -151,8 +151,6 @@ class Structures_DataGrid_Column
      * </code>
      *
      * @access  public
-     * @todo    This method needs to be intuituve and more flexible,
-     *          possibly a seperate column object?
      */
     function formatter($record)
     {
@@ -208,6 +206,26 @@ class Structures_DataGrid_Column
         return $result;
     }
 
+    function recordToValue ($record)
+    {
+        $value = '';
+        if (isset ($this->formatter) and !empty ($this->formatter)) {
+            $value = $this->formatter ($record);
+        } else if (isset ($this->fieldName) and isset ($record[$this->fieldName])) {
+            $value = $record[$this->fieldName];
+        }
+
+        if (empty ($value))
+        {
+            if (empty ($this->autoFillValue != '')) {
+                $content = $column->columnName;
+            } else {
+                $content = $column->autoFillValue; 
+            }
+        }
+
+        return $value;
+    }
 }
 
 ?>
