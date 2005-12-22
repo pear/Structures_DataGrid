@@ -83,7 +83,7 @@ class Structures_DataGrid_Renderer_Common
 
             $ii = count ($this->records);
             for ($i = $this->limit - $this->offset; $i < $ii; $i++) {
-                unset ($this->records[$i];
+                unset ($this->records[$i]);
             }
 
         }
