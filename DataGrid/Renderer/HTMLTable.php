@@ -20,6 +20,7 @@
 //
 // $Id$
 
+require_once 'Structures/DataGrid/Renderer/Common.php';
 require_once 'HTML/Table.php';
 require_once 'PHP/Compat/Function/http_build_query.php';
 
@@ -32,7 +33,7 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  * @package  Structures_DataGrid
  * @category Structures
  */
-class Structures_DataGrid_Renderer_HTMLTable
+class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Renderer_Common
 {
     /**
      * Use the table header
@@ -104,12 +105,8 @@ class Structures_DataGrid_Renderer_HTMLTable
      */
     var $_dg;
 
-    /**
-     * The html_table object
-     * @var object HTML_Table
-     */
     var $_table;
-
+    
     /**
      * The html_table_storage object for the table header
      * @var object HTML_Table_Storage
@@ -122,12 +119,6 @@ class Structures_DataGrid_Renderer_HTMLTable
      */
     var $_tableBody;
         
-   /**
-     * A switch to determine the state of the table
-     * @var bool
-     */
-    var $_rendered = false;
-
     /**
      * Variables to be added to the generated links
      * @var array
@@ -145,7 +136,7 @@ class Structures_DataGrid_Renderer_HTMLTable
      * @var bool
      */
     var $_autoAlign = true;
-    
+   
     /**
      * Constructor
      *
@@ -154,9 +145,9 @@ class Structures_DataGrid_Renderer_HTMLTable
      * @param   object Structures_DataGrid  $dg     The datagrid to render.
      * @access  public
      */
-    function Structures_DataGrid_Renderer_HTMLTable(&$dg)
+    function init()
     {
-        $this->_dg =& $dg;
+        //$this->_dg =& $dg;
         $this->_table = new HTML_Table(null, null, true);
         $this->_tableHeader =& $this->_table->getHeader();
         $this->_tableBody =& $this->_table->getBody();
@@ -303,16 +294,6 @@ class Structures_DataGrid_Renderer_HTMLTable
     }    
     
     /**
-     * Prints the HTML for the DataGrid
-     *
-     * @access  public
-     */
-    function render()
-    {
-        echo $this->toHTML();
-    }
-
-    /**
      * Generates the HTML for the DataGrid
      *
      * @access  public
@@ -320,64 +301,22 @@ class Structures_DataGrid_Renderer_HTMLTable
      */
     function toHTML()
     {
-        $table =& $this->getTable();
-
-        return $table->toHTML();
+        return $this->getOutput ();
     } 
     
     /**
      * Gets the HTML_Table object for the DataGrid
      *
+     * OBSOLETE
+     * 
      * @access  public
      * @return  object HTML_Table   The HTML Table object for the DataGrid
      */
     function &getTable()
     {
-        $dg =& $this->_dg;
-
-        if (!$this->_rendered) {
-            /*
-            // Get the data to be rendered
-            if (PEAR::isError($result = $dg->fetchDataSource())) {
-                return $result;
-            }
-            */
-            // Check to see if column headers exist, if not create them
-            // This must follow after any fetch method call
-            $dg->_setDefaultHeaders();
-                        
-            // Define Table Header
-            if ($this->header) {
-                $this->_buildHTMLTableHeader();
-            }
-    
-            // Build Table Data
-            $this->_buildHTMLTableBody();
-    
-            // Define Alternating Row attributes
-            $this->_tableBody->altRowAttributes(0,
-                                            $this->evenRowAttributes,
-                                            $this->oddRowAttributes,
-                                            TRUE);
-                                            
-            $this->_rendered = true;
-        }
-        
         return $this->_table;
     }   
 
-    /**
-     * Sets the rendered status.  This can be used to "flush the cache" in case
-     * you need to render the datagrid twice with the second time having changes
-     *
-     * @access  public
-     * @params  bool        $status     The rendered status of the DataGrid
-     */
-    function setRendered($status)
-    {
-        $this->_rendered = (bool)$status;
-    }   
-        
     /**
      * Handles building the header of the DataGrid
      *
@@ -385,71 +324,72 @@ class Structures_DataGrid_Renderer_HTMLTable
      * @return  void
      * @todo    Redesign/Rework the header URL building.
      */
-    function _buildHTMLTableHeader()
+    function buildHeader (&$columns)
     {
-        $prefix = $this->_dg->_requestPrefix;
-       
-        $cnt = 0;
-       
-        // Build the list of common get parameters
-        $common   = $this->_extraVars;
-        $ignore   = $this->_excludeVars;
-        $ignore[] = $prefix . 'orderBy';
-        $ignore[] = $prefix . 'page';
-        $ignore[] = $prefix . 'direction';
-        foreach ($_GET as $key => $val) {
-            if (!in_array ($key, $ignore)) {
-                $common[$key] = $val;
-            }
-        }
-
-        foreach ($this->_dg->columnSet as $column) {
-            //Define Content
-            if (!is_null ($column->orderBy)) {
-                // Determine Direction
-                if ($this->_dg->sortArray[0] == $column->orderBy && 
-                    $this->_dg->sortArray[1] == 'ASC') {
-                    $direction = 'DESC';
-                } else {
-                    $direction = 'ASC';
+        if ($this->header)
+        {
+            $prefix = $this->_requestPrefix;
+            // Build the list of common get parameters
+            $common   = $this->_extraVars;
+            $ignore   = $this->_excludeVars;
+            $ignore[] = $prefix . 'orderBy';
+            $ignore[] = $prefix . 'page';
+            $ignore[] = $prefix . 'direction';
+            foreach ($_GET as $key => $val) {
+                if (!in_array ($key, $ignore)) {
+                    $common[$key] = $val;
                 }
-
-                // Build list of GET variables
-                $get = array();
-                $get[$prefix . 'orderBy'] = $column->orderBy;
-                $get[$prefix . 'direction'] = $direction;
-                $get[$prefix . 'page'] = 1;
-
-                // Build Link URL
-                if (isset($this->path)) {
-                    $url = $this->path . '?';
-                } else {
-                    $url = $_SERVER['PHP_SELF'] . '?';
-                }
-
-                // Merge common and column-specific GET variables
-                $url .= http_build_query (array_merge ($common, $get));
-                
-                // Build HTML Link
-                $str = '<a href="' . $url . '">' . $column->columnName;
-                $iconVar = "sortIcon" . 
-                           ($this->_dg->sortArray[1] ? $this->_dg->sortArray[1] : 'ASC');
-                if (($this->$iconVar != '') && 
-                    ($this->_dg->sortArray[0] == $column->orderBy)) {
-                    $str .= ' ' . $this->$iconVar;
-                }
-                $str .= '</a>';
-                
-            } else {
-                $str = $column->columnName;
             }
 
-            // Print Content to HTML_Table
-            $this->_tableHeader->setHeaderContents(0, $cnt, $str);
-            $this->_tableHeader->setCellAttributes(0, $cnt, $column->attribs);
+            for ($col = 0; $col < $this->nColumns; $col++) {
+                $column =& $this->column[$col];
+                //Define Content
+                if (!is_null ($column->orderBy)) {
+                    // Determine Direction
+                    if ($this->currentSortField == $column->orderBy && 
+                        $this->currentSortDirection == 'ASC') {
+                        $direction = 'DESC';
+                    } else {
+                        $direction = 'ASC';
+                    }
 
-            $cnt++;
+                    // Build list of GET variables
+                    $get = array();
+                    $get[$prefix . 'orderBy'] = $column->orderBy;
+                    $get[$prefix . 'direction'] = $direction;
+                    $get[$prefix . 'page'] = 1;
+
+                    // Build Link URL
+                    if (isset($this->path)) {
+                        $url = $this->path . '?';
+                    } else {
+                        $url = $_SERVER['PHP_SELF'] . '?';
+                    }
+
+                    // Merge common and column-specific GET variables
+                    $url .= http_build_query (array_merge ($common, $get));
+                    
+                    // Build HTML Link
+                    $str = '<a href="' . $url . '">' . $column->columnName;
+                    $iconVar = "sortIcon" . 
+                               ($this->currentSortDirection ? $this->currentSortDirection : 'ASC');
+                    if (($this->$iconVar != '') && 
+                        ($this->currentSortField == $column->orderBy)) {
+                        $str .= ' ' . $this->$iconVar;
+                    }
+                    $str .= '</a>';
+                    
+                } else {
+                    $str = $column->columnName;
+                }
+
+                // Print Content to HTML_Table
+                $this->_tableHeader->setHeaderContents(0, $col, $str);
+                $this->_tableHeader->setCellAttributes(0, $col, $column->attribs);
+            }
         }
+       
+       
     }
 
     /**
@@ -458,91 +398,36 @@ class Structures_DataGrid_Renderer_HTMLTable
      * @access  private
      * @return  void
      */
-    function _buildHTMLTableBody()
+    function buildBody ()
     {
-        if ($this->_dg->recordSet) {
-            if (!isset($this->_dg->rowLimit)) {
-                $this->_dg->rowLimit = count($this->_dg->recordSet);
-            }
-            
-            // Determine looping values
-            if ($this->_dg->rowLimit >= count($this->_dg->recordSet)) {
-                $begin = 0;
-                $end = $this->_dg->rowLimit;
-            } else {
-                if ($this->_dg->page > 1) {
-                    $begin = ($this->_dg->page - 1) * $this->_dg->rowLimit;
-                    $end = $this->_dg->page * $this->_dg->rowLimit;
-                } else {
-                    $begin = 0;
-                    if ($this->_dg->rowLimit == null) {
-                        $end = count($this->_dg->recordSet);
-                    } else {
-                        $end = $this->_dg->rowLimit;
-                    }
-                }
-            }
-
-            // Begin loop
-            $rowCnt = 0;
-            for ($i = $begin; $i < $end; $i++) {
-                if (isset($this->_dg->recordSet[$i])) {
-                    $cnt = 0;
-                    $row = $this->_dg->recordSet[$i];
-                    foreach ($this->_dg->columnSet as $column) {
-                        // Build Content
-                        if (isset($column->formatter)) {
-                            //Use Formatter                            
-                            $content = $column->formatter($row); 
-                        } elseif (!isset($column->fieldName)) {
-                            if ($column->autoFillValue != '') {
-                                // Use AutoFill                                
-                                $content = $column->autoFillValue; 
-                            } else {
-                                // Use Column Name                                
-                                $content = $column->columnName;
-                            }
-                        } else {
-                            // Use Record Data
-                            $content = htmlspecialchars($row[$column->fieldName]);
-                          
-                            /* Right-align the content if it is numeric
-                               (but don't touch the "align" attributes if it is
-                               already set) */
-                            if ($this->_autoAlign and is_numeric ($content)
-                                and (!isset($column->attribs['align']) 
-                                     or empty($column->attribs['align']))) {
-                                $column->attribs['align'] = "right";
-                            }
-                            if (($content == '') && 
-                                ($column->autoFillValue != '')) {
-                                // Use AutoFill
-                                $content = $column->autoFillValue;
-                            }
-                        }
-
-                        // Set Content in HTML_Table
-                        $this->_tableBody->setCellContents($rowCnt, $cnt, $content);
-                        $this->_tableBody->setCellAttributes($rowCnt, $cnt,
-                                                         $column->attribs);
-
-                        $cnt++;
-                    }
-                    $rowCnt++;
-                } else {
-                    // Determine if empty row should be printed
-                    if ($this->allowEmptyRows) {
-                        for ($j=0; $j<count($this->_dg->columnSet); $j++) {
-                            $this->_tableBody->setCellAttributes($rowCnt, $j,
-                                                     $this->emptyRowAttributes);
-                            $this->_tableBody->setCellContents($rowCnt, $j,
-                                                           '&nbsp;');
-                        }
-                        $rowCnt++;
-                    }
-                }
+        for ($row = 0; $row < $this->nRecords; $row++) {
+            for ($col = 0; $col < $this->nColumns; $col++) {
+                $value = htmlspecialchars ($this->records[$row][$col]);
+                
+                /* Right-align the content if it is numeric */
+                $attributes = ($this->_autoAlign and is_numeric ($value)) 
+                            ? array('align' => 'right')
+                            : array();
+                
+                // Set Content in HTML_Table
+                $this->_tableBody->setCellContents($row, $col, $value);
+                $this->_tableBody->setCellAttributes($row, $col, $attributes);
             }
         }
+        
+        // Define Alternating Row attributes
+        $this->_tableBody->altRowAttributes(0,
+                                        $this->evenRowAttributes,
+                                        $this->oddRowAttributes,
+                                        TRUE);
+    }
+    
+        
+    }
+
+    function finalize ()
+    {
+        $this->output = $this->_table->toHTML();
     }
 
     /**
@@ -606,16 +491,12 @@ class Structures_DataGrid_Renderer_HTMLTable
      */
     function _buildPaging($options)
     {
-        if ($this->_dg->_dataSource != null) {
-            $count = $this->_dg->_dataSource->count();
-        } else {
-            $count = count($this->_dg->recordSet);
-        }
-        $defaults = array('totalItems' => $count,
-                          'perPage' => is_null($this->_dg->rowLimit) ? 
-                                            $count : $this->_dg->rowLimit,
-                          'urlVar' => $this->_dg->_requestPrefix . 'page',
-                          'currentPage' => $this->_dg->page);
+        $defaults = array('totalItems' => $this->nRecordsTotal,
+                          'perPage' => is_null($this->limit) 
+                                       ? $this->nRecordsTotal 
+                                       : $this->limit,
+                          'urlVar' => $this->_requestPrefix . 'page',
+                          'currentPage' => $this->_dg->page); // FIXME
         $options = array_merge($defaults, $options);
         $this->pager =& Pager::factory($options);
     }    
