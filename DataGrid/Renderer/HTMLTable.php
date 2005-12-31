@@ -61,12 +61,6 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
 {
      
     /**
-     * The html_table object
-     * @var object HTML_Table
-     */
-    var $_table;
-    
-    /**
      * The html_table_storage object for the table header
      * @var object HTML_Table_Storage
      */
