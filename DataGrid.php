@@ -132,6 +132,8 @@ class Structures_DataGrid
      */
      var $_requestPrefix = '';    
 
+     var $_isBuilt = false;
+     
     /**
      * Constructor
      *
@@ -150,10 +152,11 @@ class Structures_DataGrid
                                  $renderer = DATAGRID_RENDER_TABLE)
     {
         //parent::Structures_DataGrid_Renderer($renderer, $limit, $page);
+        /*
         if (PEAR::isError($this->setRenderer($renderer))) {
             $this->setRenderer(DATAGRID_RENDER_TABLE);
         }
-        
+        */
         //parent::Structures_DataGrid_Core($limit, $page);
         // Set the defined rowlimit
         $this->rowLimit = $limit;
@@ -204,6 +207,24 @@ class Structures_DataGrid
         return false;
     }
 
+    function &loadDriver($className)
+    {
+        if (!class_exists($className)) {
+            $file_name = str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
+            if (!include_once($file_name)) {
+                if (!Structures_DataGrid::fileExists($file_name)) {
+                    $msg = "unable to find package '$classNname' file '$file_name'";
+                } else {
+                    $msg = "unable to load driver class '$className' from file '$file_name'";
+                }
+                return new PEAR_Error($msg);
+            }
+        }
+
+        $driver =& new $className();
+        return $driver;
+    }
+    
     /**
      * Driver Factory
      *
@@ -247,21 +268,12 @@ class Structures_DataGrid
                                   'You may want to explicitly specify it.');
         }
 
-        $class_name = "Structures_DataGrid_DataSource_$type";
+        $className = "Structures_DataGrid_DataSource_$type";
 
-        if (!class_exists($class_name)) {
-            $file_name = str_replace('_', DIRECTORY_SEPARATOR, $class_name) . '.php';
-            if (!include_once($file_name)) {
-                if (!Structures_DataGrid::fileExists($file_name)) {
-                    $msg = "unable to find package '$class_name' file '$file_name'";
-                } else {
-                    $msg = "unable to load driver class '$class_name' from file '$file_name'";
-                }
-                return new PEAR_Error($msg);
-            }
-        }
-
-        $driver =& new $class_name();
+        if (PEAR::isError($driver =& $this->loadDriver($className))) {
+            return $driver;
+        }        
+        
         $result = $driver->bind($source, $options);
        
         if (PEAR::isError($result)) {
@@ -271,6 +283,39 @@ class Structures_DataGrid
         }
     }
 
+    function &rendererFactory($container = null, $options = array(), $type = null)
+    {
+        if (is_null($type) &&
+            !($type = Structures_DataGrid::_detectRendererType($renderingContainer))) {
+            return new PEAR_Error('Unable to determine the renderer type. '.
+                                  'You may want to explicitly specify it.');
+        }
+
+        $className = "Structures_DataGrid_Renderer_$type";
+
+        if (PEAR::isError($driver =& $this->loadDriver($className))) {
+            return $driver;
+        }        
+      
+        if (!is_null ($container)) {
+            $driver->setContainer($container);
+        }
+
+        if ($options) {
+            $driver->setOptions($options);
+        }
+
+        if ($this->_requestPrefix) {
+            $driver->setRequestPrefix($this->_requestPrefix); 
+        }
+        
+        if (isset($this->sortArray)) {
+            $driver->setCurrentSorting($this->sortArray[0], $this->sortArray[1]);
+        }
+        
+        return $driver;
+    }
+    
     /**
      * Render
      *
@@ -282,9 +327,20 @@ class Structures_DataGrid
      */
     function render()
     {
-        return $this->renderer->render();
+        if (!$this->_isBuilt) {
+            $this->build();
+        }
+        $this->renderer->render();
     }
 
+    function getOutput()
+    {
+        if (!$this->_isBuilt) {
+            $this->build();
+        }
+        return $this->renderer->getOutput();
+    }
+    
     /**
      * Get Renderer
      *
@@ -294,6 +350,9 @@ class Structures_DataGrid
      */
     function &getRenderer()
     {
+        if (!isset ($this->renderer)) {
+            $this->loadDefaultRenderer();
+        }
         return $this->renderer;
     }
 
@@ -303,25 +362,42 @@ class Structures_DataGrid
      * Defines which renderer to be used by the DataGrid
      *
      * @param  string   $renderer       The defined renderer string
-     * @param  string   $path           An optional value to change the path of
-     *                                  the location of the renderer class file.
-     *                                  Please set in the notation of '/my/path'
+     * @param  array    $options        Rendering options
      * @access public
      */
-    function setRenderer($renderer, $path = 'Structures/DataGrid/Renderer')
+    function setRenderer($type, $options = array())
     {
-        $class = 'Structures_DataGrid_Renderer_' . $renderer;
-        $file = $path . '/' . $renderer . '.php';
-
-        if (include_once($file)) {
-            $this->renderer = new $class($this);
-        } else {
-            return new PEAR_Error('Invalid renderer');
-        }
-
-        return true;
+        return $this->attach (null, $options, $type);
     }
 
+    function attachRenderer($renderer)
+    {
+        if (is_subclass_of($renderer, 'structures_datagrid_renderer_common')) {
+            $this->renderer =& $renderer;
+        } else {
+            return new PEAR_Error('Invalid renderer type, ' . 
+                                  'must be a valid renderer driver class');
+        }
+        
+        return true;
+    }
+    
+    function attach($renderingContainer, $options = array(), $type = null)
+    {
+        $renderer =& $this->rendererFactory($renderingContainer, $options, $type);
+        if (!PEAR::isError($renderer)) {
+            return $this->attachRenderer($renderer);
+        } else {
+            return $renderer;
+        }
+    }
+   
+    function loadDefaultRenderer()
+    {
+        $this->setRenderer(DATAGRID_RENDER_TABLE);
+    }
+    
+    
     /**
      * Set Default Headers
      *
@@ -331,6 +407,9 @@ class Structures_DataGrid
      */
     function _setDefaultHeaders()
     {
+        /* FIXME: what the hell is this ?
+         
+          
         if ((!count($this->columnSet)) && (count($this->recordSet))) {
             $arrayKeys = array_keys($this->recordSet[0]);
             foreach ($arrayKeys as $key) {
@@ -341,6 +420,7 @@ class Structures_DataGrid
                 $this->addColumn($column);
             }
         }
+        */
     }
     
     /**
@@ -497,12 +577,6 @@ class Structures_DataGrid
     {
         if (is_subclass_of($source, 'structures_datagrid_datasource_common')) {
             $this->_dataSource =& $source;
-            if (PEAR::isError($result = $this->fetchDataSource())) {
-                return $result;
-            }
-            if ($columnSet = $this->_dataSource->getColumns()) {
-                $this->columnSet = array_merge($this->columnSet, $columnSet);
-            }
         } else {
             return new PEAR_Error('Invalid data source type, ' . 
                                   'must be a valid data source driver class');
@@ -718,6 +792,38 @@ class Structures_DataGrid
         }
     }
 
+    function _detectRendererType($container)
+    {
+        if (is_subclass_of($container, 'html_table')) {
+            return DATAGRID_RENDER_TABLE;
+        } // FIXME: and so on...
+
+        return null;
+    }
+
+    function build()
+    {
+        if (isset($this->_dataSource)) {
+            if (PEAR::isError($result = $this->fetchDataSource())) {
+                return $result;
+            }
+
+            if ($columnSet = $this->_dataSource->getColumns()) {
+                $this->columnSet = array_merge($this->columnSet, $columnSet);
+            }
+
+            //print_r ($this->recordSet);
+            //print_r ($this->columnSet);
+            
+            if (!isset ($this->renderer)) {
+                $this->loadDefaultRenderer();
+            }
+            
+            $this->renderer->setData($this->columnSet, $this->recordSet);
+            $this->renderer->build();
+            $this->_isBuilt = true;
+        }
+    }
 }
 
 ?>

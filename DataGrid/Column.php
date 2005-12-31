@@ -215,13 +215,9 @@ class Structures_DataGrid_Column
             $value = $record[$this->fieldName];
         }
 
-        if (empty ($value))
+        if (empty ($value) and !is_null($this->autoFillValue))
         {
-            if (empty ($this->autoFillValue != '')) {
-                $content = $column->columnName;
-            } else {
-                $content = $column->autoFillValue; 
-            }
+            $content = $this->autoFillValue; 
         }
 
         return $value;
