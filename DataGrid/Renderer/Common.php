@@ -20,7 +20,7 @@
 // $Id$
 
 /**
- * Structures_DataGrid_Renderer Class
+ * Structures_DataGrid_Renderer_Common Class
  *
  * Base class of all Renderer drivers
  *
@@ -235,9 +235,10 @@ class Structures_DataGrid_Renderer_Common
         $this->_currentSortDirection = $direction;
     }
     
-    function setLimit($currentPage, $rowPerPage) {
+    function setLimit($currentPage, $rowsPerPage, $totalRowNum) {
         $this->_page = $currentPage;
-        $this->_pageLimit = $rowPerPage;
+        $this->_pageLimit = $rowsPerPage;
+        $this->_totalRecordsNum = $totalRowNum;
     }
     
     function init ()
@@ -291,32 +292,22 @@ class Structures_DataGrid_Renderer_Common
 
             $this->_columns[$index] = compact('field','label');
         }
-       
+      
         if ($this->_records)
         {
             if (is_null ($this->_pageLimit)) {
                 $this->_pageLimit = count ($this->_records);
             }
-          
-            assert('$this->_pageLimit >= count($this->_records)');
-            
-            $offset = ($this->_page - 1) * $this->_pageLimit;
-            
-            for ($i = $offset; $i < $this->_pageLimit; $i++) {
+         
+            for ($i = 0; isset($this->_records[$i]) and $i < $this->_pageLimit; $i++) {
                 $content = array ();
                 foreach ($this->_columnObjects as $column) {
                     $content[] = $column->recordToValue ($this->_records[$i]);
                 }
-                $this->_records[$i - $offset] = $content;
+                $this->_records[$i] = $content;
             }
-
-            $ii = count ($this->_records);
-            for ($i = $this->_pageLimit - $offset; $i < $ii; $i++) {
-                unset ($this->_records[$i]);
-            }
-
         }
-      
+        
         $this->_columnsNum = count ($this->_columns);
         $this->_recordsNum = count ($this->_records);
        

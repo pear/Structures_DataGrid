@@ -13,7 +13,9 @@
 // | obtain it through the world-wide-web, please send a note to          |
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
-// | Author: Andrew Nagy <asnagy@webitecture.org>                         |
+// | Authors: Andrew Nagy <asnagy@webitecture.org>                        |
+// |          Olivier Guilyardi <olivier@samalyse.com>                    |
+// |          Mark Wiesemann <wiesemann@php.net>                          |
 // +----------------------------------------------------------------------+
 //
 // $Id$
@@ -70,6 +72,8 @@ define('DATAGRID_SOURCE_DBTABLE',   'DBTable');
  *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
+ * @author   Olivier Guilyardi <olivier@samalyse.com>
+ * @author   Mark Wiesemann <wiesemann@php.net>
  * @access   public
  * @package  Structures_DataGrid
  * @category Structures
@@ -213,7 +217,7 @@ class Structures_DataGrid
             $file_name = str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
             if (!include_once($file_name)) {
                 if (!Structures_DataGrid::fileExists($file_name)) {
-                    $msg = "unable to find package '$classNname' file '$file_name'";
+                    $msg = "unable to find package '$className' file '$file_name'";
                 } else {
                     $msg = "unable to load driver class '$className' from file '$file_name'";
                 }
@@ -374,6 +378,11 @@ class Structures_DataGrid
     {
         if (is_subclass_of($renderer, 'structures_datagrid_renderer_common')) {
             $this->renderer =& $renderer;
+            if (isset ($this->_dataSource)) {
+                $this->renderer->setData($this->columnSet, $this->recordSet);
+                $this->renderer->setLimit($this->page, $this->rowLimit, 
+                                          $this->getRecordCount());
+            }
         } else {
             return new PEAR_Error('Invalid renderer type, ' . 
                                   'must be a valid renderer driver class');
@@ -577,6 +586,18 @@ class Structures_DataGrid
     {
         if (is_subclass_of($source, 'structures_datagrid_datasource_common')) {
             $this->_dataSource =& $source;
+            if (PEAR::isError($result = $this->fetchDataSource())) {
+                unset ($this->_dataSource);
+                return $result;
+            }
+            if ($columnSet = $this->_dataSource->getColumns()) {
+                $this->columnSet = array_merge($this->columnSet, $columnSet);
+            }
+            if (isset ($this->renderer)) {
+                $this->renderer->setData($this->columnSet, $this->recordSet);
+                $this->renderer->setLimit($this->page, $this->rowLimit, 
+                                          $this->getRecordCount());
+            }
         } else {
             return new PEAR_Error('Invalid data source type, ' . 
                                   'must be a valid data source driver class');
@@ -804,22 +825,10 @@ class Structures_DataGrid
     function build()
     {
         if (isset($this->_dataSource)) {
-            if (PEAR::isError($result = $this->fetchDataSource())) {
-                return $result;
-            }
-
-            if ($columnSet = $this->_dataSource->getColumns()) {
-                $this->columnSet = array_merge($this->columnSet, $columnSet);
-            }
-
-            //print_r ($this->recordSet);
-            //print_r ($this->columnSet);
-            
             if (!isset ($this->renderer)) {
                 $this->loadDefaultRenderer();
             }
             
-            $this->renderer->setData($this->columnSet, $this->recordSet);
             $this->renderer->build();
             $this->_isBuilt = true;
         }

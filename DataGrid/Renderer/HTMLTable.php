@@ -328,7 +328,8 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 $get = array();
                 $get[$prefix . 'orderBy'] = $field;
                 $get[$prefix . 'direction'] = $direction;
-                $get[$prefix . 'page'] = 1;
+                $get[$prefix . 'page'] 
+                    = $this->_options['sortingResetsPaging'] ? 1 : $this->_page;
 
                 // Build Link URL
                 $url = $this->_options['selfPath'] . '?';
@@ -468,7 +469,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                                        ? $this->_totalRecordsNum 
                                        : $this->_pageLimit,
                           'urlVar' => $this->_requestPrefix . 'page',
-                          'currentPage' => $this->_page); // FIXME
+                          'currentPage' => $this->_page); 
         $options = array_merge($defaults, $options);
         $this->_pager =& Pager::factory($options);
     }    
