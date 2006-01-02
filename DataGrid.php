@@ -23,7 +23,6 @@
 require_once 'PEAR.php';
 
 require_once 'Structures/DataGrid/Column.php';
-require_once 'Structures/DataGrid/Renderer.php';
 
 // Renderer Drivers
 define ('DATAGRID_RENDER_TABLE',    'HTMLTable');
@@ -83,24 +82,28 @@ class Structures_DataGrid
     /**
      * Renderer driver
      * @var object Structures_DataGrid_Renderer_* family
+     * @access private
      */ 
     var $renderer;
 
     /**
      * Array of columns.  Columns are defined as a DataGridColumn object.
      * @var array
+     * @access private
      */
     var $columnSet = array();
 
     /**
      * Array of records.  Records are defined as a DataGridRecord object.
      * @var array
+     * @access private
      */
     var $recordSet = array();
 
     /**
      * The Data Source Driver object
      * @var object Structures_DataGrid_DataSource
+     * @access private
      */
     var $_dataSource;    
     
@@ -108,18 +111,21 @@ class Structures_DataGrid
      * An array of fields to sort by.  Each field is an array of the field name
      * and the direction, either ASC or DESC.
      * @var array
+     * @access private
      */
     var $sortArray;
 
     /**
      * Limit of records to show per page.
      * @var string
+     * @access private
      */
     var $rowLimit;
 
     /**
      * The current page to show.
      * @var string
+     * @access private
      */
     var $page;
 
@@ -133,6 +139,7 @@ class Structures_DataGrid
     /**
      * GET/POST/Cookie parameters prefix
      * @var string
+     * @access private
      */
      var $_requestPrefix = '';    
 
@@ -155,13 +162,6 @@ class Structures_DataGrid
     function Structures_DataGrid($limit = null, $page = null,
                                  $renderer = DATAGRID_RENDER_TABLE)
     {
-        //parent::Structures_DataGrid_Renderer($renderer, $limit, $page);
-        /*
-        if (PEAR::isError($this->setRenderer($renderer))) {
-            $this->setRenderer(DATAGRID_RENDER_TABLE);
-        }
-        */
-        //parent::Structures_DataGrid_Core($limit, $page);
         // Set the defined rowlimit
         $this->rowLimit = $limit;
         
@@ -193,11 +193,10 @@ class Structures_DataGrid
     }
 
     /**
-     * checks if a file exists in the include path
+     * Checks if a file exists in the include path
      *
-     * @access public
+     * @access private
      * @param  string   filename
-     *
      * @return boolean true success and false on error
      */
     function fileExists($file)
@@ -211,6 +210,13 @@ class Structures_DataGrid
         return false;
     }
 
+    /**
+     * Load a Renderer or DataSource driver
+     * 
+     * @param string $className Name of the driver class
+     * @access private
+     * @return object The driver object or a PEAR_Error
+     */
     function &loadDriver($className)
     {
         if (!class_exists($className)) {
@@ -230,7 +236,7 @@ class Structures_DataGrid
     }
     
     /**
-     * Driver Factory
+     * Datasource driver Factory
      *
      * A clever method which loads and instantiate data source drivers.
      *
@@ -253,7 +259,7 @@ class Structures_DataGrid
      * $driver =& Structures_DataGrid::datasourceFactory($source, $options, $type);
      * </code>
      *
-     * @access  public
+     * @access  private
      * @param   mixed   $source     The data source respective to the driver
      * @param   array   $options    An associative array of the form :
      *                              array(optionName => optionValue, ...)
@@ -287,6 +293,21 @@ class Structures_DataGrid
         }
     }
 
+    /**
+     * Renderer driver factory
+     *
+     * Load and instantiate a renderer driver.
+     * 
+     * @access  private
+     * @param   mixed   $source     The rendering container respective to the driver
+     * @param   array   $options    An associative array of the form :
+     *                              array(optionName => optionValue, ...)
+     * @param   string  $type       The renderer type constant (of the form 
+     *                              DATAGRID_RENDER_*)  
+     * @uses    Structures_DataGrid_DataSource::_detectRendererType()     
+     * @return  mixed               Returns the renderer driver object or 
+     *                              PEAR_Error on failure
+     */
     function &rendererFactory($container = null, $options = array(), $type = null)
     {
         if (is_null($type) &&
@@ -321,9 +342,7 @@ class Structures_DataGrid
     }
     
     /**
-     * Render
-     *
-     * Renders that output by calling the specified renderer's render method.
+     * Render the datagrid
      *
      * @param  string   $limit  The row limit per page.
      * @param  string   $page   The current page viewed.
@@ -337,6 +356,12 @@ class Structures_DataGrid
         $this->renderer->render();
     }
 
+    /**
+     * Return the datagrid output as a string
+     *
+     * @access public
+     * @return string The datagrid output (HTML, CSV, etc...)
+     */
     function getOutput()
     {
         if (!$this->_isBuilt) {
