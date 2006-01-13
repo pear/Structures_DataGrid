@@ -42,6 +42,7 @@ define('DATAGRID_SOURCE_RSS',       'RSS');
 define('DATAGRID_SOURCE_CSV',       'CSV');
 define('DATAGRID_SOURCE_DBQUERY',   'DBQuery');
 define('DATAGRID_SOURCE_DBTABLE',   'DBTable');
+define('DATAGRID_SOURCE_MDB2',      'MDB2');
 
 /**
  * Structures_DataGrid Class
@@ -275,16 +276,18 @@ class Structures_DataGrid
     function &datasourceFactory($source, $options=array(), $type=null)
     {
         if (is_null($type) &&
-            !($type = Structures_DataGrid::_detectSourceType($source))) {
-            return new PEAR_Error('Unable to determine the data source type. '.
-                                  'You may want to explicitly specify it.');
+            !($type = Structures_DataGrid::_detectSourceType($source,
+                                                             $options))) {
+            $error = new PEAR_Error('Unable to determine the data source type. '.
+                                    'You may want to explicitly specify it.');
+            return $error;
         }
 
         $className = "Structures_DataGrid_DataSource_$type";
 
         if (PEAR::isError($driver =& $this->loadDriver($className))) {
             return $driver;
-        }        
+        }
         
         $result = $driver->bind($source, $options);
        
@@ -773,13 +776,14 @@ class Structures_DataGrid
      * Detect source type
      *
      * @param   mixed   $source     Some kind of source
+     * @param   array   $options    Options passed to dataSourceFactory()
      * @return  string              The type constant of this source or null if
      *                              it couldn't be detected
      * @access  private
      * @todo    Add CSV detector.  Possible rewrite in IFs to allow for
-     *          heirarchy for seperating file handle sources from others
+     *          hierarchy for seperating file handle sources from others
      */
-    function _detectSourceType($source)
+    function _detectSourceType($source, $options = array())
     {
         switch(true) {
             // DB_DataObject
@@ -808,9 +812,14 @@ class Structures_DataGrid
                 return DATAGRID_SOURCE_XML;
                 break;
             
-            // DBQuery
+            // DBQuery / MDB2
             case (is_string($source) 
                   and preg_match('#SELECT\s.*\sFROM#is', $source) === 1):
+                if (   array_key_exists('backend', $options)
+                    && $options['backend'] == 'MDB2'
+                ) {
+                    return DATAGRID_SOURCE_MDB2;
+                }
                 return DATAGRID_SOURCE_DBQUERY; 
                 break;
 
