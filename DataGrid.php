@@ -155,12 +155,12 @@ class Structures_DataGrid
      * @param  int      $page       The current page viewed.
      *                              Note : if you specify this, the "page" GET 
      *                              variable will be ignored.
-     * @param  string   $renderer   The renderer to use.
+     * @param  string   $rendererType   The type of renderer to use.
      * @return void
      * @access public
      */
     function Structures_DataGrid($limit = null, $page = null,
-                                 $renderer = DATAGRID_RENDER_TABLE)
+                                 $rendererType = DATAGRID_RENDER_TABLE)
     {
         // Set the defined rowlimit
         $this->rowLimit = $limit;
@@ -176,6 +176,8 @@ class Structures_DataGrid
 
         // Automatic handling of GET/POST/COOKIE variables
         $this->_parseHttpRequest();
+
+        $this->setRenderer ($rendererType);
     }
 
     /**
@@ -308,7 +310,7 @@ class Structures_DataGrid
      * @return  mixed               Returns the renderer driver object or 
      *                              PEAR_Error on failure
      */
-    function &rendererFactory($container = null, $options = array(), $type = null)
+    function &rendererFactory($type, $options = array())
     {
         if (is_null($type) &&
             !($type = Structures_DataGrid::_detectRendererType($renderingContainer))) {
@@ -322,10 +324,6 @@ class Structures_DataGrid
             return $driver;
         }        
       
-        if (!is_null ($container)) {
-            $driver->setContainer($container);
-        }
-
         if ($options) {
             $driver->setOptions($options);
         }
@@ -379,9 +377,6 @@ class Structures_DataGrid
      */
     function &getRenderer()
     {
-        if (!isset ($this->renderer)) {
-            $this->loadDefaultRenderer();
-        }
         return $this->renderer;
     }
 
@@ -396,7 +391,12 @@ class Structures_DataGrid
      */
     function setRenderer($type, $options = array())
     {
-        return $this->attach (null, $options, $type);
+        $renderer =& $this->rendererFactory($type, $options);
+        if (!PEAR::isError($renderer)) {
+            return $this->attachRenderer($renderer);
+        } else {
+            return $renderer;
+        }
     }
 
     function attachRenderer($renderer)
@@ -416,21 +416,10 @@ class Structures_DataGrid
         return true;
     }
     
-    function attach($renderingContainer, $options = array(), $type = null)
+    function renderInto (&$container)
     {
-        $renderer =& $this->rendererFactory($renderingContainer, $options, $type);
-        if (!PEAR::isError($renderer)) {
-            return $this->attachRenderer($renderer);
-        } else {
-            return $renderer;
-        }
+        $this->renderer->setContainer ($container);
     }
-   
-    function loadDefaultRenderer()
-    {
-        $this->setRenderer(DATAGRID_RENDER_TABLE);
-    }
-    
     
     /**
      * Set Default Headers
@@ -850,10 +839,6 @@ class Structures_DataGrid
     function build()
     {
         if (isset($this->_dataSource)) {
-            if (!isset ($this->renderer)) {
-                $this->loadDefaultRenderer();
-            }
-            
             $this->renderer->build();
             $this->_isBuilt = true;
         }
