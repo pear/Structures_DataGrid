@@ -312,12 +312,15 @@ class Structures_DataGrid
      */
     function &rendererFactory($type, $options = array())
     {
+        /*
         if (is_null($type) &&
             !($type = Structures_DataGrid::_detectRendererType($renderingContainer))) {
             return new PEAR_Error('Unable to determine the renderer type. '.
                                   'You may want to explicitly specify it.');
         }
+        */
 
+        // FIXME: any security risk here (like including /etc/passwd) ?
         $className = "Structures_DataGrid_Renderer_$type";
 
         if (PEAR::isError($driver =& $this->loadDriver($className))) {
@@ -827,6 +830,7 @@ class Structures_DataGrid
         }
     }
 
+    /*
     function _detectRendererType($container)
     {
         if (is_subclass_of($container, 'html_table')) {
@@ -835,6 +839,7 @@ class Structures_DataGrid
 
         return null;
     }
+    */
 
     function build()
     {
