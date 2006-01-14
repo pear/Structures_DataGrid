@@ -230,7 +230,8 @@ class Structures_DataGrid
                 } else {
                     $msg = "unable to load driver class '$className' from file '$file_name'";
                 }
-                return new PEAR_Error($msg);
+                $error = new PEAR_Error($msg);
+                return $error;
             }
         }
 
@@ -813,11 +814,16 @@ class Structures_DataGrid
                 break;
             
             // DBQuery / MDB2
-            case (is_string($source) 
-                  and preg_match('#SELECT\s.*\sFROM#is', $source) === 1):
-                if (   array_key_exists('backend', $options)
-                    && $options['backend'] == 'MDB2'
-                ) {
+            case (   is_string($source) 
+                  && preg_match('#SELECT\s.*\sFROM#is', $source) === 1
+                 ):
+                if ((     array_key_exists('connection', $options)
+                       && is_subclass_of($options['connection'],
+                                         'mdb2_driver_common')
+                    ) || (
+                          array_key_exists('backend', $options)
+                       && $options['backend'] == 'MDB2'
+                )) {
                     return DATAGRID_SOURCE_MDB2;
                 }
                 return DATAGRID_SOURCE_DBQUERY; 
