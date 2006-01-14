@@ -95,6 +95,8 @@
       <dep type="pkg" rel="ge" version="0.9.2" optional="yes">XML_RSS</dep>
       <dep type="pkg" rel="ge" version="0.11.1" optional="yes">XML_Serializer</dep>
       <dep type="pkg" rel="ge" version="1.0.1" optional="yes">Console_Table</dep>
+      <dep type="pkg" rel="ge" version="1.7.6" optional="yes">DB</dep>
+      <dep type="pkg" rel="ge" version="2.0.0RC4" optional="yes">MDB2</dep>
 
       <!-- The following PHP_Compat dependency is actually only required -->
       <!-- when using HTMLTable. It is safer to set it as non-optional   -->
