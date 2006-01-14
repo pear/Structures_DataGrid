@@ -83,6 +83,8 @@
         The query building process has been optimized, and is now more
         flexible due to the use of http_build_query(). This adds a 
         new dependency : PHP_Compat >= 1.4.1
+        
+      Added new DataSource driver MDB2 with same behaviour as DBQuery driver
     </notes>
     <deps>
       <dep type="pkg" rel="ge" version="1.2" optional="no">PEAR</dep>
@@ -123,6 +125,7 @@
             <file role="php" name="DB.php"/>
             <file role="php" name="DBQuery.php"/>
             <file role="php" name="DBTable.php"/>
+            <file role="php" name="MDB2.php"/>
             <file role="php" name="RSS.php"/>
             <file role="php" name="XML.php"/>
           </dir>
