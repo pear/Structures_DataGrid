@@ -100,7 +100,11 @@ class Structures_DataGrid_DataSource_DBQuery
             DB::isConnection($this->_options['connection'])) {
             $this->_db = &$this->_options['connection'];
         } elseif (isset($this->_options['dsn'])) {
-            $this->_db =& DB::connect($this->_options['dsn']);
+            $dbOptions = array();
+            if (array_key_exists('db_options', $options)) {
+                $dbOptions = $options['db_options'];
+            }
+            $this->_db =& DB::connect($this->_options['dsn'], $dbOptions);
             if (PEAR::isError($this->_db)) {
                 return new PEAR_Error('Could not create connection: ' .
                                       $this->_db->getMessage());
@@ -189,12 +193,30 @@ class Structures_DataGrid_DataSource_DBQuery
     */
     function count()
     {
-        // don't query the whole table, just get the number of rows
-        $query = preg_replace('#SELECT\s.*\sFROM#is',
-                              'SELECT COUNT(*) FROM',
-                              $this->_query);
-        $count = $this->_db->getOne($query);   // int value with number of rows
-                                               // or PEAR_Error on failure
+        if (array_key_exists('count_query', $this->_options)) {
+            // complex queries might require special queries to get the
+            // right row count
+            $count = $this->_db->getOne($this->_options['count_query']);
+            // $count has an integer value with number of rows or is a
+            // PEAR_Error instance on failure
+        }
+        elseif (preg_match('#GROUP\s*BY#is', $this->_query) === 1) {
+            // GROUP BY is a special case
+            // ==> use the normal query and then numRows()
+            $result = $this->_db->query($this->_query);
+            if (PEAR::isError($result)) {
+                return $result;
+            }
+            $count = $result->numRows();
+        } else {
+            // don't query the whole table, just get the number of rows
+            $query = preg_replace('#SELECT\s.*\sFROM#is',
+                                  'SELECT COUNT(*) FROM',
+                                  $this->_query);
+            $count = $this->_db->getOne($query);
+            // $count has an integer value with number of rows or is a
+            // PEAR_Error instance on failure
+        }
         return $count;
     }
     
