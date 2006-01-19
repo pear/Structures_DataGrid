@@ -206,16 +206,16 @@ class Structures_DataGrid_Column
         return $result;
     }
 
-    function recordToValue ($record)
+    function recordToValue($record)
     {
         $value = '';
-        if (isset ($this->formatter) and !empty ($this->formatter)) {
-            $value = $this->formatter ($record);
-        } else if (isset ($this->fieldName) and isset ($record[$this->fieldName])) {
+        if (isset($this->formatter) and !empty($this->formatter)) {
+            $value = $this->formatter($record);
+        } else if (isset($this->fieldName) and isset($record[$this->fieldName])) {
             $value = $record[$this->fieldName];
         }
 
-        if (empty ($value) and !is_null($this->autoFillValue))
+        if (empty($value) and !is_null($this->autoFillValue))
         {
             $content = $this->autoFillValue; 
         }

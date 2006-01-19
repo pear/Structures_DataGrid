@@ -365,11 +365,11 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      * @access  private
      * @return  void
      */
-    function buildBody ()
+    function buildBody()
     {
         for ($row = 0; $row < $this->_recordsNum; $row++) {
             for ($col = 0; $col < $this->_columnsNum; $col++) {
-                $value = htmlspecialchars ($this->_records[$row][$col]);
+                $value = htmlspecialchars($this->_records[$row][$col]);
                 
                 /* Right-align the content if it is numeric */
                 $attributes = ($this->_options['autoAlign'] and is_numeric ($value)) 

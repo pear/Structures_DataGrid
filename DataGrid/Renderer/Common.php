@@ -229,7 +229,7 @@ class Structures_DataGrid_Renderer_Common
         $this->_records = &$records;
     }
    
-    function setCurrentSorting ($field, $direction)
+    function setCurrentSorting($field, $direction)
     {
         $this->_currentSortField = $field;
         $this->_currentSortDirection = $direction;
@@ -241,27 +241,27 @@ class Structures_DataGrid_Renderer_Common
         $this->_totalRecordsNum = $totalRowNum;
     }
     
-    function init ()
+    function init()
     {
     }
     
-    function buildHeader () 
+    function buildHeader() 
     {
     }
    
-    function buildBody ()
+    function buildBody()
     {
     }
     
-    function buildFooter () 
+    function buildFooter() 
     {
     }
 
-    function finalize ()
+    function finalize()
     {
     }
     
-    function build ()
+    function build()
     {
         $this->_columns = array();
         foreach ($this->_columnObjects as $index => $column)
@@ -277,9 +277,9 @@ class Structures_DataGrid_Renderer_Common
             $label = $column->columnName;
 
             if (isset($this->_options['defaultColumnValues'][$field])) {
-                $column->setAutoFillValue ($this->_options['defaultColumnValues'][$field]);
-            } else if (!is_null ($this->_options['defaultCellValue'])) {
-                $column->setAutoFillValue ($this->_options['defaultCellValue']);
+                $column->setAutoFillValue($this->_options['defaultColumnValues'][$field]);
+            } else if (!is_null($this->_options['defaultCellValue'])) {
+                $column->setAutoFillValue($this->_options['defaultCellValue']);
             }
             
             if (isset($column->attribs) 
@@ -293,42 +293,39 @@ class Structures_DataGrid_Renderer_Common
             $this->_columns[$index] = compact('field','label');
         }
       
-        if ($this->_records)
-        {
-            if (is_null ($this->_pageLimit)) {
-                $this->_pageLimit = count ($this->_records);
-            }
-         
-            for ($i = 0; isset($this->_records[$i]) and $i < $this->_pageLimit; $i++) {
-                $content = array ();
-                foreach ($this->_columnObjects as $column) {
-                    $content[] = $column->recordToValue ($this->_records[$i]);
-                }
-                $this->_records[$i] = $content;
-            }
-        }
-        
-        $this->_columnsNum = count ($this->_columns);
-        $this->_recordsNum = count ($this->_records);
-       
+        $this->_columnsNum = count($this->_columns);
+        $this->_recordsNum = count($this->_records);
+
         $this->init();
         
+        if (is_null($this->_pageLimit)) {
+            $this->_pageLimit = $this->_recordsNum;
+        }
+     
+        for ($rec = 0; $rec < $this->_recordsNum; $rec++) {
+            $content = array();
+            foreach ($this->_columnObjects as $column) {
+                $content[] = $column->recordToValue($this->_records[$rec]);
+            }
+            $this->_records[$rec] = $content;
+        }
+        
         if ($this->_options['buildHeader']) {
-            $this->buildHeader ();
+            $this->buildHeader();
         }
        
-        $this->buildBody ();
+        $this->buildBody();
         
         if ($this->_options['buildFooter']) {
-            $this->buildFooter ();
+            $this->buildFooter();
         }
 
-        $this->finalize ();
+        $this->finalize();
 
         $this->_isBuilt = true;
     }
 
-    function getOutput ()
+    function getOutput()
     {
         $this->_isBuilt or $this->build();
 
@@ -337,7 +334,7 @@ class Structures_DataGrid_Renderer_Common
 
     function render()
     {
-        echo $this->getOutput ();
+        echo $this->getOutput();
     }
     
     /**
