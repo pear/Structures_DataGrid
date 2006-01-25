@@ -788,7 +788,7 @@ class Structures_DataGrid
     {
         switch(true) {
             // DB_DataObject
-            case (is_subclass_of($source, 'db_dataobject')):
+            case (strtolower(get_parent_class($source)) == 'db_dataobject'):
                 return DATAGRID_SOURCE_DATAOBJECT;
                 break;
 
