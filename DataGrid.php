@@ -551,6 +551,7 @@ class Structures_DataGrid
     function setRequestPrefix($prefix)
     {
         $this->_requestPrefix = $prefix;
+        $this->renderer->setRequestPrefix($prefix);
         
         // Automatic handling of GET/POST/COOKIE variables
         $this->_parseHttpRequest();

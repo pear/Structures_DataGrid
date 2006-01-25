@@ -260,6 +260,15 @@ class Structures_DataGrid_Renderer_Common
     function finalize()
     {
     }
+
+    function flatten()
+    {
+    }
+    
+    function defaultCellFormatter ($value)
+    {
+        return $value;
+    }
     
     function build()
     {
@@ -301,11 +310,11 @@ class Structures_DataGrid_Renderer_Common
         if (is_null($this->_pageLimit)) {
             $this->_pageLimit = $this->_recordsNum;
         }
-     
+        
         for ($rec = 0; $rec < $this->_recordsNum; $rec++) {
             $content = array();
             foreach ($this->_columnObjects as $column) {
-                $content[] = $column->recordToValue($this->_records[$rec]);
+                $content[] = $this->recordToCell($column, $this->_records[$rec]);
             }
             $this->_records[$rec] = $content;
         }
@@ -356,6 +365,23 @@ class Structures_DataGrid_Renderer_Common
        
     function setRequestPrefix($prefix) {
         $this->_requestPrefix = $prefix;
+    }
+
+    function recordToCell(&$column, $record)
+    {
+        $value = '';
+        if (isset($column->formatter) and !empty($column->formatter)) {
+            $value = $column->formatter($record);
+        } else if (isset($column->fieldName) and isset($record[$column->fieldName])) {
+            $value = $this->defaultCellFormatter($record[$column->fieldName]);
+        }
+
+        if (empty($value) and !is_null($column->autoFillValue))
+        {
+            $content = $column->autoFillValue; 
+        }
+
+        return $value;
     }
 }
 

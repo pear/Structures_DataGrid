@@ -79,12 +79,13 @@ class Structures_DataGrid_Column
      * @param   string      $attribs        The HTML attributes for the TR tag
      * @param   boolean     $autoFill       Whether or not to use the autoFill
      * @param   string      $autoFillValue  The value to use for the autoFill
-     * @param   string      $formatter      A defined function to call upon
+     * @param   mixed       $formatter      A defined function to call upon
      *                                      rendering to allow for special
      *                                      formatting.  This allows for
      *                                      call-back function to print out a 
      *                                      link or a form element, or whatever 
      *                                      you can possibly think of.
+     * @see http://www.php.net/manual/en/language.pseudo-types.php
      * @access  public
      */
     function Structures_DataGrid_Column($columnName, $fieldName = null,
@@ -118,6 +119,8 @@ class Structures_DataGrid_Column
      *
      * Defines the function and paramters to be called by the formatter method.
      *
+     * @param   mixed   Callback PHP pseudo-type (Array or String)
+     * @see http://www.php.net/manual/en/language.pseudo-types.php
      * @access  public
      */
     function setFormatter($str)
@@ -163,7 +166,7 @@ class Structures_DataGrid_Column
         $paramList['attribs'] = $this->attribs;
         
         // Determine callback and additional parameters
-        if ($size = strpos($this->formatter, '(')) {
+        if (is_string($this->formatter) and $size = strpos($this->formatter, '(')) {
             // Retrieve the name of the function to call
             $formatter = substr($this->formatter, 0, $size);
             if (strstr($formatter, '->')) { 
@@ -206,22 +209,6 @@ class Structures_DataGrid_Column
         return $result;
     }
 
-    function recordToValue($record)
-    {
-        $value = '';
-        if (isset($this->formatter) and !empty($this->formatter)) {
-            $value = $this->formatter($record);
-        } else if (isset($this->fieldName) and isset($record[$this->fieldName])) {
-            $value = $record[$this->fieldName];
-        }
-
-        if (empty($value) and !is_null($this->autoFillValue))
-        {
-            $content = $this->autoFillValue; 
-        }
-
-        return $value;
-    }
 }
 
 ?>
