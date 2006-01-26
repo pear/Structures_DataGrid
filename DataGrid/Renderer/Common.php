@@ -46,6 +46,7 @@
  * Among others, this class :
  * - expose a driver interface designed with extendability in mind, composed of :
  *   - init()
+ *   - defaultCellFormatter()
  *   - buildHeader()
  *   - buildBody()
  *   - buildFooter()
