@@ -175,8 +175,8 @@ class Structures_DataGrid_Renderer_Common
         $this->_options = array(
             'buildHeader'           => true,  
             'buildFooter'           => true,  
-            'fillWithEmptyRows'     => false, // FIXME: not handled yet
-            'sortingResetsPaging'   => true, // FIXME: was this ever handled ?
+            'fillWithEmptyRows'     => false,
+            'sortingResetsPaging'   => true,
             'autoAlign'             => true,
             'defaultCellValue'      => null,
             'defaultColumnValues'   => array(),

@@ -45,8 +45,8 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  *                        Can be text or HTML to define an image.
  * - extraVars          : variables to be added to the generated links
  * - excludeVars        : variables to be removed to the generated links
- * - headersAttributes   : headers cells attributes. This is an array of the form :
- *                         array(fieldName => array(attribute => value, ...) ... )
+ * - headersAttributes  : headers cells attributes. This is an array of the form :
+ *                        array(fieldName => array(attribute => value, ...) ... )
  *                       
  * 
  * @version  $Revision$
@@ -93,7 +93,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
             array(
                 'evenRowAttributes'  => array(),
                 'oddRowAttributes'   => array(),
-                'emptyRowAttributes' => array(), // FIXME: not handled yet - is this needed ?
+                'emptyRowAttributes' => array(),
                 'selfPath'           => $_SERVER['PHP_SELF'],
                 'sortIconASC'        => '',
                 'sortIconDESC'       => '',
@@ -185,7 +185,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     }
 
     /**
-     * Set wether to automatically right-align numeric values or not
+     * Set whether to automatically right-align numeric values or not
      *
      * This is enabled by default.
      *
@@ -380,6 +380,16 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 $this->_tableBody->setCellContents($row, $col, $value);
                 if ($attributes) {
                     $this->_tableBody->setCellAttributes($row, $col, $attributes);
+                }
+            }
+        }
+
+        // output empty rows
+        if ($this->_options['fillWithEmptyRows'] && !is_null($this->_pageLimit)) {
+            for ($row = $this->_recordsNum; $row < $this->_pageLimit; $row++) {
+                for ($col = 0; $col < $this->_columnsNum; $col++) {
+                    $this->_tableBody->setCellAttributes($row, $col, $this->_options['emptyRowAttributes']);
+                    $this->_tableBody->setCellContents($row, $col, '&nbsp;');
                 }
             }
         }
