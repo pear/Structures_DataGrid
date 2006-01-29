@@ -158,7 +158,7 @@ class Structures_DataGrid_DataSource_Array
      * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
      * @param   array   $ar         The array to sort (Used for static calls)
      */
-    function sort($sortField, $sortDir, &$ar = array())
+    function sort($sortField, $sortDir, $ar = array())
     {
         if (!($numRows = count($ar))) {
             $ar = $this->_ar;
