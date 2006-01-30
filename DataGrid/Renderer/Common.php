@@ -291,13 +291,16 @@ class Structures_DataGrid_Renderer_Common
             } else if (!is_null($this->_options['defaultCellValue'])) {
                 $column->setAutoFillValue($this->_options['defaultCellValue']);
             }
-            
-            if (isset($column->attribs) 
-                and is_subclass_of($this, 
-                                   'structures_datagrid_renderer_htmltable')) {
-                $this->_options['headersAttributes'][$field] 
-                    = array_merge($this->_options['headersAttributes'][$field],
-                                  $column->attribs);
+
+            if (isset($column->attribs) && 
+                strtolower(get_class($this)) == 'structures_datagrid_renderer_htmltable')
+            {
+                if (!array_key_exists($field, $this->_options['headersAttributes'])) {
+                    $this->_options['headersAttributes'][$field] = array();
+                }
+                $this->_options['headersAttributes'][$field] =
+                    array_merge($this->_options['headersAttributes'][$field],
+                                $column->attribs);
             }
 
             $this->_columns[$index] = compact('field','label');

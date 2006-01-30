@@ -99,7 +99,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 'sortIconDESC'       => '',
                 'extraVars'          => array(),
                 'excludeVars'        => array(),
-                'headersAttributes'   => array(),
+                'headersAttributes'  => array(),
             )
         );
     }
@@ -353,8 +353,9 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
 
             // Print Content to HTML_Table
             $this->_tableHeader->setHeaderContents(0, $col, $str);
-            if (isset ($this->options['headersAttributes'][$field])) {
-                $this->_tableHeader->setCellAttributes(0, $col, $this->options['headersAttributes'][$field]);
+            vd($this->_options);
+            if (isset ($this->_options['headersAttributes'][$field])) {
+                $this->_tableHeader->setCellAttributes(0, $col, $this->_options['headersAttributes'][$field]);
             }
         }
     }
