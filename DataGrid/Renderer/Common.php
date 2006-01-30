@@ -32,7 +32,7 @@
  *                       (default : false) 
  * - sortingResetsPaging : Wether or not to reset paging on sorting request
  *                         (default : true)
- * - autoAlign : wether to automatically right-align numeric values or not
+ * - autoAlign : whether to automatically right-align numeric values or not
  *    // FIXME: could be nice to have an autoFormat option for automatically 
  *       calling number_format() and the like
  * - defaultCellValue : what value to put by default into empty cells
