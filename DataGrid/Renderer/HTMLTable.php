@@ -157,7 +157,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     }
 
     /**
-     * Define the table's even row attrbiutes
+     * Define the table's even row attributes
      *
      * @access public
      * @param  array    $attribs    The associative array of attributes for the
@@ -354,7 +354,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
             // Print Content to HTML_Table
             $this->_tableHeader->setHeaderContents(0, $col, $str);
             if (isset ($this->options['headersAttributes'][$field])) {
-                $this->_tableHeader->setCellAttributes(0, $col, $this->options['columnAttributes'][$field]);
+                $this->_tableHeader->setCellAttributes(0, $col, $this->options['headersAttributes'][$field]);
             }
         }
     }
