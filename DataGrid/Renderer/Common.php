@@ -382,7 +382,7 @@ class Structures_DataGrid_Renderer_Common
 
         if (empty($value) and !is_null($column->autoFillValue))
         {
-            $content = $column->autoFillValue; 
+            $value = $column->autoFillValue; 
         }
 
         return $value;
