@@ -164,11 +164,22 @@ class Structures_DataGrid_Column
         $paramList['columnName'] = $this->columnName;
         $paramList['orderBy'] = $this->orderBy;
         $paramList['attribs'] = $this->attribs;
-        
+
+        // $this->formatter may be an array with a class name and the formatter
+        // ==> split into class name and the formatter
+        $class = '';
+        if (is_array($this->formatter)) {
+            $class = $this->formatter[0];
+            $formatter = $this->formatter[1];
+        } else {
+            $formatter = $this->formatter;
+        }
+
         // Determine callback and additional parameters
-        if (is_string($this->formatter) and $size = strpos($this->formatter, '(')) {
+        if (is_string($formatter) and $size = strpos($formatter, '(')) {
+            $orig_formatter = $formatter;
             // Retrieve the name of the function to call
-            $formatter = substr($this->formatter, 0, $size);
+            $formatter = substr($formatter, 0, $size);
             if (strstr($formatter, '->')) { 
                 $formatter = explode('->', $formatter);
             } elseif (strstr($formatter, '::')) {
@@ -176,8 +187,8 @@ class Structures_DataGrid_Column
             }
 
             // Build the list of parameters
-            $length = strlen($this->formatter) - $size - 2;
-            $parameters = substr($this->formatter, $size + 1, $length);
+            $length = strlen($orig_formatter) - $size - 2;
+            $parameters = substr($orig_formatter, $size + 1, $length);
             $parameters = ($parameters === '') ? array() : split(',', $parameters);
 
             // Process the parameters
@@ -192,8 +203,12 @@ class Structures_DataGrid_Column
                     }
                 }
             }
-        } else {
-            $formatter = $this->formatter;
+        }
+
+        // $this->formatter may be an array with a class name and the formatter
+        // ==> join class name and the formatter back into an array
+        if ($class !== '') {
+            $formatter = array($class, $formatter);
         }
 
         // Call the formatter
