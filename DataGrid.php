@@ -437,20 +437,13 @@ class Structures_DataGrid
      */
     function _setDefaultHeaders()
     {
-        /* FIXME: what the hell is this ?
-         
-          
         if ((!count($this->columnSet)) && (count($this->recordSet))) {
             $arrayKeys = array_keys($this->recordSet[0]);
             foreach ($arrayKeys as $key) {
-                $width = ceil(100/count($arrayKeys));
-                $column = new Structures_DataGrid_Column($key, $key, $key,
-                                                         array('width' =>
-                                                               $width.'%'));
+                $column = new Structures_DataGrid_Column($key, $key, $key);
                 $this->addColumn($column);
             }
         }
-        */
     }
     
     /**
@@ -878,6 +871,7 @@ class Structures_DataGrid
 
     function build()
     {
+        $this->_setDefaultHeaders();
         if (isset($this->_dataSource)) {
             $this->renderer->build();
             $this->_isBuilt = true;
