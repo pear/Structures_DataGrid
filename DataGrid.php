@@ -577,6 +577,25 @@ class Structures_DataGrid
     }
 
     /**
+     * Returns a reference to a DataGrid_Column object
+     *
+     * @access  public
+     * @param   string   $name     The name of the column to be returned.
+     * @return  object   Either the column object or a PEAR_Error if there is
+     *          no such column.
+     */
+    function &getColumnByName($name)
+    {
+        foreach ($this->columnSet as $key => $column) {
+            if ($column->columnName === $name) {
+                return $this->columnSet[$key];
+            }
+        }
+        $error = new PEAR_Error("Column '$name' does not exist");
+        return $error;
+    }
+
+    /**
      * A simple way to add a record set to the datagrid
      *
      * @access  public
