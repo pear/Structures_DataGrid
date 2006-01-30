@@ -70,6 +70,13 @@
       Bug #5858 :
         Removed @ before include() in DataSource.php (could crash silently)           
         Thanks Mark Wiesemann &lt;wiesemann at php dot net&gt;
+        
+      Request #6621:
+        New method getColumnByName() that returns a reference to a column object.
+      
+      Bug #6624:
+        Column formatters using class names didn't handle parameters and class
+        methods at the same time.
       
       Auto-alignment :  
         The HTMLTable renderer now automatically aligns numeric values
