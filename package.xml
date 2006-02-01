@@ -77,7 +77,11 @@
       Bug #6624:
         Column formatters using class names didn't handle parameters and class
         methods at the same time.
-      
+     
+      Bug #6031:
+        New "encoding" option (passed to htmlspecialchars)
+        Thanks digit_shine &lt;digit_shine at yahoo dot com dot cn&gt;
+     
       Auto-alignment :  
         The HTMLTable renderer now automatically aligns numeric values
         to the right. This is configurable with HTMLTable::setAutoAlign()

@@ -47,6 +47,9 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  * - excludeVars        : variables to be removed to the generated links
  * - headersAttributes  : headers cells attributes. This is an array of the form :
  *                        array(fieldName => array(attribute => value, ...) ... )
+ * - convertEntities    : wether or not to convert html entities. Default: true
+ *                        This calls htmlspecialchars(). 
+ * - encoding           : the content encoding. Default: ISO-8859-1
  *                       
  * 
  * @version  $Revision$
@@ -91,15 +94,17 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
         parent::Structures_DataGrid_Renderer_Common();
         $this->_addDefaultOptions(
             array(
-                'evenRowAttributes'  => array(),
-                'oddRowAttributes'   => array(),
-                'emptyRowAttributes' => array(),
-                'selfPath'           => $_SERVER['PHP_SELF'],
-                'sortIconASC'        => '',
-                'sortIconDESC'       => '',
-                'extraVars'          => array(),
-                'excludeVars'        => array(),
-                'headersAttributes'  => array(),
+                'evenRowAttributes'   => array(),
+                'oddRowAttributes'    => array(),
+                'emptyRowAttributes'  => array(),
+                'selfPath'            => $_SERVER['PHP_SELF'],
+                'sortIconASC'         => '',
+                'sortIconDESC'        => '',
+                'extraVars'           => array(),
+                'excludeVars'         => array(),
+                'headersAttributes'   => array(),
+                'convertEntities'     => true,
+                'encoding'            => 'ISO-8859-1',
             )
         );
     }
@@ -409,7 +414,10 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
    
     function defaultCellFormatter ($value)
     {
-        return htmlspecialchars($value);
+        
+        return $this->_options['convertEntities']
+               ? htmlspecialchars($value, ENT_COMPAT, $this->_options['encoding'])
+               : $value;
     }
 
     function flatten ()
