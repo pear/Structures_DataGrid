@@ -309,9 +309,7 @@ class Structures_DataGrid_Renderer_Common
         $this->_columnsNum = count($this->_columns);
         $this->_recordsNum = count($this->_records);
 
-        if (is_null($this->_container)) {
-            $this->init();
-        }
+        $this->init();
         
         if (is_null($this->_pageLimit)) {
             $this->_pageLimit = $this->_recordsNum;
