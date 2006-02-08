@@ -295,11 +295,11 @@ class Structures_DataGrid_Renderer_Common
             if (isset($column->attribs) && 
                 strtolower(get_class($this)) == 'structures_datagrid_renderer_htmltable')
             {
-                if (!array_key_exists($field, $this->_options['headersAttributes'])) {
-                    $this->_options['headersAttributes'][$field] = array();
+                if (!array_key_exists($field, $this->_options['columnAttributes'])) {
+                    $this->_options['columnAttributes'][$field] = array();
                 }
-                $this->_options['headersAttributes'][$field] =
-                    array_merge($this->_options['headersAttributes'][$field],
+                $this->_options['columnAttributes'][$field] =
+                    array_merge($this->_options['columnAttributes'][$field],
                                 $column->attribs);
             }
 
@@ -309,7 +309,9 @@ class Structures_DataGrid_Renderer_Common
         $this->_columnsNum = count($this->_columns);
         $this->_recordsNum = count($this->_records);
 
-        $this->init();
+        if (is_null($this->_container)) {
+            $this->init();
+        }
         
         if (is_null($this->_pageLimit)) {
             $this->_pageLimit = $this->_recordsNum;

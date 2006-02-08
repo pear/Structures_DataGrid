@@ -45,7 +45,9 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  *                        Can be text or HTML to define an image.
  * - extraVars          : variables to be added to the generated links
  * - excludeVars        : variables to be removed to the generated links
- * - headersAttributes  : headers cells attributes. This is an array of the form :
+ * - columnAttributes   : attributes for the header row. This is an array of the
+ *                        form: array(attribute => value, ...)
+ * - headerAttributes   : column cells attributes. This is an array of the form :
  *                        array(fieldName => array(attribute => value, ...) ... )
  * - convertEntities    : wether or not to convert html entities. Default: true
  *                        This calls htmlspecialchars(). 
@@ -102,7 +104,8 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 'sortIconDESC'        => '',
                 'extraVars'           => array(),
                 'excludeVars'         => array(),
-                'headersAttributes'   => array(),
+                'columnAttributes'    => array(),
+                'headerAttributes'    => array(),
                 'convertEntities'     => true,
                 'encoding'            => 'ISO-8859-1',
             )
@@ -145,7 +148,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
         if (is_null($this->_container)) {
             $this->init();
         }
-        $this->_tableHeader->setRowAttributes(0, $attribs, true);
+        $this->_options['headerAttributes'] = $attribs;
     }
 
     /**
@@ -158,7 +161,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      */
     function setTableOddRowAttributes($attribs)
     {
-        $this->oddRowAttributes = $attribs;
+        $this->_options['oddRowAttributes'] = $attribs;
     }
 
     /**
@@ -314,6 +317,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 $common[$key] = $val;
             }
         }
+        $row = $this->_tableHeader->getRowCount();
 
         for ($col = 0; $col < $this->_columnsNum; $col++) {
             $field = $this->_columns[$col]['field'];
@@ -357,10 +361,13 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
             }
 
             // Print Content to HTML_Table
-            $this->_tableHeader->setHeaderContents(0, $col, $str);
-            if (isset ($this->_options['headersAttributes'][$field])) {
-                $this->_tableHeader->setCellAttributes(0, $col, $this->_options['headersAttributes'][$field]);
+            $this->_tableHeader->setHeaderContents($row, $col, $str);
+            if (isset($this->_options['columnAttributes'][$field])) {
+                $this->_tableHeader->setCellAttributes($row, $col, $this->_options['columnAttributes'][$field]);
             }
+        }
+        if (count($this->_options['headerAttributes']) > 0) {
+            $this->_tableHeader->setRowAttributes($row, $this->_options['headerAttributes'], true);
         }
     }
 
@@ -375,12 +382,19 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
         for ($row = 0; $row < $this->_recordsNum; $row++) {
             for ($col = 0; $col < $this->_columnsNum; $col++) {
                 $value = $this->_records[$row][$col];
+                $field = $this->_columns[$col]['field'];
                 
                 /* Right-align the content if it is numeric */
                 $attributes = ($this->_options['autoAlign'] and is_numeric ($value)) 
                             ? array('align' => 'right')
                             : array();
-                
+
+                // merge auto-aligned and column attributes
+                if (isset($this->_options['columnAttributes'][$field])) {
+                    $attributes = array_merge($attributes,
+                                              $this->_options['columnAttributes'][$field]);
+                }
+
                 // Set Content in HTML_Table
                 $this->_tableBody->setCellContents($row, $col, $value);
                 if ($attributes) {
