@@ -17,9 +17,9 @@
 // |         Olivier Guilyardi <olivier@samalyse.com>                     |
 // +----------------------------------------------------------------------+
 //
-// $Id $
+// $Id$
 
-require_once 'Structures/DataGrid/DataSource/Common.php';
+require_once 'Structures/DataGrid/DataSource/Array.php';
 
 /**
  * PEAR::DB Data Source Driver
@@ -34,7 +34,7 @@ require_once 'Structures/DataGrid/DataSource/Common.php';
  * @category Structures
  */
 class Structures_DataGrid_DataSource_DB
-    extends Structures_DataGrid_DataSource_Common
+    extends Structures_DataGrid_DataSource_Array
 {   
     /**
      * Reference to the DB_Result object
@@ -51,7 +51,7 @@ class Structures_DataGrid_DataSource_DB
      */
     function Structures_DataGrid_DataSource_DB()
     {
-        parent::Structures_DataGrid_DataSource_Common();
+        parent::Structures_DataGrid_DataSource_Array();
     }
   
     /**
@@ -68,71 +68,14 @@ class Structures_DataGrid_DataSource_DB
         }
         
         if (strtolower(get_class($result)) == 'db_result') { 
-            $this->_result =& $result;
+            while ($record = $result->fetchRow(DB_FETCHMODE_ASSOC)) {
+                $this->_ar[] = $record;
+            }
             return true;
         } else {
             return new PEAR_Error('The provided source must be a DB_Result');
         }
     }
-
-    /**
-     * Fetch
-     *
-     * @param   integer $offset     Offset (starting from 0)
-     * @param   integer $limit      Limit
-     * @param   string  $sortField  Field to sort by
-     * @param   string  $sortDir    Sort direction : 'ASC' or 'DES     
-     * @access  public
-     * @return  array       The 2D Array of the records
-     */
-    function &fetch($offset=0, $limit=null, $sortField=null, $sortDir='ASC')
-    {
-        $recordSet = array();
-
-        // Fetch the Data
-        if ($numRows = $this->_result->numRows()) {
-            while ($record = $this->_result->fetchRow(DB_FETCHMODE_ASSOC)) {
-                $recordSet[] = $record;
-            }
-
-            // Determine fields to render
-            if (!$this->_options['fields']) {
-                $this->setOptions(array('fields' => array_keys($recordSet[0])));
-            }
-
-            // Limit and Sort the Data
-            $recordSet =& Structures_DataGrid_DataSource_Array::staticFetch(
-                              $recordSet, $this->_options['fields'], $offset, 
-                              $limit, $sortField, $sortDir);
-        }
-        
-        return $recordSet;
-    }
-
-    /**
-     * Count
-     *
-     * @access  public
-     * @return  int         The number or records
-     */
-    function count()
-    {
-        return $this->_result->numRows();
-    }
-    
-    /**
-     * This should not be used due to performance issues, but is available for
-     * compatability.
-     * 
-     * @access  public
-     * @param   string  $sortField  Field to sort by
-     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
-     */
-    function sort($sortField, $sortDir)
-    {
-        return new PEAR_Error('Cannot sort a DB_Result Object');
-    }
-
 
 }
 ?>
