@@ -70,7 +70,11 @@
       Bug #5858 :
         Removed @ before include() in DataSource.php (could crash silently)           
         Thanks Mark Wiesemann &lt;wiesemann at php dot net&gt;
-        
+
+      Bug #6582:
+        The method sort() in Array DataSource driver can no longer be called
+        statically. (Not a BC break, as this should have been used only internal.)
+
       Req #6621:
         New method getColumnByName() that returns a reference to a column object.
       
@@ -111,7 +115,7 @@
       <dep type="pkg" rel="ge" version="0.11.1" optional="yes">XML_Serializer</dep>
       <dep type="pkg" rel="ge" version="1.0.1" optional="yes">Console_Table</dep>
       <dep type="pkg" rel="ge" version="1.7.6" optional="yes">DB</dep>
-      <dep type="pkg" rel="ge" version="2.0.0RC4" optional="yes">MDB2</dep>
+      <dep type="pkg" rel="ge" version="2.0.0" optional="yes">MDB2</dep>
 
       <!-- The following PHP_Compat dependency is actually only required -->
       <!-- when using HTMLTable. It is safer to set it as non-optional   -->
