@@ -33,6 +33,8 @@ define ('DATAGRID_RENDER_XUL',      'XUL');
 define ('DATAGRID_RENDER_CSV',      'CSV');
 define ('DATAGRID_RENDER_CONSOLE',  'Console');
 
+define ('DATAGRID_RENDER_DEFAULT',  DATAGRID_RENDER_TABLE);
+
 // Data Source Drivers
 define('DATAGRID_SOURCE_ARRAY',     'Array');
 define('DATAGRID_SOURCE_DATAOBJECT','DataObject');
@@ -80,12 +82,12 @@ define('DATAGRID_SOURCE_MDB2',      'MDB2');
  */
 class Structures_DataGrid 
 {
-    /**
+    /*
      * Renderer driver
      * @var object Structures_DataGrid_Renderer_* family
      * @access private
      */ 
-    var $renderer;
+    var $_renderer;
 
     /**
      * Array of columns.  Columns are defined as a DataGridColumn object.
@@ -144,8 +146,6 @@ class Structures_DataGrid
      */
      var $_requestPrefix = '';    
 
-     var $_isBuilt = false;
-     
     /**
      * Constructor
      *
@@ -178,7 +178,9 @@ class Structures_DataGrid
         // Automatic handling of GET/POST/COOKIE variables
         $this->_parseHttpRequest();
 
-        $this->setRenderer ($rendererType);
+        /*
+        $this->setRenderer($rendererType);
+        */
     }
 
     /**
@@ -355,10 +357,9 @@ class Structures_DataGrid
      */
     function render()
     {
-        if (!$this->_isBuilt) {
-            $this->build();
-        }
-        $this->renderer->render();
+        isset($this->_renderer) or $this->setRenderer(DATAGRID_RENDER_DEFAULT);
+        $this->_renderer->isBuilt() or $this->build();
+        $this->_renderer->render();
     }
 
     /**
@@ -369,10 +370,9 @@ class Structures_DataGrid
      */
     function getOutput()
     {
-        if (!$this->_isBuilt) {
-            $this->build();
-        }
-        return $this->renderer->getOutput();
+        isset($this->_renderer) or $this->setRenderer(DATAGRID_RENDER_DEFAULT);
+        $this->_renderer->isBuilt() or $this->build();
+        return $this->_renderer->getOutput();
     }
     
     /**
@@ -384,7 +384,8 @@ class Structures_DataGrid
      */
     function &getRenderer()
     {
-        return $this->renderer;
+        isset($this->_renderer) or $this->setRenderer(DATAGRID_RENDER_DEFAULT);
+        return $this->_renderer;
     }
 
     /**
@@ -406,13 +407,21 @@ class Structures_DataGrid
         }
     }
 
-    function attachRenderer($renderer)
+    /**
+     * Attach a rendering driver
+     * 
+     * @param object $renderer Driver object, subclassing 
+     *                         Structures_DataGrid_Renderer_Common
+     * @return mixed           Either true or a PEAR_Error object
+     * @access public
+     */
+    function attachRenderer(&$renderer)
     {
         if (is_subclass_of($renderer, 'structures_datagrid_renderer_common')) {
-            $this->renderer =& $renderer;
+            $this->_renderer =& $renderer;
             if (isset ($this->_dataSource)) {
-                $this->renderer->setData($this->columnSet, $this->recordSet);
-                $this->renderer->setLimit($this->page, $this->rowLimit, 
+                $this->_renderer->setData($this->columnSet, $this->recordSet);
+                $this->_renderer->setLimit($this->page, $this->rowLimit, 
                                           $this->getRecordCount());
             }
         } else {
@@ -422,10 +431,38 @@ class Structures_DataGrid
         
         return true;
     }
-    
-    function renderInto (&$container)
+  
+    /**
+     * Fill a rendering container with data
+     * 
+     * @param object $container A rendering container of any of the supported
+     *                          types (example : an HTML_Table object, 
+     *                          a Spreadsheet_Excel_Writer object, etc...)
+     * @param array  $options   Options for the corresponding rendering driver
+     * @param string $type      Explicit type in case the container type 
+     *                          can't be detected
+     * @return mixed            Either true or a PEAR_Error object 
+     * @access public
+     */
+    function fill(&$container, $options = array(), $type = null)
     {
-        $this->renderer->setContainer ($container);
+        if (is_null($type)) {
+            $type = $this->_detectRendererType($container);
+            if (is_null($type)) {
+                return new PEAR_Error('The rendering container type can not '.
+                                      'be automatically detected. Please ' . 
+                                      'specify its type explicitly.');
+            }
+        }
+   
+        if (PEAR::isError($test = $this->setRenderer($type, $options))) {
+            return $test;
+        }
+        
+        $this->_renderer->setContainer($container);
+        $this->_renderer->build();
+
+        return true;
     }
     
     /**
@@ -544,10 +581,11 @@ class Structures_DataGrid
     function setRequestPrefix($prefix)
     {
         $this->_requestPrefix = $prefix;
-        $this->renderer->setRequestPrefix($prefix);
-        
-        // Automatic handling of GET/POST/COOKIE variables
         $this->_parseHttpRequest();
+
+        if (isset($this->_renderer)) {
+            $this->_renderer->setRequestPrefix($prefix);
+        }
     }    
     
     /**
@@ -592,16 +630,16 @@ class Structures_DataGrid
      * A simple way to add a record set to the datagrid
      *
      * @access  public
-     * @param   mixed   $rs         The record set in any of the supported data
+     * @param   mixed   $container  The record set in any of the supported data
      *                              source types
      * @param   array   $options    Optional. The options to be used for the
      *                              data source
      * @param   string  $type       Optional. The data source type
      * @return  bool                True if successful, otherwise PEAR_Error.
      */
-    function bind($rs, $options = array(), $type = null)
+    function bind($container, $options = array(), $type = null)
     {
-        $source =& Structures_DataGrid::datasourceFactory($rs, $options, $type);
+        $source =& Structures_DataGrid::datasourceFactory($container, $options, $type);
         if (!PEAR::isError($source)) {
             return $this->bindDataSource($source);
         } else {
@@ -627,9 +665,9 @@ class Structures_DataGrid
             if ($columnSet = $this->_dataSource->getColumns()) {
                 $this->columnSet = array_merge($this->columnSet, $columnSet);
             }
-            if (isset ($this->renderer)) {
-                $this->renderer->setData($this->columnSet, $this->recordSet);
-                $this->renderer->setLimit($this->page, $this->rowLimit, 
+            if (isset ($this->_renderer)) {
+                $this->_renderer->setData($this->columnSet, $this->recordSet);
+                $this->_renderer->setLimit($this->page, $this->rowLimit, 
                                           $this->getRecordCount());
             }
         } else {
@@ -640,6 +678,12 @@ class Structures_DataGrid
         return true;
     }
 
+    /**
+     * Fetch data from the datasource 
+     *
+     * @return mixed Either true or a PEAR_Error object
+     * @access private
+     */
     function fetchDataSource()
     {
         if ($this->_dataSource != null) {
@@ -656,12 +700,10 @@ class Structures_DataGrid
                 return $recordSet;
             } else {
                 $this->recordSet = array_merge($this->recordSet, $recordSet);
-                /*
-                if (count($columnSet = $this->_dataSource->getColumns())) {
-                    $this->columnSet = $columnSet;
-                }
-                */
+                return true;
             }
+        } else {
+            return new PEAR_Error ("Can not fetch data: no datasource driver loaded.");
         }
     }
     
@@ -787,7 +829,7 @@ class Structures_DataGrid
     }     
 
     /**
-     * Detect source type
+     * Detect datasource container type
      *
      * @param   mixed   $source     Some kind of source
      * @param   array   $options    Options passed to dataSourceFactory()
@@ -801,6 +843,7 @@ class Structures_DataGrid
     {
         switch(true) {
             // DB_DataObject
+            // FIXME: should use is_subclass_of() 
             case (strtolower(get_parent_class($source)) == 'db_dataobject'):
                 return DATAGRID_SOURCE_DATAOBJECT;
                 break;
@@ -858,25 +901,55 @@ class Structures_DataGrid
         }
     }
 
-    /*
-    function _detectRendererType($container)
+    /**
+     * Detect rendering container type
+     * 
+     * @param object $container The rendering container
+     * @return string           The container type or null if unrecognized
+     * @access private
+     */
+    function _detectRendererType(&$container)
     {
-        if (is_subclass_of($container, 'html_table')) {
+        if (is_a($container, 'html_table') or is_subclass_of($container, 'html_table')) {
             return DATAGRID_RENDER_TABLE;
         } // FIXME: and so on...
 
         return null;
     }
-    */
 
+    /**
+     * Build the datagrid
+     * 
+     * @return mixed Either true or a PEAR_Error object
+     * @access public
+     */
     function build()
     {
         $this->_setDefaultHeaders();
         if (isset($this->_dataSource)) {
-            $this->renderer->build();
-            $this->_isBuilt = true;
+            isset($this->_renderer) or $this->setRenderer(DATAGRID_RENDER_DEFAULT);
+            $this->_renderer->build();
+            return true;
+        } else {
+            return new PEAR_Error ("Cannot build the datagrid: no datasource driver loaded");
         }
     }
+
+    /**
+     * Provide some BC fix (require PHP5)
+     * 
+     * This is a PHP5 magic method used to simulate the old public 
+     * $renderer property
+     */
+    function __get($var)
+    {
+        if ($var == 'renderer')
+        {
+            isset($this->_renderer) or $this->setRenderer(DATAGRID_RENDER_DEFAULT);
+            return $this->_renderer;
+        }
+    }
+
 }
 
 ?>
