@@ -35,6 +35,14 @@
     <license>PHP License</license>
     <state>beta</state>
     <notes>
+
+      ##########################################################################
+      #                   WARNING - BACKWARD INCOMPATIBILITY                   #
+      # The Structures_DataGrid::renderer property is not public anymore. It   #
+      # is now required to use the Structures_DataGrid::getRenderer() method   #
+      # in order to access the renderer object.                                #
+      ##########################################################################
+    
       Req #4254 : 
         Completed integration of the DBTable datasource driver
 
@@ -89,6 +97,10 @@
       Req #5838:
         New HTMLTable "convertEntities" option 
         Thanks &lt;abriening at comcast dot net&gt;
+
+      Req #5859:
+        The rendering layer has gone through a long refactoring process and
+        a new and flexible renderer driver interface has been implemented.
     
       Auto-alignment :  
         The HTMLTable renderer now automatically aligns numeric values
@@ -102,8 +114,23 @@
         The query building process has been optimized, and is now more
         flexible due to the use of http_build_query(). This adds a 
         new dependency : PHP_Compat >= 1.4.1
-        
-      Added new DataSource driver MDB2 with same behaviour as DBQuery driver
+      
+      MDB2 compatibility:
+        Added new DataSource driver MDB2 with same behaviour as DBQuery driver
+
+      Custom rendering containers:
+        The containers that rendering drivers use to do their job, such as 
+        HTML_Table, Spreadsheet_Excel_Writer, etc.. can now be instantiated
+        and customized by the user. They are then passed to the rendering
+        driver with new methods such as Structures_DataGrid::fill() or 
+        Structures_DataGrid_Renderer_*::setContainer().
+
+      New fill() method:
+        This method is meant to be to renderers what bind() is to datasources.
+        It accepts a "rendering container" object (where bind() accepts a 
+        "datasource container") which it fills with data. No data is output
+        during this process. It is up to the user to decide what to do with 
+        the container once it's been filled up.
     </notes>
     <deps>
       <dep type="pkg" rel="ge" version="1.2" optional="no">PEAR</dep>

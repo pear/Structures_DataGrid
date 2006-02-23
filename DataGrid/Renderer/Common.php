@@ -214,63 +214,171 @@ class Structures_DataGrid_Renderer_Common
         $this->_options = array_merge($this->_options, $options);
     }
 
+    /**
+     * Attach a container object
+     *
+     * @param object Container of the class supported by the driver
+     * @access public
+     */
     function setContainer(&$container)
     {
         $this->_container =& $container;
     }
 
+    /**
+     * Return the container used by the driver
+     * 
+     * @return object Container of the class supported by the driver
+     * @access public
+     */
     function &getContainer()
     {
         return $this->_container;
     }
     
+    /**
+     * Provide columns and records data
+     * 
+     * @param array $columns Array of Structures_DataGrid_Column objects
+     * @param array $records 2D array of records values
+     * @access public
+     */
     function setData(&$columns, &$records)
     {
         $this->_columnObjects = &$columns;
         $this->_records = &$records;
     }
-   
+  
+    /**
+     * Specify how the datagrid is currently sorted
+     *
+     * @param string $field     Which field it is sorted by
+     * @param string $direction Direction (ASC|DESC)
+     * @access public
+     */
     function setCurrentSorting($field, $direction)
     {
         $this->_currentSortField = $field;
         $this->_currentSortDirection = $direction;
     }
     
+    /**
+     * Specify page and row limits
+     * 
+     * @param int $currentPage Current page number
+     * @param int $rowsPerPage Maximum number of rows per page
+     * @param int $totalRowNum Total number of data rows
+     * @access public
+     */
     function setLimit($currentPage, $rowsPerPage, $totalRowNum) {
         $this->_page = $currentPage;
         $this->_pageLimit = $rowsPerPage;
         $this->_totalRecordsNum = $totalRowNum;
     }
-    
+   
+    /**
+     * Create or/and prepare the container
+     *
+     * Drivers are required to implement this method.
+     *
+     * This method is responsible for creating the container if it has not 
+     * already been provided by the user with the setContainer() method.
+     * It is where preliminary container setup also happens.
+     *
+     * @abstract
+     * @access protected
+     */
     function init()
     {
     }
-    
+   
+
+    /**
+     * Build the header 
+     *
+     * Drivers may optionally implement this method.
+     *
+     * @abstract
+     * @access  protected
+     * @return  void
+     */
     function buildHeader() 
     {
     }
-   
+
+    /**
+     * Build the body
+     *
+     * Drivers are required to implement this method.
+     *
+     * @abstract
+     * @access  protected
+     * @return  void
+     */
     function buildBody()
     {
     }
     
+    /**
+     * Build the footer
+     *
+     * Drivers may optionally implement this method.
+     *
+     * @abstract
+     * @access  protected
+     * @return  void
+     */
     function buildFooter() 
     {
     }
 
+    /**
+     * Finish building the datagrid.
+     *
+     * Drivers may optionally implement this method.
+     *
+     * @abstract
+     * @access  protected
+     * @return  void
+     */
     function finalize()
     {
     }
 
+    /**
+     * Retrieve output from the container object 
+     * 
+     * Drivers are required to implement this method.
+     *
+     * @abstract
+     * @return mixed Output
+     * @access protected
+     */
     function flatten()
     {
     }
-    
+
+    /**
+     * Default formatter for all cells
+     * 
+     * Drivers may optionally implement this method.
+     *
+     * @abstract
+     * @param string  Cell value 
+     * @return string Formatted cell value
+     * @access protected
+     */
     function defaultCellFormatter ($value)
     {
         return $value;
     }
-    
+   
+    /**
+     * Build the grid
+     * 
+     * @access public
+     * @return void
+     */
     function build()
     {
         $this->_columns = array();
@@ -366,11 +474,26 @@ class Structures_DataGrid_Renderer_Common
         }
         /* What are we supposed to do with $status = true ? */
     }   
-       
+     
+    /**
+     * Set the HTTP Request prefix
+     * 
+     * @param string $prefix The prefix string
+     * @return void
+     * @acess public
+     */
     function setRequestPrefix($prefix) {
         $this->_requestPrefix = $prefix;
     }
 
+    /**
+     * Perform record/column to cell intersection and formatting
+     * 
+     * @param  object $column The column object
+     * @param  array  $record Array of record values
+     * @return string Formatted cell value
+     * @access private
+     */
     function recordToCell(&$column, $record)
     {
         $value = '';
@@ -386,6 +509,17 @@ class Structures_DataGrid_Renderer_Common
         }
 
         return $value;
+    }
+
+    /**
+     * Query the grid build status 
+     * 
+     * @return bool Wether the grid has already been built or not
+     * @access public
+     */
+    function isBuilt()
+    {
+        return $this->_isBuilt;
     }
 }
 

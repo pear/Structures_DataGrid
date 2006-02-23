@@ -126,6 +126,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     /**
      * Set a table attribute
      *
+     * @deprecated Use the HTML_Table constructor directly instead
      * @access public
      * @param  string   $name    The CSS class to use for the table.
      */
@@ -299,7 +300,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     /**
      * Handles building the header of the DataGrid
      *
-     * @access  private
+     * @access  protected
      * @return  void
      * @todo    Redesign/Rework the header URL building.
      */
@@ -374,7 +375,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     /**
      * Handles building the body of the DataGrid
      *
-     * @access  private
+     * @access  protected
      * @return  void
      */
     function buildBody()
