@@ -77,7 +77,7 @@ class Structures_DataGrid_Renderer_Common
      * @access protected
      */
     var $_records = array();
-    
+
     /**
      * Container filled with data by the driver
      * @var array
@@ -98,7 +98,7 @@ class Structures_DataGrid_Renderer_Common
      * @access protected
      */
     var $_currentSortDirection = null;
-   
+
     /**
      * Columns objects 
      * 
@@ -117,7 +117,7 @@ class Structures_DataGrid_Renderer_Common
      * @access protected
      */
     var $_columnsNum;
-    
+
     /**
      * Number of records in the current page
      * @var int
@@ -154,12 +154,12 @@ class Structures_DataGrid_Renderer_Common
     var $_requestPrefix = '';
 
     /**
-     * Wether the datagrid has been built or not
+     * Whether the datagrid has been built or not
      * @var bool
      * @access private
      */
     var $_isBuilt = false;
-         
+
     /**
      * Common and driver-specific options
      *
@@ -170,6 +170,13 @@ class Structures_DataGrid_Renderer_Common
      */
     var $_options = array();
 
+    /**
+     * Constructor
+     *
+     * Build default values
+     *
+     * @access  public
+     */
     function Structures_DataGrid_Renderer_Common()
     {
         $this->_options = array(
@@ -183,7 +190,7 @@ class Structures_DataGrid_Renderer_Common
             'disableColumnSorting'  => array(),
         );
     }
-    
+
     /**
      * Adds some default options.
      *
@@ -235,7 +242,7 @@ class Structures_DataGrid_Renderer_Common
     {
         return $this->_container;
     }
-    
+
     /**
      * Provide columns and records data
      * 
@@ -261,7 +268,7 @@ class Structures_DataGrid_Renderer_Common
         $this->_currentSortField = $field;
         $this->_currentSortDirection = $direction;
     }
-    
+
     /**
      * Specify page and row limits
      * 
@@ -275,7 +282,7 @@ class Structures_DataGrid_Renderer_Common
         $this->_pageLimit = $rowsPerPage;
         $this->_totalRecordsNum = $totalRowNum;
     }
-   
+
     /**
      * Create or/and prepare the container
      *
@@ -291,7 +298,6 @@ class Structures_DataGrid_Renderer_Common
     function init()
     {
     }
-   
 
     /**
      * Build the header 
@@ -318,7 +324,7 @@ class Structures_DataGrid_Renderer_Common
     function buildBody()
     {
     }
-    
+
     /**
      * Build the footer
      *
@@ -372,7 +378,7 @@ class Structures_DataGrid_Renderer_Common
     {
         return $value;
     }
-   
+
     /**
      * Build the grid
      * 
@@ -413,16 +419,16 @@ class Structures_DataGrid_Renderer_Common
 
             $this->_columns[$index] = compact('field','label');
         }
-      
+
         $this->_columnsNum = count($this->_columns);
         $this->_recordsNum = count($this->_records);
 
         $this->init();
-        
+
         if (is_null($this->_pageLimit)) {
             $this->_pageLimit = $this->_recordsNum;
         }
-        
+
         for ($rec = 0; $rec < $this->_recordsNum; $rec++) {
             $content = array();
             foreach ($this->_columnObjects as $column) {
@@ -430,13 +436,13 @@ class Structures_DataGrid_Renderer_Common
             }
             $this->_records[$rec] = $content;
         }
-        
+
         if ($this->_options['buildHeader']) {
             $this->buildHeader();
         }
-       
+
         $this->buildBody();
-        
+
         if ($this->_options['buildFooter']) {
             $this->buildFooter();
         }
@@ -446,6 +452,12 @@ class Structures_DataGrid_Renderer_Common
         $this->_isBuilt = true;
     }
 
+    /**
+     * Returns the output from the renderer (e.g. HTML table, XLS object, ...)
+     * 
+     * @access  public
+     * @return  mixed    The output from the renderer
+     */
     function getOutput()
     {
         $this->_isBuilt or $this->build();
@@ -453,11 +465,19 @@ class Structures_DataGrid_Renderer_Common
         return $this->flatten();
     }
 
+    /**
+     * Renders the output from the render (e.g. echoes an HTML table, displays
+     * an Excel spreadsheet, ...)
+     *
+     * This is quite an obsolete method...
+     * 
+     * @access  public
+     */
     function render()
     {
         echo $this->getOutput();
     }
-    
+
     /**
      * Sets the rendered status.  This can be used to "flush the cache" in case
      * you need to render the datagrid twice with the second time having changes
@@ -465,7 +485,7 @@ class Structures_DataGrid_Renderer_Common
      * This is quite an obsolete method...
      * 
      * @access  public
-     * @params  bool        $status     The rendered status of the DataGrid
+     * @param   bool        $status     The rendered status of the DataGrid
      */
     function setRendered($status = false)
     {
@@ -474,13 +494,13 @@ class Structures_DataGrid_Renderer_Common
         }
         /* What are we supposed to do with $status = true ? */
     }   
-     
+
     /**
      * Set the HTTP Request prefix
      * 
      * @param string $prefix The prefix string
      * @return void
-     * @acess public
+     * @access public
      */
     function setRequestPrefix($prefix) {
         $this->_requestPrefix = $prefix;
@@ -503,8 +523,7 @@ class Structures_DataGrid_Renderer_Common
             $value = $this->defaultCellFormatter($record[$column->fieldName]);
         }
 
-        if (empty($value) and !is_null($column->autoFillValue))
-        {
+        if (empty($value) and !is_null($column->autoFillValue)) {
             $value = $column->autoFillValue; 
         }
 
@@ -514,7 +533,7 @@ class Structures_DataGrid_Renderer_Common
     /**
      * Query the grid build status 
      * 
-     * @return bool Wether the grid has already been built or not
+     * @return bool Whether the grid has already been built or not
      * @access public
      */
     function isBuilt()

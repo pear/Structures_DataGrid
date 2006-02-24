@@ -102,7 +102,7 @@ class Structures_DataGrid_Column
     }
 
     /**
-     * Set Auto Fill Value
+     * Set auto fill value
      *
      * Defines a value to be printed if a cell in the column is null.
      *
@@ -157,7 +157,7 @@ class Structures_DataGrid_Column
      */
     function formatter($record)
     {
-        // Define the Parameter list
+        // Define the parameter list
         $paramList = array();
         $paramList['record'] = $record;
         $paramList['fieldName'] = $this->fieldName;
@@ -215,7 +215,6 @@ class Structures_DataGrid_Column
         if (is_callable($formatter)) {
             $result = call_user_func($formatter, $paramList);
         } else {
-            //$result = new PEAR_Error('Unable to process formatter');
             $result = false;
             PEAR::raiseError('Unable to process formatter', '1',
                              PEAR_ERROR_TRIGGER);

@@ -25,15 +25,15 @@ require_once 'PEAR.php';
 require_once 'Structures/DataGrid/Column.php';
 
 // Renderer Drivers
-define ('DATAGRID_RENDER_TABLE',    'HTMLTable');
-define ('DATAGRID_RENDER_SMARTY',   'Smarty');
-define ('DATAGRID_RENDER_XML',      'XML');
-define ('DATAGRID_RENDER_XLS',      'XLS');
-define ('DATAGRID_RENDER_XUL',      'XUL');
-define ('DATAGRID_RENDER_CSV',      'CSV');
-define ('DATAGRID_RENDER_CONSOLE',  'Console');
+define('DATAGRID_RENDER_TABLE',    'HTMLTable');
+define('DATAGRID_RENDER_SMARTY',   'Smarty');
+define('DATAGRID_RENDER_XML',      'XML');
+define('DATAGRID_RENDER_XLS',      'XLS');
+define('DATAGRID_RENDER_XUL',      'XUL');
+define('DATAGRID_RENDER_CSV',      'CSV');
+define('DATAGRID_RENDER_CONSOLE',  'Console');
 
-define ('DATAGRID_RENDER_DEFAULT',  DATAGRID_RENDER_TABLE);
+define('DATAGRID_RENDER_DEFAULT',  DATAGRID_RENDER_TABLE);
 
 // Data Source Drivers
 define('DATAGRID_SOURCE_ARRAY',     'Array');
@@ -82,7 +82,7 @@ define('DATAGRID_SOURCE_MDB2',      'MDB2');
  */
 class Structures_DataGrid 
 {
-    /*
+    /**
      * Renderer driver
      * @var object Structures_DataGrid_Renderer_* family
      * @access private
@@ -177,10 +177,6 @@ class Structures_DataGrid
 
         // Automatic handling of GET/POST/COOKIE variables
         $this->_parseHttpRequest();
-
-        /*
-        $this->setRenderer($rendererType);
-        */
     }
 
     /**
@@ -318,21 +314,13 @@ class Structures_DataGrid
      */
     function &rendererFactory($type, $options = array())
     {
-        /*
-        if (is_null($type) &&
-            !($type = Structures_DataGrid::_detectRendererType($renderingContainer))) {
-            return new PEAR_Error('Unable to determine the renderer type. '.
-                                  'You may want to explicitly specify it.');
-        }
-        */
-
         // FIXME: any security risk here (like including /etc/passwd) ?
         $className = "Structures_DataGrid_Renderer_$type";
 
         if (PEAR::isError($driver =& $this->loadDriver($className))) {
             return $driver;
         }        
-      
+
         if ($options) {
             $driver->setOptions($options);
         }
@@ -340,14 +328,14 @@ class Structures_DataGrid
         if ($this->_requestPrefix) {
             $driver->setRequestPrefix($this->_requestPrefix); 
         }
-        
+
         if (isset($this->sortArray)) {
             $driver->setCurrentSorting($this->sortArray[0], $this->sortArray[1]);
         }
-        
+
         return $driver;
     }
-    
+
     /**
      * Render the datagrid
      *
@@ -374,7 +362,7 @@ class Structures_DataGrid
         $this->_renderer->isBuilt() or $this->build();
         return $this->_renderer->getOutput();
     }
-    
+
     /**
      * Get Renderer
      *
@@ -428,10 +416,10 @@ class Structures_DataGrid
             return new PEAR_Error('Invalid renderer type, ' . 
                                   'must be a valid renderer driver class');
         }
-        
+
         return true;
     }
-  
+
     /**
      * Fill a rendering container with data
      * 
@@ -454,17 +442,17 @@ class Structures_DataGrid
                                       'specify its type explicitly.');
             }
         }
-   
+
         if (PEAR::isError($test = $this->setRenderer($type, $options))) {
             return $test;
         }
-        
+
         $this->_renderer->setContainer($container);
         $this->_renderer->build();
 
         return true;
     }
-    
+
     /**
      * Set Default Headers
      *
@@ -482,7 +470,7 @@ class Structures_DataGrid
             }
         }
     }
-    
+
     /**
      * Retrieves the current page number when paging is implemented
      *
@@ -504,7 +492,7 @@ class Structures_DataGrid
     {
         $this->page = $page;
     }
-    
+
     /**
      * Returns the total number of pages
      * (returns 0 if there are no records, returns 1 if there is no row limit)
@@ -540,13 +528,13 @@ class Structures_DataGrid
      */
     function getRecordCount()
     {
-        if (!is_null ($this->_dataSource)) {
+        if (!is_null($this->_dataSource)) {
             return $this->_dataSource->count();
         } else {
             return count($this->recordSet);
         }
     }    
-    
+
     /**
      * Returns the number of the first record of the current page
      * (returns 0 if there are no records, returns 1 if there is no row limit)
@@ -580,8 +568,8 @@ class Structures_DataGrid
                 min($this->getCurrentRecordNumberStart() + $this->rowLimit - 1,
                     $this->getRecordCount());
         }
-    }    
-    
+    }
+
     /**
      * If you need to change the request variables, you can define a prefix.
      * This is extra useful when using multiple datagrids.
@@ -597,8 +585,8 @@ class Structures_DataGrid
         if (isset($this->_renderer)) {
             $this->_renderer->setRequestPrefix($prefix);
         }
-    }    
-    
+    }
+
     /**
      * Adds a DataGrid_Column object to this DataGrid object
      *
@@ -685,7 +673,7 @@ class Structures_DataGrid
             return new PEAR_Error('Invalid data source type, ' . 
                                   'must be a valid data source driver class');
         }
-        
+
         return true;
     }
 
@@ -700,13 +688,13 @@ class Structures_DataGrid
         if ($this->_dataSource != null) {
             // Determine Page
             $page = $this->page ? $this->page - 1 : 0;
-            
+
             // Fetch the Data
             $recordSet = $this->_dataSource->fetch(
-                            ($page*$this->rowLimit),
+                            ($page * $this->rowLimit),
                             $this->rowLimit, $this->sortArray[0],
                             $this->sortArray[1]);
-                            
+
             if (PEAR::isError($recordSet)) {
                 return $recordSet;
             } else {
@@ -714,11 +702,10 @@ class Structures_DataGrid
                 return true;
             }
         } else {
-            return new PEAR_Error ("Can not fetch data: no datasource driver loaded.");
+            return new PEAR_Error("Cannot fetch data: no datasource driver loaded.");
         }
     }
-    
-    
+
     /**
      * Adds a DataGrid_Record object to this DataGrid object
      *
@@ -772,10 +759,17 @@ class Structures_DataGrid
             usort($this->recordSet, array($this, '_sort'));
         }
     }
-    
-    function _sort($a, $b, $i = 0)
+
+    /**
+     * Callback method used in sortRecordSet()
+     *
+     * @access  private
+     * @param   string $a           First value
+     * @param   string $direction   Second value
+     * @return  boolean
+     */
+    function _sort($a, $b)
     {
-        //$bool = strnatcmp($a[$this->sortArray[0]], $b[$this->sortArray[0]]);
         $bool = strnatcasecmp($a[$this->sortArray[0]], $b[$this->sortArray[0]]);
         
         if ($this->sortArray[1] == 'DESC') {
@@ -784,7 +778,7 @@ class Structures_DataGrid
         
         return $bool;
     }
-    
+
     /**
      * Parse HTTP Request parameters
      *
@@ -795,9 +789,9 @@ class Structures_DataGrid
     function _parseHttpRequest()
     {
         $prefix = $this->_requestPrefix;
-        
+
         // Determine page, sort and direction values
-        
+
         if (!$this->_forcePage) {
             if (isset($_REQUEST[$prefix . 'page'])) {
                 // Use POST, GET, or COOKIE value in respective order
@@ -815,7 +809,7 @@ class Structures_DataGrid
                 $this->page = 1;
             }
         } 
-        
+
         if (isset($_REQUEST[$prefix . 'orderBy'])) {
             // Use POST, GET, or COOKIE value in respective order
             if (isset($_POST[$prefix . 'orderBy'])) {
@@ -826,7 +820,7 @@ class Structures_DataGrid
                 $this->sortArray[0] = $_COOKIE[$prefix . 'orderBy'];
             }
         }
-        
+
         if (isset($_REQUEST[$prefix . 'direction'])) {
             // Use POST, GET, or COOKIE value in respective order
             if (isset($_POST[$prefix . 'direction'])) {
@@ -942,7 +936,7 @@ class Structures_DataGrid
             $this->_renderer->build();
             return true;
         } else {
-            return new PEAR_Error ("Cannot build the datagrid: no datasource driver loaded");
+            return new PEAR_Error("Cannot build the datagrid: no datasource driver loaded");
         }
     }
 
@@ -954,8 +948,7 @@ class Structures_DataGrid
      */
     function __get($var)
     {
-        if ($var == 'renderer')
-        {
+        if ($var == 'renderer') {
             isset($this->_renderer) or $this->setRenderer(DATAGRID_RENDER_DEFAULT);
             return $this->_renderer;
         }

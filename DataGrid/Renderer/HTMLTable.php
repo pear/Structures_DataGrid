@@ -64,7 +64,7 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  */
 class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Renderer_Common
 {
-     
+
     /**
      * The html_table_storage object for the table header
      * @var object HTML_Table_Storage
@@ -76,7 +76,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      * @var object HTML_Table_Storage
      */
     var $_tableBody;
-        
+
     /**
      * The HTML::Pager object that controls paging logic.
      * @var object Pager
@@ -88,7 +88,6 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      *
      * Build default values
      *
-     * @param   object Structures_DataGrid  $dg     The datagrid to render.
      * @access  public
      */
     function Structures_DataGrid_Renderer_HTMLTable()
@@ -112,12 +111,16 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
         );
     }
 
-    
+    /**
+     * Initialize HTML_Table instance if it is not already existing
+     * 
+     * @access protected
+     */
     function init()
     {
         if (is_null($this->_container)) {
             $this->_container = new HTML_Table(null, null, true);
-        } 
+        }
 
         $this->_tableHeader =& $this->_container->getHeader();
         $this->_tableBody =& $this->_container->getBody();
@@ -201,11 +204,11 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      * @access public
      * @param  bool   $state   Auto-alignment state
      */
-    function setAutoAlign ($state)
+    function setAutoAlign($state)
     {
         $this->_options['autoAlign'] = $state;
     }
-    
+
     /**
      * In order for the DataGrid to render "Empty Rows" to allow for uniformity
      * across pages with varying results, set this option to true.  An example
@@ -221,7 +224,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      *                                   array.
      */
     function allowEmptyRows($value, $attributes = array())
-    {      
+    {
         if ($value) {
             $this->_options['fillWithEmptyRows'] = true;
         } else {
@@ -241,7 +244,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     {
         $this->_options['buildHeader'] = (bool)$bool;
     }
-    
+
     /**
      * Add custom GET variables to the generated links
      *
@@ -256,7 +259,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     {
         $this->_options['extraVars'] = $vars;
     }
-    
+
     /**
      * Exclude GET variables from the generated links
      *
@@ -272,7 +275,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     {
         $this->_options['excludeVars'] = $vars;
     }    
-    
+
     /**
      * Generates the HTML for the DataGrid
      *
@@ -283,7 +286,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     {
         return $this->getOutput();
     } 
-    
+
     /**
      * Gets the HTML_Table object for the DataGrid
      *
@@ -304,7 +307,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      * @return  void
      * @todo    Redesign/Rework the header URL building.
      */
-    function buildHeader ()
+    function buildHeader()
     {
         $prefix = $this->_requestPrefix;
         // Build the list of common get parameters
@@ -324,7 +327,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
             $field = $this->_columns[$col]['field'];
             $label = $this->_columns[$col]['label'];
 
-            //Define Content
+            // Define Content
             if (!in_array ($field, $this->_options['disableColumnSorting'])) {
                 // Determine Direction
                 if ($this->_currentSortField == $field && 
@@ -356,7 +359,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                     $str .= ' ' . $this->_options[$iconVar];
                 }
                 $str .= '</a>';
-                
+
             } else {
                 $str = $label;
             }
@@ -385,9 +388,9 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
             for ($col = 0; $col < $this->_columnsNum; $col++) {
                 $value = $this->_records[$row][$col];
                 $field = $this->_columns[$col]['field'];
-                
-                /* Right-align the content if it is numeric */
-                $attributes = ($this->_options['autoAlign'] and is_numeric ($value)) 
+
+                // Right-align the content if it is numeric
+                $attributes = ($this->_options['autoAlign'] and is_numeric($value)) 
                             ? array('align' => 'right')
                             : array();
 
@@ -414,8 +417,8 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 }
             }
         }
-        
-        // Define Alternating Row attributes
+
+        // Define alternating row attributes
         if ($this->_options['evenRowAttributes'] 
             or $this->_options['oddRowAttributes']) {
 
@@ -423,20 +426,32 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 0,
                 $this->_options['evenRowAttributes'],
                 $this->_options['oddRowAttributes'],
-                TRUE
+                true
             );
         }
     }
-   
-    function defaultCellFormatter ($value)
+
+    /**
+     * Default formatter for all cells
+     * 
+     * @param string  Cell value 
+     * @return string Formatted cell value
+     * @access protected
+     */
+    function defaultCellFormatter($value)
     {
-        
         return $this->_options['convertEntities']
                ? htmlspecialchars($value, ENT_COMPAT, $this->_options['encoding'])
                : $value;
     }
 
-    function flatten ()
+    /**
+     * Retrieve output from the container object 
+     *
+     * @return mixed Output
+     * @access protected
+     */
+    function flatten()
     {
         return $this->_container->toHTML();
     }
@@ -467,31 +482,30 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                          'separator' => $separator,
                          'prevImg' => $prev,
                          'nextImg' => $next);
-                         
+
         if (is_array($attrs)) {
             $options = array_merge($options, $attrs);
         }
-        
+
         if (isset ($options['extraVars'])) {
             $options['extraVars'] = array_merge($options['extraVars'],
                                                 $this->_options['extraVars']);
         } else {
             $options['extraVars'] = $this->_options['extraVars'];
         }
-        
+
         if (isset ($options['excludeVars'])) {
             $options['excludeVars'] = array_merge($options['excludeVars'],
                                                   $this->_options['excludeVars']);
         } else {
             $options['excludeVars'] = $this->_options['excludeVars'];
         }
-        
+
         $this->_buildPaging($options);
 
         // Return paging html
         return $this->_pager->links;
     }
-    
 
     /**
      * Handles generating the paging object
@@ -510,7 +524,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                           'currentPage' => $this->_page); 
         $options = array_merge($defaults, $options);
         $this->_pager =& Pager::factory($options);
-    }    
+    }
 }
 
 ?>
