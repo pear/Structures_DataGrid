@@ -13,11 +13,14 @@
 // | obtain it through the world-wide-web, please send a note to          |
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
-// | Author: Andrew Nagy <asnagy@webitecture.org>                         |
+// | Authors: Andrew Nagy <asnagy@webitecture.org>                        |
+// |          Olivier Guilyardi <olivier@samalyse.com>                    |
+// |          Mark Wiesemann <wiesemann@php.net>                          |
 // +----------------------------------------------------------------------+
 //
 // $Id$
 
+require_once 'Structures/DataGrid/Renderer/Common.php';
 require_once 'XML/Util.php';
 
 /**
@@ -25,44 +28,39 @@ require_once 'XML/Util.php';
  *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
+ * @author   Olivier Guilyardi <olivier@samalyse.com>
+ * @author   Mark Wiesemann <wiesemann@php.net>
  * @access   public
  * @package  Structures_DataGrid
  * @category Structures
  */
-class Structures_DataGrid_Renderer_XML
+class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer_Common
 {
-    /**
-     * The Datagrid object to render
-     * @var object Structures_DataGrid
-     */
-    var $_dg;
 
     /**
      * Constructor
      *
      * Build default values
      *
-     * @param   object Structures_DataGrid  $dg     The datagrid to render.
      * @access public
      */
-    function Structures_DataGrid_Renderer_XML(&$dg)
+    function Structures_DataGrid_Renderer_XML()
     {
-        $this->_dg =& $dg;
+        parent::Structures_DataGrid_Renderer_Common();
     }
 
     /**
-     * Generates the XML for the DataGrid
-     *
-     * @access  public
-     * @return  string      The XML of the DataGrid
+     * Initialize a string for the XML code if it is not already existing
+     * 
+     * @access protected
      */
-    function render()
+    function init()
     {
-        header('Content-type: text/xml');
-        
-        echo $this->toXML();
+        if (is_null($this->_container)) {
+            $this->_container = '';
+        }
     }
-       
+
     /**
      * Generates the XML for the DataGrid
      *
@@ -71,47 +69,45 @@ class Structures_DataGrid_Renderer_XML
      */
     function toXML()
     {
-        $dg =& $this->_dg;
+        return $this->getOutput();
+    }
 
-        /*
-        // Get the data to be rendered
-        $dg->fetchDataSource();
-        */
-                
-        // Check to see if column headers exist, if not create them
-        // This must follow after any fetch method call
-        $dg->_setDefaultHeaders();
-        
+    /**
+     * Handles building the body of the DataGrid
+     *
+     * @access  protected
+     * @return  void
+     */
+    function buildBody()
+    {
         $xml = XML_Util::getXMLDeclaration() . "\n";
 
         $xml .= "<DataGrid>\n";
-        foreach ($this->_dg->recordSet as $row) {
+        for ($row = 0; $row < $this->_recordsNum; $row++) {
             $xml .= "  <Row>\n";
+            for ($col = 0; $col < $this->_columnsNum; $col++) {
+                $value = $this->_records[$row][$col];
+                $field = $this->_columns[$col]['field'];
 
-            foreach ($this->_dg->columnSet as $column) {
-                // Build Content
-                if ($column->formatter != null) {
-                    $content = $column->formatter($row);
-                } elseif ($column->fieldName == null) {
-                    if ($column->autoFillValue != null) {
-                        $content = $column->autoFillValue;
-                    } else {
-                        $content = $column->columnName;
-                    }
-                } else {
-                    $content = $row[$column->fieldName];
-                }
-
-                $xml .= '    ' .
-                        XML_Util::createTag($column->columnName,
-                                         null, $content) . "\n";
+                $xml .= '    ' . XML_Util::createTag($field, null, $value) . "\n";
             }
-
             $xml .= "  </Row>\n";
         }
         $xml .= "</DataGrid>\n";
 
-        return $xml;
+        $this->_container .= $xml;
+    }
+
+    /**
+     * Retrieve output from the container object 
+     *
+     * @return mixed Output
+     * @access protected
+     */
+    function flatten()
+    {
+        header('Content-type: text/xml');
+        return $this->_container;
     }
 
 }
