@@ -13,11 +13,14 @@
 // | obtain it through the world-wide-web, please send a note to          |
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
-// | Author: Andrew Nagy <asnagy@webitecture.org>                         |
+// | Authors: Andrew Nagy <asnagy@webitecture.org>                         |
+// |          Olivier Guilyardi <olivier@samalyse.com>                    |
+// |          Mark Wiesemann <wiesemann@php.net>                          |
 // +----------------------------------------------------------------------+
 //
 // $Id$
 
+require_once 'Structures/DataGrid/Renderer/Common.php';
 require_once 'Console/Table.php';
 
 /**
@@ -25,48 +28,37 @@ require_once 'Console/Table.php';
  *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
+ * @author   Olivier Guilyardi <olivier@samalyse.com>
+ * @author   Mark Wiesemann <wiesemann@php.net>
  * @access   public
  * @package  Structures_DataGrid
  * @category Structures
  */
-class Structures_DataGrid_Renderer_Console
+class Structures_DataGrid_Renderer_Console extends Structures_DataGrid_Renderer_Common
 {
-    /**
-     * The Datagrid object to render
-     * @var object Structures_DataGrid
-     */
-    var $_dg;
-    
-    /**
-     * Use the table header
-     * @var bool
-     */
-    var $header = true;
-
-    /**
-     * The console_table object
-     * @var object Console_Table
-     */
-    var $_table;
-
-    /**
-     * A switch to determine the state of the table
-     * @var bool
-     */
-    var $_rendered = false;
     
     /**
      * Constructor
      *
      * Build default values
      *
-     * @param   object Structures_DataGrid  $dg     The datagrid to render.
      * @access  public
      */
-    function Structures_DataGrid_Renderer_Console(&$dg)
+    function Structures_DataGrid_Renderer_Console()
     {
-        $this->_dg =& $dg;
-        $this->_table = new Console_Table();
+        parent::Structures_DataGrid_Renderer_Common();
+    }
+
+    /**
+     * Initialize Console_Table instance if it is not already existing
+     * 
+     * @access protected
+     */
+    function init()
+    {
+        if (is_null($this->_container)) {
+            $this->_container = new Console_Table();
+        }
     }
 
     /**
@@ -77,14 +69,9 @@ class Structures_DataGrid_Renderer_Console
      */
     function useHeader($bool)
     {
-        $this->header = (bool)$bool;
+        $this->_options['buildHeader'] = (bool)$bool;
     }
     
-    /**
-     * Prints the console text for the DataGrid
-     *
-     * @access  public
-     */
     function render()
     {
         echo $this->toAscii();
@@ -92,118 +79,70 @@ class Structures_DataGrid_Renderer_Console
 
     function toAscii()
     {
-        $table = $this->getTable();
-        return $table->getTable();
+        return $this->getOutput();
+#        $table = $this->getTable();
+#        return $table->getTable();
     }
     
     /**
-     * Gets the Console_Table ascii text for the DataGrid
+     * Gets the Console_Table object for the DataGrid
      *
+     * OBSOLETE
+     * 
      * @access  public
-     * @return  string      The console table ascii text for the DataGrid
+     * @return  object Console_Table   The Console_Table object for the DataGrid
      */
     function getTable()
     {
-        $dg =& $this->_dg;
-
-        if (!$this->_rendered) {
-            /*
-            // Get the data to be rendered
-            $dg->fetchDataSource();
-            */
-
-            // Check to see if column headers exist, if not create them
-            // This must follow after any fetch method call
-            $dg->_setDefaultHeaders();
-                        
-            // Define Table Header
-            if ($this->header) {
-                $this->_buildTableHeader();
-            }
-    
-            // Build Table Data
-            $this->_buildTableBody();
-    
-            $this->_rendered = true;
-        }
-        
-        return $this->_table;
-    }   
-
-    /**
-     * Sets the rendered status.  This can be used to "flush the cache" in case
-     * you need to render the datagrid twice with the second time having changes
-     *
-     * @access  public
-     * @params  bool        $status     The rendered status of the DataGrid
-     */
-    function setRendered($status)
-    {
-        $this->_rendered = (bool)$status;
+        return $this->_container;
     }   
         
     /**
      * Handles building the header of the table
      *
-     * @access  private
+     * @access  protected
      * @return  void
      */
-    function _buildTableHeader()
+    function buildHeader()
     {
         $columnList = array();
-        foreach ($this->_dg->columnSet as $column) {
-            $columnList[] = $column->columnName;
+        for ($col = 0; $col < $this->_columnsNum; $col++) {
+            $columnList[] = $this->_columns[$col]['label'];
         }
         
-        $this->_table->setHeaders($columnList);
+        $this->_container->setHeaders($columnList);
     }
 
     /**
      * Handles building the body of the table
      *
-     * @access  private
+     * @access  protected
      * @return  void
      */
-    function _buildTableBody()
+    function buildBody()
     {
-        if ($this->_dg->recordSet) {
-            if (!isset($this->_dg->rowLimit)) {
-                $this->_dg->rowLimit = count($this->_dg->recordSet);
+        // FIXME: don't start in row 0; instead start after the last existing
+        // row in the table (requires a patch [new method getRowCount()] for
+        // Console_Table and a new release of this package, of course)
+        for ($row = 0; $row < $this->_recordsNum; $row++) {
+            $cellList = array();
+            for ($col = 0; $col < $this->_columnsNum; $col++) {
+                $cellList[] = $this->_records[$row][$col];
             }
-            
-            // Begin loop
-            for ($i = 0; $i < $this->_dg->rowLimit; $i++) {
-                if (isset($this->_dg->recordSet[$i])) {
-                    $cellList = array();
-                    $row = $this->_dg->recordSet[$i];
-                    foreach ($this->_dg->columnSet as $column) {
-                        $rowCnt = $i+1;
-
-                        // Build Content
-                        if (isset($column->formatter)) {
-                            //Use Formatter                            
-                            $content = $column->formatter($row); 
-                        } elseif (!isset($column->fieldName)) {
-                            if ($column->autoFillValue != '') {
-                                // Use AutoFill                                
-                                $content = $column->autoFillValue; 
-                            } else {
-                                // Use Column Name                                
-                                $content = $column->columnName;
-                            }
-                        } else {
-                            // Use Record Data
-                            $content = $row[$column->fieldName];
-                        }
-                        
-                        $cellList[] = $content;
-                    }
-                    $this->_table->addRow($cellList);
-                }
-            }
+            $this->_container->addRow($cellList);
         }
     }
 
+    /**
+     * Retrieve output from the container object 
+     *
+     * @return mixed Output
+     * @access protected
+     */
+    function flatten()
+    {
+        return $this->_container->getTable();
+    }
 
 }
 
