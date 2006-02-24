@@ -380,7 +380,8 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      */
     function buildBody()
     {
-        for ($row = 0; $row < $this->_recordsNum; $row++) {
+        $startRow = $this->_tableBody->getRowCount();
+        for ($row = $startRow; $row < $this->_recordsNum; $row++) {
             for ($col = 0; $col < $this->_columnsNum; $col++) {
                 $value = $this->_records[$row][$col];
                 $field = $this->_columns[$col]['field'];
@@ -406,7 +407,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
 
         // output empty rows
         if ($this->_options['fillWithEmptyRows'] && !is_null($this->_pageLimit)) {
-            for ($row = $this->_recordsNum; $row < $this->_pageLimit; $row++) {
+            for ($row = $startRow + $this->_recordsNum; $row < $this->_pageLimit; $row++) {
                 for ($col = 0; $col < $this->_columnsNum; $col++) {
                     $this->_tableBody->setCellAttributes($row, $col, $this->_options['emptyRowAttributes']);
                     $this->_tableBody->setCellContents($row, $col, '&nbsp;');
