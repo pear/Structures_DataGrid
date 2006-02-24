@@ -486,7 +486,7 @@ class Structures_DataGrid
     /**
      * Retrieves the current page number when paging is implemented
      *
-     * @return string    the current page number
+     * @return int       the current page number
      * @access public
      */
     function getCurrentPage()
@@ -498,7 +498,7 @@ class Structures_DataGrid
      * Define the current page number.  This is used when paging is implemented
      *
      * @access public
-     * @param  string    $page       The current page number.
+     * @param  mixed     $page       The current page number (as string or int).
      */
     function setCurrentPage($page)
     {
@@ -509,7 +509,7 @@ class Structures_DataGrid
      * Returns the total number of pages
      * (returns 0 if there are no records, returns 1 if there is no row limit)
      *
-     * @return string    the total number of pages
+     * @return int       the total number of pages
      * @access public
      */
     function getPageCount()
@@ -520,11 +520,22 @@ class Structures_DataGrid
             return ceil($this->getRecordCount() / $this->rowLimit);
         }
     }
-    
+
+    /**
+     * Returns the number of columns
+     *
+     * @return int       the number of records
+     * @access public
+     */
+    function getColumnCount()
+    {
+        return count($this->columnSet);
+    }
+
     /**
      * Returns the total number of records
      *
-     * @return string    the total number of records
+     * @return int       the total number of records
      * @access public
      */
     function getRecordCount()
@@ -540,7 +551,7 @@ class Structures_DataGrid
      * Returns the number of the first record of the current page
      * (returns 0 if there are no records, returns 1 if there is no row limit)
      *
-     * @return string    the number of the first record currently shown
+     * @return int       the number of the first record currently shown
      * @access public
      */
     function getCurrentRecordNumberStart()
@@ -557,7 +568,7 @@ class Structures_DataGrid
     /**
      * Returns the number of the last record of the current page
      *
-     * @return string    the number of the last record currently shown
+     * @return int       the number of the last record currently shown
      * @access public
      */
     function getCurrentRecordNumberEnd()
