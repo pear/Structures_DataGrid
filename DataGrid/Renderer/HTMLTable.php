@@ -49,7 +49,7 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  *                        form: array(attribute => value, ...)
  * - headerAttributes   : column cells attributes. This is an array of the form :
  *                        array(fieldName => array(attribute => value, ...) ... )
- * - convertEntities    : wether or not to convert html entities. Default: true
+ * - convertEntities    : whether or not to convert html entities. Default: true
  *                        This calls htmlspecialchars(). 
  * - encoding           : the content encoding. Default: ISO-8859-1
  *                       
@@ -328,7 +328,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
             $label = $this->_columns[$col]['label'];
 
             // Define Content
-            if (!in_array ($field, $this->_options['disableColumnSorting'])) {
+            if (!in_array($field, $this->_options['disableColumnSorting'])) {
                 // Determine Direction
                 if ($this->_currentSortField == $field && 
                     $this->_currentSortDirection == 'ASC') {
@@ -348,12 +348,12 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 $url = $this->_options['selfPath'] . '?';
 
                 // Merge common and column-specific GET variables
-                $url .= http_build_query (array_merge ($common, $get));
-                
+                $url .= http_build_query(array_merge($common, $get));
+
                 // Build HTML Link
                 $str = "<a href=\"$url\">$label";
                 $iconVar = "sortIcon" . 
-                           (is_null ($this->_currentSortDirection) ? 'ASC' : $this->_currentSortDirection);
+                           (is_null($this->_currentSortDirection) ? 'ASC' : $this->_currentSortDirection);
                 if (($this->_options[$iconVar] != '') && 
                     ($this->_currentSortField == $field)) {
                     $str .= ' ' . $this->_options[$iconVar];
@@ -384,7 +384,8 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     function buildBody()
     {
         $startRow = $this->_tableBody->getRowCount();
-        for ($row = $startRow; $row < $this->_recordsNum; $row++) {
+        for ($row = 0; $row < $this->_recordsNum; $row++) {
+            $recordRow = $row + $startRow;
             for ($col = 0; $col < $this->_columnsNum; $col++) {
                 $value = $this->_records[$row][$col];
                 $field = $this->_columns[$col]['field'];
@@ -401,19 +402,20 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 }
 
                 // Set Content in HTML_Table
-                $this->_tableBody->setCellContents($row, $col, $value);
+                $this->_tableBody->setCellContents($recordRow, $col, $value);
                 if ($attributes) {
-                    $this->_tableBody->setCellAttributes($row, $col, $attributes);
+                    $this->_tableBody->setCellAttributes($recordRow, $col, $attributes);
                 }
             }
         }
 
         // output empty rows
         if ($this->_options['fillWithEmptyRows'] && !is_null($this->_pageLimit)) {
-            for ($row = $startRow + $this->_recordsNum; $row < $this->_pageLimit; $row++) {
+            for ($row = $this->_recordsNum; $row < $this->_pageLimit; $row++) {
+                $recordRow = $row + $startRow;
                 for ($col = 0; $col < $this->_columnsNum; $col++) {
-                    $this->_tableBody->setCellAttributes($row, $col, $this->_options['emptyRowAttributes']);
-                    $this->_tableBody->setCellContents($row, $col, '&nbsp;');
+                    $this->_tableBody->setCellAttributes($recordRow, $col, $this->_options['emptyRowAttributes']);
+                    $this->_tableBody->setCellContents($recordRow, $col, '&nbsp;');
                 }
             }
         }
