@@ -13,72 +13,69 @@
 // | obtain it through the world-wide-web, please send a note to          |
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
-// | Author: Andrew Nagy <asnagy@webitecture.org>                         |
+// | Authors: Andrew Nagy <asnagy@webitecture.org>                        |
+// |          Olivier Guilyardi <olivier@samalyse.com>                    |
+// |          Mark Wiesemann <wiesemann@php.net>                          |
 // +----------------------------------------------------------------------+
 //
 // $Id$
 
+require_once 'Structures/DataGrid/Renderer/Common.php';
+
 /**
  * Structures_DataGrid_Renderer_CSV Class
  *
+ * Recognized options:
+ *
+ * - delimiter: (string) The delimiter to use to seperate the values
+ *                       (default: ',')
+ * - lineBreak: (string) The character(s) to use for line breaks
+ *                       (default: '\n')
+ * - useQuotes: (bool)   Whether or not to encapuslate the values with quotes
+ *                       (default: false)
+ *                       
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
+ * @author   Olivier Guilyardi <olivier@samalyse.com>
+ * @author   Mark Wiesemann <wiesemann@php.net>
  * @access   public
  * @package  Structures_DataGrid
  * @category Structures
  */
-class Structures_DataGrid_Renderer_CSV
+class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer_Common
 {
-    /**
-     * The Datagrid object to render
-     * @var object Structures_DataGrid
-     */
-    var $_dg;
-
-    /**
-     * The Delimiter to use to seperate the values
-     * @var string
-     */
-    var $delimiter = ',';
-
-    /**
-     * The character to use for line breaks
-     * @var string
-     */
-    var $lineBreak = "\n";
-        
-    /**
-     * Whether or not to encapuslate the values with quotes
-     * @var bool
-     */
-    var $useQuotes = false;
     
     /**
      * Constructor
      *
      * Build default values
      *
-     * @param   object Structures_DataGrid  $dg     The datagrid to render.
      * @access public
      */
-    function Structures_DataGrid_Renderer_CSV(&$dg)
+    function Structures_DataGrid_Renderer_CSV()
     {
-        $this->_dg =& $dg;
+        parent::Structures_DataGrid_Renderer_Common();
+        $this->_addDefaultOptions(
+            array(
+                'delimiter' => ',',
+                'lineBreak' => "\n",
+                'useQuotes' => false
+            )
+        );
     }
 
     /**
-     * Generates CSV data representing the DataGrid
-     *
-     * @access  public
-     * @return  string      The CSV data of the DataGrid
+     * Initialize a string for the CSV if it is not already existing
+     * 
+     * @access protected
      */
-    function render()
+    function init()
     {
-        header('Content-type: text/csv');
-        
-        echo $this->toCSV();
+        if (is_null($this->_container)) {
+            $this->_container = '';
+        }
     }
-    
+
     /**
      * Define the CSV delimiter
      *
@@ -87,20 +84,20 @@ class Structures_DataGrid_Renderer_CSV
      */
     function setDelimiter($delimiter)
     {
-        $this->delimiter = $delimiter;
+        $this->_options['delimiter'] = $delimiter;
     }
 
     /**
      * Define the character to use for line breaks
      *
      * @access  public
-     * @return  string      The character to use for line breaks (e.g. \n)
+     * @return  string      The character(s) to use for line breaks (e.g. \n)
      */
     function setLineBreak($lineBreak)
     {
-        $this->lineBreak = $lineBreak;
+        $this->_options['lineBreak'] = $lineBreak;
     }    
-    
+
     /**
      * Set the switch to encapsulate the values with quotes
      *
@@ -110,60 +107,50 @@ class Structures_DataGrid_Renderer_CSV
      */
     function setUseQuotes($bool)
     {
-        $this->useQuotes = (bool)$bool;
+        $this->_options['useQuotes'] = (bool)$bool;
     }
-           
-    /**
-     * Generates the CSV format for the DataGrid
-     *
-     * @access  public
-     * @return  string      The CSV of the DataGrid
-     */
-    function toCSV()
-    {
-        $dg =& $this->_dg;
-        /*
-        // Get the data to be rendered
-        $dg->fetchDataSource();
-        */        
-        // Check to see if column headers exist, if not create them
-        // This must follow after any fetch method call
-        $dg->_setDefaultHeaders();
-        
-        $i = 0;
-        $csv = '';
-        foreach ($this->_dg->columnSet as $column) {
-            if ($i > 0) {
-                $csv .= $this->delimiter;
-            }
-            $csv .= $column->columnName;
-            $i++;
-        }
-        $csv .= $this->lineBreak;
-        
-        foreach ($this->_dg->recordSet as $row) {
-            $i = 0;
-            foreach ($this->_dg->columnSet as $column) {
-                // Build Content
-                if ($column->formatter != null) {
-                    $content = $column->formatter($row);
-                } elseif ($column->fieldName == null) {
-                    if ($column->autoFillValue != null) {
-                        $content = $column->autoFillValue;
-                    } else {
-                        $content = $column->columnName;
-                    }
-                } else {
-                    $content = $row[$column->fieldName];
-                }
 
-                // Implement Delimiter
-                if ($i > 0) {
-                    $csv .= $this->delimiter . ' ';
+    /**
+     * Handles building the header of the table
+     *
+     * @access  protected
+     * @return  void
+     */
+    function buildHeader()
+    {
+        $csv = '';
+
+        for ($col = 0; $col < $this->_columnsNum; $col++) {
+            if ($col > 0) {
+                $csv .= $this->_options['delimiter'];
+            }
+            $csv .= $this->_columns[$col]['label'];
+        }
+
+        $csv .= $this->_options['lineBreak'];
+
+        $this->_container .= $csv;
+    }
+
+    /**
+     * Handles building the body of the table
+     *
+     * @access  protected
+     * @return  void
+     */
+    function buildBody()
+    {
+        $csv = '';
+
+        for ($row = 0; $row < $this->_recordsNum; $row++) {
+            for ($col = 0; $col < $this->_columnsNum; $col++) {
+                if ($col > 0) {
+                    $csv .= $this->_options['delimiter'];
                 }
                 
                 // Add content to CSV
-                if ($this->useQuotes) {
+                $content = $this->_records[$row][$col];
+                if ($this->_options['useQuotes']) {
                     $content = '"' . str_replace('"', '""', $content) . '"';
                 } else {
                     if (strstr($content, '"')) {
@@ -171,15 +158,38 @@ class Structures_DataGrid_Renderer_CSV
                     } elseif (strstr($content, ',')) {
                         $content = '"' . $content . '"';
                     }
-                    $csv .= $content;
                 }
-                $i++;
+
+                $csv .= $content;
             }
 
-            $csv .= "\n";
+            $csv .= $this->_options['lineBreak'];
         }
 
-        return $csv;
+        $this->_container .= $csv;
+    }
+
+    /**
+     * Returns the CSV format for the DataGrid
+     *
+     * @access  public
+     * @return  string      The CSV of the DataGrid
+     */
+    function toCSV()
+    {
+        return $this->getOutput();
+    }        
+
+    /**
+     * Retrieve output from the container object 
+     *
+     * @return mixed Output
+     * @access protected
+     */
+    function flatten()
+    {
+        header('Content-type: text/csv');
+        return $this->_container;
     }
 
 }
