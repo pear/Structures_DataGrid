@@ -13,7 +13,7 @@
 // | obtain it through the world-wide-web, please send a note to          |
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
-// | Authors: Andrew Nagy <asnagy@webitecture.org>                         |
+// | Authors: Andrew Nagy <asnagy@webitecture.org>                        |
 // |          Olivier Guilyardi <olivier@samalyse.com>                    |
 // |          Mark Wiesemann <wiesemann@php.net>                          |
 // +----------------------------------------------------------------------+
@@ -71,17 +71,16 @@ class Structures_DataGrid_Renderer_Console extends Structures_DataGrid_Renderer_
     {
         $this->_options['buildHeader'] = (bool)$bool;
     }
-    
-    function render()
-    {
-        echo $this->toAscii();
-    }
 
+    /**
+     * Returns the output of the table
+     *
+     * @access  public
+     * @return  string      The output of the table
+     */
     function toAscii()
     {
         return $this->getOutput();
-#        $table = $this->getTable();
-#        return $table->getTable();
     }
     
     /**
