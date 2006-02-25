@@ -13,11 +13,14 @@
 // | obtain it through the world-wide-web, please send a note to          |
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
-// | Author: Andrew Nagy <asnagy@webitecture.org>                         |
+// | Authors: Andrew Nagy <asnagy@webitecture.org>                        |
+// |          Olivier Guilyardi <olivier@samalyse.com>                    |
+// |          Mark Wiesemann <wiesemann@php.net>                          |
 // +----------------------------------------------------------------------+
 //
 // $Id$
 
+require_once 'Structures/DataGrid/Renderer/Common.php';
 require_once 'Smarty/Smarty.class.php';
 
 /**
@@ -29,12 +32,18 @@ require_once 'Smarty/Smarty.class.php';
  * @package  Structures_DataGrid
  * @category Structures
  */
-class Structures_DataGrid_Renderer_Smarty
+class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer_Common
 {
-    var $_dg;
+// FIXME: test this renderer
+// FIXME: implement paging feature request (write a common paging class for
+//        HTMLTable and Smarty renderer)
 
-    var $_smarty;
-
+    /**
+     * Name of the template file
+     *
+     * @var string
+     * @access private
+     */
     var $_tpl;
 
     /**
@@ -42,55 +51,103 @@ class Structures_DataGrid_Renderer_Smarty
      *
      * Build default values
      *
-     * @param   object Structures_DataGrid  $dg     The datagrid to render.
      * @access public
      */
-    function Structures_DataGrid_Renderer_Smarty(&$dg)
+    function Structures_DataGrid_Renderer_Smarty()
     {
-        $this->_dg =& $dg;
-        
-        $this->_smarty = new Smarty();
-        $this->_smarty->template_dir = dirname($_SERVER['SCRIPT_FILENAME']);
-        $this->_smarty->compile_dir = dirname($_SERVER['SCRIPT_FILENAME']) . '/compile';
+        parent::Structures_DataGrid_Renderer_Common();
+        $this->_addDefaultOptions(
+            array(
+                // FIXME: maybe add an option for the template filename
+            )
+        );
     }
 
+    /**
+     * Initialize the Smarty instance if it is not already existing
+     * 
+     * @access protected
+     */
+    function init()
+    {
+        if (is_null($this->_container)) {
+            $this->_container = new Smarty();
+            $this->_container->template_dir = dirname($_SERVER['SCRIPT_FILENAME']);
+            $this->_container->compile_dir = dirname($_SERVER['SCRIPT_FILENAME']) . '/compile';
+        }
+    }
+
+    /**
+     * Attach a Smarty instance
+     * (deprecated, use $renderer->setContainer() or $dg->fill() instead)
+     *
+     * @param object Smarty instance
+     * @access public
+     */
     function setSmarty(&$smarty)
     {
-        $this->_smarty = &$smarty;
+        $this->_container = &$smarty;
     }
 
+    /**
+     * Set the Smarty template
+     *
+     * @param string  Filename of the template
+     * @access public
+     */
     function setTemplate($tpl)
     {
-        if (is_file($this->_smarty->template_dir . '/' . $tpl)) {
+        // FIXME: make $_tpl an option (?)
+        if (is_file($this->_container->template_dir . '/' . $tpl)) {
             $this->_tpl = $tpl;
         } else {
             return new PEAR_Error('Error: Unable to find ' .
-                                  $this->_smarty->template_dir . '/' . $tpl);
+                                  $this->_container->template_dir . '/' . $tpl);
         }
     }
 
+    /**
+     * Handles building the body of the table
+     *
+     * @access  protected
+     * @return  void
+     */
+    function buildBody()
+    {
+        if ($this->_tpl != '') {
+            $this->_container->assign('recordSet',   $this->_records);
+            $this->_container->assign('columnSet',   $this->_columns);
+            $this->_container->assign('recordLimit', $this->_pageLimit);
+            $this->_container->assign('currentPage', $this->_page);
+        }
+    }
+
+    /**
+     * Gets the Smarty object
+     *
+     * OBSOLETE
+     * 
+     * @access  public
+     * @return  object Console_Table   The Console_Table object for the DataGrid
+     */
     function getSmarty()
     {
-        // Check to see if column headers exist, if not create them
-        // This must follow after any fetch method call
-        $this->_dg->_setDefaultHeaders();
-                
-        if ($this->_tpl != '') {
-            $this->_smarty->assign('recordSet',   $this->_dg->recordSet);
-            $this->_smarty->assign('columnSet',   $this->_dg->columnSet);
-            $this->_smarty->assign('recordLimit', $this->_dg->rowLimit);
-            $this->_smarty->assign('currentPage', $this->_dg->page);
-
-            return $this->_smarty;
-        } else {
-            return new PEAR_Error('Error: No template defined');
-        }
+        return $this->_container;
     }
-    
-    function render()
+
+    /**
+     * Retrieve output from the container object 
+     *
+     * @return mixed Output
+     * @access protected
+     */
+    function flatten()
     {
         $smarty = $this->getSmarty();
-        
+
+        // FIXME: this error shouldn't occur
+        // FIXME: test $this->_tpl here (if it's not set, display() may result
+        //        in an error [to be checked!])
         if (PEAR::isError($smarty)) {
             return $smarty;
         } else {

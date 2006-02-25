@@ -13,29 +13,46 @@
 // | obtain it through the world-wide-web, please send a note to          |
 // | license@php.net so we can mail you a copy immediately.               |
 // +----------------------------------------------------------------------+
-// | Author: Andrew Nagy <asnagy@webitecture.org>                         |
+// | Authors: Andrew Nagy <asnagy@webitecture.org>                        |
+// |          Olivier Guilyardi <olivier@samalyse.com>                    |
+// |          Mark Wiesemann <wiesemann@php.net>                          |
 // +----------------------------------------------------------------------+
 //
 // $Id$
 
+require_once 'Structures/DataGrid/Renderer/Common.php';
 require_once 'Spreadsheet/Excel/Writer.php';
 
 /**
  * Structures_DataGrid_Renderer_XLS Class
  *
+ * Recognized options:
+ *
+ * - headerFormat:  (mixed)  The format for header cells (either 0 or
+ *                           Spreadsheet_Excel_Writer_Format object)
+ *                           (default: 0 [= "no format"])
+ * - bodyFormat:    (mixed)  The format for body cells (either 0 or
+ *                           Spreadsheet_Excel_Writer_Format object)
+ *                           (default: 0 [= "no format"])
+ * - filename:      (string) The filename of the spreadsheet
+ *                           (default: 'spreadsheet.xls')
+ * - sendToBrowser: (bool)   Should the spreadsheet be send to the browser?
+ *                           (true = send to browser, false = write to a file)
+ *                           (default: true)
+ *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
+ * @author   Olivier Guilyardi <olivier@samalyse.com>
+ * @author   Mark Wiesemann <wiesemann@php.net>
  * @access   public
  * @package  Structures_DataGrid
  * @category Structures
  */
-class Structures_DataGrid_Renderer_XLS
+class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer_Common
 {
-    /**
-     * The Datagrid object to render
-     * @var object Structures_DataGrid
-     */
-    var $_dg;
+// FIXME: refactoring incomplete
+// FIXME: remove $_workbook, use $_container (?)
+// FIXME: test me
     
     /**
      * The spreadsheet object
@@ -47,65 +64,38 @@ class Structures_DataGrid_Renderer_XLS
      * The worksheet object
      * @var object Spreadsheet_Excel_Writer
      */
-    var $_worksheet;
-    
-    /**
-     * The filename of the spreadsheet
-     * @var string
-     */
-    var $_filename = 'spreadsheet.xls';
+    var $_worksheet;    
 
-    /**
-     * Whether the spreadsheet should be send to the browser
-     * or written to a file
-     * @var bool
-     */
-    var $_sendToBrowser = true;    
-    
-    /**
-     * A switch to determine to use the header
-     * @var bool
-     */
-    var $header = true;    
-        
-    /**
-     * A switch to determine the state of the spreadsheet
-     * @var bool
-     */
-    var $_rendered = false;    
-
-    
-    /**
-     * Header format
-     *
-     * The 0 default value means "no format" as specified by the 
-     * Spreadsheet_Excel_Writer_Worksheet::write() method prototype
-     * 
-     * @var mixed Spreadsheet_Excel_Writer_Format object or 0
-     */
-    var $_headerFormat = 0;
-
-    /**
-     * Body format
-     *
-     * The 0 default value means "no format" as specified by the 
-     * Spreadsheet_Excel_Writer_Worksheet::write() method prototype
-     * 
-     * @var mixed Spreadsheet_Excel_Writer_Format object or 0
-     */
-    var $_bodyFormat = 0;
-    
     /**
      * Constructor
      *
      * Build default values
      *
-     * @param   object Structures_DataGrid  $dg     The datagrid to render.
      * @access public
      */
-    function Structures_DataGrid_Renderer_XLS(&$dg)
+    function Structures_DataGrid_Renderer_XLS()
     {
-        $this->_dg =& $dg;
+        parent::Structures_DataGrid_Renderer_Common();
+        $this->_addDefaultOptions(
+            array(
+                'headerFormat'  => 0,
+                'bodyFormat'    => 0,
+                'filename'      => 'spreadsheet.xls',
+                'sendToBrowser' => true
+            )
+        );
+    }
+
+    /**
+     * Initialize a string for the CSV if it is not already existing
+     * 
+     * @access protected
+     */
+    function init()
+    {
+        if (is_null($this->_container)) {
+            // FIXME: create Spreadsheet_Excel_Writer instance here
+        }
     }
 
     /**
@@ -122,8 +112,8 @@ class Structures_DataGrid_Renderer_XLS
      */
     function setFilename($filename = 'spreadsheet.xls', $sendToBrowser = true)
     {
-        $this->_filename = $filename;
-        $this->_sendToBrowser = $sendToBrowser;
+        $this->_options['filename'] = $filename;
+        $this->_options['sendToBrowser'] = $sendToBrowser;
     }
 
     /**
@@ -138,12 +128,12 @@ class Structures_DataGrid_Renderer_XLS
      * @param object $worksheet Spreadsheet_Excel_Writer_Worksheet object
      * @see Structures_DataGrid_Renderer_XLS::setFilename()
      */
-    function setCustomWriter (&$workbook, &$worksheet)
+    function setCustomWriter(&$workbook, &$worksheet)
     {
         $this->_workbook =& $workbook;
         $this->_worksheet =& $worksheet;
     }
-  
+
     /**
      * Set headers format
      * 
@@ -154,9 +144,9 @@ class Structures_DataGrid_Renderer_XLS
      * @param object $format Spreadsheet_Excel_Writer_Format object
      * @see Structures_DataGrid_Renderer_XLS::setCustomWriter()
      */
-    function setHeaderFormat (&$format)
+    function setHeaderFormat(&$format)
     {
-        $this->_headerFormat =& $format;
+        $this->_options['headerFormat'] =& $format;
     }
 
     /**
@@ -169,44 +159,9 @@ class Structures_DataGrid_Renderer_XLS
      * @param object $format Spreadsheet_Excel_Writer_Format object
      * @see Structures_DataGrid_Renderer_XLS::setCustomWriter()
      */
-    function setBodyFormat (&$format)
+    function setBodyFormat(&$format)
     {
-        $this->_bodyFormat =& $format;
-    }
-    
-    /**
-     * Determines whether or not to use the header
-     *
-     * @access  public
-     * @param   bool    $bool   value to determine to use the header or not.
-     */
-    function useHeader($bool)
-    {
-        $this->header = (bool)$bool;
-    }    
-
-    /**
-     * Sets the rendered status.  This can be used to "flush the cache" in case
-     * you need to render the datagrid twice with the second time having changes
-     *
-     * @access  public
-     * @params  bool        $status     The rendered status of the DataGrid
-     */
-    function setRendered($status)
-    {
-        $this->_rendered = (bool)$status;
-    }
-        
-    /**
-     * Force download the spreadsheet
-     *
-     * @access  public
-     */
-    function render()
-    {
-        $this->getSpreadsheet();
-       
-        $this->_workbook->close();
+        $this->_options['bodyFormat'] =& $format;
     }
 
     /**
@@ -216,9 +171,12 @@ class Structures_DataGrid_Renderer_XLS
      */
     function &getSpreadsheet()
     {
-        $dg =& $this->_dg;
-       
-        if (!isset ($this->_workbook)) {
+        // FIXME: parts of this needs to go into init(), other parts
+        //        into flatten()
+        //        Attention: setting the filename in the constructor call
+        //                   is important when the spreadsheet should be
+        //                   written to a file
+        if (!isset($this->_workbook)) {
             if ($this->_sendToBrowser) {
                 $this->_workbook = new Spreadsheet_Excel_Writer();
                 $this->_workbook->send($this->_filename);
@@ -227,83 +185,59 @@ class Structures_DataGrid_Renderer_XLS
             }
         }
 
-        if (!isset ($this->_worksheet)) {
+        if (!isset($this->_worksheet)) {
             $this->_worksheet =& $this->_workbook->addWorksheet();        
         }
-        
-        if (!$this->_rendered) {        
-            // Check to see if column headers exist, if not create them
-            // This must follow after any fetch method call
-            $dg->_setDefaultHeaders();
-            
-            if ($this->header) {
-                $this->_buildHeader();
-            }
-            $this->_buildBody();
-            $this->_rendered = true;
-        }
-        
+
         return $this->_workbook;
     }
     
     /**
-     * Handles building the header of the DataGrid
+     * Handles building the header of the table
      *
-     * @access  private
+     * @access  protected
      * @return  void
      */
-    function _buildHeader()
+    function buildHeader()
     {
-        $cnt = 0;
-        foreach ($this->_dg->columnSet as $column) {
-            //Define Content
-            $str = $column->columnName;
-            $this->_worksheet->write(0, $cnt, $str, $this->_headerFormat);
-            $cnt++;
+        for ($col = 0; $col < $this->_columnsNum; $col++) {
+            $label = $this->_columns[$col]['label'];
+            $this->_worksheet->write(0, $col, $label,
+                                     $this->_options['headerFormat']);
         }
     }
 
     /**
-     * Handles building the body of the DataGrid
+     * Handles building the body of the table
      *
-     * @access  private
+     * @access  protected
      * @return  void
      */
-    function _buildBody()
+    function buildBody()
     {
-        if (count($this->_dg->recordSet)) {
-            $rowCnt = $this->header ? 1 : 0;
-            foreach ($this->_dg->recordSet as $row) {
-                $cnt = 0;
-                foreach ($this->_dg->columnSet as $column) {
-                    // Build Content
-                    if (!is_null ($column->formatter)) {
-                        $content = $column->formatter($row);
-                    } elseif (is_null ($column->fieldName)) {
-                        if (!is_null ($column->autoFillValue)) {
-                            $content = $column->autoFillValue;
-                        } else {
-                            $content = $column->columnName;
-                        }
-                    } else {
-                        if (!isset ($row[$column->fieldName])) {
-                            if (!is_null ($column->autoFillValue)) {
-                                $content = $column->autoFillValue;
-                            } else {
-                                $content = '';
-                            }
-                        } else {
-                            $content = $row[$column->fieldName];
-                        }
-                    }
+        $startRow = $this->_options['buildHeader'] ? 1 : 0;
+        for ($row = 0; $row < $this->_recordsNum; $row++) {
+            $recordRow = $row + $startRow;
+            for ($col = 0; $col < $this->_columnsNum; $col++) {
+                $value = $this->_records[$row][$col];
 
-                    $this->_worksheet->write($rowCnt, $cnt, $content, $this->_bodyFormat);
-
-                    $cnt++;
-                }
-                $rowCnt++;
+                $this->_worksheet->write($recordRow, $col, $value,
+                                         $this->_options['bodyFormat']);
             }
         }
+    }
+
+    /**
+     * Retrieve output from the container object 
+     *
+     * @return mixed Output
+     * @access protected
+     */
+    function flatten()
+    {
+        $this->_workbook->close();
+        return $this->_workbook;  // FIXME: is this right for both cases of
+                                  // 'sendToBrowser'?
     }
 
 }
