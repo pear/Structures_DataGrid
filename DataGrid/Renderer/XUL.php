@@ -160,14 +160,12 @@ class Structures_DataGrid_Renderer_XUL extends Structures_DataGrid_Renderer_Comm
                 $dirCur = 'natural';
             }
 
-            // FIXME: clicking has no effect (at least in Firefox 1.5)
-            //        (old code from SDG 0.6.3 has the same problem)
             $onClick = "location.href='" . $this->_options['selfPath'] . 
                        '?' . $this->_requestPrefix . 'orderBy=' . $field .
                        "&amp;" . $this->_requestPrefix . "direction=$dirArg';";
             $label = XML_Util::replaceEntities($label);
             $xul .= '    <listheader label="' . $label . '" ' . 
-                    "sortDirection=\"$dirCur\" onCommand=\"$onClick\" />\n";
+                    "sortDirection=\"$dirCur\" oncommand=\"$onClick\" />\n";
         }
         $xul .= "  </listhead>\n";
 
