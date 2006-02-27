@@ -593,7 +593,17 @@ class Structures_DataGrid
         $this->_parseHttpRequest();
 
         if (isset($this->_renderer)) {
+
             $this->_renderer->setRequestPrefix($prefix);
+
+            /* We just called parseHttpRequest() using a new requestPrefix.
+             * The page and sort request might have changed, so we need
+             * to pass them again to the renderer */
+            $this->_renderer->setLimit($this->page, $this->rowLimit, 
+                                      $this->getRecordCount());
+            if (isset($this->sortArray)) {
+                $this->_renderer->setCurrentSorting($this->sortArray[0], $this->sortArray[1]);
+            }
         }
     }
 
