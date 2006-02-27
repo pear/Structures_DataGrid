@@ -161,7 +161,7 @@ class Structures_DataGrid
      * @access public
      */
     function Structures_DataGrid($limit = null, $page = null,
-                                 $rendererType = DATAGRID_RENDER_TABLE)
+                                 $rendererType = null)
     {
         // Set the defined rowlimit
         $this->rowLimit = $limit;
@@ -177,6 +177,10 @@ class Structures_DataGrid
 
         // Automatic handling of GET/POST/COOKIE variables
         $this->_parseHttpRequest();
+
+        if (!is_null ($rendererType)) {
+            $this->setRenderer($rendererType);
+        }
     }
 
     /**
@@ -443,8 +447,14 @@ class Structures_DataGrid
             }
         }
 
-        if (PEAR::isError($test = $this->setRenderer($type, $options))) {
-            return $test;
+        /* Is a renderer driver already loaded and does it exactly match 
+         * the driver class name that corresponds to $type ? */
+        if (!isset ($this->_renderer) 
+            or !is_a($this->_renderer, "Structures_DataGrid_Renderer_$type")) {
+            /* No, then load the right driver */
+            if (PEAR::isError($test = $this->setRenderer($type, $options))) {
+                return $test;
+            }
         }
 
         $this->_renderer->setContainer($container);
