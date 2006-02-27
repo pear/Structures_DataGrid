@@ -26,11 +26,11 @@
  *
  * Recognized options :
  *
- * - buildHeader    : wether to build the header or not (default : true)
- * - buildFooter    : wether to build the footer or not (default : true)
+ * - buildHeader    : whether to build the header or not (default : true)
+ * - buildFooter    : whether to build the footer or not (default : true)
  * - fillWithEmptyRows : ensures that all pages have the same number of rows
  *                       (default : false) 
- * - sortingResetsPaging : Wether or not to reset paging on sorting request
+ * - sortingResetsPaging : Whether or not to reset paging on sorting request
  *                         (default : true)
  * - autoAlign : whether to automatically right-align numeric values or not
  *    // FIXME: could be nice to have an autoFormat option for automatically 

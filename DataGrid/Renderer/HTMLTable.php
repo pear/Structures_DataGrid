@@ -149,9 +149,6 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      */
     function setTableHeaderAttributes($attribs)
     {
-        if (is_null($this->_container)) {
-            $this->init();
-        }
         $this->_options['headerAttributes'] = $attribs;
     }
 
