@@ -356,6 +356,19 @@ class Structures_DataGrid_Renderer_Common
      * 
      * Drivers are required to implement this method.
      *
+     * This method is meant to retrieve final output from the container.
+     * 
+     * Usually the container is an object (ex: HTMLTable instance),
+     * and the final output a string. 
+     *
+     * The driver knows how to retrieve such final output from a given 
+     * container (ex: HTMLTable::toHTML()), and this is where to do it. 
+     *
+     * Sometimes the container may not be an object, but the final output
+     * itself. In this case, this method should simply return the container.
+     * 
+     * This method mustn't output anything directly to the standard output.
+     *  
      * @abstract
      * @return mixed Output
      * @access protected
@@ -466,10 +479,10 @@ class Structures_DataGrid_Renderer_Common
     }
 
     /**
-     * Renders the output from the render (e.g. echoes an HTML table, displays
-     * an Excel spreadsheet, ...)
+     * Render to the standard output
      *
-     * This is quite an obsolete method...
+     * This method may be overloaded by renderer drivers in order to prepare
+     * writing to the standard output (like calling header(), etc...).
      * 
      * @access  public
      */
