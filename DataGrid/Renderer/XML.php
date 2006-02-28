@@ -106,10 +106,20 @@ class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer_Comm
      */
     function flatten()
     {
-        header('Content-type: text/xml');
         return $this->_container;
     }
 
+
+    /**
+     * Render to the standard output
+     *
+     * @access  public
+     */
+    function render()
+    {
+        header('Content-type: text/xml');
+        parent::render();
+    }
 }
 
 ?>

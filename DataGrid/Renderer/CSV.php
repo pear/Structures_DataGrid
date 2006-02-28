@@ -188,10 +188,19 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer_Comm
      */
     function flatten()
     {
-        header('Content-type: text/csv');
         return $this->_container;
     }
 
+    /**
+     * Render to the standard output
+     *
+     * @access  public
+     */
+    function render()
+    {
+        header('Content-type: text/csv');
+        parent::render();
+    }
 }
 
 ?>
