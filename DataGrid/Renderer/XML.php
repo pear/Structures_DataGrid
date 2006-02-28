@@ -33,6 +33,13 @@ require_once 'XML/Util.php';
  * @access   public
  * @package  Structures_DataGrid
  * @category Structures
+ *
+ * Recognized options:
+ *
+ * - outerTag:  (string) The name of the tag for the datagrid (without brackets)
+ *                       (default: 'DataGrid')
+ * - rowTag:    (string) The name of the tag for each row (without brackets)
+ *                       (default: 'Row')
  */
 class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer_Common
 {
@@ -47,6 +54,12 @@ class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer_Comm
     function Structures_DataGrid_Renderer_XML()
     {
         parent::Structures_DataGrid_Renderer_Common();
+        $this->_addDefaultOptions(
+            array(
+                'outerTag' => 'DataGrid',
+                'rowTag'   => 'Row'
+            )
+        );
     }
 
     /**
@@ -82,18 +95,18 @@ class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer_Comm
     {
         $xml = XML_Util::getXMLDeclaration() . "\n";
 
-        $xml .= "<DataGrid>\n";
+        $xml .= "<{$this->_options['outerTag']}>\n";
         for ($row = 0; $row < $this->_recordsNum; $row++) {
-            $xml .= "  <Row>\n";
+            $xml .= "  <{$this->_options['rowTag']}>\n";
             for ($col = 0; $col < $this->_columnsNum; $col++) {
                 $value = $this->_records[$row][$col];
                 $field = $this->_columns[$col]['field'];
 
                 $xml .= '    ' . XML_Util::createTag($field, null, $value) . "\n";
             }
-            $xml .= "  </Row>\n";
+            $xml .= "  </{$this->_options['rowTag']}>\n";
         }
-        $xml .= "</DataGrid>\n";
+        $xml .= "</{$this->_options['outerTag']}>\n";
 
         $this->_container .= $xml;
     }
