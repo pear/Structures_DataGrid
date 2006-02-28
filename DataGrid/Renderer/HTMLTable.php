@@ -131,14 +131,15 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      *
      * @deprecated Use the HTML_Table constructor directly instead
      * @access public
-     * @param  string   $name    The CSS class to use for the table.
+     * @param  string   $attr    The name of the attribute.
+     * @param  string   $value   The value of the attribute.
      */
     function setTableAttribute($attr, $value)
     {
         if (is_null($this->_container)) {
             $this->init();
         }
-        $this->_container->_attributes[$attr] = $value;
+        $this->_container->updateAttributes(array($attr => $value));
     }
 
     /**
