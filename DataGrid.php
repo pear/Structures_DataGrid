@@ -111,12 +111,19 @@ class Structures_DataGrid
     var $_dataSource;    
     
     /**
-     * An array of fields to sort by.  Each field is an array of the field name
-     * and the direction, either ASC or DESC.
+     * Fields/directions to sort the data by
+     *
+     * This is an array of the form :
+     *  array (
+     *      0 => array ('field' => 'field1', 'direction' => 'ASC'),
+     *      1 => array ('field' => 'field2', 'direction' => 'DESC'),
+     *      etc...
+     *  );
+     * 
      * @var array
      * @access private
      */
-    var $sortArray;
+    var $sortSpec = array();
 
     /**
      * Limit of records to show per page.
@@ -333,8 +340,8 @@ class Structures_DataGrid
             $driver->setRequestPrefix($this->_requestPrefix); 
         }
 
-        if (isset($this->sortArray)) {
-            $driver->setCurrentSorting($this->sortArray[0], $this->sortArray[1]);
+        if ($this->sortSpec) {
+            $driver->setCurrentSorting($this->sortSpec);
         }
 
         return $driver;
@@ -601,8 +608,8 @@ class Structures_DataGrid
              * to pass them again to the renderer */
             $this->_renderer->setLimit($this->page, $this->rowLimit, 
                                       $this->getRecordCount());
-            if (isset($this->sortArray)) {
-                $this->_renderer->setCurrentSorting($this->sortArray[0], $this->sortArray[1]);
+            if ($this->sortSpec) {
+                $this->_renderer->setCurrentSorting($this->sortSpec);
             }
         }
     }
@@ -710,10 +717,17 @@ class Structures_DataGrid
             $page = $this->page ? $this->page - 1 : 0;
 
             // Fetch the Data
-            $recordSet = $this->_dataSource->fetch(
-                            ($page * $this->rowLimit),
-                            $this->rowLimit, $this->sortArray[0],
-                            $this->sortArray[1]);
+            if ($this->sortSpec) {
+                $recordSet = $this->_dataSource->fetch(
+                                ($page * $this->rowLimit),
+                                $this->rowLimit, 
+                                $this->sortSpec[0]['field'],
+                                $this->sortSpec[0]['direction']);
+            } else {
+                $recordSet = $this->_dataSource->fetch(
+                                ($page * $this->rowLimit),
+                                $this->rowLimit);
+            }
 
             if (PEAR::isError($recordSet)) {
                 return $recordSet;
@@ -772,7 +786,7 @@ class Structures_DataGrid
      */
     function sortRecordSet($sortBy, $direction = 'ASC')
     {
-        $this->sortArray = array($sortBy, $direction);
+        $this->sortSpec = array(array('field' => $sortBy, 'direction' => $direction));
         if ($this->_dataSource) {
             $this->_dataSource->sort($sortBy, $direction);
         } else {
@@ -790,9 +804,9 @@ class Structures_DataGrid
      */
     function _sort($a, $b)
     {
-        $bool = strnatcasecmp($a[$this->sortArray[0]], $b[$this->sortArray[0]]);
+        $bool = strnatcasecmp($a[$this->sortSpec[0]['field']], $b[$this->sortSpec[0]['field']]);
         
-        if ($this->sortArray[1] == 'DESC') {
+        if ($this->sortSpec[0]['direction'] == 'DESC') {
             $bool = $bool * -1;
         }
         
@@ -833,22 +847,22 @@ class Structures_DataGrid
         if (isset($_REQUEST[$prefix . 'orderBy'])) {
             // Use POST, GET, or COOKIE value in respective order
             if (isset($_POST[$prefix . 'orderBy'])) {
-                $this->sortArray[0] = $_POST[$prefix . 'orderBy'];
+                $this->sortSpec[0]['field'] = $_POST[$prefix . 'orderBy'];
             } elseif (isset($_GET[$prefix . 'orderBy'])) {
-                $this->sortArray[0] = $_GET[$prefix . 'orderBy'];
+                $this->sortSpec[0]['field'] = $_GET[$prefix . 'orderBy'];
             } elseif (isset($_COOKIE[$prefix . 'orderBy'])) {
-                $this->sortArray[0] = $_COOKIE[$prefix . 'orderBy'];
+                $this->sortSpec[0]['field'] = $_COOKIE[$prefix . 'orderBy'];
             }
         }
 
         if (isset($_REQUEST[$prefix . 'direction'])) {
             // Use POST, GET, or COOKIE value in respective order
             if (isset($_POST[$prefix . 'direction'])) {
-                $this->sortArray[1] = $_POST[$prefix . 'direction'];
+                $this->sortSpec[0]['direction'] = $_POST[$prefix . 'direction'];
             } elseif (isset($_GET[$prefix . 'direction'])) {
-                $this->sortArray[1] = $_GET[$prefix . 'direction'];
+                $this->sortSpec[0]['direction'] = $_GET[$prefix . 'direction'];
             } elseif (isset($_COOKIE[$prefix . 'direction'])) {
-                $this->sortArray[1] = $_COOKIE[$prefix . 'direction'];
+                $this->sortSpec[0]['direction'] = $_COOKIE[$prefix . 'direction'];
             }
         }
     }     

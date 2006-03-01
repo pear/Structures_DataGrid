@@ -86,18 +86,19 @@ class Structures_DataGrid_Renderer_Common
     var $_container = null;
 
     /**
-     * Field which the data is currently sorted by
-     * @var string
+     * Fields/directions the data is currently sorted by
+     *
+     * This is an array of the form :
+     *  array (
+     *      0 => array ('field' => 'field1', 'direction' => 'ASC'),
+     *      1 => array ('field' => 'field2', 'direction' => 'DESC'),
+     *      etc...
+     *  );
+     * 
+     * @var array
      * @access protected
      */
-    var $_currentSortField     = null;
-
-    /**
-     * Direction which the data is currently sorted in 
-     * @var string
-     * @access protected
-     */
-    var $_currentSortDirection = null;
+    var $_currentSort = array();
 
     /**
      * Columns objects 
@@ -160,6 +161,14 @@ class Structures_DataGrid_Renderer_Common
      */
     var $_isBuilt = false;
 
+    /**
+     * Which fields the datagrid may be sorted by
+     * 
+     * @var array Field names
+     * @access protected
+     */
+    var $_sortableFields = array();
+    
     /**
      * Common and driver-specific options
      *
@@ -259,14 +268,18 @@ class Structures_DataGrid_Renderer_Common
     /**
      * Specify how the datagrid is currently sorted
      *
-     * @param string $field     Which field it is sorted by
-     * @param string $direction Direction (ASC|DESC)
+     * @param string $spec Which fields/directions it is sorted by
+     *                     This is an array of the form :
+     *                     array (
+     *                      0 => array ('field' => 'field1', 'direction' => 'ASC'),
+     *                      1 => array ('field' => 'field2', 'direction' => 'DESC'),
+     *                      etc...
+     *                     );
      * @access public
      */
-    function setCurrentSorting($field, $direction)
+    function setCurrentSorting($spec)
     {
-        $this->_currentSortField = $field;
-        $this->_currentSortDirection = $direction;
+        $this->_currentSort = $spec;
     }
 
     /**
@@ -403,10 +416,13 @@ class Structures_DataGrid_Renderer_Common
         $this->_columns = array();
         foreach ($this->_columnObjects as $index => $column)
         {
-            if (isset($column->orderBy)) {
+            if (!is_null($column->orderBy)) {
                 $field = $column->orderBy;
-            } else if (isset($column->field)) {
-                $field = $column->field;
+                if (!in_array($field,$this->_sortableFields)) {
+                    $this->_sortableFields[] = $field;
+                }
+            } else if (!is_null($column->fieldName)) {
+                $field = $column->fieldName;
             } else {
                 $field = $column->columnName;
             }

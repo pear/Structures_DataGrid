@@ -42,66 +42,85 @@
       # is now required to use the Structures_DataGrid::getRenderer() method   #
       # in order to access the renderer object.                                #
       ##########################################################################
-    
-      Req #4254 : 
-        Completed integration of the DBTable datasource driver
 
-      Req #4379 : 
-        Completed integration of the DBQuery datasource driver
-        Thanks Mark Wiesemann &lt;wiesemann at php dot net&gt;
 
-      Bug #4415 :
+      ##########################################################################
+      #                                 BUGS                                   #
+      ##########################################################################
+
+      Bug #4415 "Docs directory goes into wrong directory" :
         Example files were installed in the package directory, now they
         will be installed into DOCS/Structures_DataGrid/docs/examples/
 
-      Req #4709 :  
+      Bug #5723 "Smarty Renderer Error" : 
+        Fixed the return value of Renderer_Smarty::getSmarty() 
+        Thanks &lt;adrian dot rotea at gmail dot com&gt;
+      
+      Bug #5829 "SDG 0.6.3 htmlentities make multibyte char unreadable" :
+        The HTMLTable renderer is now compatible with multi-bytes caracters
+        Thanks &lt;kenchou77 at gmail dot com&gt;
+                  
+      Bug #5858 "do not use @ before include_once" :
+        Removed @ before include() in DataSource.php (could crash silently)           
+        Thanks Mark Wiesemann &lt;wiesemann at php dot net&gt;
+
+      Bug #6582 "malfunction sort" :
+        The method sort() in Array DataSource driver can no longer be called
+        statically. (Not a BC break, as this should have been used only internal.)
+
+      Bug #6624 "formatter doesn't handle parameters and object methods at the same time" :
+        Column formatters using class names didn't handle parameters and class
+        methods at the same time.
+     
+      Bug #6031 "charset GB2312 display not correctly" :
+        New HTMLTable "encoding" option (passed to htmlspecialchars())
+        Thanks digit_shine &lt;digit_shine at yahoo dot com dot cn&gt;
+  
+      ##########################################################################
+      #                           FEATURE REQUESTS                             #
+      ##########################################################################
+
+      Req #4254 "New DataSource driver (DB_Table)" : 
+        Completed integration of the DBTable datasource driver
+
+      Req #4379 "New DataSource driver (DBQuery)" : 
+        Completed integration of the DBQuery datasource driver
+        Thanks Mark Wiesemann &lt;wiesemann at php dot net&gt;
+
+      Req #4709 "add &lt;thead&gt;, &lt;tfoot&gt;, &lt;tbody&gt; to HTMLTable renderer" :  
         Added support for grouping into &lt;thead&gt;, &lt;tfoot&gt; and &lt;tbody&gt; 
         (HTMLTable renderer) 
         Thanks Mark Wiesemann &lt;wiesemann at php dot net&gt;
 
-      Bug #5723 : 
-        Fixed the return value of Renderer_Smarty::getSmarty() 
-        Thanks &lt;adrian dot rotea at gmail dot com&gt;
-      
-      Req #5758 :
+      Req #5758 "Extra parameters for Structures_DataGrid_Column::formatter() callback" :
         New parameters for Structures_DataGrid_Column::formatter() callback:
         'fieldName', 'columnName', 'orderBy', 'attribs'
 
-      Req #5806 and #5808 :
+      Req #5806 "XLS formatage des header automatique" :
+      Req #5808 "XLS rendering" :
         Added support for custom Excel Writer and Format objects
         Thanks Vincent Vermersch for these requests
                   
-      Bug #5829 :
-        The HTMLTable renderer is now compatible with multi-bytes caracters
-        Thanks &lt;kenchou77 at gmail dot com&gt;
-                  
-      Bug #5858 :
-        Removed @ before include() in DataSource.php (could crash silently)           
-        Thanks Mark Wiesemann &lt;wiesemann at php dot net&gt;
-
-      Bug #6582:
-        The method sort() in Array DataSource driver can no longer be called
-        statically. (Not a BC break, as this should have been used only internal.)
-
-      Req #6621:
+      Req #6621 "get reference to column by name" :
         New method getColumnByName() that returns a reference to a column object.
       
-      Bug #6624:
-        Column formatters using class names didn't handle parameters and class
-        methods at the same time.
-     
-      Bug #6031:
-        New HTMLTable "encoding" option (passed to htmlspecialchars())
-        Thanks digit_shine &lt;digit_shine at yahoo dot com dot cn&gt;
-    
-      Req #5838:
+      Req #5838 "Reversion of: Bug #3601" :
         New HTMLTable "convertEntities" option 
         Thanks &lt;abriening at comcast dot net&gt;
 
-      Req #5859:
+      Req #5859 "New renderer driver interface" :
         The rendering layer has gone through a long refactoring process and
         a new and flexible renderer driver interface has been implemented.
-    
+
+      Req #4565 "Multiple field sort and record grouping" :
+        This request has not been implemented, but some improvements have been 
+        made in order to support multiple field sorting in the future
+  
+
+      ##########################################################################
+      #                         OTHER FIXES AND CHANGES                        #
+      ##########################################################################
+   
       Auto-alignment :  
         The HTMLTable renderer now automatically aligns numeric values
         to the right. This is configurable with HTMLTable::setAutoAlign()
@@ -131,6 +150,12 @@
         "datasource container") which it fills with data. No data is output
         during this process. It is up to the user to decide what to do with 
         the container once it's been filled up.
+
+      Sortable and unsortable fields :
+        Better support for the $orderBy parameter of the Column constructor :
+        if it is null, then the corresponding column is considered unsortable,
+        which is taken into account by various renderer drivers (HTMLTable, XUL, 
+        etc..)
     </notes>
     <deps>
       <dep type="pkg" rel="ge" version="1.2" optional="no">PEAR</dep>

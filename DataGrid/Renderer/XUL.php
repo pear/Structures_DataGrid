@@ -150,34 +150,42 @@ class Structures_DataGrid_Renderer_XUL extends Structures_DataGrid_Renderer_Comm
             $field = $this->_columns[$col]['field'];
             $label = $this->_columns[$col]['label'];
 
-            if ($this->_currentSortField == $field) {
-                if ($this->_currentSortDirection == 'ASC') {
-                    // The data is currently sorted by $column, ascending.
-                    // That means we want $dirArg set to 'DESC', for the next
-                    // click to trigger a reverse order sort, and we need 
-                    // $dirCur set to 'ascending' so that a neat xul arrow 
-                    // shows the current "ASC" direction.
-                    $dirArg = 'DESC'; 
-                    $dirCur = 'ascending'; 
+            if (in_array($field, $this->_sortableFields)) {
+                if ($this->_currentSort and $this->_currentSort[0]['field'] == $field) {
+                    if ($this->_currentSort[0]['direction'] == 'ASC') {
+                        // The data is currently sorted by $column, ascending.
+                        // That means we want $dirArg set to 'DESC', for the next
+                        // click to trigger a reverse order sort, and we need 
+                        // $dirCur set to 'ascending' so that a neat xul arrow 
+                        // shows the current "ASC" direction.
+                        $dirArg = 'DESC'; 
+                        $dirCur = 'ascending'; 
+                    } else {
+                        // Next click will do ascending sort, and we show a reverse
+                        // arrow because we're currently descending.
+                        $dirArg = 'ASC';
+                        $dirCur = 'descending';
+                    }
                 } else {
-                    // Next click will do ascending sort, and we show a reverse
-                    // arrow because we're currently descending.
+                    // No current sort on this column. Next click will ascend. We
+                    // show no arrow.
                     $dirArg = 'ASC';
-                    $dirCur = 'descending';
+                    $dirCur = 'natural';
                 }
+
+                $onCommand = 
+                    "oncommand=\"location.href='{$this->_options['selfPath']}". 
+                        "?{$this->_requestPrefix}orderBy=$field".
+                        "&amp;{$this->_requestPrefix}direction=$dirArg';\"";
+                $sortDirection = "sortDirection=\"$dirCur\"";
             } else {
-                // No current sort on this column. Next click will ascend. We
-                // show no arrow.
-                $dirArg = 'ASC';
-                $dirCur = 'natural';
+                $onCommand = '';
+                $sortDirection = '';
             }
 
-            $onClick = "location.href='" . $this->_options['selfPath'] . 
-                       '?' . $this->_requestPrefix . 'orderBy=' . $field .
-                       "&amp;" . $this->_requestPrefix . "direction=$dirArg';";
             $label = XML_Util::replaceEntities($label);
             $this->_container .= '    <listheader label="' . $label . '" ' . 
-                    "sortDirection=\"$dirCur\" oncommand=\"$onClick\" />\n";
+                    "$sortDirection $onCommand />\n";
         }
         $this->_container .= "  </listhead>\n";
     }

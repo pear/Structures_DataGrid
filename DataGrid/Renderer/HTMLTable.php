@@ -308,6 +308,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     function buildHeader()
     {
         $prefix = $this->_requestPrefix;
+
         // Build the list of common get parameters
         $common   = $this->_options['extraVars'];
         $ignore   = $this->_options['excludeVars'];
@@ -326,12 +327,20 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
             $label = $this->_columns[$col]['label'];
 
             // Define Content
-            if (!in_array($field, $this->_options['disableColumnSorting'])) {
-                // Determine Direction
-                if ($this->_currentSortField == $field && 
-                    $this->_currentSortDirection == 'ASC') {
-                    $direction = 'DESC';
+            if (in_array ($field, $this->_sortableFields) and 
+                !in_array($field, $this->_options['disableColumnSorting'])) {
+                
+                // Determine next sort direction and current sort icon
+                if ($this->_currentSort and $this->_currentSort[0]['field'] == $field) {
+                    if ($this->_currentSort[0]['direction'] == 'ASC') {
+                        $icon = $this->_options['sortIconASC'];
+                        $direction = 'DESC';
+                    } else {
+                        $icon = $this->_options['sortIconDESC'];
+                        $direction = 'ASC';
+                    }
                 } else {
+                    $icon = '';
                     $direction = 'ASC';
                 }
 
@@ -349,15 +358,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 $url .= http_build_query(array_merge($common, $get));
 
                 // Build HTML Link
-                $str = "<a href=\"$url\">$label";
-                $iconVar = "sortIcon" . 
-                           (is_null($this->_currentSortDirection) ? 'ASC' : $this->_currentSortDirection);
-                if (($this->_options[$iconVar] != '') && 
-                    ($this->_currentSortField == $field)) {
-                    $str .= ' ' . $this->_options[$iconVar];
-                }
-                $str .= '</a>';
-
+                $str = "<a href=\"$url\">$label $icon</a>";
             } else {
                 $str = $label;
             }
