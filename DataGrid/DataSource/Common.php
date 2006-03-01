@@ -86,6 +86,16 @@
 */
 class Structures_DataGrid_DataSource_Common
 {
+    /* FIXME: Did we really need to rename this class from DataSource to 
+     * DataSource_Common ? IIRC we did this to mimic the MDB2 internals, 
+     * which is pointless. There are some good practices in MDB2, that
+     * we have tried to implement in the Renderer layer. But the "Common" 
+     * suffix is convention that we do not need to follow.
+     *
+     * It will break BC for no reason. for people who have written their own 
+     * drivers by subclassing the old DataSource class.
+     */
+     
     /**
      * Common and driver-specific options
      *
