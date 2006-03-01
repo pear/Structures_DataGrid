@@ -167,81 +167,92 @@ class Structures_DataGrid_DataSource_Common
     // Begin driver method prototypes DocBook template
      
     /**#@+
+     * 
+     * This method is public, but please note that it is not intended to be 
+     * called by user-space code. It is meant to be called by the main 
+     * Structures_DataGrid class.
      *
-     * This method is public, but please note that it is not intended to be called by
-     * user-space code. It is meant to be called by the main Structures_DataGrid
-     * container.
-     *
-     * It is intended to be overloaded by drivers.
+     * It is an abstract method, part of the DataGrid Datasource driver 
+     * interface, and must overloaded by drivers.
      */
    
     /**
      * Fetching method prototype
      *
-     * When overloaded, should either return a PEAR_Error or a <b>reference</b>
-     * to an array of the form :
-     *    array("Columns" => $columns, "Records" => $records)
-     * where $columns is an array of Structures_DataGrid_Column objects and
-     * $records an assoc array of rows
+     * When overloaded this method must return a 2D array of records 
+     * on success or a PEAR_Error object on failure.
      *
+     * FIXME: Why is there these $sortField and $sortDir parameters ? This
+     * is redundant with the sort() method.
+     * 
+     * @abstract
      * @param   integer $offset     Limit offset (starting from 0)
      * @param   integer $len        Limit length
      * @param   string  $sortField  Field to sort by
      * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
-     * @return  object PEAR_Error   An error with message
-     *                              'No data source driver loaded'
+     * @return  object              PEAR_Error with message 
+     *                              "No data source driver loaded" 
      * @access  public                          
      */
     function &fetch($offset=0, $len=null, $sortField=null, $sortDir='ASC')
     {
-        $err = new PEAR_Error("No data source driver loaded");
-        return $err;
+        return new PEAR_Error("No data source driver loaded");
     }
 
     /**
      * Counting method prototype
      *
      * Note : must be called before fetch() 
-     * 
-     * When overloaded, should either return a numeric value indicating the
-     * total number of rows in the data source, or a PEAR_Error object
      *
-     * @return  object PEAR_Error       An error with message
-     *                                  'No data source driver loaded'
+     * When overloaded, this method must return the total number or records 
+     * or a PEAR_Error object on failure
+     * 
+     * @abstract
+     * @return  object              PEAR_Error with message 
+     *                              "No data source driver loaded" 
      * @access  public                          
      */
     function count()
     {
-        return PEAR_Error("No data source driver loaded");
+        return new PEAR_Error("No data source driver loaded");
     }
     
     /**
      * Sorting method prototype
      *
+     * When overloaded this method must return true on success or a PEAR_Error 
+     * object on failure.
+     * 
      * Note : must be called before fetch() 
      * 
-     * @return  object PEAR_Error       An error with message
-     *                                  'No data source driver loaded'
+     * @abstract
+     * @param   string  $sortField  Field to sort by
+     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
+     * @return  object              PEAR_Error with message 
+     *                              "No data source driver loaded" 
      * @access  public                          
      */
-    function sort()
+    function sort($sortField, $sortDir = null)
     {
-        return PEAR_Error("No data source driver loaded");
+        return new PEAR_Error("No data source driver loaded");
     }    
   
     /**
      * Datasource binding method prototype
      *
-     * When overloaded, should either return true or a PEAR_Error object
+     * When overloaded this method must return true on success or a PEAR_Error 
+     * object on failure.
      *
-     * @return  object PEAR_Error   An error with message
-     *                              'No data source driver loaded'
+     * @abstract
+     * @param   mixed $container The datasource container
+     * @param   array $options   Binding options
+     * @return  object              PEAR_Error with message 
+     *                              "No data source driver loaded" 
      * @access  public                          
      */
-    
-    function bind()
+    function bind($container, $options = array())
     {
-        return PEAR_Error("No data source driver loaded");
+        return new PEAR_Error("No data source driver loaded");
     }
   
     /**#@-*/
