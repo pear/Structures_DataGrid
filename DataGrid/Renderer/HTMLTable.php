@@ -51,7 +51,9 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  *                        array(fieldName => array(attribute => value, ...) ... )
  * - convertEntities    : whether or not to convert html entities. Default: true
  *                        This calls htmlspecialchars(). 
- * - encoding           : the content encoding. Default: ISO-8859-1
+ * - encoding           : the content encoding. If the mbstring extension is 
+ *                        present the default value is set from 
+ *                        mb_internal_encoding(), otherwise it is ISO-8859-1
  *                       
  * 
  * @version  $Revision$
@@ -106,7 +108,8 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 'columnAttributes'    => array(),
                 'headerAttributes'    => array(),
                 'convertEntities'     => true,
-                'encoding'            => 'ISO-8859-1',
+                'encoding'            => function_exists('mb_internal_encoding')
+                                         ? mb_internal_encoding() : 'ISO-8859-1',
             )
         );
     }

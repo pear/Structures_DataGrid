@@ -30,7 +30,7 @@
     </maintainer>
   </maintainers>
   <release>
-    <version>?</version>
+    <version>0.7.0</version>
     <date>?</date>
     <license>PHP License</license>
     <state>beta</state>
@@ -75,7 +75,8 @@
       Bug #6031 "charset GB2312 display not correctly" :
         New HTMLTable "encoding" option (passed to htmlspecialchars())
         Thanks digit_shine &lt;digit_shine at yahoo dot com dot cn&gt;
-  
+ 
+ 
       ##########################################################################
       #                           FEATURE REQUESTS                             #
       ##########################################################################
@@ -116,6 +117,12 @@
         This request has not been implemented, but some improvements have been 
         made in order to support multiple field sorting in the future
   
+      Req #5886 "Passing default-encoding to htmlentities" :
+        Fixed. The default value of the new HTMLTable "encoding" option 
+        (related to Bug #6031) is now set from mb_internal_encoding() if the 
+        mbstring extension is loaded. Otherwise, the default is ISO-8859-1.
+        Thanks &lt;tobias at neuyork dot de&gt;
+        
 
       ##########################################################################
       #                         OTHER FIXES AND CHANGES                        #
