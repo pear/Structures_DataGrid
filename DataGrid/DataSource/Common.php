@@ -124,7 +124,9 @@ class Structures_DataGrid_DataSource_Common
                                 'labels'           => array(),
                                 'fields'           => array());
 
-        $this->_features = array('multiSort' => false);
+        $this->_features = array(
+                'multiSort' => false, // Multiple field sorting
+        );
     }
 
     /**
