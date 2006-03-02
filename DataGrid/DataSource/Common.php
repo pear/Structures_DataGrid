@@ -107,6 +107,14 @@ class Structures_DataGrid_DataSource_Common
     var $_options = array();
 
     /**
+     * Special driver features
+     *
+     * @var array
+     * @access protected
+     */
+    var $_features = array();
+    
+    /**
      * Constructor
      *
      */
@@ -115,17 +123,18 @@ class Structures_DataGrid_DataSource_Common
         $this->_options = array('generate_columns' => false,
                                 'labels'           => array(),
                                 'fields'           => array());
+
+        $this->_features = array('multiSort' => false);
     }
 
     /**
      * Adds some default options.
      *
      * This method is meant to be called by drivers. It allows adding some
-     * default options. Additionally to setting default values the options
-     * names (keys) are used by setOptions() to validate its input.
+     * default options. 
      *
      * @access protected
-     * @param array $options An associative array of the from:
+     * @param array $options An associative array of the form:
      *                       array(optionName => optionValue, ...)
      * @return void
      * @see Structures_DataGrid_DataSource_Common::_setOption
@@ -135,6 +144,22 @@ class Structures_DataGrid_DataSource_Common
         $this->_options = array_merge($this->_options, $options);
     }
 
+    /**
+     * Add special driver features
+     *
+     * This method is meant to be called by drivers. It allows specifying 
+     * the special features that are supported by the current driver.
+     *
+     * @access protected
+     * @param array $features An associative array of the form:
+     *                        array(feature => true|false, ...)
+     * @return void
+     */
+    function _addFeatures($features)
+    {
+        $this->_features = array_merge($this->_features, $features);
+    }
+    
     /**
      * Set options
      *
@@ -192,19 +217,24 @@ class Structures_DataGrid_DataSource_Common
      * When overloaded this method must return a 2D array of records 
      * on success or a PEAR_Error object on failure.
      *
-     * FIXME: Why is there these $sortField and $sortDir parameters ? This
-     * is redundant with the sort() method.
-     * 
      * @abstract
      * @param   integer $offset     Limit offset (starting from 0)
      * @param   integer $len        Limit length
-     * @param   string  $sortField  Field to sort by
+     * @param   string  $sortSpec   If the driver supports the "multiSort" 
+     *                              feature this can be either a single field 
+     *                              (string), or a sort specification array of 
+     *                              the form : array(field => direction, ...)
+     *                              If "multiSort" is not supported, then this
+     *                              can only be a string.
      * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
      * @return  object              PEAR_Error with message 
      *                              "No data source driver loaded" 
      * @access  public                          
      */
-    function &fetch($offset=0, $len=null, $sortField=null, $sortDir='ASC')
+    function &fetch($offset=0, $len=null, $sortSpec=null, $sortDir='ASC')
+    /* FIXME: Why is there these $sortField and $sortDir parameters ? This
+     * is redundant with the sort() method.
+     */
     {
         return new PEAR_Error("No data source driver loaded");
     }
@@ -236,13 +266,18 @@ class Structures_DataGrid_DataSource_Common
      * Note : must be called before fetch() 
      * 
      * @abstract
-     * @param   string  $sortField  Field to sort by
+     * @param   string  $sortSpec   If the driver supports the "multiSort" 
+     *                              feature this can be either a single field 
+     *                              (string), or a sort specification array of 
+     *                              the form : array(field => direction, ...)
+     *                              If "multiSort" is not supported, then this
+     *                              can only be a string.
      * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
      * @return  object              PEAR_Error with message 
      *                              "No data source driver loaded" 
      * @access  public                          
      */
-    function sort($sortField, $sortDir = null)
+    function sort($sortSpec, $sortDir = null)
     {
         return new PEAR_Error("No data source driver loaded");
     }    
@@ -268,7 +303,29 @@ class Structures_DataGrid_DataSource_Common
     /**#@-*/
 
     // End DocBook template
+  
+    /**
+     * List special driver features
+     *
+     * @return array Of the form: array(feature => true|false, etc...)
+     * @access public
+     */
+    function getFeatures()
+    {
+        return $this->_features;
+    }
    
+    /**
+     * Tell if the driver as a specific feature
+     *
+     * @param  string $name Feature name
+     * @return bool 
+     * @access public
+     */
+    function hasFeature($name)
+    {
+    }
+    
     /**
      * Dump the data as returned by fetch().
      *
