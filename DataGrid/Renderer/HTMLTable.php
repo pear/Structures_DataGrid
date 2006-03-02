@@ -54,7 +54,11 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  * - encoding           : the content encoding. If the mbstring extension is 
  *                        present the default value is set from 
  *                        mb_internal_encoding(), otherwise it is ISO-8859-1
- *                       
+ *                  
+ * Note about URL encoding :
+ *   This driver use http_build_query() to build links. To customize the GET
+ *   arguments separator ("&" or "&amp;") please use the arg_separator.output
+ *   php ini setting. 
  * 
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
@@ -304,9 +308,6 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     /**
      * Handles building the header of the DataGrid
      *
-     * This method use http_build_query() to build links. To customize the GET
-     * arguments separator please see the arg_separator.output php ini setting
-     * 
      * @access  protected
      * @return  void
      * @see     http://www.php.net/manual/en/function.http-build-query.php
@@ -362,11 +363,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 // Build Link URL
                 $url = $this->_options['selfPath'] . '?';
 
-                /* Merge common and column-specific GET variables
-                 * 
-                 * Note: users who want their GET parameters separated by 
-                 * "&amp;" instead of "&" (see Bug #6151) should properly
-                 * configure the "arg_separator.output" php ini setting */
+                // Merge common and column-specific GET variables
                 $url .= http_build_query(array_merge($common, $get));
 
 
