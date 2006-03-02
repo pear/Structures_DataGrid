@@ -122,7 +122,10 @@
         (related to Bug #6031) is now set from mb_internal_encoding() if the 
         mbstring extension is loaded. Otherwise, the default is ISO-8859-1.
         Thanks &lt;tobias at neuyork dot de&gt;
-        
+       
+      Req #3523 "Allow custom headers ahead of header row" :
+        Fixed, due to the refactoring of Req #5859 and to the new fill() method
+        Thanks &lt;jessup at mrpath dot com&gt;
 
       ##########################################################################
       #                         OTHER FIXES AND CHANGES                        #
