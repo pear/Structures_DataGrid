@@ -88,14 +88,7 @@ class Structures_DataGrid_Renderer_Common
     /**
      * Fields/directions the data is currently sorted by
      *
-     * This is an array of the form :
-     *  array (
-     *      0 => array ('field' => 'field1', 'direction' => 'ASC'),
-     *      1 => array ('field' => 'field2', 'direction' => 'DESC'),
-     *      etc...
-     *  );
-     * 
-     * @var array
+     * @var array Form: array (fieldName => direction, ....)
      * @access protected
      */
     var $_currentSort = array();
@@ -268,13 +261,8 @@ class Structures_DataGrid_Renderer_Common
     /**
      * Specify how the datagrid is currently sorted
      *
-     * @param string $spec Which fields/directions it is sorted by
-     *                     This is an array of the form :
-     *                     array (
-     *                      0 => array ('field' => 'field1', 'direction' => 'ASC'),
-     *                      1 => array ('field' => 'field2', 'direction' => 'DESC'),
-     *                      etc...
-     *                     );
+     * @var array 
+     * @param array $spec Form: array (fieldName => direction, ....)
      * @access public
      */
     function setCurrentSorting($spec)

@@ -337,8 +337,10 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 !in_array($field, $this->_options['disableColumnSorting'])) {
                 
                 // Determine next sort direction and current sort icon
-                if ($this->_currentSort and $this->_currentSort[0]['field'] == $field) {
-                    if ($this->_currentSort[0]['direction'] == 'ASC') {
+                reset($this->_currentSort);
+                if (list($currentField,$currentDirection) = each($this->_currentSort)
+                    and $currentField == $field) {
+                    if ($currentDirection == 'ASC') {
                         $icon = $this->_options['sortIconASC'];
                         $direction = 'DESC';
                     } else {

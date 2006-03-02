@@ -151,8 +151,10 @@ class Structures_DataGrid_Renderer_XUL extends Structures_DataGrid_Renderer_Comm
             $label = $this->_columns[$col]['label'];
 
             if (in_array($field, $this->_sortableFields)) {
-                if ($this->_currentSort and $this->_currentSort[0]['field'] == $field) {
-                    if ($this->_currentSort[0]['direction'] == 'ASC') {
+                reset ($this->_currentSort);
+                if (list($currentField, $direction) = each($this->_currentSort) 
+                     and $currentField == $field) {
+                    if ($direction == 'ASC') {
                         // The data is currently sorted by $column, ascending.
                         // That means we want $dirArg set to 'DESC', for the next
                         // click to trigger a reverse order sort, and we need 
