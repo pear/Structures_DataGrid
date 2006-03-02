@@ -76,12 +76,15 @@ class Structures_DataGrid_DataSource_DataObject
     function Structures_DataGrid_DataSource_DataObject()
     {
         parent::Structures_DataGrid_DataSource_Common();
+
         $this->_addDefaultOptions(array(
                     'use_private_vars' => false,
                     'labels_property' => 'fb_fieldLabels',
                     'fields_property' => 'fb_fieldsToRender',
                     'sort_property' => 'fb_linkOrderFields',
                     'formbuilder_integration' => false));
+       
+        $this->_addFeatures(array('multiSort' => true));
     }
   
     /**
@@ -160,12 +163,15 @@ class Structures_DataGrid_DataSource_DataObject
      *
      * @param   integer $offset     Limit offset (starting from 0)
      * @param   integer $len        Limit length
-     * @param   string  $sortField  Field to sort by
+     * @param   mixed   $sortSpec   A single field (string) to sort by, or a 
+     *                              sort specification array of the form :
+     *                              array(field => direction, ...)
      * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
+     *                              This is ignored if $sortDesc is an array
      * @access  public
      * @return  array   The 2D Array of the records
      */    
-    function &fetch($offset=0, $len=null, $sortField=null, $sortDir='ASC')
+    function &fetch($offset=0, $len=null, $sortSpec=null, $sortDir='ASC')
     {
         // Check to see if Query has already been submitted
         if ($this->_dataobject->_DB_resultid != '') {
@@ -179,8 +185,8 @@ class Structures_DataGrid_DataSource_DataObject
             }
                     
             // Sorting
-            if ($sortField) {
-                $this->sort($sortField, $sortDir);
+            if ($sortSpec) {
+                $this->sort($sortSpec, $sortDir);
             } elseif (($sortProperty = $this->_options['sort_property'])
                       && isset($this->_dataobject->$sortProperty)) {
                 foreach ($this->_dataobject->$sortProperty as $sort) {
@@ -279,15 +285,24 @@ class Structures_DataGrid_DataSource_DataObject
      * Sorts the dataobject.  This MUST be called before fetch.
      * 
      * @access  public
-     * @param   string  $sortField  Field to sort by
+     * @param   mixed   $sortSpec   A single field (string) to sort by, or a 
+     *                              sort specification array of the form :
+     *                              array(field => direction, ...)
      * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
+     *                              This is ignored if $sortDesc is an array
      */
-    function sort($sortField, $sortDir = null)
+    function sort($sortSpec, $sortDir = null)
     {
-        if (is_null ($sortDir)) {
-            $this->_dataobject->orderBy($sortField);
+        if (is_array($sortSpec)) {
+            foreach ($sortSpec as $item) {
+                $this->_dataobject->orderBy($item['field'].' '.$item['direction']);
+            }
         } else {
-            $this->_dataobject->orderBy($sortField . ' ' . $sortDir);
+            if (is_null ($sortDir)) {
+                $this->_dataobject->orderBy($sortSpec);
+            } else {
+                $this->_dataobject->orderBy($sortSpec . ' ' . $sortDir);
+            }
         }
     }
     
