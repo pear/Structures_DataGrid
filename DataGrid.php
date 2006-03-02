@@ -113,14 +113,7 @@ class Structures_DataGrid
     /**
      * Fields/directions to sort the data by
      *
-     * This is an array of the form :
-     *  array (
-     *      0 => array ('field' => 'field1', 'direction' => 'ASC'),
-     *      1 => array ('field' => 'field2', 'direction' => 'DESC'),
-     *      etc...
-     *  );
-     * 
-     * @var array
+     * @var array Form: array (fieldName => direction, ....)
      * @access private
      */
     var $sortSpec = array();
@@ -717,12 +710,13 @@ class Structures_DataGrid
             $page = $this->page ? $this->page - 1 : 0;
 
             // Fetch the Data
-            if ($this->sortSpec) {
+            reset($this->sortSpec);
+            if (list($field,$direction) = each($this->sortSpec)) {
                 $recordSet = $this->_dataSource->fetch(
                                 ($page * $this->rowLimit),
-                                $this->rowLimit, 
-                                $this->sortSpec[0]['field'],
-                                $this->sortSpec[0]['direction']);
+                                $this->rowLimit,
+                                $field,
+                                $direction);
             } else {
                 $recordSet = $this->_dataSource->fetch(
                                 ($page * $this->rowLimit),
@@ -786,10 +780,12 @@ class Structures_DataGrid
      */
     function sortRecordSet($sortBy, $direction = 'ASC')
     {
-        $this->sortSpec = array(array('field' => $sortBy, 'direction' => $direction));
+        $this->sortSpec = array($sortBy => $direction);
         if ($this->_dataSource) {
             $this->_dataSource->sort($sortBy, $direction);
         } else {
+            $this->_sortCallbackField = $sortBy;
+            $this->_sortCallbackDirection = $direction;
             usort($this->recordSet, array($this, '_sort'));
         }
     }
@@ -804,9 +800,9 @@ class Structures_DataGrid
      */
     function _sort($a, $b)
     {
-        $bool = strnatcasecmp($a[$this->sortSpec[0]['field']], $b[$this->sortSpec[0]['field']]);
+        $bool = strnatcasecmp($a[$this->_sortCallbackField], $b[$this->_sortCallbackField]);
         
-        if ($this->sortSpec[0]['direction'] == 'DESC') {
+        if ($this->_sortCallbackDirection == 'DESC') {
             $bool = $bool * -1;
         }
         
@@ -844,26 +840,32 @@ class Structures_DataGrid
             }
         } 
 
+        $orderBy = '';
         if (isset($_REQUEST[$prefix . 'orderBy'])) {
             // Use POST, GET, or COOKIE value in respective order
             if (isset($_POST[$prefix . 'orderBy'])) {
-                $this->sortSpec[0]['field'] = $_POST[$prefix . 'orderBy'];
+                $orderBy = $_POST[$prefix . 'orderBy'];
             } elseif (isset($_GET[$prefix . 'orderBy'])) {
-                $this->sortSpec[0]['field'] = $_GET[$prefix . 'orderBy'];
+                $orderBy = $_GET[$prefix . 'orderBy'];
             } elseif (isset($_COOKIE[$prefix . 'orderBy'])) {
-                $this->sortSpec[0]['field'] = $_COOKIE[$prefix . 'orderBy'];
+                $orderBy = $_COOKIE[$prefix . 'orderBy'];
             }
         }
 
+        $direction = 'ASC';
         if (isset($_REQUEST[$prefix . 'direction'])) {
             // Use POST, GET, or COOKIE value in respective order
             if (isset($_POST[$prefix . 'direction'])) {
-                $this->sortSpec[0]['direction'] = $_POST[$prefix . 'direction'];
+                $direction = $_POST[$prefix . 'direction'];
             } elseif (isset($_GET[$prefix . 'direction'])) {
-                $this->sortSpec[0]['direction'] = $_GET[$prefix . 'direction'];
+                $direction = $_GET[$prefix . 'direction'];
             } elseif (isset($_COOKIE[$prefix . 'direction'])) {
-                $this->sortSpec[0]['direction'] = $_COOKIE[$prefix . 'direction'];
+                $direction = $_COOKIE[$prefix . 'direction'];
             }
+        }
+
+        if ($orderBy) {
+            $this->sortSpec[$orderBy] = $direction;
         }
     }     
 
