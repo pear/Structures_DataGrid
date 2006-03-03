@@ -360,7 +360,9 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
 
                 // Merge common and column-specific GET variables
                 if (ini_get('arg_separator.output') == '&') {
-                    $url .= htmlentities(http_build_query(array_merge($common, $get)));
+                    $url .= htmlentities(
+                                http_build_query(array_merge($common, $get)),
+                                ENT_QUOTES);
                 } else {
                     $url .= http_build_query(array_merge($common, $get));
                 }
