@@ -346,7 +346,8 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 if (ini_get('arg_separator.output') == '&') {
                     $url .= htmlentities(
                                 http_build_query(array_merge($common, $get)),
-                                ENT_QUOTES);
+                                ENT_QUOTES,
+                                $this->_options['encoding']);
                 } else {
                     $url .= http_build_query(array_merge($common, $get));
                 }
