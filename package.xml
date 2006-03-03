@@ -168,6 +168,7 @@
         etc..)
     </notes>
     <deps>
+      <dep type="php" rel="ge" version="4.1"/>
       <dep type="pkg" rel="ge" version="1.2" optional="no">PEAR</dep>
       <dep type="pkg" rel="ge" version="1.6.1" optional="yes">HTML_Table</dep>
       <dep type="pkg" rel="ge" version="2.2" optional="yes">Pager</dep>
