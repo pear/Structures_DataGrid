@@ -55,11 +55,6 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  *                        present the default value is set from 
  *                        mb_internal_encoding(), otherwise it is ISO-8859-1
  *                  
- * Note about URL encoding :
- *   This driver use http_build_query() to build links. To customize the GET
- *   arguments separator ("&" or "&amp;") please use the arg_separator.output
- *   php ini setting. 
- * 
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
  * @author   Olivier Guilyardi <olivier@samalyse.com>
@@ -364,7 +359,11 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 $url = $this->_options['selfPath'] . '?';
 
                 // Merge common and column-specific GET variables
-                $url .= http_build_query(array_merge($common, $get));
+                if (ini_get('arg_separator.output') == '&') {
+                    $url .= htmlentities(http_build_query(array_merge($common, $get)));
+                } else {
+                    $url .= http_build_query(array_merge($common, $get));
+                }
 
 
                 // Build HTML Link
