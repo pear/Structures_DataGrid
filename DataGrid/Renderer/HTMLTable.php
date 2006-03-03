@@ -51,9 +51,8 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  *                        array(fieldName => array(attribute => value, ...) ... )
  * - convertEntities    : whether or not to convert html entities. Default: true
  *                        This calls htmlspecialchars(). 
- * - encoding           : the content encoding. If the mbstring extension is 
- *                        present the default value is set from 
- *                        mb_internal_encoding(), otherwise it is ISO-8859-1
+ * - sortingResetsPaging: whether to reset paging on sorting request
+ *                        (default : true)
  *                  
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
@@ -107,8 +106,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 'columnAttributes'    => array(),
                 'headerAttributes'    => array(),
                 'convertEntities'     => true,
-                'encoding'            => function_exists('mb_internal_encoding')
-                                         ? mb_internal_encoding() : 'ISO-8859-1',
+                'sortingResetsPaging'   => true,
             )
         );
     }
@@ -194,19 +192,6 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
             $this->init();
         }
         $this->_tableBody->setAutoFill($value);
-    }
-
-    /**
-     * Set whether to automatically right-align numeric values or not
-     *
-     * This is enabled by default.
-     *
-     * @access public
-     * @param  bool   $state   Auto-alignment state
-     */
-    function setAutoAlign($state)
-    {
-        $this->_options['autoAlign'] = $state;
     }
 
     /**
@@ -329,8 +314,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
             $label = $this->_columns[$col]['label'];
 
             // Define Content
-            if (in_array ($field, $this->_sortableFields) and 
-                !in_array($field, $this->_options['disableColumnSorting'])) {
+            if (in_array ($field, $this->_sortableFields)) {
                 
                 // Determine next sort direction and current sort icon
                 reset($this->_currentSort);
@@ -401,7 +385,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 $field = $this->_columns[$col]['field'];
 
                 // Right-align the content if it is numeric
-                $attributes = ($this->_options['autoAlign'] and is_numeric($value)) 
+                $attributes = ($this->_options['numberAlign'] and is_numeric($value)) 
                             ? array('align' => 'right')
                             : array();
 

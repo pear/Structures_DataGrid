@@ -26,35 +26,57 @@
  *
  * Recognized options :
  *
- * - buildHeader    : whether to build the header or not (default : true)
- * - buildFooter    : whether to build the footer or not (default : true)
- * - fillWithEmptyRows : ensures that all pages have the same number of rows
- *                       (default : false) 
- * - sortingResetsPaging : Whether or not to reset paging on sorting request
- *                         (default : true)
- * - autoAlign : whether to automatically right-align numeric values or not
- *    // FIXME: could be nice to have an autoFormat option for automatically 
- *       calling number_format() and the like
- * - defaultCellValue : what value to put by default into empty cells
- * - defaultColumnValues : per-column default cell value. This is an array
- *                         of the form : array(fieldName => value, ...)
- * - disableColumnSorting : by default sorting is enabled on all columns. With this
- *                    option it is possible to disable sorting on specific columns.
- *                    This is an array of the form : array(fieldName, ...).
- *                    This option only affects drivers that support sorting.
+ * - buildHeader            : whether to build the header (default : true)
+ * - buildFooter            : whether to build the footer (default : true)
+ * - fillWithEmptyRows      : ensures that all pages have the same number of 
+ *                            rows (default : false) 
+ * - numberAlign            : whether to right-align numeric values (default : true)
+ * - defaultCellValue       : what value to put by default into empty cells
+ * - defaultColumnValues    : per-column default cell value. This is an array
+ *                            of the form : array(fieldName => value, ...)
+ * - disableColumnSorting   : by default sorting is enabled on all columns. With this
+ *                            option it is possible to disable sorting on specific columns.
+ *                            This is an array of the form : array(fieldName, ...).
+ *                            This option only affects drivers that support sorting.
+ * - encoding               : the content encoding. If the mbstring extension is 
+ *                            present the default value is set from 
+ *                            mb_internal_encoding(), otherwise it is ISO-8859-1
  * 
- * Among others, this class :
- * - expose a driver interface designed with extendability in mind, composed of :
- *   - init()
- *   - defaultCellFormatter()
- *   - buildHeader()
- *   - buildBody()
- *   - buildFooter()
- *   - finalize()
- *   
- * - ensures the data is structured as a matrix. If not, columns or row cells may be 
- *   added
- *   
+ * --- DRIVER INTERFACE ---
+ *
+ * Methods that drivers MUST implement :
+ *     - init()
+ *     - buildBody()
+ *     - flatten()
+ * 
+ * Methods that drivers MAY implement :    
+ *     - Constructor
+ *     - defaultCellFormatter()
+ *     - buildHeader()
+ *     - buildFooter()
+ *     - finalize()
+ *     - render()
+ * 
+ * Read/Write property :
+ *     - $_container 
+ * 
+ * Read-Only properties    
+ *     - $_columns
+ *     - $_records
+ *     - $_columnsNum
+ *     - $_recordsNum
+ *     - $_totalRecordsNum
+ *     - $_currentSort
+ *     - $_page
+ *     - $_pageLimit
+ *     - $_requestPrefix
+ *     - $_sortableFields
+ *     - $_options
+ *     
+ * Options that drivers should handle :
+ *     - encoding
+ *     - fillWithEmptyRows
+ *     - numberAlign
  * 
  * @version  $Revision$
  * @author   Olivier Guilyardi <olivier@samalyse.com>
@@ -65,8 +87,11 @@
 class Structures_DataGrid_Renderer_Common 
 {
     /**
-     * Container filled with data by the driver
+     * Rendering container
      *
+     * This variable can be of any type. Its type is specific to a given
+     * driver.
+     * 
      * Drivers can read and write to this property. 
      * 
      * @var mixed
@@ -223,14 +248,20 @@ class Structures_DataGrid_Renderer_Common
     function Structures_DataGrid_Renderer_Common()
     {
         $this->_options = array(
-            'buildHeader'           => true,  
-            'buildFooter'           => true,  
+            
+            /* Protected options, that the drivers should handle */    
+            'encoding'              => function_exists('mb_internal_encoding')
+                                       ? mb_internal_encoding() : 'ISO-8859-1',
             'fillWithEmptyRows'     => false,
-            'sortingResetsPaging'   => true,
-            'autoAlign'             => true,
+            'numberAlign'           => true,
+                                       
+            /* Private options, that must not be accessed by drivers */
+            'buildHeader'           => true, 
+            'buildFooter'           => true,  
             'defaultCellValue'      => null,
             'defaultColumnValues'   => array(),
-            'disableColumnSorting'  => array(),
+            'disableColumnSorting'  => array(), 
+
         );
     }
 
@@ -449,7 +480,9 @@ class Structures_DataGrid_Renderer_Common
         {
             if (!is_null($column->orderBy)) {
                 $field = $column->orderBy;
-                if (!in_array($field,$this->_sortableFields)) {
+                if (!in_array($field,$this->_sortableFields) and 
+                    !in_array($field, $this->_options['disableColumnSorting'])
+                   ) {
                     $this->_sortableFields[] = $field;
                 }
             } else if (!is_null($column->fieldName)) {

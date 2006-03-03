@@ -133,7 +133,7 @@
    
       Auto-alignment :  
         The HTMLTable renderer now automatically aligns numeric values
-        to the right. This is configurable with HTMLTable::setAutoAlign()
+        to the right. This is configurable with the 'numberAlign' option.
 
       New HTMLTable::excludeVars() method :
         This method allows to exclude some GET variables from the generated
