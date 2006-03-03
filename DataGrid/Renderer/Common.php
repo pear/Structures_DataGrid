@@ -65,33 +65,132 @@
 class Structures_DataGrid_Renderer_Common 
 {
     /**
+     * Container filled with data by the driver
+     *
+     * Drivers can read and write to this property. 
+     * 
+     * @var mixed
+     * @access protected
+     */
+    var $_container = null;
+
+    /**
      * Columns' fields names and labels
-     * @var array
+     * 
+     * Drivers can read the content of this property but must not change it.
+     * 
+     * @var array Structure: 
+     *            array(<columnIndex> => array(field => <fieldName>, 
+     *                                         label=> <label>), ...)
+     *            Where <columnIndex> is zero-based
      * @access protected
      */
     var $_columns = array();
 
     /**
      * Records content
-     * @var array
+     *
+     * Drivers can read the content of this property but must not change it.
+     * 
+     * @var array Structure: 
+     *            array(
+     *              <rowIndex> => array(
+     *                 <columnIndex> => array (<cellValue>, ...), 
+     *              ...), 
+     *            ...)
+     *            Where <rowIndex> and <columnIndex> are zero-based
      * @access protected
      */
     var $_records = array();
 
     /**
-     * Container filled with data by the driver
-     * @var array
-     * @access protected
-     */
-    var $_container = null;
-
-    /**
      * Fields/directions the data is currently sorted by
      *
-     * @var array Form: array (fieldName => direction, ....)
+     * Drivers can read the content of this property but must not change it.
+     *
+     * @var array Structure: array (fieldName => direction, ....)
      * @access protected
      */
     var $_currentSort = array();
+
+    /**
+     * Number of columns
+     * @var int
+     * @access protected
+     */
+    var $_columnsNum;
+
+    /**
+     * Number of records in the current page
+     * 
+     * Drivers can read the content of this property but must not change it.
+     *
+     * @var int
+     * @access protected
+     */
+    var $_recordsNum;
+
+    /**
+     * Total number of records as reported by the datasource
+     * 
+     * Drivers can read the content of this property but must not change it.
+     *
+     * @var int
+     * @access protected
+     */
+    var $_totalRecordsNum;
+
+    /**
+     * Current page
+     * 
+     * Drivers can read the content of this property but must not change it.
+     *
+     * @var int
+     * @access protected
+     */
+    var $_page = 1;
+
+    /**
+     * Number of records per page
+     * 
+     * Drivers can read the content of this property but must not change it.
+     *
+     * @var int
+     * @access protected
+     */
+    var $_pageLimit = null;
+
+    /**
+     * GET/POST/Cookie parameters prefix
+     * 
+     * Drivers can read the content of this property but must not change it.
+     *
+     * @var string
+     * @access protected
+     */
+    var $_requestPrefix = '';
+
+    /**
+     * Which fields the datagrid may be sorted by
+     * 
+     * Drivers can read the content of this property but must not change it.
+     *
+     * @var array Field names
+     * @access protected
+     */
+    var $_sortableFields = array();
+    
+    /**
+     * Common and driver-specific options
+     * 
+     * Drivers can read the content of this property but must not change it.
+     *
+     * @var array
+     * @access protected
+     * @see Structures_DataGrid_Renderer_Common::setOption()
+     * @see Structures_DataGrid_Renderer_Common::_addDefaultOptions()
+     */
+    var $_options = array();
 
     /**
      * Columns objects 
@@ -106,78 +205,20 @@ class Structures_DataGrid_Renderer_Common
     var $_columnObjects = array();
 
     /**
-     * Number of columns
-     * @var int
-     * @access protected
-     */
-    var $_columnsNum;
-
-    /**
-     * Number of records in the current page
-     * @var int
-     * @access protected
-     */
-    var $_recordsNum;
-
-    /**
-     * Total number of records as reported by the datasource
-     * @var int
-     * @access protected
-     */
-    var $_totalRecordsNum;
-
-    /**
-     * Current page
-     * @var int
-     * @access protected
-     */
-    var $_page = 1;
-
-    /**
-     * Number of records per page
-     * @var int
-     * @access protected
-     */
-    var $_pageLimit = null;
-
-    /**
-     * GET/POST/Cookie parameters prefix
-     * @var string
-     * @access protected
-     */
-    var $_requestPrefix = '';
-
-    /**
      * Whether the datagrid has been built or not
      * @var bool
      * @access private
+     * @see Structures_DataGrid_Renderer_Common::isBuilt()
      */
     var $_isBuilt = false;
 
     /**
-     * Which fields the datagrid may be sorted by
-     * 
-     * @var array Field names
-     * @access protected
-     */
-    var $_sortableFields = array();
-    
-    /**
-     * Common and driver-specific options
+     * Instantiate the driver and set default options
      *
-     * @var array
-     * @access protected
-     * @see Structures_DataGrid_Renderer_Common::_setOption()
-     * @see Structures_DataGrid_Renderer_Common::addDefaultOptions()
-     */
-    var $_options = array();
-
-    /**
-     * Constructor
-     *
-     * Build default values
+     * Drivers may overload this method in order to change/add default options.
      *
      * @access  public
+     * @see Structures_DataGrid_Renderer_Common::_addDefaultOptions()
      */
     function Structures_DataGrid_Renderer_Common()
     {
@@ -197,14 +238,13 @@ class Structures_DataGrid_Renderer_Common
      * Adds some default options.
      *
      * This method is meant to be called by drivers. It allows adding some
-     * default options. Additionally to setting default values the options
-     * names (keys) are used by setOptions() to validate its input.
+     * default options. 
      *
      * @access protected
      * @param array $options An associative array of the from:
      *                       array(optionName => optionValue, ...)
      * @return void
-     * @see Structures_DataGrid_Renderer_Common::_setOption
+     * @see Structures_DataGrid_Renderer_Common::setOption()
      */
     function _addDefaultOptions($options)
     {
@@ -216,7 +256,7 @@ class Structures_DataGrid_Renderer_Common
      *
      * @param   mixed   $options    An associative array of the form :
      *                              array("option_name" => "option_value",...)
-     * @access  protected
+     * @access  public
      */
     function setOptions($options)
     {
@@ -395,6 +435,9 @@ class Structures_DataGrid_Renderer_Common
 
     /**
      * Build the grid
+     *
+     * Drivers must not overload this method. Pre and post-build operations
+     * can be performed in init() and finalize()
      * 
      * @access public
      * @return void
@@ -471,6 +514,9 @@ class Structures_DataGrid_Renderer_Common
 
     /**
      * Returns the output from the renderer (e.g. HTML table, XLS object, ...)
+     *
+     * Drivers must not overload this method. Output generation has to be 
+     * implemented in flatten().
      * 
      * @access  public
      * @return  mixed    The output from the renderer
