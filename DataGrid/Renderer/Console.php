@@ -120,9 +120,6 @@ class Structures_DataGrid_Renderer_Console extends Structures_DataGrid_Renderer_
      */
     function buildBody()
     {
-        // FIXME: don't start in row 0; instead start after the last existing
-        // row in the table (requires a patch [new method getRowCount()] for
-        // Console_Table and a new release of this package, of course)
         for ($row = 0; $row < $this->_recordsNum; $row++) {
             $cellList = array();
             for ($col = 0; $col < $this->_columnsNum; $col++) {
