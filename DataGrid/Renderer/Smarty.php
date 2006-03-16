@@ -151,7 +151,9 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
         if (!isset($this->_smarty)) {
             $this->_smarty = new Smarty();
         }
+        //FIXME: BC break - Old variable was : currentPage
         $this->_smarty->assign('page', $this->_page);
+        //FIXME: BC break - Old variable was : recordLimit
         $this->_smarty->assign('pageLimit', $this->_pageLimit);
         $this->_smarty->assign('columnsNum', $this->_columnsNum);
         $this->_smarty->assign('recordsNum', $this->_recordsNum);
@@ -201,6 +203,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
             $prepared[$index]['label'] = $spec['label'];
         }
 
+        //FIXME: BC break (?) - Old variable was : columnSet
         $this->_smarty->assign('columns', $prepared);
     }
     
@@ -212,6 +215,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
      */
     function buildBody()
     {
+        //FIXME: BC break - Old variable was : recordSet
         $this->_smarty->assign('records',   $this->_records);
     }
 
