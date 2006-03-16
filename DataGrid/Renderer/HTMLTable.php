@@ -113,7 +113,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 'columnAttributes'    => array(),
                 'headerAttributes'    => array(),
                 'convertEntities'     => true,
-                'sortingResetsPaging'   => true,
+                'sortingResetsPaging' => true,
             )
         );
     }
