@@ -84,7 +84,7 @@ class Structures_DataGrid_DataSource_DataObject
                     'sort_property' => 'fb_linkOrderFields',
                     'formbuilder_integration' => false));
        
-        $this->_addFeatures(array('multiSort' => true));
+        $this->_setFeatures(array('multiSort' => true));
     }
   
     /**

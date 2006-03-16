@@ -20,49 +20,53 @@
 //
 // $Id$
 
-require_once 'Structures/DataGrid/Renderer/Common.php';
-require_once 'Smarty/Smarty.class.php';
+require_once 'Structures/DataGrid/Renderer/HTMLTable.php';
+// require_once 'Smarty/Smarty.class.php';
 
 /**
  * Structures_DataGrid_Renderer_Smarty Class
  *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
+ * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @access   public
  * @package  Structures_DataGrid
  * @category Structures
  */
-class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer_Common
+class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer_HTMLTable
 {
 // FIXME: test this renderer
 // FIXME: implement paging feature request (write a common paging class for
 //        HTMLTable and Smarty renderer)
 
     /**
-     * Name of the template file
-     *
-     * @var string
-     * @access private
+     * Smarty container
+     * @var object $_smarty;
      */
-    var $_tpl;
-
+    var $_smarty;
+    
     /**
-     * Constructor
-     *
-     * Build default values
-     *
-     * @access public
+     * Attach an already instantiated Smarty object
+     * 
+     * @param  object $smarty Smarty container
+     * @return mixed True or PEAR_Error
      */
-    function Structures_DataGrid_Renderer_Smarty()
+    function setContainer(&$smarty)
     {
-        parent::Structures_DataGrid_Renderer_Common();
-        $this->_addDefaultOptions(
-            array(
-                // FIXME: maybe add an option for the template filename
-            )
-        );
+        $this->_smarty =& $smarty;
+        return true;
     }
-
+    
+    /**
+     * Return the currently used Smarty object
+     * @return object Smarty or PEAR_Error object
+     */
+    function &getContainer()
+    {
+        isset($this->_smarty) or $this->init();
+        return &$this->_smarty;
+    }
+    
     /**
      * Initialize the Smarty instance if it is not already existing
      * 
@@ -70,41 +74,23 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer_C
      */
     function init()
     {
-        if (is_null($this->_container)) {
-            $this->_container = new Smarty();
-            $this->_container->template_dir = dirname($_SERVER['SCRIPT_FILENAME']);
-            $this->_container->compile_dir = dirname($_SERVER['SCRIPT_FILENAME']) . '/compile';
+        if (!isset($this->_smarty)) {
+            $this->_smarty = new Smarty();
         }
     }
 
     /**
      * Attach a Smarty instance
-     * (deprecated, use $renderer->setContainer() or $dg->fill() instead)
-     *
+     * 
+     * @deprecated Use setContainer() instead
      * @param object Smarty instance
      * @access public
      */
     function setSmarty(&$smarty)
     {
-        $this->_container = &$smarty;
+        return $this->setContainer($smarty);
     }
 
-    /**
-     * Set the Smarty template
-     *
-     * @param string  Filename of the template
-     * @access public
-     */
-    function setTemplate($tpl)
-    {
-        // FIXME: make $_tpl an option (?)
-        if (is_file($this->_container->template_dir . '/' . $tpl)) {
-            $this->_tpl = $tpl;
-        } else {
-            return new PEAR_Error('Error: Unable to find ' .
-                                  $this->_container->template_dir . '/' . $tpl);
-        }
-    }
 
     /**
      * Handles building the body of the table
@@ -115,46 +101,39 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer_C
     function buildBody()
     {
         if ($this->_tpl != '') {
-            $this->_container->assign('recordSet',   $this->_records);
-            $this->_container->assign('columnSet',   $this->_columns);
-            $this->_container->assign('recordLimit', $this->_pageLimit);
-            $this->_container->assign('currentPage', $this->_page);
+            $this->_smarty->assign('recordSet',   $this->_records);
+            $this->_smarty->assign('columnSet',   $this->_columns);
+            $this->_smarty->assign('recordLimit', $this->_pageLimit);
+            $this->_smarty->assign('currentPage', $this->_page);
         }
     }
 
     /**
      * Gets the Smarty object
      *
-     * OBSOLETE
-     * 
+     * @deprecated Use getContainer() instead 
      * @access  public
-     * @return  object Console_Table   The Console_Table object for the DataGrid
+     * @return  object Smarty container (reference)
      */
-    function getSmarty()
+    function &getSmarty()
     {
-        return $this->_container;
+        return $this->getContainer();
     }
+
 
     /**
-     * Retrieve output from the container object 
-     *
-     * @return mixed Output
-     * @access protected
+     * Discard the unsupported render() method
+     * 
+     * This Smarty driver does not support the render() method.
+     * It is required to use the setContainer() (or 
+     * Structures_DataGrid::fill()) method in order to do anything
+     * with this driver.
+     * 
      */
-    function flatten()
+    function render()
     {
-        $smarty = $this->getSmarty();
-
-        // FIXME: this error shouldn't occur
-        // FIXME: test $this->_tpl here (if it's not set, display() may result
-        //        in an error [to be checked!])
-        if (PEAR::isError($smarty)) {
-            return $smarty;
-        } else {
-            $smarty->display($this->_tpl);
-        }
+        return $this->_noSupport(__FUNCTION__);
     }
-
 }
 
 ?>

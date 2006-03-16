@@ -31,14 +31,35 @@ require_once 'XML/Util.php';
  * For additional information on the XUL Listbox, refer to this url:
  * http://www.xulplanet.com/references/elemref/ref_listbox.html
  *
+ * This driver does not support the setContainer() method, and can not
+ * be used in conjunction with the Structures_DataGrid::fill() method.
+ *
+ * The generated XUL is buffered so you can use the 
+ * Structures_DataGrid::getOutput() method as an alternative to render()
+ *
+ * You have to setup your XUL document, just as you would with an HTML
+ * document. This driver will only generated the <listbox> element and
+ * content.
+ * 
+ * Basic example : 
+ * <code>
+ * <?php 
+ * header('Content-type: application/vnd.mozilla.xul+xml'); 
+ * echo "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
+ * echo "<?xml-stylesheet href=\"myStyle.css\" type=\"text/css\"?>\n";
+ * echo "<window title=\"MyDataGrid\" 
+ *        xmlns=\"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul\">\n";
+ * // Instantiate your datagrid and setup its datasource, then call :
+ * $datagrid->setRenderer(DATAGRID_RENDER_XUL);
+ * $datagrid->render();
+ * echo "</window>\n";
+ * ?> 
+ * </code>
+ * 
  * Recognized options:
  *
- * - title:     (string) The title of the datagrid
- *                       (default: 'DataGrid')
- * - css:       (array)  An array of css URL's
- *                       (default: 'chrome://global/skin/')
- * - selfPath:  (string) The complete path for sorting and paging links
- *                       (default: $_SERVER['PHP_SELF'])
+ * - selfPath:      (string) The complete path for sorting and paging links
+ *                           (default: $_SERVER['PHP_SELF'])
  *
  * @version     $Revision$
  * @author      Andrew S. Nagy <asnagy@webitecture.org>
@@ -52,11 +73,11 @@ require_once 'XML/Util.php';
 class Structures_DataGrid_Renderer_XUL extends Structures_DataGrid_Renderer_Common
 {
     /**
-     * Whether the container is user-provided or not
-     * @var bool
+     * The generated XUL data
+     * @var string
      * @access protected
      */
-    var $_isCustomContainer;
+    var $_xul = '';
     
     /**
      * Constructor
@@ -70,8 +91,6 @@ class Structures_DataGrid_Renderer_XUL extends Structures_DataGrid_Renderer_Comm
         parent::Structures_DataGrid_Renderer_Common();
         $this->_addDefaultOptions(
             array(
-                'title'    => 'DataGrid',
-                'css'      => array('chrome://global/skin/'),
                 'selfPath' => $_SERVER['PHP_SELF']
             )
         );
@@ -89,52 +108,7 @@ class Structures_DataGrid_Renderer_XUL extends Structures_DataGrid_Renderer_Comm
      */
     function init()
     {
-        if (is_null($this->_container)) {
-
-            $this->_isCustomContainer = false;
-
-            // Define XML
-            $this->_container = XML_Util::getXMLDeclaration() . "\n";
-            
-            // Define Stylesheets
-            foreach ($this->_options['css'] as $css) {
-                $this->_container .= "<?xml-stylesheet href=\"$css\" " .
-                                                      "type=\"text/css\"?>\n";
-            }
-            
-            // Define Window Element
-            $this->_container .= 
-                "<window title=\"{$this->_options['title']}\" " . 
-                "xmlns=\"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul\">\n";
-            
-            // Define Listbox Element
-            $this->_container .= "<listbox rows=\"" . $this->_pageLimit . "\">\n";
-
-        } else {
-            $this->_isCustomContainer = true;
-        }
-    }
-
-    /**
-     * Sets the datagrid title
-     *
-     * @access  public
-     * @param   string      $title      The title of the datagrid
-     */
-    function setTitle($title)
-    {
-        $this->_options['title'] = $title;
-    }
-    
-    /**
-     * Adds a stylesheet to the list of stylesheets
-     *
-     * @access  public
-     * @param   string      $url        The url of the stylesheet
-     */
-    function addStyleSheet($url)
-    {
-        array_push($this->_options['css'], $url);
+        $this->_xul = "<listbox rows=\"" . $this->_pageLimit . "\">\n";
     }
 
     /**
@@ -145,7 +119,7 @@ class Structures_DataGrid_Renderer_XUL extends Structures_DataGrid_Renderer_Comm
      */
     function buildHeader()
     {
-        $this->_container .= "  <listhead>\n";
+        $this->_xul .= "  <listhead>\n";
         for ($col = 0; $col < $this->_columnsNum; $col++) {
             $field = $this->_columns[$col]['field'];
             $label = $this->_columns[$col]['label'];
@@ -176,9 +150,9 @@ class Structures_DataGrid_Renderer_XUL extends Structures_DataGrid_Renderer_Comm
                 }
 
                 $onCommand = 
-                    "oncommand=\"location.href='{$this->_options['selfPath']}". 
-                        "?{$this->_requestPrefix}orderBy=$field".
-                        "&amp;{$this->_requestPrefix}direction=$dirArg';\"";
+                    "oncommand=\"location.href='{$this->_options['selfPath']}?" 
+                    . $this->_buildSortingHttpQuery($field, $dirArg, true)
+                    . "'\"";
                 $sortDirection = "sortDirection=\"$dirCur\"";
             } else {
                 $onCommand = '';
@@ -186,10 +160,10 @@ class Structures_DataGrid_Renderer_XUL extends Structures_DataGrid_Renderer_Comm
             }
 
             $label = XML_Util::replaceEntities($label);
-            $this->_container .= '    <listheader label="' . $label . '" ' . 
+            $this->_xul .= '    <listheader label="' . $label . '" ' . 
                     "$sortDirection $onCommand />\n";
         }
-        $this->_container .= "  </listhead>\n";
+        $this->_xul .= "  </listhead>\n";
     }
     
     /**
@@ -201,31 +175,28 @@ class Structures_DataGrid_Renderer_XUL extends Structures_DataGrid_Renderer_Comm
     function buildBody()
     {
         for ($row = 0; $row < $this->_recordsNum; $row++) {
-            $this->_container .= "  <listitem>\n";
+            $this->_xul .= "  <listitem>\n";
             for ($col = 0; $col < $this->_columnsNum; $col++) {
                 $value = $this->_records[$row][$col];
 
                 // FIXME: 'ä' is displayed as '?' ==> encoding is required!
-                $this->_container .= '    ' .
+                $this->_xul .= '    ' .
                         XML_Util::createTag('listcell',
                                             array('label' => $value)) . "\n";
             }
 
-            $this->_container .= "  </listitem>\n";
+            $this->_xul .= "  </listitem>\n";
         }
     }
 
     /**
-     * Close the XUL listbox and window, if needed
+     * Close the XUL listbox
      *
      * @access protected
      */
     function finalize()
     {
-        if (!$this->_isCustomContainer) {
-            $this->_container .= "</listbox>\n";
-            $this->_container .= "</window>\n";
-        }
+        $this->_xul .= "</listbox>\n";
     }
     
     /**
@@ -247,18 +218,7 @@ class Structures_DataGrid_Renderer_XUL extends Structures_DataGrid_Renderer_Comm
      */
     function flatten()
     {
-        return $this->_container;
-    }
-
-    /**
-     * Render to the standard output
-     *
-     * @access  public
-     */
-    function render()
-    {
-        header('Content-type: application/vnd.mozilla.xul+xml');
-        parent::render();
+        return $this->_xul;
     }
 }
 

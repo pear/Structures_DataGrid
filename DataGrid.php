@@ -35,6 +35,9 @@ define('DATAGRID_RENDER_CONSOLE',  'Console');
 
 define('DATAGRID_RENDER_DEFAULT',  DATAGRID_RENDER_TABLE);
 
+// PEAR_Error code for unsupported features
+define('DATAGRID_ERROR_UNSUPPORTED', 1);
+
 // Data Source Drivers
 define('DATAGRID_SOURCE_ARRAY',     'Array');
 define('DATAGRID_SOURCE_DATAOBJECT','DataObject');
@@ -88,6 +91,13 @@ class Structures_DataGrid
      * @access private
      */ 
     var $_renderer;
+
+    /**
+     * Renderer driver type
+     * @var object Structures_DataGrid_Renderer_* family
+     * @access private
+     */ 
+    var $_rendererType = null;
 
     /**
      * Array of columns.  Columns are defined as a DataGridColumn object.
@@ -345,19 +355,34 @@ class Structures_DataGrid
      * @param  string   $limit  The row limit per page.
      * @param  string   $page   The current page viewed.
      * @access public
+     * @return mixed    True or PEAR_Error
      */
     function render()
     {
         isset($this->_renderer) or $this->setRenderer(DATAGRID_RENDER_DEFAULT);
+        
         $this->_renderer->isBuilt() or $this->build();
-        $this->_renderer->render();
+        $test = $this->_renderer->render();
+
+        if (PEAR::isError($test)) {
+            if ($test->getCode() == DATAGRID_ERROR_UNSUPPORTED) {
+                $type = is_null($this->_rendererType) 
+                        ? get_class($this->_renderer)
+                        : $this->_rendererType;
+                return new PEAR_Error("The $type driver does not support the ".
+                                      "render() method. Try using fill().");
+            } else {
+                return $test;
+            }
+        }
     }
 
     /**
-     * Return the datagrid output as a string
+     * Return the datagrid output
      *
      * @access public
-     * @return string The datagrid output (HTML, CSV, etc...)
+     * @return mixed The datagrid output (Usually a string : HTML, CSV, etc...)
+     *               or a PEAR_Error
      */
     function getOutput()
     {
@@ -392,6 +417,7 @@ class Structures_DataGrid
     {
         $renderer =& $this->rendererFactory($type, $options);
         if (!PEAR::isError($renderer)) {
+            $this->_rendererType = $type;
             return $this->attachRenderer($renderer);
         } else {
             return $renderer;
@@ -456,7 +482,16 @@ class Structures_DataGrid
             }
         }
 
-        $this->_renderer->setContainer($container);
+        $test = $this->_renderer->setContainer($container);
+        if (PEAR::isError($test)) {
+            if ($test->getCode() == DATAGRID_ERROR_UNSUPPORTED) {
+                return new PEAR_Error("The $type driver does not support the " . 
+                                      "fill() method. Try using render().");
+            } else {
+                return $test;
+            }
+        }
+
         $this->_renderer->build();
 
         return true;

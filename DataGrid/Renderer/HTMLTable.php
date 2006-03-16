@@ -22,7 +22,6 @@
 
 require_once 'Structures/DataGrid/Renderer/Common.php';
 require_once 'HTML/Table.php';
-require_once 'PHP/Compat/Function/http_build_query.php';
 
 /**
  * Structures_DataGrid_Renderer_HTMLTable Class
@@ -43,15 +42,13 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  *                        Can be text or HTML to define an image.
  * - sortIconDESC       : The icon to define that sorting is currently Descending. 
  *                        Can be text or HTML to define an image.
- * - extraVars          : variables to be added to the generated links
- * - excludeVars        : variables to be removed to the generated links
  * - columnAttributes   : attributes for the header row. This is an array of the
  *                        form: array(attribute => value, ...)
  * - headerAttributes   : column cells attributes. This is an array of the form :
  *                        array(fieldName => array(attribute => value, ...) ... )
  * - convertEntities    : whether or not to convert html entities. Default: true
  *                        This calls htmlspecialchars(). 
- * - sortingResetsPaging: whether to reset paging on sorting request
+ * - sortingResetsPaging: whether sorting HTTP queries reset paging  
  *                        (default : true)
  *                  
  * @version  $Revision$
@@ -64,7 +61,13 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  */
 class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Renderer_Common
 {
-
+    /**
+     * Rendering container
+     * @var object HTML_Table object
+     * @access protected
+     */
+    var $_table;
+    
     /**
      * The html_table_storage object for the table header
      * @var object HTML_Table_Storage
@@ -101,8 +104,6 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 'selfPath'            => $_SERVER['PHP_SELF'],
                 'sortIconASC'         => '',
                 'sortIconDESC'        => '',
-                'extraVars'           => array(),
-                'excludeVars'         => array(),
                 'columnAttributes'    => array(),
                 'headerAttributes'    => array(),
                 'convertEntities'     => true,
@@ -112,18 +113,45 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     }
 
     /**
+     * Attach an already instantiated HTML_Table object
+     *
+     * @var object HTML_Table object
+     * @return mixed  True or PEAR_Error
+     * @access public
+     */
+    function setContainer(&$table)
+    {
+        $this->_table =& $table;
+        return true;
+    }
+    
+    /**
+     * Return the currently used HTML_Table object
+     *
+     * @return object HTML_Table (reference to) or PEAR_Error
+     * @access public
+     */
+    function &getContainer()
+    {
+        if (!isset($this->_table)) {
+            $this->init();
+        }
+        return $this->_table;
+    }
+    
+    /**
      * Initialize HTML_Table instance if it is not already existing
      * 
      * @access protected
      */
     function init()
     {
-        if (is_null($this->_container)) {
-            $this->_container = new HTML_Table(null, null, true);
+        if (!isset($this->_table)) {
+            $this->_table = new HTML_Table(null, null, true);
         }
 
-        $this->_tableHeader =& $this->_container->getHeader();
-        $this->_tableBody =& $this->_container->getBody();
+        $this->_tableHeader =& $this->_table->getHeader();
+        $this->_tableBody =& $this->_table->getBody();
     }
 
     /**
@@ -136,10 +164,10 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      */
     function setTableAttribute($attr, $value)
     {
-        if (is_null($this->_container)) {
+        if (is_null($this->_table)) {
             $this->init();
         }
-        $this->_container->updateAttributes(array($attr => $value));
+        $this->_table->updateAttributes(array($attr => $value));
     }
 
     /**
@@ -188,7 +216,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      */
     function setAutoFill($value)
     {
-        if (is_null($this->_container)) {
+        if (is_null($this->_table)) {
             $this->init();
         }
         $this->_tableBody->setAutoFill($value);
@@ -222,6 +250,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     /**
      * Determines whether or not to use the Header
      *
+     * @deprecated Use the "buildHeader" option instead
      * @access  public
      * @param   bool    $bool   value to determine to use the header or not.
      */
@@ -235,7 +264,8 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      *
      * This method adds the provided variables to the paging and sorting
      * links. The variable values are automatically url encoded.
-     * 
+     *
+     * @deprecated Use the "extraVars" option instead
      * @param   array   $vars   Array of the form (key => value, ...) 
      * @access  public
      * @return  void
@@ -252,6 +282,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      * links. This is helpful when using variables that determine what page to
      * show such as an 'action' variable, etc.
      * 
+     * @deprecated Use the "excludeVars" option instead
      * @param   array       $vars       An array of variables to remove
      * @access  public
      * @return  void
@@ -282,7 +313,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      */
     function &getTable()
     {
-        return $this->_container;
+        return $this->_table;
     }   
 
     /**
@@ -294,19 +325,6 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      */
     function buildHeader()
     {
-        $prefix = $this->_requestPrefix;
-
-        // Build the list of common get parameters
-        $common   = $this->_options['extraVars'];
-        $ignore   = $this->_options['excludeVars'];
-        $ignore[] = $prefix . 'orderBy';
-        $ignore[] = $prefix . 'page';
-        $ignore[] = $prefix . 'direction';
-        foreach ($_GET as $key => $val) {
-            if (!in_array ($key, $ignore)) {
-                $common[$key] = $val;
-            }
-        }
         $row = $this->_tableHeader->getRowCount();
 
         for ($col = 0; $col < $this->_columnsNum; $col++) {
@@ -332,26 +350,13 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                     $direction = 'ASC';
                 }
 
-                // Build list of GET variables
-                $get = array();
-                $get[$prefix . 'orderBy'] = $field;
-                $get[$prefix . 'direction'] = $direction;
-                $get[$prefix . 'page'] 
-                    = $this->_options['sortingResetsPaging'] ? 1 : $this->_page;
+                // Build HTTP query
+                $extra = array ('page' => $this->_options['sortingResetsPaging'] 
+                                          ? 1 : $this->_page);
+                $query = $this->_buildSortingHttpQuery($field, $direction, true, $extra);
 
                 // Build Link URL
-                $url = $this->_options['selfPath'] . '?';
-
-                // Merge common and column-specific GET variables
-                if (ini_get('arg_separator.output') == '&') {
-                    $url .= htmlentities(
-                                http_build_query(array_merge($common, $get)),
-                                ENT_QUOTES,
-                                $this->_options['encoding']);
-                } else {
-                    $url .= http_build_query(array_merge($common, $get));
-                }
-
+                $url = $this->_options['selfPath'] . '?' . $query;
 
                 // Build HTML Link
                 $str = "<a href=\"$url\">$label $icon</a>";
@@ -450,7 +455,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      */
     function flatten()
     {
-        return $this->_container->toHTML();
+        return $this->_table->toHTML();
     }
 
     /**
@@ -513,11 +518,11 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      */
     function _buildPaging($options)
     {
-        $defaults = array('totalItems' => $this->_totalRecordsNum,
-                          'perPage' => is_null($this->_pageLimit) 
-                                       ? $this->_totalRecordsNum 
-                                       : $this->_pageLimit,
-                          'urlVar' => $this->_requestPrefix . 'page',
+        $defaults = array('totalItems'  => $this->_totalRecordsNum,
+                          'perPage'     => is_null($this->_pageLimit) 
+                                           ? $this->_totalRecordsNum 
+                                           : $this->_pageLimit,
+                          'urlVar'      => $this->_requestPrefix . 'page',
                           'currentPage' => $this->_page); 
         $options = array_merge($defaults, $options);
         $this->_pager =& Pager::factory($options);

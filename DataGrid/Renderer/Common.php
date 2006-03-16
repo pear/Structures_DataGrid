@@ -19,9 +19,9 @@
 //
 // $Id$
 
+require_once 'PHP/Compat/Function/http_build_query.php';
+
 /**
- * Structures_DataGrid_Renderer_Common Class
- *
  * Base class of all Renderer drivers
  *
  * Recognized options :
@@ -41,26 +41,25 @@
  * - encoding               : the content encoding. If the mbstring extension is 
  *                            present the default value is set from 
  *                            mb_internal_encoding(), otherwise it is ISO-8859-1
+ * - extraVars              : variables to be added to the generated HTTP queries
+ * - excludeVars            : variables to be removed to the generated HTTP queries
  * 
  * --- DRIVER INTERFACE ---
  *
- * Methods that drivers MUST implement :
- *     - init()
- *     - buildBody()
- *     - flatten()
- * 
- * Methods that drivers MAY implement :    
+ * Methods (none required) :    
  *     - Constructor
+ *     - setContainer()
+ *     - getContainer()
+ *     - init()
  *     - defaultCellFormatter()
  *     - buildHeader()
+ *     - buildBody()
  *     - buildFooter()
  *     - finalize()
+ *     - flatten()
  *     - render()
  * 
- * Read/Write property :
- *     - $_container 
- * 
- * Read-Only properties    
+ * Properties (read-only) :    
  *     - $_columns
  *     - $_records
  *     - $_columnsNum
@@ -83,22 +82,10 @@
  * @access   public
  * @package  Structures_DataGrid
  * @category Structures
+ * @abstract
  */ 
 class Structures_DataGrid_Renderer_Common 
 {
-    /**
-     * Rendering container
-     *
-     * This variable can be of any type. Its type is specific to a given
-     * driver.
-     * 
-     * Drivers can read and write to this property. 
-     * 
-     * @var mixed
-     * @access protected
-     */
-    var $_container = null;
-
     /**
      * Columns' fields names and labels
      * 
@@ -185,7 +172,7 @@ class Structures_DataGrid_Renderer_Common
      */
     var $_pageLimit = null;
 
-    /**
+     /**
      * GET/POST/Cookie parameters prefix
      * 
      * Drivers can read the content of this property but must not change it.
@@ -238,7 +225,16 @@ class Structures_DataGrid_Renderer_Common
     var $_isBuilt = false;
 
     /**
-     * Instantiate the driver and set default options
+     * Cache for the GET parameters that are common to all sorting http queries
+     * 
+     * @var array
+     * @access private
+     * @see Structures_DataGrid_Renderer_Common::buildSortingHttpQuery()
+     */
+    var $_sortingHttpQueryCommon = null;
+    
+    /**
+     * Instantiate the driver and set default options and features
      *
      * Drivers may overload this method in order to change/add default options.
      *
@@ -249,13 +245,15 @@ class Structures_DataGrid_Renderer_Common
     {
         $this->_options = array(
             
-            /* Protected options, that the drivers should handle */    
+            /* Options that the drivers may/should handle */    
             'encoding'              => function_exists('mb_internal_encoding')
                                        ? mb_internal_encoding() : 'ISO-8859-1',
             'fillWithEmptyRows'     => false,
             'numberAlign'           => true,
-                                       
-            /* Private options, that must not be accessed by drivers */
+            'extraVars'             => array(),
+            'excludeVars'           => array(),
+
+            /* Options that must not be accessed by drivers */
             'buildHeader'           => true, 
             'buildFooter'           => true,  
             'defaultCellValue'      => null,
@@ -263,6 +261,7 @@ class Structures_DataGrid_Renderer_Common
             'disableColumnSorting'  => array(), 
 
         );
+
     }
 
     /**
@@ -292,28 +291,6 @@ class Structures_DataGrid_Renderer_Common
     function setOptions($options)
     {
         $this->_options = array_merge($this->_options, $options);
-    }
-
-    /**
-     * Attach a container object
-     *
-     * @param object Container of the class supported by the driver
-     * @access public
-     */
-    function setContainer(&$container)
-    {
-        $this->_container =& $container;
-    }
-
-    /**
-     * Return the container used by the driver
-     * 
-     * @return object Container of the class supported by the driver
-     * @access public
-     */
-    function &getContainer()
-    {
-        return $this->_container;
     }
 
     /**
@@ -356,13 +333,45 @@ class Structures_DataGrid_Renderer_Common
     }
 
     /**
+     * Attach a container object
+     *
+     * Drivers that provide support for the Structures_DataGrid::fill() method
+     * must implement this method.
+     *
+     * @abstract
+     * @param  object Container of the class supported by the driver
+     * @access public
+     * @return mixed  True or PEAR_Error
+     */
+    function setContainer(&$container)
+    {
+        return $this->_noSupport(__FUNCTION__);
+    }
+
+    /**
+     * Return the container used by the driver
+     *
+     * Drivers should implement this method when they have some kind of support
+     * for rendering containers.
+     * 
+     * @abstract
+     * @return object Container of the class supported by the driver
+     *                or PEAR_Error
+     * @access public
+     */
+    function &getContainer()
+    {
+        return $this->_noSupport(__FUNCTION__);
+    }
+
+    /**
      * Create or/and prepare the container
      *
-     * Drivers are required to implement this method.
+     * Drivers may optionally implement this method.
      *
      * This method is responsible for creating the container if it has not 
      * already been provided by the user with the setContainer() method.
-     * It is where preliminary container setup also happens.
+     * It is where preliminary container should also be done.
      *
      * @abstract
      * @access protected
@@ -426,7 +435,7 @@ class Structures_DataGrid_Renderer_Common
     /**
      * Retrieve output from the container object 
      * 
-     * Drivers are required to implement this method.
+     * Drivers may optionally implement this method.
      *
      * This method is meant to retrieve final output from the container.
      * 
@@ -556,9 +565,12 @@ class Structures_DataGrid_Renderer_Common
      */
     function getOutput()
     {
-        $this->_isBuilt or $this->build();
-
-        return $this->flatten();
+        if ($this->_isImplemented('flatten')) {
+            $this->_isBuilt or $this->build();
+            return $this->flatten();
+        } else {
+            return $this->_noSupport(__FUNCTION__);
+        }
     }
 
     /**
@@ -568,12 +580,45 @@ class Structures_DataGrid_Renderer_Common
      * writing to the standard output (like calling header(), etc...).
      * 
      * @access  public
+     * @return mixed True or a PEAR_Error
      */
     function render()
     {
-        echo $this->getOutput();
+        if ($this->_isImplemented('flatten')) {
+            $this->_isBuilt or $this->build();
+            echo $this->flatten();
+        } else {
+            $this->build();
+        }
     }
 
+    /**
+     * Return an error related to an unsupported public method
+     *
+     * When a given public method is not implemented/supported by the driver
+     * it must return a PEAR_Error object with code DATAGRID_ERROR_UNSUPPORTED.
+     * This is a helper method for generating such PEAR_Error objects. 
+     *
+     * Example:
+     * 
+     * <code>
+     * function anUnsupportedMethod()
+     * {
+     *     return $this->_noSupport(__FUNCTION__);
+     * }
+     * </code>
+     *
+     * @param string $method The name of the unsupported method
+     * @return object PEAR_Error with code DATAGRID_ERROR_UNSUPPORTED
+     * @access protected
+     */
+    function _noSupport($method)
+    {
+        return new PEAR_Error("The renderer driver class \"" .get_class($this). 
+                              "\" does not support the $method() method",
+                              DATAGRID_ERROR_UNSUPPORTED);
+    }
+    
     /**
      * Sets the rendered status.  This can be used to "flush the cache" in case
      * you need to render the datagrid twice with the second time having changes
@@ -591,14 +636,15 @@ class Structures_DataGrid_Renderer_Common
         /* What are we supposed to do with $status = true ? */
     }   
 
-    /**
+     /**
      * Set the HTTP Request prefix
      * 
      * @param string $prefix The prefix string
      * @return void
      * @access public
      */
-    function setRequestPrefix($prefix) {
+    function setRequestPrefix($prefix) 
+    {
         $this->_requestPrefix = $prefix;
     }
 
@@ -635,6 +681,107 @@ class Structures_DataGrid_Renderer_Common
     function isBuilt()
     {
         return $this->_isBuilt;
+    }
+    
+    /**
+     * Build an HTTP query for sorting a given column
+     * 
+     * This is a handy method that most drivers can use in order to build 
+     * the HTTP queries that are used to sort columns.
+     *
+     * It takes the global "extraVars", "excludeVars" options as well as the 
+     * $_requestPrefix property into account and can also convert the ampersand 
+     * to XML/HTML entities according to the "encoding" option.
+     *
+     * @param $field            Sort field name
+     * @param $direciton        Sort direction
+     * @param $convertAmpersand Whether to convert ampersands to XML/HTML 
+     *                          compliant entities
+     * @param $extraParameters  Optional extra HTTP parameters
+     * @return string Query string of the
+     * @access protected
+     *             
+     */
+    function _buildSortingHttpQuery($field, $direction, $convertAmpersand = false, 
+                                   $extraParameters = array())
+    {
+        $prefix = $this->_requestPrefix;
+
+        if (is_null($this->_sortingHttpQueryCommon)) {
+            // Build and cache the list of common get parameters
+            $this->_sortingHttpQueryCommon = $this->_options['extraVars'];
+            $ignore   = $this->_options['excludeVars'];
+            $ignore[] = $prefix . 'orderBy';
+            $ignore[] = $prefix . 'direction';
+            foreach ($extraParameters as $var => $value) {
+                $ignore[] = $prefix . $var;
+            }
+            foreach ($_GET as $key => $val) {
+                if (!in_array ($key, $ignore)) {
+                    $this->_sortingHttpQueryCommon[$key] = $val;
+                }
+            }
+        }
+
+        // Build list of GET variables
+        $get = array();
+        $get[$prefix . 'orderBy'] = $field;
+        $get[$prefix . 'direction'] = $direction;
+        foreach ($extraParameters as $var => $value) {
+            $get[$prefix . $var] = $value;
+        }
+
+        // Merge common and column-specific GET variables
+        $get = array_merge($this->_sortingHttpQueryCommon, $get);
+
+        // Build query
+        if ($convertAmpersand and ini_get('arg_separator.output') == '&') {
+            $query = htmlentities(http_build_query($get),ENT_QUOTES,
+                                   $this->_options['encoding']);
+        } else {
+            $query = http_build_query($get);
+        }
+
+        return $query;
+    }
+
+   
+    /**
+     * Detect whether a method is implemented in the driver class
+     * 
+     * This method is able to detect if a given method is implemented in the 
+     * driver (child class) even if it is declared in the root class.
+     *
+     * @param $method Method name
+     * @return bool 
+     * @access protected
+     */
+    function _isImplemented($method)
+    {
+        return $this->_isImplementedRecursive($method,get_class($this));
+    }
+
+    /**
+     * Helper method for _isImplemented()
+     *
+     * @param $method Method name
+     * @param $class  The class to scan
+     * @return boold
+     * @access private
+     */
+    function _isImplementedRecursive($method, $class)
+    {
+        if ($class == 'structures_datagrid_renderer_common') {
+            return false;
+        } else {
+            $methods = get_class_methods($class);
+            if (in_array ($method, $methods)) {
+                return true;
+            } else {
+                $parent = get_parent_class ($class);
+                return $this->_isImplementedRecursive($method, $parent);
+            }
+        }
     }
 }
 

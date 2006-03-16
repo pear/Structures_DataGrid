@@ -157,7 +157,7 @@ class Structures_DataGrid_DataSource_Common
      *                        array(feature => true|false, ...)
      * @return void
      */
-    function _addFeatures($features)
+    function _setFeatures($features)
     {
         $this->_features = array_merge($this->_features, $features);
     }
