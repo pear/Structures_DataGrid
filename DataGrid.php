@@ -1076,6 +1076,35 @@ class Structures_DataGrid
             return PEAR::raiseError('Unable to set options ; No datasource loaded.');
         }
     }
+
+    /**
+     * Return paging links
+     *
+     * This method will return paging links if the renderer driver supports
+     * generating them.
+     *
+     * Useful options (See Pager's documentation for more) :
+     * mode      : The mode of pager to use
+     * separator : The string to use to separate each page link
+     * prevImg   : The string for the previous page link
+     * nextImg   : The string for the forward page link
+     * delta     : The number of pages to display before and
+     *             after the current page
+     * 
+     * Notice : Some drivers may not use HTML::Pager. In a such case, the above
+     * options may not be supported. See the driver-specific documentation for 
+     * more.
+     *             
+     * @param  array $options Paging options as supported by the driver 
+     * @return mixed          Links as a string, array,... (driver-specific)
+     *                        or a PEAR_Error if not implemented
+     * @access public
+     */
+    function getPaging($options = array())
+    {
+        isset($this->_renderer) or $this->setRenderer(DATAGRID_RENDER_DEFAULT);
+        return $this->_renderer->getPaging($options);
+    }
 }
 
 ?>

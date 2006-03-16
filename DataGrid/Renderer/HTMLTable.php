@@ -475,73 +475,55 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
 
     /**
      * Handles the building of the page list for the DataGrid in HTML.
+     * 
      * This method uses the HTML::Pager class
      *
+     * Useful options (See Pager's documentation for more) :
+     * mode      : The mode of pager to use
+     * separator : The string to use to separate each page link
+     * prevImg   : The string for the previous page link
+     * nextImg   : The string for the forward page link
+     * delta     : The number of pages to display before and
+     *             after the current page
+     *
      * @access  public
-     * @param   string $mode        The mode of pager to use
-     * @param   string $separator   The string to use to separate each page link
-     * @param   string $prev        The string for the previous page link
-     * @param   string $next        The string for the forward page link
-     * @param   string $delta       The number of pages to display before and
-     *                              after the current page
-     * @param   array $attrs        Additional attributes for the Pager class
-     * @return  string              The HTML for the page links
+     * @param   array  $options        Array of HTML::Pager options
+     * @return  string                 The HTML for the page links
      * @see     HTML::Pager
      */
-    function getPaging($mode = 'Sliding', $separator = '|', $prev = '<<',
-                       $next = '>>', $delta = 5, $attrs = null)
+    function getPaging($options = array())
     {
-        require_once 'Pager/Pager.php';
+        $defaults = array('mode' => 'Sliding',
+                          'delta' => 5,
+                          'separator' => '|',
+                          'prevImg' => '<<',
+                          'nextImg' => '>>');
 
-        // Generate Paging
-        $options = array('mode' => $mode,
-                         'delta' => $delta,
-                         'separator' => $separator,
-                         'prevImg' => $prev,
-                         'nextImg' => $next);
-
-        if (is_array($attrs)) {
-            $options = array_merge($options, $attrs);
+        // This is a BC workaround for the old version of this method
+        // FIXME: needs testing
+        if (is_string($options)) {
+            $argsNum = func_get_args(); 
+            $args = func_get_args();
+            for ($i = 0; $i < $argsNum; $i++) {
+                switch ($i) {
+                    case 0 : $options['mode'] = $args[$i]; break;
+                    case 1 : $options['separator'] = $args[$i]; break;
+                    case 2 : $options['prevImg'] = $args[$i]; break;  
+                    case 3 : $options['nextImg'] = $args[$i]; break;  
+                    case 4 : $options['delta'] = $args[$i]; break;  
+                    case 5 : $options = array_merge($options, $args[$i]); break;  
+                }
+            }
         }
-
-        if (isset ($options['extraVars'])) {
-            $options['extraVars'] = array_merge($options['extraVars'],
-                                                $this->_options['extraVars']);
-        } else {
-            $options['extraVars'] = $this->_options['extraVars'];
-        }
-
-        if (isset ($options['excludeVars'])) {
-            $options['excludeVars'] = array_merge($options['excludeVars'],
-                                                  $this->_options['excludeVars']);
-        } else {
-            $options['excludeVars'] = $this->_options['excludeVars'];
-        }
-
+        
+        $options = array_merge($defaults, $options);
+        
         $this->_buildPaging($options);
 
         // Return paging html
         return $this->_pager->links;
     }
 
-    /**
-     * Handles generating the paging object
-     *
-     * @param   array        $options        Array of HTML::Pager options
-     * @access  private
-     * @return  void
-     */
-    function _buildPaging($options)
-    {
-        $defaults = array('totalItems'  => $this->_totalRecordsNum,
-                          'perPage'     => is_null($this->_pageLimit) 
-                                           ? $this->_totalRecordsNum 
-                                           : $this->_pageLimit,
-                          'urlVar'      => $this->_requestPrefix . 'page',
-                          'currentPage' => $this->_page); 
-        $options = array_merge($defaults, $options);
-        $this->_pager =& Pager::factory($options);
-    }
 }
 
 ?>
