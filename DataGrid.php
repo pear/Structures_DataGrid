@@ -987,6 +987,8 @@ class Structures_DataGrid
     {
         if (is_a($container, 'html_table') or is_subclass_of($container, 'html_table')) {
             return DATAGRID_RENDER_TABLE;
+        } else if (is_a($container, 'smarty') or is_subclass_of($container, 'smarty')) {
+            return DATAGRID_RENDER_SMARTY;
         } // FIXME: and so on...
 
         return null;
