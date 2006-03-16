@@ -20,12 +20,73 @@
 //
 // $Id$
 
-require_once 'Structures/DataGrid/Renderer/HTMLTable.php';
-// require_once 'Smarty/Smarty.class.php';
+require_once 'Structures/DataGrid/Renderer.php';
 
 /**
- * Structures_DataGrid_Renderer_Smarty Class
+ * Smarty renderer
  *
+ * Recognized options :
+ * 
+ * - selfPath           : The complete path for sorting and paging links.  If not 
+ *                        defined, PHP_SELF is used.
+ * - sortingResetsPaging: whether sorting HTTP queries reset paging  
+ *                        (default : true)
+ * - convertEntities    : whether or not to convert html entities. Default: true
+ *                        This calls htmlspecialchars(). 
+ *
+ * 
+ * This driver does not support the render() method, it only is able to "fill"
+ * a Smarty object, by calling Smarty::assign() and Smarty::register_function().
+ *
+ * It's up to you to called Smarty::display() after the Smarty object has been
+ * filled.
+ *
+ * This driver assigns the following Smarty variables : 
+ * - $columns         : array of columns' labels and sorting links
+ * - $records         : array of records values
+ * - $page            : current page
+ * - $pageLimit       : number of rows per page
+ * - $recordsNum      : number of records in the current page
+ * - $totalRecordsNum : total number of records
+ * - $columnsNum      : number of records
+ * 
+ * This driver also register a Smarty custom function named getPaging
+ * that can be called from Smarty templates with {getPaging} in order
+ * to print paging links. This function accepts any of the Pager::factory()
+ * options as parameters.
+ *
+ * Template example, featuring sorting and paging :
+ * 
+ * <code>
+ * <!-- Show paging links using the custom getPaging function -->
+ * {getPaging prevImg="<<" nextImg=">>" separator=" | " delta="5"}
+ * 
+ * <table cellspacing="0">
+ *     <!-- Build header -->
+ *     <tr>
+ *         {section name=col loop=$columns}
+ *             <th>
+ *                 <!-- Check if the column is sortable -->
+ *                 {if $columns[col].link != ""}
+ *                     <a href="{$columns[col].link}">{$columns[col].label}</a>
+ *                 {else}
+ *                     {$columns[col].label}
+ *                 {/if}
+ *             </th>
+ *         {/section}
+ *     </tr>
+ *     
+ *     <!-- Build body -->
+ *     {section name=row loop=$records}
+ *         <tr {if $smarty.section.row.iteration is even}bgcolor="#EEEEEE"{/if}>
+ *             {section name=col loop=$records[row]}
+ *                 <td>{$records[row][col]}</td>
+ *             {/section}
+ *         </tr>
+ *     {/section}
+ * </table>
+ * </code>
+ * 
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
  * @author   Olivier Guilyardi <olivier@samalyse.com>
@@ -33,18 +94,31 @@ require_once 'Structures/DataGrid/Renderer/HTMLTable.php';
  * @package  Structures_DataGrid
  * @category Structures
  */
-class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer_HTMLTable
+class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
 {
-// FIXME: test this renderer
-// FIXME: implement paging feature request (write a common paging class for
-//        HTMLTable and Smarty renderer)
-
     /**
      * Smarty container
      * @var object $_smarty;
      */
     var $_smarty;
     
+    /**
+     * Constructor
+     *
+     * @access  public
+     */
+    function Structures_DataGrid_Renderer_Smarty()
+    {
+        parent::Structures_DataGrid_Renderer();
+        $this->_addDefaultOptions(
+            array(
+                'selfPath'            => $_SERVER['PHP_SELF'],
+                'convertEntities'     => true,
+                'sortingResetsPaging' => true,
+            )
+        );
+    }
+
     /**
      * Attach an already instantiated Smarty object
      * 
@@ -64,7 +138,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer_H
     function &getContainer()
     {
         isset($this->_smarty) or $this->init();
-        return &$this->_smarty;
+        return $this->_smarty;
     }
     
     /**
@@ -77,6 +151,13 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer_H
         if (!isset($this->_smarty)) {
             $this->_smarty = new Smarty();
         }
+        $this->_smarty->assign('page', $this->_page);
+        $this->_smarty->assign('pageLimit', $this->_pageLimit);
+        $this->_smarty->assign('columnsNum', $this->_columnsNum);
+        $this->_smarty->assign('recordsNum', $this->_recordsNum);
+        $this->_smarty->assign('totalRecordsNum', $this->_totalRecordsNum);
+
+        $this->_smarty->register_function('getPaging',array(&$this,'_smartyGetPaging'));
     }
 
     /**
@@ -92,6 +173,37 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer_H
     }
 
 
+    function buildHeader(&$columns)
+    {
+        $prepared = array();
+        foreach ($columns as $index => $spec) {
+            if (in_array($spec['field'], $this->_sortableFields)) {
+                reset($this->_currentSort);
+                if (list($currentField,$currentDirection) = each($this->_currentSort)
+                    and $currentField == $spec['field']) {
+                    if ($currentDirection == 'ASC') {
+                        $direction = 'DESC';
+                    } else {
+                        $direction = 'ASC';
+                    }
+                } else {
+                    $direction = 'ASC';
+                }
+                $extra = array ('page' => $this->_options['sortingResetsPaging'] 
+                                          ? 1 : $this->_page);
+                $query = $this->_buildSortingHttpQuery($spec['field'], 
+                                                       $direction, true, $extra);
+                $prepared[$index]['link'] = "{$this->_options['selfPath']}?$query";
+            } else {
+                $query = '';
+                $prepared[$index]['link'] = "";
+            }
+            $prepared[$index]['label'] = $spec['label'];
+        }
+
+        $this->_smarty->assign('columns', $prepared);
+    }
+    
     /**
      * Handles building the body of the table
      *
@@ -100,12 +212,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer_H
      */
     function buildBody()
     {
-        if ($this->_tpl != '') {
-            $this->_smarty->assign('recordSet',   $this->_records);
-            $this->_smarty->assign('columnSet',   $this->_columns);
-            $this->_smarty->assign('recordLimit', $this->_pageLimit);
-            $this->_smarty->assign('currentPage', $this->_page);
-        }
+        $this->_smarty->assign('records',   $this->_records);
     }
 
     /**
@@ -133,6 +240,39 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer_H
     function render()
     {
         return $this->_noSupport(__FUNCTION__);
+    }
+
+    /**
+     * Smarty custom function "getPaging"
+     *
+     * This is only meant to be called from a smarty template, using the
+     * expression : {getPaging <options>}
+     *
+     * <options> are any Pager::factory() options
+     *
+     * @param array  $params Options passed from the Smarty template
+     * @param object $smarty Smarty object
+     * @return string Paging HTML links
+     * @access private
+     */
+    function _smartyGetPaging($params, &$smarty)
+    {
+        $this->_buildPaging($params);
+        return $this->_pager->links;
+    }
+
+    /**
+     * Default formatter for all cells
+     * 
+     * @param string  Cell value 
+     * @return string Formatted cell value
+     * @access protected
+     */
+    function defaultCellFormatter($value)
+    {
+        return $this->_options['convertEntities']
+               ? htmlspecialchars($value, ENT_COMPAT, $this->_options['encoding'])
+               : $value;
     }
 }
 
