@@ -23,6 +23,8 @@ require_once 'Structures/DataGrid/Record.php';
 /**
  * Structures_DataGrid_Record_DataObject Class
  *
+ * FIXME: Isn't this file/class obsolete ?
+ * 
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
  * @access   public

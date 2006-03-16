@@ -107,7 +107,7 @@ class Structures_DataGrid
     var $columnSet = array();
 
     /**
-     * Array of records.  Records are defined as a DataGridRecord object.
+     * Array of records.  
      * @var array
      * @access private
      */
@@ -771,6 +771,8 @@ class Structures_DataGrid
     /**
      * Adds a DataGrid_Record object to this DataGrid object
      *
+     * FIXME: Isn't this obsolete ?
+     * 
      * @access  public
      * @param   object Structures_DataGrid_Record   $record     The record
      *          object to add. This object must be a Structures_DataGrid_Record
@@ -790,6 +792,8 @@ class Structures_DataGrid
 
     /**
      * Drops a DataGrid_Record object from this DataGrid object
+     *
+     * FIXME: Isn't this obsolete ?
      *
      * @access  public
      * @param   object Structures_DataGrid_Record   $record     The record

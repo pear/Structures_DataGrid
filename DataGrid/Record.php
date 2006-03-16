@@ -21,6 +21,8 @@
 /**
  * Structures_DataGrid_Record Class
  *
+ * FIXME: Isn't this file/class obsolete ?
+ *
  * This class represents one record for the DataGrid.  All data is stored
  * as an Associative Array with the keys as the Column Name and the value
  * as the cell value.  Other data types can be added by the extended classes, 
