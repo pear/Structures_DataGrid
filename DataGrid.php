@@ -572,7 +572,7 @@ class Structures_DataGrid
      */
     function getRecordCount()
     {
-        if (!is_null($this->_dataSource)) {
+        if (isset($this->_dataSource)) {
             return $this->_dataSource->count();
         } else {
             return count($this->recordSet);
@@ -739,7 +739,7 @@ class Structures_DataGrid
      */
     function fetchDataSource()
     {
-        if ($this->_dataSource != null) {
+        if (isset($this->_dataSource)) {
             // Determine Page
             $page = $this->page ? $this->page - 1 : 0;
 
@@ -815,7 +815,7 @@ class Structures_DataGrid
     function sortRecordSet($sortBy, $direction = 'ASC')
     {
         $this->sortSpec = array($sortBy => $direction);
-        if ($this->_dataSource) {
+        if (isset($this->_dataSource)) {
             $this->_dataSource->sort($sortBy, $direction);
         } else {
             $this->_sortCallbackField = $sortBy;
@@ -1024,6 +1024,58 @@ class Structures_DataGrid
         }
     }
 
+    /**
+     * Set a single renderer option
+     *
+     * @param   string  $name       Option name
+     * @param   mixed   $value      Option value
+     * @access  public
+     */
+    function setRendererOption($name,$value)
+    {
+        $this->setRendererOptions(array($name => $value));
+    }
+
+    /**
+     * Set multiple renderer options
+     *
+     * @param   array   $options    An associative array of the form :
+     *                              array("option_name" => "option_value",...)
+     * @access  public
+     */
+    function setRendererOptions($options)
+    {
+        isset($this->_renderer) or $this->setRenderer(DATAGRID_RENDER_DEFAULT);
+        $this->_renderer->setOptions($options);
+    }
+
+    /**
+     * Set a single datasource option
+     *
+     * @param   string  $name       Option name
+     * @param   mixed   $value      Option value
+     * @access  public
+     */
+    function setDataSourceOption($name,$value)
+    {
+        return $this->setDataSourceOptions(array($name => $value));
+    }
+
+    /**
+     * Set multiple datasource options
+     *
+     * @param   array   $options    An associative array of the form :
+     *                              array("option_name" => "option_value",...)
+     * @access  public
+     */
+    function setDataSourceOptions($options)
+    {
+        if (isset($this->_dataSource)) {
+            $this->_dataSource->setOptions($options);
+        } else {
+            return PEAR::raiseError('Unable to set options ; No datasource loaded.');
+        }
+    }
 }
 
 ?>

@@ -282,7 +282,7 @@ class Structures_DataGrid_Renderer
     }
 
     /**
-     * Set options
+     * Set multiple options
      *
      * @param   mixed   $options    An associative array of the form :
      *                              array("option_name" => "option_value",...)
@@ -291,6 +291,18 @@ class Structures_DataGrid_Renderer
     function setOptions($options)
     {
         $this->_options = array_merge($this->_options, $options);
+    }
+
+    /**
+     * Set a single option
+     *
+     * @param   string  $name       Option name
+     * @param   mixed   $value      Option value
+     * @access  public
+     */
+    function setOption($name, $value)
+    {
+        $this->_options[$name] = $value;
     }
 
     /**

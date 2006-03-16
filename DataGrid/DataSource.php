@@ -177,6 +177,18 @@ class Structures_DataGrid_DataSource
     }
 
     /**
+     * Set a single option
+     *
+     * @param   string  $name       Option name
+     * @param   mixed   $value      Option value
+     * @access  public
+     */
+    function setOption($name, $value)
+    {
+        $this->_options[$name] = $value;
+    }
+
+    /**
      * Generate columns if options are properly set
      *
      * Note : must be called after fetch()
