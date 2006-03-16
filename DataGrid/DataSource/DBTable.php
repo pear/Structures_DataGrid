@@ -19,7 +19,7 @@
 //
 // $Id$
 
-require_once 'Structures/DataGrid/DataSource/Common.php';
+require_once 'Structures/DataGrid/DataSource.php';
 
 /**
 * PEAR::DB_Table Data Source Driver
@@ -34,7 +34,7 @@ require_once 'Structures/DataGrid/DataSource/Common.php';
 * @category Structures
 */
 class Structures_DataGrid_DataSource_DBTable
-    extends Structures_DataGrid_DataSource_Common
+    extends Structures_DataGrid_DataSource
 {   
     /**
      * Reference to the Result object returned by DB_Table
@@ -75,7 +75,7 @@ class Structures_DataGrid_DataSource_DBTable
      */
     function Structures_DataGrid_DataSource_DBTable()
     {
-        parent::Structures_DataGrid_DataSource_Common();
+        parent::Structures_DataGrid_DataSource();
         $this->_addDefaultOptions(array('where' => null));
     }
   

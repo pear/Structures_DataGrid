@@ -20,7 +20,7 @@
 //
 // $Id$
 
-require_once 'Structures/DataGrid/Renderer/Common.php';
+require_once 'Structures/DataGrid/Renderer.php';
 //require_once 'XML/XUL.php';
 require_once 'XML/Util.php';
 
@@ -70,7 +70,7 @@ require_once 'XML/Util.php';
  * @category    Structures
  * @todo        Implement PEAR::XML_XUL upon maturity
  */
-class Structures_DataGrid_Renderer_XUL extends Structures_DataGrid_Renderer_Common
+class Structures_DataGrid_Renderer_XUL extends Structures_DataGrid_Renderer
 {
     /**
      * The generated XUL data
@@ -88,7 +88,7 @@ class Structures_DataGrid_Renderer_XUL extends Structures_DataGrid_Renderer_Comm
      */
     function Structures_DataGrid_Renderer_XUL()
     {
-        parent::Structures_DataGrid_Renderer_Common();
+        parent::Structures_DataGrid_Renderer();
         $this->_addDefaultOptions(
             array(
                 'selfPath' => $_SERVER['PHP_SELF']

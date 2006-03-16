@@ -20,7 +20,7 @@
 //
 // $Id$
 
-require_once 'Structures/DataGrid/Renderer/Common.php';
+require_once 'Structures/DataGrid/Renderer.php';
 require_once 'HTML/Table.php';
 
 /**
@@ -59,7 +59,7 @@ require_once 'HTML/Table.php';
  * @package  Structures_DataGrid
  * @category Structures
  */
-class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Renderer_Common
+class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Renderer
 {
     /**
      * Rendering container
@@ -101,7 +101,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      */
     function Structures_DataGrid_Renderer_HTMLTable()
     {
-        parent::Structures_DataGrid_Renderer_Common();
+        parent::Structures_DataGrid_Renderer();
         $this->_addDefaultOptions(
             array(
                 'evenRowAttributes'   => array(),

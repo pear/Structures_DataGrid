@@ -20,7 +20,7 @@
 // $Id$
 
 require_once 'DB.php';
-require_once 'Structures/DataGrid/DataSource/Common.php';
+require_once 'Structures/DataGrid/DataSource.php';
 
 
 /**
@@ -36,7 +36,7 @@ require_once 'Structures/DataGrid/DataSource/Common.php';
  * @category Structures
  */
 class Structures_DataGrid_DataSource_DBQuery
-    extends Structures_DataGrid_DataSource_Common
+    extends Structures_DataGrid_DataSource
 {   
     /**
      * Reference to the PEAR::DB object
@@ -77,7 +77,7 @@ class Structures_DataGrid_DataSource_DBQuery
      */
     function Structures_DataGrid_DataSource_DBQuery()
     {
-        parent::Structures_DataGrid_DataSource_Common();
+        parent::Structures_DataGrid_DataSource();
     }
   
     /**

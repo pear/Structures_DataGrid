@@ -52,7 +52,7 @@
 * Subclass this Structures_DataGrid_DataSource class :
 * <code>
 * class Structures_DataGrid_DataSource_Foo extends
-*     Structures_DataGrid_DataSource_Common
+*     Structures_DataGrid_DataSource
 * </code>
 *
 * In the constructor, initialize default options . These defaults will be
@@ -61,7 +61,7 @@
 * <code>
 *     function Structures_DataGrid_DataSource_Foo()
 *     {
-*         parent::Structures_DataGrid_DataSource_Common(); // required
+*         parent::Structures_DataGrid_DataSource(); // required
 *         $this->_addDefaultOptions(array( 'bar' => true));
 *     }
 * </code>
@@ -70,7 +70,7 @@
 * the provided skeleton. See the corresponding prototypes
 * for more information on how to do this.
 *
-* Do not forget to call Structures_DataGrid_DataSource_Common::setOptions()
+* Do not forget to call Structures_DataGrid_DataSource::setOptions()
 * from your bind() method.
 * ex : if ($options) $this->setOptions($options);
 *
@@ -84,7 +84,7 @@
 * @category Structures
 * @version  $Revision $
 */
-class Structures_DataGrid_DataSource_Common
+class Structures_DataGrid_DataSource
 {
     /* FIXME: Did we really need to rename this class from DataSource to 
      * DataSource_Common ? IIRC we did this to mimic the MDB2 internals, 
@@ -94,6 +94,8 @@ class Structures_DataGrid_DataSource_Common
      *
      * It will break BC for no reason. for people who have written their own 
      * drivers by subclassing the old DataSource class.
+     *
+     * This is fixed... 
      */
      
     /**
@@ -101,8 +103,8 @@ class Structures_DataGrid_DataSource_Common
      *
      * @var array
      * @access protected
-     * @see Structures_DataGrid_DataSource_Common::_setOption()
-     * @see Structures_DataGrid_DataSource_Common::addDefaultOptions()
+     * @see Structures_DataGrid_DataSource::_setOption()
+     * @see Structures_DataGrid_DataSource::addDefaultOptions()
      */
     var $_options = array();
 
@@ -118,7 +120,7 @@ class Structures_DataGrid_DataSource_Common
      * Constructor
      *
      */
-    function Structures_DataGrid_DataSource_Common()
+    function Structures_DataGrid_DataSource()
     {
         $this->_options = array('generate_columns' => false,
                                 'labels'           => array(),
@@ -139,7 +141,7 @@ class Structures_DataGrid_DataSource_Common
      * @param array $options An associative array of the form:
      *                       array(optionName => optionValue, ...)
      * @return void
-     * @see Structures_DataGrid_DataSource_Common::_setOption
+     * @see Structures_DataGrid_DataSource::_setOption
      */
     function _addDefaultOptions($options)
     {

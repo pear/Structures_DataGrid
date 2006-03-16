@@ -84,7 +84,7 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  * @category Structures
  * @abstract
  */ 
-class Structures_DataGrid_Renderer_Common 
+class Structures_DataGrid_Renderer
 {
     /**
      * Columns' fields names and labels
@@ -199,8 +199,8 @@ class Structures_DataGrid_Renderer_Common
      *
      * @var array
      * @access protected
-     * @see Structures_DataGrid_Renderer_Common::setOption()
-     * @see Structures_DataGrid_Renderer_Common::_addDefaultOptions()
+     * @see Structures_DataGrid_Renderer::setOption()
+     * @see Structures_DataGrid_Renderer::_addDefaultOptions()
      */
     var $_options = array();
 
@@ -212,7 +212,7 @@ class Structures_DataGrid_Renderer_Common
      * 
      * @var array
      * @access private
-     * @see Structures_DataGrid_Renderer_Common::_columns
+     * @see Structures_DataGrid_Renderer::_columns
      */
     var $_columnObjects = array();
 
@@ -220,7 +220,7 @@ class Structures_DataGrid_Renderer_Common
      * Whether the datagrid has been built or not
      * @var bool
      * @access private
-     * @see Structures_DataGrid_Renderer_Common::isBuilt()
+     * @see Structures_DataGrid_Renderer::isBuilt()
      */
     var $_isBuilt = false;
 
@@ -229,7 +229,7 @@ class Structures_DataGrid_Renderer_Common
      * 
      * @var array
      * @access private
-     * @see Structures_DataGrid_Renderer_Common::buildSortingHttpQuery()
+     * @see Structures_DataGrid_Renderer::buildSortingHttpQuery()
      */
     var $_sortingHttpQueryCommon = null;
     
@@ -239,9 +239,9 @@ class Structures_DataGrid_Renderer_Common
      * Drivers may overload this method in order to change/add default options.
      *
      * @access  public
-     * @see Structures_DataGrid_Renderer_Common::_addDefaultOptions()
+     * @see Structures_DataGrid_Renderer::_addDefaultOptions()
      */
-    function Structures_DataGrid_Renderer_Common()
+    function Structures_DataGrid_Renderer()
     {
         $this->_options = array(
             
@@ -274,7 +274,7 @@ class Structures_DataGrid_Renderer_Common
      * @param array $options An associative array of the from:
      *                       array(optionName => optionValue, ...)
      * @return void
-     * @see Structures_DataGrid_Renderer_Common::setOption()
+     * @see Structures_DataGrid_Renderer::setOption()
      */
     function _addDefaultOptions($options)
     {

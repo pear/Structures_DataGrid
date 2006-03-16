@@ -20,7 +20,7 @@
 //
 // $Id$
 
-require_once 'Structures/DataGrid/Renderer/Common.php';
+require_once 'Structures/DataGrid/Renderer.php';
 require_once 'Spreadsheet/Excel/Writer.php';
 
 /**
@@ -48,7 +48,7 @@ require_once 'Spreadsheet/Excel/Writer.php';
  * @package  Structures_DataGrid
  * @category Structures
  */
-class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer_Common
+class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
 {
 // FIXME: refactoring incomplete
 // FIXME: remove $_workbook, use $_container (?)
@@ -75,7 +75,7 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer_Comm
      */
     function Structures_DataGrid_Renderer_XLS()
     {
-        parent::Structures_DataGrid_Renderer_Common();
+        parent::Structures_DataGrid_Renderer();
         $this->_addDefaultOptions(
             array(
                 'headerFormat'  => 0,

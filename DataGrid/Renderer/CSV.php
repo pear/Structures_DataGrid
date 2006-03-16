@@ -20,7 +20,7 @@
 //
 // $Id$
 
-require_once 'Structures/DataGrid/Renderer/Common.php';
+require_once 'Structures/DataGrid/Renderer.php';
 
 /**
  * Structures_DataGrid_Renderer_CSV Class
@@ -42,7 +42,7 @@ require_once 'Structures/DataGrid/Renderer/Common.php';
  * @package  Structures_DataGrid
  * @category Structures
  */
-class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer_Common
+class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
 {
     
     /**
@@ -54,7 +54,7 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer_Comm
      */
     function Structures_DataGrid_Renderer_CSV()
     {
-        parent::Structures_DataGrid_Renderer_Common();
+        parent::Structures_DataGrid_Renderer();
         $this->_addDefaultOptions(
             array(
                 'delimiter' => ',',

@@ -20,7 +20,7 @@
 //
 // $Id$
 
-require_once 'Structures/DataGrid/Renderer/Common.php';
+require_once 'Structures/DataGrid/Renderer.php';
 require_once 'XML/Util.php';
 
 /**
@@ -41,7 +41,7 @@ require_once 'XML/Util.php';
  * - rowTag:    (string) The name of the tag for each row (without brackets)
  *                       (default: 'Row')
  */
-class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer_Common
+class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer
 {
 
     /**
@@ -53,7 +53,7 @@ class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer_Comm
      */
     function Structures_DataGrid_Renderer_XML()
     {
-        parent::Structures_DataGrid_Renderer_Common();
+        parent::Structures_DataGrid_Renderer();
         $this->_addDefaultOptions(
             array(
                 'outerTag' => 'DataGrid',

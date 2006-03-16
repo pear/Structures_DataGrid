@@ -19,7 +19,7 @@
 //
 // $Id$
 
-require_once 'Structures/DataGrid/DataSource/Common.php';
+require_once 'Structures/DataGrid/DataSource.php';
 
 /**
  * Array Data Source Driver
@@ -34,7 +34,7 @@ require_once 'Structures/DataGrid/DataSource/Common.php';
  * @category Structures
  */
 class Structures_DataGrid_DataSource_Array
-    extends Structures_DataGrid_DataSource_Common
+    extends Structures_DataGrid_DataSource
 {
     /**
      * The array
@@ -46,7 +46,7 @@ class Structures_DataGrid_DataSource_Array
      
     function Structures_DataGrid_DataSource_Array()
     {
-        parent::Structures_DataGrid_DataSource_Common();
+        parent::Structures_DataGrid_DataSource();
     }
 
     /**

@@ -20,7 +20,7 @@
 //
 // $Id$
 
-require_once 'Structures/DataGrid/Renderer/Common.php';
+require_once 'Structures/DataGrid/Renderer.php';
 require_once 'Console/Table.php';
 
 /**
@@ -34,7 +34,7 @@ require_once 'Console/Table.php';
  * @package  Structures_DataGrid
  * @category Structures
  */
-class Structures_DataGrid_Renderer_Console extends Structures_DataGrid_Renderer_Common
+class Structures_DataGrid_Renderer_Console extends Structures_DataGrid_Renderer
 {
     
     /**
@@ -46,7 +46,7 @@ class Structures_DataGrid_Renderer_Console extends Structures_DataGrid_Renderer_
      */
     function Structures_DataGrid_Renderer_Console()
     {
-        parent::Structures_DataGrid_Renderer_Common();
+        parent::Structures_DataGrid_Renderer();
     }
 
     /**
