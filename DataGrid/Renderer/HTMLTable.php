@@ -87,6 +87,12 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     var $_pager;
 
     /**
+     * The body row index to start rendering at
+     * @var int
+     */
+    var $_bodyStartRow;
+    
+    /**
      * Constructor
      *
      * Build default values
@@ -133,9 +139,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      */
     function &getContainer()
     {
-        if (!isset($this->_table)) {
-            $this->init();
-        }
+        isset($this->_table) or $this->init();
         return $this->_table;
     }
     
@@ -152,6 +156,20 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
 
         $this->_tableHeader =& $this->_table->getHeader();
         $this->_tableBody =& $this->_table->getBody();
+
+        $this->_bodyStartRow = $this->_tableBody->getRowCount();
+
+        // Define alternating row attributes
+        if ($this->_options['evenRowAttributes'] 
+            or $this->_options['oddRowAttributes']) {
+
+            $this->_tableBody->altRowAttributes(
+                0,
+                $this->_options['evenRowAttributes'],
+                $this->_options['oddRowAttributes'],
+                true
+            );
+        }
     }
 
     /**
@@ -319,17 +337,18 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     /**
      * Handles building the header of the DataGrid
      *
+     * @param   array $columns Columns' fields names and labels 
      * @access  protected
      * @return  void
      * @see     http://www.php.net/manual/en/function.http-build-query.php
      */
-    function buildHeader()
+    function buildHeader(&$columns)
     {
         $row = $this->_tableHeader->getRowCount();
 
-        for ($col = 0; $col < $this->_columnsNum; $col++) {
-            $field = $this->_columns[$col]['field'];
-            $label = $this->_columns[$col]['label'];
+        foreach ($columns as $col => $spec) {
+            $field = $spec['field'];
+            $label = $spec['label'];
 
             // Define Content
             if (in_array ($field, $this->_sortableFields)) {
@@ -376,63 +395,59 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     }
 
     /**
-     * Handles building the body of the DataGrid
+    /**
+     * Build a body row
      *
-     * @access  protected
-     * @return  void
+     * @param int   $index Row index (zero-based)
+     * @param array $data  Record data. 
+     *                     Structure: array(0 => <value0>, 1 => <value1>, ...)
+     * @return void
+     * @access protected
      */
-    function buildBody()
+    function buildRow($index,$data)
     {
-        $startRow = $this->_tableBody->getRowCount();
-        for ($row = 0; $row < $this->_recordsNum; $row++) {
-            $recordRow = $row + $startRow;
-            for ($col = 0; $col < $this->_columnsNum; $col++) {
-                $value = $this->_records[$row][$col];
-                $field = $this->_columns[$col]['field'];
+        $outputRow = $this->_bodyStartRow + $index;
+        foreach ($data as $col => $value) {
+            $field = $this->_columns[$col]['field'];
 
-                // Right-align the content if it is numeric
-                $attributes = ($this->_options['numberAlign'] and is_numeric($value)) 
-                            ? array('align' => 'right')
-                            : array();
+            // Right-align the content if it is numeric
+            $attributes = ($this->_options['numberAlign'] and is_numeric($value)) 
+                        ? array('align' => 'right')
+                        : array();
 
-                // merge auto-aligned and column attributes
-                if (isset($this->_options['columnAttributes'][$field])) {
-                    $attributes = array_merge($attributes,
-                                              $this->_options['columnAttributes'][$field]);
-                }
-
-                // Set Content in HTML_Table
-                $this->_tableBody->setCellContents($recordRow, $col, $value);
-                if ($attributes) {
-                    $this->_tableBody->setCellAttributes($recordRow, $col, $attributes);
-                }
+            // merge auto-aligned and column attributes
+            if (isset($this->_options['columnAttributes'][$field])) {
+                $attributes = array_merge($attributes,
+                                          $this->_options['columnAttributes'][$field]);
             }
-        }
 
-        // output empty rows
-        if ($this->_options['fillWithEmptyRows'] && !is_null($this->_pageLimit)) {
-            for ($row = $this->_recordsNum; $row < $this->_pageLimit; $row++) {
-                $recordRow = $row + $startRow;
-                for ($col = 0; $col < $this->_columnsNum; $col++) {
-                    $this->_tableBody->setCellAttributes($recordRow, $col, $this->_options['emptyRowAttributes']);
-                    $this->_tableBody->setCellContents($recordRow, $col, '&nbsp;');
-                }
+            // Set Content in HTML_Table
+            $this->_tableBody->setCellContents($outputRow, $col, $value);
+            if ($attributes) {
+                $this->_tableBody->setCellAttributes($outputRow, $col, $attributes);
             }
-        }
-
-        // Define alternating row attributes
-        if ($this->_options['evenRowAttributes'] 
-            or $this->_options['oddRowAttributes']) {
-
-            $this->_tableBody->altRowAttributes(
-                0,
-                $this->_options['evenRowAttributes'],
-                $this->_options['oddRowAttributes'],
-                true
-            );
         }
     }
-
+   
+    /**
+     * Build an empty row
+     *
+     * This method will only be called if the "fillWithEmptyRows" option is
+     * enabled.
+     * 
+     * @param int   $index Row index (zero-based)
+     * @return void
+     * @abstract
+     */
+    function buildEmptyRow($index)
+    {
+        $outputRow = $this->_bodyStartRow + $index;
+        for ($col = 0; $col < $this->_columnsNum; $col++) {
+            $this->_tableBody->setCellAttributes($outputRow, $col, $this->_options['emptyRowAttributes']);
+            $this->_tableBody->setCellContents($outputRow, $col, '&nbsp;');
+        }
+    }
+    
     /**
      * Default formatter for all cells
      * 

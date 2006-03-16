@@ -386,26 +386,74 @@ class Structures_DataGrid_Renderer_Common
      * Drivers may optionally implement this method.
      *
      * @abstract
+     * 
+     * @param   array $columns Columns' fields names and labels (This is a 
+     *                         convenient reference to the $_columns protected
+     *                         property)
      * @access  protected
      * @return  void
      */
-    function buildHeader() 
+    function buildHeader(&$columns) 
     {
     }
 
     /**
      * Build the body
      *
-     * Drivers are required to implement this method.
+     * Drivers may overload() this method, if buildRow() and buildEmptyRow() 
+     * are not flexible enough.
      *
-     * @abstract
      * @access  protected
      * @return  void
      */
     function buildBody()
     {
+        for ($row = 0; $row < $this->_recordsNum; $row++) {
+            $this->buildRow($row,$this->_records[$row]);
+        }
+        
+        if ($this->_options['fillWithEmptyRows'] && !is_null($this->_pageLimit)) {
+            for ($row = $this->_recordsNum; $row < $this->_pageLimit; $row++) {
+                $this->buildEmptyRow($row);
+            }
+        }
     }
 
+    /**
+     * Build a body row
+     *
+     * This is a very simple method for drivers to build a row.
+     * For more flexibility, drivers should overload buildBody()
+     *
+     * @param int   $index Row index (zero-based)
+     * @param array $data  Record data. 
+     *                     Structure: array(0 => <value0>, 1 => <value1>, ...)
+     * @return void
+     * @access protected
+     * @abstract
+     */
+    function buildRow($index,$data)
+    {
+    }
+  
+    /**
+     * Build an empty row
+     *
+     * Drivers must overload this method if they need to do something with
+     * empty rows that remain at the end of the body.
+     * 
+     * This method will only be called if the "fillWithEmptyRows" option is
+     * enabled.
+     * 
+     * @param int   $index Row index (zero-based)
+     * @return void
+     * @access protected
+     * @abstract
+     */
+    function buildEmptyRow($index)
+    {
+    }
+    
     /**
      * Build the footer
      *
@@ -540,7 +588,7 @@ class Structures_DataGrid_Renderer_Common
         }
 
         if ($this->_options['buildHeader']) {
-            $this->buildHeader();
+            $this->buildHeader($this->_columns);
         }
 
         $this->buildBody();
@@ -744,45 +792,38 @@ class Structures_DataGrid_Renderer_Common
 
         return $query;
     }
-
    
     /**
-     * Detect whether a method is implemented in the driver class
+     * Detect whether a method is implemented a child class
      * 
      * This method is able to detect if a given method is implemented in the 
      * driver (child class) even if it is declared in the root class.
      *
      * @param $method Method name
-     * @return bool 
+     * @param $class  The class to scan (Internal use) 
+     * @return bool
      * @access protected
      */
-    function _isImplemented($method)
+    function _isImplemented($method, $class = null)
     {
-        return $this->_isImplementedRecursive($method,get_class($this));
-    }
-
-    /**
-     * Helper method for _isImplemented()
-     *
-     * @param $method Method name
-     * @param $class  The class to scan
-     * @return boold
-     * @access private
-     */
-    function _isImplementedRecursive($method, $class)
-    {
-        if ($class == 'structures_datagrid_renderer_common') {
+        if (is_null($class)) {
+            $class = get_class($this);
+        }
+       
+        $parent = get_parent_class ($class);
+        
+        if (!$parent) {
             return false;
         } else {
             $methods = get_class_methods($class);
             if (in_array ($method, $methods)) {
                 return true;
             } else {
-                $parent = get_parent_class ($class);
-                return $this->_isImplementedRecursive($method, $parent);
+                return $this->_isImplemented($method, $parent);
             }
         }
     }
+
 }
 
 ?>
