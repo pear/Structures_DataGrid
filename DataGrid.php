@@ -241,7 +241,7 @@ class Structures_DataGrid
                 } else {
                     $msg = "unable to load driver class '$className' from file '$file_name'";
                 }
-                $error = new PEAR_Error($msg);
+                $error = PEAR::raiseError($msg);
                 return $error;
             }
         }
@@ -290,7 +290,7 @@ class Structures_DataGrid
         if (is_null($type) &&
             !($type = Structures_DataGrid::_detectSourceType($source,
                                                              $options))) {
-            $error = new PEAR_Error('Unable to determine the data source type. '.
+            $error = PEAR::raiseError('Unable to determine the data source type. '.
                                     'You may want to explicitly specify it.');
             return $error;
         }
@@ -369,7 +369,7 @@ class Structures_DataGrid
                 $type = is_null($this->_rendererType) 
                         ? get_class($this->_renderer)
                         : $this->_rendererType;
-                return new PEAR_Error("The $type driver does not support the ".
+                return PEAR::raiseError("The $type driver does not support the ".
                                       "render() method. Try using fill().");
             } else {
                 return $test;
@@ -428,13 +428,13 @@ class Structures_DataGrid
      * Attach a rendering driver
      * 
      * @param object $renderer Driver object, subclassing 
-     *                         Structures_DataGrid_Renderer_Common
+     *                         Structures_DataGrid_Renderer
      * @return mixed           Either true or a PEAR_Error object
      * @access public
      */
     function attachRenderer(&$renderer)
     {
-        if (is_subclass_of($renderer, 'structures_datagrid_renderer_common')) {
+        if (is_subclass_of($renderer, 'structures_datagrid_renderer')) {
             $this->_renderer =& $renderer;
             if (isset ($this->_dataSource)) {
                 $this->_renderer->setData($this->columnSet, $this->recordSet);
@@ -442,7 +442,7 @@ class Structures_DataGrid
                                           $this->getRecordCount());
             }
         } else {
-            return new PEAR_Error('Invalid renderer type, ' . 
+            return PEAR::raiseError('Invalid renderer type, ' . 
                                   'must be a valid renderer driver class');
         }
 
@@ -466,7 +466,7 @@ class Structures_DataGrid
         if (is_null($type)) {
             $type = $this->_detectRendererType($container);
             if (is_null($type)) {
-                return new PEAR_Error('The rendering container type can not '.
+                return PEAR::raiseError('The rendering container type can not '.
                                       'be automatically detected. Please ' . 
                                       'specify its type explicitly.');
             }
@@ -485,7 +485,7 @@ class Structures_DataGrid
         $test = $this->_renderer->setContainer($container);
         if (PEAR::isError($test)) {
             if ($test->getCode() == DATAGRID_ERROR_UNSUPPORTED) {
-                return new PEAR_Error("The $type driver does not support the " . 
+                return PEAR::raiseError("The $type driver does not support the " . 
                                       "fill() method. Try using render().");
             } else {
                 return $test;
@@ -675,7 +675,7 @@ class Structures_DataGrid
                 return $this->columnSet[$key];
             }
         }
-        $error = new PEAR_Error("Column '$name' does not exist");
+        $error = PEAR::raiseError("Column '$name' does not exist");
         return $error;
     }
 
@@ -709,7 +709,7 @@ class Structures_DataGrid
      */
     function bindDataSource(&$source)
     {
-        if (is_subclass_of($source, 'structures_datagrid_datasource_common')) {
+        if (is_subclass_of($source, 'structures_datagrid_datasource')) {
             $this->_dataSource =& $source;
             if (PEAR::isError($result = $this->fetchDataSource())) {
                 unset ($this->_dataSource);
@@ -724,7 +724,7 @@ class Structures_DataGrid
                                           $this->getRecordCount());
             }
         } else {
-            return new PEAR_Error('Invalid data source type, ' . 
+            return PEAR::raiseError('Invalid data source type, ' . 
                                   'must be a valid data source driver class');
         }
 
@@ -764,7 +764,7 @@ class Structures_DataGrid
                 return true;
             }
         } else {
-            return new PEAR_Error("Cannot fetch data: no datasource driver loaded.");
+            return PEAR::raiseError("Cannot fetch data: no datasource driver loaded.");
         }
     }
 
@@ -784,7 +784,7 @@ class Structures_DataGrid
                                            array($record->getRecord()));
             return true;
         } else {
-            return new PEAR_Error('Not a valid DataGrid Record');
+            return PEAR::raiseError('Not a valid DataGrid Record');
         }
     }
 
@@ -1006,7 +1006,7 @@ class Structures_DataGrid
             $this->_renderer->build();
             return true;
         } else {
-            return new PEAR_Error("Cannot build the datagrid: no datasource driver loaded");
+            return PEAR::raiseError("Cannot build the datagrid: no datasource driver loaded");
         }
     }
 

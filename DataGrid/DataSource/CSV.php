@@ -57,7 +57,7 @@ class Structures_DataGrid_DataSource_CSV extends
         
         if (@is_file($csv)) {
             if (!$rowList = file($csv)) {
-                return new PEAR_Error('Could not read file');
+                return PEAR::raiseError('Could not read file');
             }
         } else {
             $rowList = explode("\n", $csv);

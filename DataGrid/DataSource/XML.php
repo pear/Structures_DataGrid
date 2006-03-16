@@ -95,7 +95,7 @@ class Structures_DataGrid_DataSource_XML extends
         foreach ($data as $index => $row)
         {
             if (!is_array($row) or !is_numeric($index)) {
-                return new PEAR_Error('Unable to bind the xml data. '.
+                return PEAR::raiseError('Unable to bind the xml data. '.
                                       'You may want to set the \'xpath\' option.');
             }
 

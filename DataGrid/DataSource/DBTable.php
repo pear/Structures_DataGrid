@@ -94,7 +94,7 @@ class Structures_DataGrid_DataSource_DBTable
         if (strtolower(get_parent_class($object)) == 'db_table') {
             $this->_object =& $object;
         } else {
-            return new PEAR_Error(
+            return PEAR::raiseError(
                 'The provided source must be a subclass of DB_Table');
         }
 
@@ -103,7 +103,7 @@ class Structures_DataGrid_DataSource_DBTable
             $this->setOptions($options);
             return true;
         } else {
-            return new PEAR_Error('Invalid "view" specified ' . 
+            return PEAR::raiseError('Invalid "view" specified ' . 
                 '[must be a key in array of DB_Table subclass]');
         }
     }

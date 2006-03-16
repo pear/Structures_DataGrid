@@ -106,18 +106,18 @@ class Structures_DataGrid_DataSource_DBQuery
             }
             $this->_db =& DB::connect($this->_options['dsn'], $dbOptions);
             if (PEAR::isError($this->_db)) {
-                return new PEAR_Error('Could not create connection: ' .
+                return PEAR::raiseError('Could not create connection: ' .
                                       $this->_db->getMessage());
             }
         } else {
-            return new PEAR_Error('No DB object or dsn string specified');
+            return PEAR::raiseError('No DB object or dsn string specified');
         }
 
         if (is_string($query)) {
             $this->_query = $query;
             return true;
         } else {
-            return new PEAR_Error('Query parameter must be a string');
+            return PEAR::raiseError('Query parameter must be a string');
         }
     }
 

@@ -66,7 +66,7 @@ class Structures_DataGrid_DataSource_Array
             $this->_ar = $ar;
             return true;
         } else {
-            return new PEAR_Error('The provided source must be an array');
+            return PEAR::raiseError('The provided source must be an array');
         }
     }
 

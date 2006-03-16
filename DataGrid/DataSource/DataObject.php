@@ -154,7 +154,7 @@ class Structures_DataGrid_DataSource_DataObject
                 
             return true;
         } else {
-            return new PEAR_Error('The provided source must be a DB_DataObject');
+            return PEAR::raiseError('The provided source must be a DB_DataObject');
         }
     }
 
@@ -272,7 +272,7 @@ class Structures_DataGrid_DataSource_DataObject
             } else {
                 $test = $this->_dataobject->count();
                 if ($test === false) {
-                    return new PEAR_Error ('Can\'t count the number of rows');
+                    return PEAR::raiseError ('Can\'t count the number of rows');
                 }
                 $this->_rowNum = $test;
             }

@@ -109,7 +109,7 @@ class Structures_DataGrid_Record
             $this->_record = $data;
             return true;
         } else {
-            return new PEAR_Error('Invalid data type.  Must be an array');
+            return PEAR::raiseError('Invalid data type.  Must be an array');
         }
     }
 }

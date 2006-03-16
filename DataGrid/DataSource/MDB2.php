@@ -106,11 +106,11 @@ class Structures_DataGrid_DataSource_MDB2
             }
             $this->_db =& MDB2::factory($this->_options['dsn'], $dbOptions);
             if (PEAR::isError($this->_db)) {
-                return new PEAR_Error('Could not create connection: ' .
+                return PEAR::raiseError('Could not create connection: ' .
                                       $this->_db->getMessage());
             }
         } else {
-            return new PEAR_Error('No MDB2 object or dsn string specified');
+            return PEAR::raiseError('No MDB2 object or dsn string specified');
         }
 
         $this->_db->loadModule('Extended');
@@ -119,7 +119,7 @@ class Structures_DataGrid_DataSource_MDB2
             $this->_query = $query;
             return true;
         } else {
-            return new PEAR_Error('Query parameter must be a string');
+            return PEAR::raiseError('Query parameter must be a string');
         }
     }
 

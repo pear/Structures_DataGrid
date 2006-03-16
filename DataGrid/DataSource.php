@@ -240,7 +240,7 @@ class Structures_DataGrid_DataSource
      * is redundant with the sort() method.
      */
     {
-        return new PEAR_Error("No data source driver loaded");
+        return PEAR::raiseError("No data source driver loaded");
     }
 
     /**
@@ -258,7 +258,7 @@ class Structures_DataGrid_DataSource
      */
     function count()
     {
-        return new PEAR_Error("No data source driver loaded");
+        return PEAR::raiseError("No data source driver loaded");
     }
     
     /**
@@ -283,7 +283,7 @@ class Structures_DataGrid_DataSource
      */
     function sort($sortSpec, $sortDir = null)
     {
-        return new PEAR_Error("No data source driver loaded");
+        return PEAR::raiseError("No data source driver loaded");
     }    
   
     /**
@@ -301,7 +301,7 @@ class Structures_DataGrid_DataSource
      */
     function bind($container, $options = array())
     {
-        return new PEAR_Error("No data source driver loaded");
+        return PEAR::raiseError("No data source driver loaded");
     }
   
     /**#@-*/

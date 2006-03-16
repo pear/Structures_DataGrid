@@ -59,7 +59,7 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  *     - flatten()
  *     - render()
  * 
- * Properties (read-only) :    
+ * Properties (all read-only) :    
  *     - $_columns
  *     - $_records
  *     - $_columnsNum
@@ -72,7 +72,7 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  *     - $_sortableFields
  *     - $_options
  *     
- * Options that drivers should handle :
+ * Options that drivers may handle :
  *     - encoding
  *     - fillWithEmptyRows
  *     - numberAlign
@@ -662,9 +662,9 @@ class Structures_DataGrid_Renderer
      */
     function _noSupport($method)
     {
-        return new PEAR_Error("The renderer driver class \"" .get_class($this). 
-                              "\" does not support the $method() method",
-                              DATAGRID_ERROR_UNSUPPORTED);
+        return PEAR::raiseError("The renderer driver class \"" .get_class($this). 
+                                "\" does not support the $method() method",
+                                DATAGRID_ERROR_UNSUPPORTED);
     }
     
     /**

@@ -73,7 +73,7 @@ class Structures_DataGrid_DataSource_DB
             }
             return true;
         } else {
-            return new PEAR_Error('The provided source must be a DB_Result');
+            return PEAR::raiseError('The provided source must be a DB_Result');
         }
     }
 
