@@ -192,6 +192,7 @@
           <file role="php" name="Column.php"/>
           <file role="php" name="Record.php"/>
           <file role="php" name="Renderer.php"/>
+          <file role="php" name="DataSource.php"/>
           <dir name="Renderer" role="php">
             <file role="php" name="Console.php"/>
             <file role="php" name="CSV.php"/>
@@ -203,7 +204,6 @@
           </dir>
           <dir name="DataSource" role="php">
             <file role="php" name="Array.php"/>
-            <file role="php" name="Common.php"/>
             <file role="php" name="CSV.php"/>
             <file role="php" name="DataObject.php"/>
             <file role="php" name="DB.php"/>
