@@ -27,12 +27,23 @@ require_once 'Structures/DataGrid/Renderer.php';
  *
  * Recognized options:
  *
- * - delimiter: (string) The delimiter to use to seperate the values
+ * - delimiter: (string) Field delimiter
  *                       (default: ',')
+ * - enclosure: (string) Field enclosure
+ *                       (default is a double quotation mark: ")
  * - lineBreak: (string) The character(s) to use for line breaks
  *                       (default: '\n')
- * - useQuotes: (bool)   Whether or not to encapuslate the values with quotes
- *                       (default: false)
+ * - useQuotes: (mixed)  Whether or not to encapuslate the values with the 
+ *                       enclosure value.
+ *                       true: always, false: never, "auto": when needed
+ *                       (default: "auto")
+ *                       
+ * GENERAL NOTES :
+ *
+ * This driver has no container support. You can not use 
+ * Structures_DataGrid::fill() with it.
+ *
+ * It buffers output, you can use getOutput().
  *                       
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
@@ -44,6 +55,19 @@ require_once 'Structures/DataGrid/Renderer.php';
  */
 class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
 {
+    // FIXME: It would be very interesting to implement some sort of CSV 
+    // streaming feature for large datasets. The datasource layer should
+    // read data chunk by chunk and this driver (and possibly others) could
+    // stream it directly to the browser.
+    // What implications on the renderer driver interface ? Is it ready for
+    // such streaming ? A new CSVStream driver ?
+    
+    /**
+     * CSV output
+     * @var string
+     * @access private
+     */
+    var $_csv;
     
     /**
      * Constructor
@@ -58,22 +82,21 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
         $this->_addDefaultOptions(
             array(
                 'delimiter' => ',',
+                'enclosure' => '"',
                 'lineBreak' => "\n",
-                'useQuotes' => false
+                'useQuotes' => "auto"
             )
         );
     }
 
     /**
-     * Initialize a string for the CSV if it is not already existing
+     * Initialize CSV output
      * 
      * @access protected
      */
     function init()
     {
-        if (is_null($this->_container)) {
-            $this->_container = '';
-        }
+        $this->_csv = '';
     }
 
     /**
@@ -116,57 +139,26 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
      * @access  protected
      * @return  void
      */
-    function buildHeader()
+    function buildHeader(&$columns)
     {
-        $csv = '';
-
-        for ($col = 0; $col < $this->_columnsNum; $col++) {
-            if ($col > 0) {
-                $csv .= $this->_options['delimiter'];
-            }
-            $csv .= $this->_columns[$col]['label'];
+        $data = array();
+        foreach ($columns as $spec) {
+            $data[] = $spec['label'];
         }
-
-        $csv .= $this->_options['lineBreak'];
-
-        $this->_container .= $csv;
+        $this->_csv .= $this->_recordToCsv($data);
     }
 
     /**
-     * Handles building the body of the table
+     * Build a body row
      *
+     * @param   int   $index Row index (zero-based)
+     * @param   array $data  Record data. 
      * @access  protected
      * @return  void
      */
-    function buildBody()
+    function buildRow($index, $data)
     {
-        $csv = '';
-
-        for ($row = 0; $row < $this->_recordsNum; $row++) {
-            for ($col = 0; $col < $this->_columnsNum; $col++) {
-                if ($col > 0) {
-                    $csv .= $this->_options['delimiter'];
-                }
-                
-                // Add content to CSV
-                $content = $this->_records[$row][$col];
-                if ($this->_options['useQuotes']) {
-                    $content = '"' . str_replace('"', '""', $content) . '"';
-                } else {
-                    if (strstr($content, '"')) {
-                        $content = '"' . str_replace('"', '""', $content) . '"';
-                    } elseif (strstr($content, ',')) {
-                        $content = '"' . $content . '"';
-                    }
-                }
-
-                $csv .= $content;
-            }
-
-            $csv .= $this->_options['lineBreak'];
-        }
-
-        $this->_container .= $csv;
+        $this->_csv .= $this->_recordToCsv($data);
     }
 
     /**
@@ -183,12 +175,12 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
     /**
      * Retrieve output from the container object 
      *
-     * @return mixed Output
+     * @return string Output
      * @access protected
      */
     function flatten()
     {
-        return $this->_container;
+        return $this->_csv;
     }
 
     /**
@@ -200,6 +192,44 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
     {
         header('Content-type: text/csv');
         parent::render();
+    }
+
+    /**
+     * Convert record values into a CSV line
+     *
+     * @param  array  $data Record data
+     * @return string CSV string, with a lineBreak included
+     * @access protected
+     */
+    function _recordToCsv($data)
+    {
+        // This method is loosely inspired from PHP_Compat's fputcsv()
+        // FIXME: what about concatenating directly into $this->_csv ?
+        $str = '';
+        foreach ($data as $cell) {
+            $cell = str_replace(
+                        $this->_options['enclosure'], 
+                        $this->_options['enclosure'].$this->_options['enclosure'],
+                        $cell);
+
+            if (($this->_options['useQuotes'] === true) 
+                or ($this->_options['useQuotes'] == 'auto'
+                    and (strchr($cell, $this->_options['delimiter']) !== false 
+                         or strchr($cell, $this->_options['enclosure']) !== false 
+                         or strchr($cell, $this->_options['lineBreak']) !== false))) {
+
+                $str .= $this->_options['enclosure'] . 
+                        $cell .
+                        $this->_options['enclosure'] . 
+                        $this->_options['delimiter'];
+            } else {
+                $str .= $cell . $this->_options['delimiter'];
+            }
+        }
+
+        $str .= $this->_options['lineBreak'];
+
+        return $str;
     }
 }
 
