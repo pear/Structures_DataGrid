@@ -989,15 +989,21 @@ class Structures_DataGrid
      */
     function _detectRendererType(&$container)
     {
-        if (is_a($container, 'html_table') or is_subclass_of($container, 'html_table')) {
+        if (is_a($container, 'html_table') 
+            or is_subclass_of($container, 'html_table')) {
             return DATAGRID_RENDER_TABLE;
-        } else if (is_a($container, 'smarty') or is_subclass_of($container, 'smarty')) {
+        } else if (is_a($container, 'smarty') 
+                   or is_subclass_of($container, 'smarty')) {
             return DATAGRID_RENDER_SMARTY;
         } else if (is_a($container, 'spreadsheet_excel_writer_workbook') 
                    or is_subclass_of($container, 
                                      'spreadsheet_excel_writer_workbook')) {
             return DATAGRID_RENDER_XLS;
-        } // FIXME: and so on...
+        } else if (is_a($container, 'console_table') 
+                   or is_subclass_of($container, 
+                                     'console_table')) {
+            return DATAGRID_RENDER_CONSOLE;
+        } 
 
         return null;
     }

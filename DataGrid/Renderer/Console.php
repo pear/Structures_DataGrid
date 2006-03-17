@@ -26,6 +26,11 @@ require_once 'Console/Table.php';
 /**
  * Structures_DataGrid_Renderer_Console Class
  *
+ * This container has container support. You can use the 
+ * Structures_DataGrid::fill() method with it. 
+ *
+ * It buffers output, you can use Structures_DataGrid::getOutput()
+ * 
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
  * @author   Olivier Guilyardi <olivier@samalyse.com>
@@ -36,6 +41,12 @@ require_once 'Console/Table.php';
  */
 class Structures_DataGrid_Renderer_Console extends Structures_DataGrid_Renderer
 {
+    /**
+     * Console_Table container
+     * @var object
+     * @access protected
+     */
+    var $_table;
     
     /**
      * Constructor
@@ -50,14 +61,42 @@ class Structures_DataGrid_Renderer_Console extends Structures_DataGrid_Renderer
     }
 
     /**
+     * Attach an already instantiated Console_Table object
+     *
+     * @param object $consoleTable 
+     * @return mixed True or a PEAR_Error
+     * @access public
+     */
+    function setContainer(&$consoleTable)
+    {
+        $this->_table =& $consoleTable;
+        return true;
+    }
+    
+    /**
+     * Return the internal Console_Table container
+     *
+     * @return object Console_Table or PEAR_Error
+     * @access public
+     */
+    function &getContainer(&$consoleTable)
+    {
+        if (!isset($this->_table)) {
+            $id = __CLASS__ . '::' . __FUNCTION__;
+            return PEAR::raiseError("$id: no Console_Table container loaded");
+        }
+        return $this->_table;
+    }
+    
+    /**
      * Initialize Console_Table instance if it is not already existing
      * 
      * @access protected
      */
     function init()
     {
-        if (is_null($this->_container)) {
-            $this->_container = new Console_Table();
+        if (!isset($this->_table)) {
+            $this->_table = new Console_Table();
         }
     }
 
@@ -91,9 +130,9 @@ class Structures_DataGrid_Renderer_Console extends Structures_DataGrid_Renderer
      * @access  public
      * @return  object Console_Table   The Console_Table object for the DataGrid
      */
-    function getTable()
+    function &getTable()
     {
-        return $this->_container;
+        return $this->getContainer();
     }   
         
     /**
@@ -109,7 +148,7 @@ class Structures_DataGrid_Renderer_Console extends Structures_DataGrid_Renderer
             $columnList[] = $this->_columns[$col]['label'];
         }
         
-        $this->_container->setHeaders($columnList);
+        $this->_table->setHeaders($columnList);
     }
 
     /**
@@ -125,7 +164,7 @@ class Structures_DataGrid_Renderer_Console extends Structures_DataGrid_Renderer
             for ($col = 0; $col < $this->_columnsNum; $col++) {
                 $cellList[] = $this->_records[$row][$col];
             }
-            $this->_container->addRow($cellList);
+            $this->_table->addRow($cellList);
         }
     }
 
@@ -137,7 +176,7 @@ class Structures_DataGrid_Renderer_Console extends Structures_DataGrid_Renderer
      */
     function flatten()
     {
-        return $this->_container->getTable();
+        return $this->_table->getTable();
     }
 
 }

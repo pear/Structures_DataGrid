@@ -321,6 +321,7 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
      */
     function render()
     {
+        $this->isBuilt() or $this->build();
         $this->_workbook->close();
         return true;
     }
