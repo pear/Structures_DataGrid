@@ -171,7 +171,7 @@ class Structures_DataGrid_Renderer_Console extends Structures_DataGrid_Renderer
     /**
      * Retrieve output from the container object 
      *
-     * @return mixed Output
+     * @return string Output
      * @access protected
      */
     function flatten()
