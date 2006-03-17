@@ -26,19 +26,70 @@ require_once 'Spreadsheet/Excel/Writer.php';
 /**
  * Structures_DataGrid_Renderer_XLS Class
  *
- * Recognized options:
+ * RECOGNIZED OPTIONS:
  *
  * - headerFormat:  (mixed)  The format for header cells (either 0 or
  *                           Spreadsheet_Excel_Writer_Format object)
+ *                           Please see the NOTE ABOUT FORMATTING below.
  *                           (default: 0 [= "no format"])
  * - bodyFormat:    (mixed)  The format for body cells (either 0 or
  *                           Spreadsheet_Excel_Writer_Format object)
+ *                           Please see the NOTE ABOUT FORMATTING below.
  *                           (default: 0 [= "no format"])
  * - filename:      (string) The filename of the spreadsheet
  *                           (default: 'spreadsheet.xls')
  * - sendToBrowser: (bool)   Should the spreadsheet be send to the browser?
  *                           (true = send to browser, false = write to a file)
  *                           (default: true)
+ * - worksheet:     (object) Optional reference to a
+ *                           Spreadsheet_Excel_Writer_Worksheet object. You 
+ *                           can leave this to null except if your workbook 
+ *                           contains several worksheets and you want to fill
+ *                           a specific one.
+ *                           (default: null)
+ * - startCol:      (int)    The Worksheet column number to start rendering at
+ *                           (default: 0)
+ * - startRow:      (int)    The Worksheet row number to start rendering at
+ *                           (default: 0)
+ *
+ * GENERAL NOTES :
+ * 
+ * This driver does not support the flatten() method. You can not retrieve
+ * its output with DataGrid::getOutput(). You can either render it directly 
+ * to the browser or save it to a file. See the "sendToBrowser" and "filename" 
+ * options.
+ *
+ * This driver has container support. You can use Structures_DataGrid::fill()
+ * with it ; that's even recommended.
+ * 
+ * NOTE ABOUT FORMATTING :
+ * 
+ * You can specify some formatting with the 'headerFormat' and 'bodyFormat' 
+ * options, or with setBodyFormat() and setHeaderFormat() properties. 
+ * 
+ * But beware of the following from the Spreadsheet_Excel_Writer manual :
+ * "Formats can't be created directly by a new call. You have to create a 
+ * format using the addFormat() method from a Workbook, which associates your 
+ * Format with this Workbook (you can't use the Format with another Workbook)."
+ * 
+ * What this means is that if you want to pass a format to this driver you
+ * have to "derive" the Format object out of the workbook used in the driver.
+ * 
+ * The easiest way to do this is : 
+ * <code>
+ * // Create a workbook
+ * $workbook = new Spreadsheet_Excel_Writer();
+ * // Sending the spreadsheet to the browser
+ * $workbook->send('test.xls');
+ *
+ * // Create your format
+ * $format_bold =& $workbook->addFormat();
+ * $format_bold->setBold();
+ *
+ * // Fill the workbook, passing the format as an option
+ * $options = array('headerFormat' => &$format_bold);
+ * $datagrid->fill($workbook, $options);
+ * </code>
  *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
@@ -50,22 +101,27 @@ require_once 'Spreadsheet/Excel/Writer.php';
  */
 class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
 {
-// FIXME: refactoring incomplete
-// FIXME: remove $_workbook, use $_container (?)
-// FIXME: test me
-    
     /**
-     * The spreadsheet object
+     * The spreadsheet container object
      * @var object Spreadsheet_Excel_Writer
+     * @access private
      */
     var $_workbook;
     
     /**
      * The worksheet object
      * @var object Spreadsheet_Excel_Writer
+     * @access private
      */
     var $_worksheet;    
 
+    /**
+     * The body row index to start rendering at
+     * @var int
+     * @access private
+     */
+    var $_bodyStartRow;
+    
     /**
      * Constructor
      *
@@ -81,11 +137,39 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
                 'headerFormat'  => 0,
                 'bodyFormat'    => 0,
                 'filename'      => 'spreadsheet.xls',
-                'sendToBrowser' => true
+                'sendToBrowser' => true,
+                'worksheet'     => null,
+                'startCol'      => 0,
+                'startRow'      => 0,
             )
         );
     }
 
+    /**
+     * Attach an already instantiated Spreadsheet_Excel_Writer object
+     *
+     * @param object $workbook Spreadsheet_Excel_Writer
+     * @return mixed True or a PEAR_Error
+     * @access public
+     */
+    function setContainer(&$workbook)
+    {
+        $this->_workbook =& $workbook;
+        return true;
+    }
+   
+    /**
+     * Return a reference to the Spreadsheet_Excel_Writer object
+     *
+     * @return object Spreadsheet_Excel_Writer or PEAR_Error
+     * @access public
+     */
+    function &getContainer()
+    {
+        isset($this->_workbook) or $this->init();
+        return $this->_workbook;
+    }
+    
     /**
      * Initialize a string for the CSV if it is not already existing
      * 
@@ -93,9 +177,30 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
      */
     function init()
     {
-        if (is_null($this->_container)) {
-            // FIXME: create Spreadsheet_Excel_Writer instance here
+        if (!isset($this->_workbook)) {
+            if ($this->_options['sendToBrowser']) {
+                $this->_workbook = new Spreadsheet_Excel_Writer();
+                $this->_workbook->send($this->_options['filename']);
+            } else {
+                $this->_workbook = new Spreadsheet_Excel_Writer($this->_options['filename']);
+            }
         }
+
+        // Use user-provided worksheet if present
+        if (!is_null($this->_options['worksheet'])) {
+            $this->_worksheet =& $this->_options['worksheet'];
+        } else {
+            // Use the first worksheet or create one if the workbook is empty
+            $worksheets = $this->_workbook->worksheets();
+            if (empty($worksheets)) {
+                $this->_worksheet =& $this->_workbook->addWorksheet();        
+            } else {
+                $this->_worksheet =& $worksheets[0];
+            }
+        }
+
+        $this->_bodyStartRow  = $this->_options['startRow'];
+        $this->_bodyStartRow += $this->_options['buildHeader'] ? 1 : 0;
     }
 
     /**
@@ -119,30 +224,32 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
     /**
      * Replace the internal Excel Writer with a custom one
      *
+     * It is recommended to use setContainer() or Structures_DataGrid::fill()
+     * and the "worksheet" option instead of this method. 
+     * 
      * This is useful in order to customize your new XLS document
-     * before Structures_DataGrid fills it with data
+     * before Structures_DataGrid fills it with data.
      * 
      * This method is incompatible with setFilename() 
-     * 
+     *
      * @param object $workbook  Spreadsheet_Excel_Writer_Workbook object
      * @param object $worksheet Spreadsheet_Excel_Writer_Worksheet object
+     *                          (optional)
      * @see Structures_DataGrid_Renderer_XLS::setFilename()
      */
     function setCustomWriter(&$workbook, &$worksheet)
     {
-        $this->_workbook =& $workbook;
-        $this->_worksheet =& $worksheet;
+        $this->setContainer($workbook);
+        $this->_options['worksheet'] =& $worksheet;
     }
 
     /**
      * Set headers format
      * 
-     * It is required to use setCustomWriter() before calling this method. 
-     * The Format object provided to setHeaderFormat() has to be derived 
-     * from the Workbook passed to setCustomWriter().
+     * Please see the "NOTE ABOUT FORMATTING" in this class documentation
      *
      * @param object $format Spreadsheet_Excel_Writer_Format object
-     * @see Structures_DataGrid_Renderer_XLS::setCustomWriter()
+     * @see Structures_DataGrid_Renderer_XLS
      */
     function setHeaderFormat(&$format)
     {
@@ -152,12 +259,10 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
     /**
      * Set body format
      *
-     * It is required to use setCustomWriter() before calling this method. 
-     * The Format object provided to setBodyFormat() has to be derived 
-     * from the Workbook passed to setCustomWriter().
-     *
+     * Please see the "NOTE ABOUT FORMATTING" in this class documentation
+     * 
      * @param object $format Spreadsheet_Excel_Writer_Format object
-     * @see Structures_DataGrid_Renderer_XLS::setCustomWriter()
+     * @see Structures_DataGrid_Renderer_XLS
      */
     function setBodyFormat(&$format)
     {
@@ -171,25 +276,7 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
      */
     function &getSpreadsheet()
     {
-        // FIXME: parts of this needs to go into init(), other parts
-        //        into flatten()
-        //        Attention: setting the filename in the constructor call
-        //                   is important when the spreadsheet should be
-        //                   written to a file
-        if (!isset($this->_workbook)) {
-            if ($this->_sendToBrowser) {
-                $this->_workbook = new Spreadsheet_Excel_Writer();
-                $this->_workbook->send($this->_filename);
-            } else {
-                $this->_workbook = new Spreadsheet_Excel_Writer($this->_filename);
-            }
-        }
-
-        if (!isset($this->_worksheet)) {
-            $this->_worksheet =& $this->_workbook->addWorksheet();        
-        }
-
-        return $this->_workbook;
+        return $this->getContainer();
     }
     
     /**
@@ -198,48 +285,45 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
      * @access  protected
      * @return  void
      */
-    function buildHeader()
+    function buildHeader($columns)
     {
-        for ($col = 0; $col < $this->_columnsNum; $col++) {
-            $label = $this->_columns[$col]['label'];
-            $this->_worksheet->write(0, $col, $label,
+        foreach ($columns as $index => $spec) {
+            $this->_worksheet->write($this->_options['startRow'], 
+                                     $this->_options['startCol'] + $index, 
+                                     $spec['label'],
                                      $this->_options['headerFormat']);
         }
     }
 
     /**
-     * Handles building the body of the table
+     * Build a body row
      *
+     * @param int   $index Row index
+     * @param array $data  Record data
      * @access  protected
      * @return  void
      */
-    function buildBody()
+    function buildRow($index, $data)
     {
-        $startRow = $this->_options['buildHeader'] ? 1 : 0;
-        for ($row = 0; $row < $this->_recordsNum; $row++) {
-            $recordRow = $row + $startRow;
-            for ($col = 0; $col < $this->_columnsNum; $col++) {
-                $value = $this->_records[$row][$col];
-
-                $this->_worksheet->write($recordRow, $col, $value,
-                                         $this->_options['bodyFormat']);
-            }
+        foreach ($data as $col => $value) {
+            $this->_worksheet->write($this->_bodyStartRow + $index, 
+                                     $this->_options['startCol'] + $col,
+                                     $value, 
+                                     $this->_options['bodyFormat']);
         }
     }
 
     /**
-     * Retrieve output from the container object 
+     * Output the datagrid or save it to a file 
      *
-     * @return mixed Output
+     * @return mixed True or PEAR_Error
      * @access protected
      */
-    function flatten()
+    function render()
     {
         $this->_workbook->close();
-        return $this->_workbook;  // FIXME: is this right for both cases of
-                                  // 'sendToBrowser'?
+        return true;
     }
-
 }
 
 ?>
