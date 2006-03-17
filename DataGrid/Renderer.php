@@ -157,14 +157,14 @@ class Structures_DataGrid_Renderer
     var $_totalRecordsNum;
 
     /**
-     * First record number (zero-based), in the current page
+     * First record number (starting from 1), in the current page
      * @var int
      * @access protected
      */
     var $_firstRecord;
     
     /**
-     * Last record number (zero-base), in the current page
+     * Last record number (starting from 1), in the current page
      * @var int
      * @access protected
      */
@@ -370,10 +370,10 @@ class Structures_DataGrid_Renderer
         $this->_pageLimit       = $rowsPerPage;
         $this->_totalRecordsNum = $totalRowNum;
         $this->_pagesNum        = ceil($totalRowNum / $rowsPerPage);
-        $this->_firstRecord     = ($currentPage - 1) * $rowsPerPage;
-        $this->_lastRecord      = $currentPage * $rowsPerPage - 1;
-        if ($this->_lastRecord >= $totalRowNum) {
-            $this->_lastRecord  = $totalRowNum - 1;
+        $this->_firstRecord     = ($currentPage - 1) * $rowsPerPage + 1;
+        $this->_lastRecord      = $currentPage * $rowsPerPage;
+        if ($this->_lastRecord > $totalRowNum) {
+            $this->_lastRecord  = $totalRowNum;
         }
     }
 

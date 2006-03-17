@@ -50,8 +50,8 @@ require_once 'Structures/DataGrid/Renderer.php';
  * - $columnsNum      : number of columns
  * - $recordsNum      : number of records in the current page
  * - $totalRecordsNum : total number of records
- * - $firstRecord     : first record number (zero-based)
- * - $lastRecord      : last record number (zero-based)
+ * - $firstRecord     : first record number (starting from 1)
+ * - $lastRecord      : last record number (starting from 1)
  * 
  * This driver also register a Smarty custom function named getPaging
  * that can be called from Smarty templates with {getPaging} in order
@@ -64,7 +64,7 @@ require_once 'Structures/DataGrid/Renderer.php';
  * <!-- Show paging links using the custom getPaging function -->
  * {getPaging prevImg="<<" nextImg=">>" separator=" | " delta="5"}
  * 
- * <p>Showing records {$firstRecord+1} to {$lastRecord+1} 
+ * <p>Showing records {$firstRecord} to {$lastRecord} 
  * from {$totalRecordsNum}, page {$currentPage} of {$pagesNum}</p>
  * 
  * <table cellspacing="0">
