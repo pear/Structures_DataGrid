@@ -65,10 +65,13 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  *     - $_records
  *     - $_columnsNum
  *     - $_recordsNum
+ *     - $_firstRecord;
+ *     - $_lastRecord;
  *     - $_totalRecordsNum
  *     - $_currentSort
  *     - $_page
  *     - $_pageLimit
+ *     - $_pagesNum
  *     - $_requestPrefix
  *     - $_sortableFields
  *     - $_options
@@ -154,7 +157,23 @@ class Structures_DataGrid_Renderer
     var $_totalRecordsNum;
 
     /**
+     * First record number (zero-based), in the current page
+     * @var int
+     * @access protected
+     */
+    var $_firstRecord;
+    
+    /**
+     * Last record number (zero-base), in the current page
+     * @var int
+     * @access protected
+     */
+    var $_lastRecord;
+    
+    /**
      * Current page
+     * 
+     * Page number starting from 1.
      * 
      * Drivers can read the content of this property but must not change it.
      *
@@ -173,6 +192,13 @@ class Structures_DataGrid_Renderer
      */
     var $_pageLimit = null;
 
+    /**
+     * Number of pages
+     * @var int
+     * @access protected
+     */
+    var $_pagesNum;
+    
      /**
      * GET/POST/Cookie parameters prefix
      * 
@@ -340,9 +366,15 @@ class Structures_DataGrid_Renderer
      * @access public
      */
     function setLimit($currentPage, $rowsPerPage, $totalRowNum) {
-        $this->_page = $currentPage;
-        $this->_pageLimit = $rowsPerPage;
+        $this->_page            = $currentPage;
+        $this->_pageLimit       = $rowsPerPage;
         $this->_totalRecordsNum = $totalRowNum;
+        $this->_pagesNum        = ceil($totalRowNum / $rowsPerPage);
+        $this->_firstRecord     = ($currentPage - 1) * $rowsPerPage;
+        $this->_lastRecord      = $currentPage * $rowsPerPage - 1;
+        if ($this->_lastRecord >= $totalRowNum) {
+            $this->_lastRecord  = $totalRowNum - 1;
+        }
     }
 
     /**
