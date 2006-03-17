@@ -42,13 +42,16 @@ require_once 'Structures/DataGrid/Renderer.php';
  * filled.
  *
  * This driver assigns the following Smarty variables : 
- * - $columns         : array of columns' labels and sorting links
- * - $records         : array of records values
- * - $page            : current page
- * - $pageLimit       : number of rows per page
+ * - $columnSet       : array of columns' labels and sorting links
+ * - $recordSet       : array of records values
+ * - $currentPage     : current page (starting from 1)
+ * - $recordLimit     : number of rows per page
+ * - $pagesNum        : number of pages
+ * - $columnsNum      : number of columns
  * - $recordsNum      : number of records in the current page
  * - $totalRecordsNum : total number of records
- * - $columnsNum      : number of records
+ * - $firstRecord     : first record number (zero-based)
+ * - $lastRecord      : last record number (zero-based)
  * 
  * This driver also register a Smarty custom function named getPaging
  * that can be called from Smarty templates with {getPaging} in order
@@ -61,26 +64,29 @@ require_once 'Structures/DataGrid/Renderer.php';
  * <!-- Show paging links using the custom getPaging function -->
  * {getPaging prevImg="<<" nextImg=">>" separator=" | " delta="5"}
  * 
+ * <p>Showing records {$firstRecord+1} to {$lastRecord+1} 
+ * from {$totalRecordsNum}, page {$currentPage} of {$pagesNum}</p>
+ * 
  * <table cellspacing="0">
  *     <!-- Build header -->
  *     <tr>
- *         {section name=col loop=$columns}
+ *         {section name=col loop=$columnSet}
  *             <th>
  *                 <!-- Check if the column is sortable -->
- *                 {if $columns[col].link != ""}
- *                     <a href="{$columns[col].link}">{$columns[col].label}</a>
+ *                 {if $columnSet[col].link != ""}
+ *                     <a href="{$columnSet[col].link}">{$columnSet[col].label}</a>
  *                 {else}
- *                     {$columns[col].label}
+ *                     {$columnSet[col].label}
  *                 {/if}
  *             </th>
  *         {/section}
  *     </tr>
  *     
  *     <!-- Build body -->
- *     {section name=row loop=$records}
+ *     {section name=row loop=$recordSet}
  *         <tr {if $smarty.section.row.iteration is even}bgcolor="#EEEEEE"{/if}>
- *             {section name=col loop=$records[row]}
- *                 <td>{$records[row][col]}</td>
+ *             {section name=col loop=$recordSet[row]}
+ *                 <td>{$recordSet[row][col]}</td>
  *             {/section}
  *         </tr>
  *     {/section}
@@ -137,7 +143,10 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
      */
     function &getContainer()
     {
-        isset($this->_smarty) or $this->init();
+        if (!isset($this->_smarty)) {
+            $id = __CLASS__ . '::' . __FUNCTION__;
+            return PEAR::raiseError("$id: no Smarty container loaded");
+        }
         return $this->_smarty;
     }
     
@@ -149,15 +158,17 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
     function init()
     {
         if (!isset($this->_smarty)) {
-            $this->_smarty = new Smarty();
+            $id = __CLASS__ . '::' . __FUNCTION__;
+            return PEAR::raiseError("$id: no Smarty container loaded");
         }
-        //FIXME: BC break - Old variable was : currentPage
-        $this->_smarty->assign('page', $this->_page);
-        //FIXME: BC break - Old variable was : recordLimit
-        $this->_smarty->assign('pageLimit', $this->_pageLimit);
+        $this->_smarty->assign('currentPage', $this->_page);
+        $this->_smarty->assign('recordLimit', $this->_pageLimit);
         $this->_smarty->assign('columnsNum', $this->_columnsNum);
         $this->_smarty->assign('recordsNum', $this->_recordsNum);
         $this->_smarty->assign('totalRecordsNum', $this->_totalRecordsNum);
+        $this->_smarty->assign('pagesNum', $this->_pagesNum);
+        $this->_smarty->assign('firstRecord', $this->_firstRecord);
+        $this->_smarty->assign('lastRecord', $this->_lastRecord);
 
         $this->_smarty->register_function('getPaging',array(&$this,'_smartyGetPaging'));
     }
@@ -203,8 +214,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
             $prepared[$index]['label'] = $spec['label'];
         }
 
-        //FIXME: BC break (?) - Old variable was : columnSet
-        $this->_smarty->assign('columns', $prepared);
+        $this->_smarty->assign('columnSet', $prepared);
     }
     
     /**
@@ -215,8 +225,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
      */
     function buildBody()
     {
-        //FIXME: BC break - Old variable was : recordSet
-        $this->_smarty->assign('records',   $this->_records);
+        $this->_smarty->assign('recordSet',   $this->_records);
     }
 
     /**
