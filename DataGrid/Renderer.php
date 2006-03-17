@@ -42,7 +42,7 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  *                            present the default value is set from 
  *                            mb_internal_encoding(), otherwise it is ISO-8859-1
  * - extraVars              : variables to be added to the generated HTTP queries
- * - excludeVars            : variables to be removed to the generated HTTP queries
+ * - excludeVars            : variables to be removed from the generated HTTP queries
  * 
  * --- DRIVER INTERFACE ---
  *
@@ -418,7 +418,7 @@ class Structures_DataGrid_Renderer
      *
      * This method is responsible for creating the container if it has not 
      * already been provided by the user with the setContainer() method.
-     * It is where preliminary container should also be done.
+     * It is where preliminary container setup should also be done.
      *
      * @abstract
      * @access protected

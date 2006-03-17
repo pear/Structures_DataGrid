@@ -28,11 +28,11 @@ require_once 'Spreadsheet/Excel/Writer.php';
  *
  * RECOGNIZED OPTIONS:
  *
- * - headerFormat:  (mixed)  The format for header cells (either 0 or
+ * - headerFormat:  (mixed)  The format for header cells (either 0 or a
  *                           Spreadsheet_Excel_Writer_Format object)
  *                           Please see the NOTE ABOUT FORMATTING below.
  *                           (default: 0 [= "no format"])
- * - bodyFormat:    (mixed)  The format for body cells (either 0 or
+ * - bodyFormat:    (mixed)  The format for body cells (either 0 or a
  *                           Spreadsheet_Excel_Writer_Format object)
  *                           Please see the NOTE ABOUT FORMATTING below.
  *                           (default: 0 [= "no format"])
@@ -65,7 +65,7 @@ require_once 'Spreadsheet/Excel/Writer.php';
  * NOTE ABOUT FORMATTING :
  * 
  * You can specify some formatting with the 'headerFormat' and 'bodyFormat' 
- * options, or with setBodyFormat() and setHeaderFormat() properties. 
+ * options, or with setBodyFormat() and setHeaderFormat(). 
  * 
  * But beware of the following from the Spreadsheet_Excel_Writer manual :
  * "Formats can't be created directly by a new call. You have to create a 
