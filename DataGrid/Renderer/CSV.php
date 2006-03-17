@@ -23,7 +23,7 @@
 require_once 'Structures/DataGrid/Renderer.php';
 
 /**
- * Structures_DataGrid_Renderer_CSV Class
+ * CSV Rendering Driver
  *
  * Recognized options:
  *

@@ -24,7 +24,7 @@ require_once 'Structures/DataGrid/Renderer.php';
 require_once 'HTML/Table.php';
 
 /**
- * Structures_DataGrid_Renderer_HTMLTable Class
+ * HTML Table Rendering Driver
  *
  * Driver for rendering the DataGrid as an HTMLTable
  *
@@ -144,7 +144,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     }
     
     /**
-     * Initialize HTML_Table instance if it is not already existing
+     * Instantiate the HTML_Table container if needed, and set it up
      * 
      * @access protected
      */

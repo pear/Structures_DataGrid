@@ -25,9 +25,9 @@ require_once 'Structures/DataGrid/Renderer.php';
 require_once 'XML/Util.php';
 
 /**
- * Structures_DataGrid_Renderer_XUL Class
+ * XUL Rendering Driver
  *
- * This renderer class will render an XUL listbox.
+ * This renderer class will render a XUL listbox.
  * For additional information on the XUL Listbox, refer to this url:
  * http://www.xulplanet.com/references/elemref/ref_listbox.html
  *
@@ -45,13 +45,17 @@ require_once 'XML/Util.php';
  * <code>
  * <?php 
  * header('Content-type: application/vnd.mozilla.xul+xml'); 
+ * 
  * echo "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
  * echo "<?xml-stylesheet href=\"myStyle.css\" type=\"text/css\"?>\n";
+ * 
  * echo "<window title=\"MyDataGrid\" 
  *        xmlns=\"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul\">\n";
+ *        
  * // Instantiate your datagrid and setup its datasource, then call :
  * $datagrid->setRenderer(DATAGRID_RENDER_XUL);
  * $datagrid->render();
+ * 
  * echo "</window>\n";
  * ?> 
  * </code>

@@ -24,7 +24,7 @@ require_once 'Structures/DataGrid/Renderer.php';
 require_once 'Spreadsheet/Excel/Writer.php';
 
 /**
- * Structures_DataGrid_Renderer_XLS Class
+ * Excel Spreadsheet Rendering Driver
  *
  * RECOGNIZED OPTIONS:
  *
@@ -171,7 +171,7 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
     }
     
     /**
-     * Initialize a string for the CSV if it is not already existing
+     * Instantiate the container if needed, and set it up
      * 
      * @access protected
      */

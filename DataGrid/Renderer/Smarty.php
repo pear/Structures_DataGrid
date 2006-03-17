@@ -23,7 +23,7 @@
 require_once 'Structures/DataGrid/Renderer.php';
 
 /**
- * Smarty renderer
+ * Smarty Rendering Driver
  *
  * Recognized options :
  * 
@@ -139,6 +139,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
     
     /**
      * Return the currently used Smarty object
+     *
      * @return object Smarty or PEAR_Error object
      */
     function &getContainer()
@@ -151,7 +152,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
     }
     
     /**
-     * Initialize the Smarty instance if it is not already existing
+     * Initialize the Smarty container
      * 
      * @access protected
      */

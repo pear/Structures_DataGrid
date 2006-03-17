@@ -24,7 +24,7 @@ require_once 'Structures/DataGrid/Renderer.php';
 require_once 'XML/Util.php';
 
 /**
- * Structures_DataGrid_Renderer_XML Class
+ * XML Rendering Driver
  *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>

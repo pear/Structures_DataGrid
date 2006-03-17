@@ -24,9 +24,11 @@ require_once 'Structures/DataGrid/Renderer.php';
 require_once 'Console/Table.php';
 
 /**
- * Structures_DataGrid_Renderer_Console Class
+ * Console Table Rendering Driver
  *
- * This container has container support. You can use the 
+ * This renderer generates nicely formatted and padded ascii tables.
+ * 
+ * This driver has container support. You can use the 
  * Structures_DataGrid::fill() method with it. 
  *
  * It buffers output, you can use Structures_DataGrid::getOutput()
@@ -89,7 +91,7 @@ class Structures_DataGrid_Renderer_Console extends Structures_DataGrid_Renderer
     }
     
     /**
-     * Initialize Console_Table instance if it is not already existing
+     * Instantiate the Console_Table container if it hasn't been provided
      * 
      * @access protected
      */

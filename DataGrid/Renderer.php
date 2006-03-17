@@ -54,6 +54,8 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  *     - defaultCellFormatter()
  *     - buildHeader()
  *     - buildBody()
+ *     - buildRow()
+ *     - buildEmptyRow()
  *     - buildFooter()
  *     - finalize()
  *     - flatten()
