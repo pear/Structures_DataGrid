@@ -42,9 +42,9 @@ require_once 'HTML/Table.php';
  *                        Can be text or HTML to define an image.
  * - sortIconDESC       : The icon to define that sorting is currently Descending. 
  *                        Can be text or HTML to define an image.
- * - columnAttributes   : attributes for the header row. This is an array of the
+ * - headerAttributes   : attributes for the header row. This is an array of the
  *                        form: array(attribute => value, ...)
- * - headerAttributes   : column cells attributes. This is an array of the form :
+ * - columnAttributes   : column cells attributes. This is an array of the form :
  *                        array(fieldName => array(attribute => value, ...) ... )
  * - convertEntities    : whether or not to convert html entities. Default: true
  *                        This calls htmlspecialchars(). 
