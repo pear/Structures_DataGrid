@@ -84,7 +84,7 @@ class Structures_DataGrid_DataSource_MDB2
      * Bind
      *
      * @param   string    $query     The query string
-     * @param   mixed     $options   array('connection' => [PEAR::MDB2 object])
+     * @param   mixed     $options   array('dbc' => [PEAR::MDB2 object])
      *                               or
      *                               array('dsn' => [PEAR::MDB2 dsn string])
      * @access  public
@@ -96,9 +96,9 @@ class Structures_DataGrid_DataSource_MDB2
             $this->setOptions($options); 
         }
 
-        if (isset($this->_options['connection']) &&
-            MDB2::isConnection($this->_options['connection'])) {
-            $this->_db = &$this->_options['connection'];
+        if (isset($this->_options['dbc']) &&
+            MDB2::isConnection($this->_options['dbc'])) {
+            $this->_db = &$this->_options['dbc'];
         } elseif (isset($this->_options['dsn'])) {
             $dbOptions = array();
             if (array_key_exists('db_options', $options)) {
@@ -107,7 +107,7 @@ class Structures_DataGrid_DataSource_MDB2
             $this->_db =& MDB2::factory($this->_options['dsn'], $dbOptions);
             if (PEAR::isError($this->_db)) {
                 return PEAR::raiseError('Could not create connection: ' .
-                                      $this->_db->getMessage());
+                                        $this->_db->getMessage());
             }
         } else {
             return PEAR::raiseError('No MDB2 object or dsn string specified');
