@@ -556,7 +556,7 @@ class Structures_DataGrid
     /**
      * Returns the number of columns
      *
-     * @return int       the number of records
+     * @return int       the number of columns
      * @access public
      */
     function getColumnCount()
@@ -769,44 +769,6 @@ class Structures_DataGrid
     }
 
     /**
-     * Adds a DataGrid_Record object to this DataGrid object
-     *
-     * FIXME: Isn't this obsolete ?
-     * 
-     * @access  public
-     * @param   object Structures_DataGrid_Record   $record     The record
-     *          object to add. This object must be a Structures_DataGrid_Record
-     *          object.
-     * @return  bool            True if successful, otherwise false.
-     */
-    function addRecord($record)
-    {
-        if (is_a($record, 'structures_datagrid_record')) {
-            $this->recordSet = array_merge($this->recordSet,
-                                           array($record->getRecord()));
-            return true;
-        } else {
-            return PEAR::raiseError('Not a valid DataGrid Record');
-        }
-    }
-
-    /**
-     * Drops a DataGrid_Record object from this DataGrid object
-     *
-     * FIXME: Isn't this obsolete ?
-     *
-     * @access  public
-     * @param   object Structures_DataGrid_Record   $record     The record
-     *          object to drop. This object must be a Structures_DataGrid_Record
-     *          object.
-     * @return void
-     */
-    function dropRecord($record)
-    {
-        unset($this->recordSet[$record->getRecord()]);
-    }
-
-    /**
      * Sorts the records by the defined field.
      * Do not use this method if data is coming from a database as sorting
      * is much faster coming directly from the database itself.
@@ -952,8 +914,8 @@ class Structures_DataGrid
             case (   is_string($source) 
                   && preg_match('#SELECT\s.*\sFROM#is', $source) === 1
                  ):
-                if ((     array_key_exists('connection', $options)
-                       && is_subclass_of($options['connection'],
+                if ((     array_key_exists('dbc', $options)
+                       && is_subclass_of($options['dbc'],
                                          'mdb2_driver_common')
                     ) || (
                           array_key_exists('backend', $options)

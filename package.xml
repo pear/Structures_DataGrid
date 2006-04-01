@@ -37,10 +37,14 @@
     <notes>
 
       ##########################################################################
-      #                   WARNING - BACKWARD INCOMPATIBILITY                   #
+      #                 WARNING - BACKWARDS INCOMPATIBILITIES                  #
+      #                                                                        #
       # The Structures_DataGrid::renderer property is not public anymore. It   #
       # is now required to use the Structures_DataGrid::getRenderer() method   #
       # in order to access the renderer object.                                #
+      #                                                                        #
+      # Adding or removing single records via Structures_DataGrid::addRecord() #
+      # and Structures_DataGrid::dropRecord() isn't possible anymore.          #
       ##########################################################################
 
 
@@ -190,7 +194,6 @@
         <file role="php" baseinstalldir="Structures" name="DataGrid.php"/>
         <dir name="DataGrid" role="php">
           <file role="php" name="Column.php"/>
-          <file role="php" name="Record.php"/>
           <file role="php" name="Renderer.php"/>
           <file role="php" name="DataSource.php"/>
           <dir name="Renderer" role="php">
@@ -212,10 +215,6 @@
             <file role="php" name="MDB2.php"/>
             <file role="php" name="RSS.php"/>
             <file role="php" name="XML.php"/>
-          </dir>
-          <dir name="Record" role="php">
-            <file role="php" name="DB.php"/>
-            <file role="php" name="DataObject.php"/>
           </dir>
         </dir>
       </dir>
