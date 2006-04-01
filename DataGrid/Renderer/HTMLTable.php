@@ -395,7 +395,6 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     }
 
     /**
-    /**
      * Build a body row
      *
      * @param int   $index Row index (zero-based)
@@ -421,7 +420,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                                           $this->_options['columnAttributes'][$field]);
             }
 
-            // Set Content in HTML_Table
+            // Set content in HTML_Table
             $this->_tableBody->setCellContents($outputRow, $col, $value);
             if ($attributes) {
                 $this->_tableBody->setCellAttributes($outputRow, $col, $attributes);
