@@ -499,10 +499,11 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                           'nextImg' => '>>');
 
         // This is a BC workaround for the old version of this method
-        // FIXME: needs testing
         if (is_string($options)) {
-            $argsNum = func_get_args(); 
+            $argsNum = func_num_args(); 
             $args = func_get_args();
+            $options = array();
+
             for ($i = 0; $i < $argsNum; $i++) {
                 switch ($i) {
                     case 0 : $options['mode'] = $args[$i]; break;
