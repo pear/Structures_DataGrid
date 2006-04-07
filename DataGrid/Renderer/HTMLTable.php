@@ -390,7 +390,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
             }
         }
         if (count($this->_options['headerAttributes']) > 0) {
-            $this->_tableHeader->setRowAttributes($row, $this->_options['headerAttributes'], true);
+            $this->_tableHeader->setRowAttributes($row, $this->_options['headerAttributes'], false);
         }
     }
 
