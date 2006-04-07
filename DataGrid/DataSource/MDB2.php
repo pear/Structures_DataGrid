@@ -162,7 +162,7 @@ class Structures_DataGrid_DataSource_MDB2
         if (is_null($limit)) {
             $result = $this->_db->query($query);
         } else {
-            $result = $this->_db->extended->limitQuery($query, $offset, $limit);
+            $result = $this->_db->extended->limitQuery($query, null, $offset, $limit);
         }
 
         if (PEAR::isError($result)) {
