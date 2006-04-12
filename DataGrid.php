@@ -225,6 +225,22 @@ class Structures_DataGrid
     }
 
     /**
+     * Checks if a class exists without triggering __autoload
+     *
+     * @param  string  className
+     * @return bool true success and false on error
+     *
+     * @access public
+     */
+    function classExists($className)
+    {
+        if (version_compare(phpversion(), "5.0", ">=")) {
+            return class_exists($className, false);
+        }
+        return class_exists($className);
+    }
+
+    /**
      * Load a Renderer or DataSource driver
      * 
      * @param string $className Name of the driver class
@@ -233,7 +249,7 @@ class Structures_DataGrid
      */
     function &loadDriver($className)
     {
-        if (!class_exists($className)) {
+        if (!Structures_DataGrid::classExists($className)) {
             $file_name = str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
             if (!include_once($file_name)) {
                 if (!Structures_DataGrid::fileExists($file_name)) {
