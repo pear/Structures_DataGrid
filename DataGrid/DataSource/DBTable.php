@@ -113,19 +113,12 @@ class Structures_DataGrid_DataSource_DBTable
      *
      * @param   integer $offset     Offset (starting from 0)
      * @param   integer $limit      Limit
-     * @param   string  $sortField  Field to sort by
-     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'    
      * @access  public
      * @return  array               The 2D Array of the records
      */
-    function &fetch($offset=0, $limit=null, $sortField=null, $sortDir='ASC')
+    function &fetch($offset=0, $limit=null)
     {
-        if (!is_null($sortField) && !is_null($sortDir)) {
-            $this->_result = $this->_object->selectResult(
-                                $this->_options['view'],
-                                $this->_options['where'],
-                                $sortField . ' ' . $sortDir, $offset, $limit);
-        } elseif (!is_null($this->_sortField) && !is_null($this->_sortDir)) {
+        if (!is_null($this->_sortField) && !is_null($this->_sortDir)) {
             $this->_result = $this->_object->selectResult(
                                 $this->_options['view'],
                                 $this->_options['where'], 

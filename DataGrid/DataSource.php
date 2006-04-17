@@ -236,21 +236,11 @@ class Structures_DataGrid_DataSource
      * @abstract
      * @param   integer $offset     Limit offset (starting from 0)
      * @param   integer $len        Limit length
-     * @param   string  $sortSpec   If the driver supports the "multiSort" 
-     *                              feature this can be either a single field 
-     *                              (string), or a sort specification array of 
-     *                              the form : array(field => direction, ...)
-     *                              If "multiSort" is not supported, then this
-     *                              can only be a string.
-     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
      * @return  object              PEAR_Error with message 
      *                              "No data source driver loaded" 
      * @access  public                          
      */
-    function &fetch($offset=0, $len=null, $sortSpec=null, $sortDir='ASC')
-    /* FIXME: Why is there these $sortField and $sortDir parameters ? This
-     * is redundant with the sort() method.
-     */
+    function &fetch($offset=0, $len=null)
     {
         return PEAR::raiseError("No data source driver loaded");
     }

@@ -51,6 +51,14 @@ require_once 'Spreadsheet/Excel/Writer.php';
  *                           (default: 0)
  * - startRow:      (int)    The Worksheet row number to start rendering at
  *                           (default: 0)
+ * - border:        (int)    Border drawn around the whole datagrid : 
+ *                           0 => none, 1 => thin, 2 => thick 
+ *                           (default: 0) 
+ *                           (NOT IMPLEMENTED YET)
+ * - headerBorder   (int)    Border between the header and body :
+ *                           0 => none, 1 => thin, 2 => thick 
+ *                           (default: 0)
+ *                           (NOT IMPLEMENTED YET)
  *
  * GENERAL NOTES :
  * 

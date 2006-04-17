@@ -86,22 +86,15 @@ class Structures_DataGrid_DataSource_Array
      *
      * @param   integer $offset     Limit offset (starting from 0)
      * @param   integer $len        Limit length
-     * @param   string  $sortField  Field to sort by
-     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'     
      * @access  public
      * @return  array       The 2D Array of the records
      */
-    function &fetch($offset=0, $len=null, $sortField='', $sortDir='ASC')
+    function &fetch($offset=0, $len=null)
     {
         if ($this->_ar && !$this->_options['fields']) {
             $this->setOptions(array('fields' => array_keys($this->_ar[0])));
         }
 
-        // sorting
-        if ($sortField) {
-            $this->sort($sortField, $sortDir);
-        }
-        
         // slicing
         if (is_null($len)) {
             $slice = array_slice($this->_ar, $offset);
@@ -133,9 +126,10 @@ class Structures_DataGrid_DataSource_Array
      * 
      * @access  public
      * @param   string  $sortField  Field to sort by
-     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
+     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC' 
+     *                              (default: ASC)
      */
-    function sort($sortField, $sortDir)
+    function sort($sortField, $sortDir = null)
     {
         $sortAr = array();
         $numRows = count($this->_ar);
@@ -144,7 +138,8 @@ class Structures_DataGrid_DataSource_Array
             $sortAr[$i] = $this->_ar[$i][$sortField];
         }
 
-        $sortDir = strtoupper($sortDir) == 'ASC' ? SORT_ASC : SORT_DESC;
+        $sortDir = is_null($sortDir) or strtoupper($sortDir) == 'ASC' 
+                 ? SORT_ASC : SORT_DESC;
         array_multisort($sortAr, $sortDir, $this->_ar);
     }
 }

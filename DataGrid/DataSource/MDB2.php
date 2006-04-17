@@ -128,17 +128,13 @@ class Structures_DataGrid_DataSource_MDB2
      *
      * @param   integer $offset     Offset (starting from 0)
      * @param   integer $limit      Limit
-     * @param   string  $sortField  Field to sort by
-     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'    
      * @access  public
      * @return  mixed               The 2D Array of the records on success,
                                     PEAR_Error on failure
     */
-    function &fetch($offset=0, $limit=null, $sortField=null, $sortDir='ASC')
+    function &fetch($offset=0, $limit=null)
     {
-        if (!is_null($sortField) && !is_null($sortDir)) {
-            $sortString = ' ORDER BY ' . $sortField . ' ' . $sortDir;
-        } elseif (!is_null($this->_sortField) && !is_null($this->_sortDir)) {
+        if (!is_null($this->_sortField) && !is_null($this->_sortDir)) {
             $sortString = ' ORDER BY '. $this->_sortField .
                           ' ' . $this->_sortDir;
         } else {

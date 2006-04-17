@@ -81,12 +81,6 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     var $_tableBody;
 
     /**
-     * The HTML::Pager object that controls paging logic.
-     * @var object Pager
-     */
-    var $_pager;
-
-    /**
      * The body row index to start rendering at
      * @var int
      */
@@ -492,12 +486,6 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      */
     function getPaging($options = array())
     {
-        $defaults = array('mode' => 'Sliding',
-                          'delta' => 5,
-                          'separator' => '|',
-                          'prevImg' => '<<',
-                          'nextImg' => '>>');
-
         // This is a BC workaround for the old version of this method
         if (is_string($options)) {
             $argsNum = func_num_args(); 
@@ -515,13 +503,12 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 }
             }
         }
-        
-        $options = array_merge($defaults, $options);
-        
-        $this->_buildPaging($options);
-
-        // Return paging html
-        return $this->_pager->links;
+       
+    
+        // Load and get output from the Pager rendering driver
+        $driver =& Structures_DataGrid::loadDriver('Structures_DataGrid_Renderer_Pager');
+        $driver->setupAs($this, $options);
+        return $driver->getOutput();
     }
 
 }

@@ -163,15 +163,10 @@ class Structures_DataGrid_DataSource_DataObject
      *
      * @param   integer $offset     Limit offset (starting from 0)
      * @param   integer $len        Limit length
-     * @param   mixed   $sortSpec   A single field (string) to sort by, or a 
-     *                              sort specification array of the form :
-     *                              array(field => direction, ...)
-     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
-     *                              This is ignored if $sortDesc is an array
      * @access  public
      * @return  array   The 2D Array of the records
      */    
-    function &fetch($offset=0, $len=null, $sortSpec=null, $sortDir='ASC')
+    function &fetch($offset=0, $len=null)
     {
         // Check to see if Query has already been submitted
         if ($this->_dataobject->_DB_resultid != '') {
@@ -185,9 +180,7 @@ class Structures_DataGrid_DataSource_DataObject
             }
                     
             // Sorting
-            if ($sortSpec) {
-                $this->sort($sortSpec, $sortDir);
-            } elseif (($sortProperty = $this->_options['sort_property'])
+            if (($sortProperty = $this->_options['sort_property'])
                       && isset($this->_dataobject->$sortProperty)) {
                 foreach ($this->_dataobject->$sortProperty as $sort) {
                     $this->sort($sort);

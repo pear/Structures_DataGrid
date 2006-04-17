@@ -271,8 +271,10 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
      */
     function _smartyGetPaging($params, &$smarty)
     {
-        $this->_buildPaging($params);
-        return $this->_pager->links;
+        // Load and get output from the Pager rendering driver
+        $driver =& Structures_DataGrid::loadDriver('Structures_DataGrid_Renderer_Pager');
+        $driver->setupAs($this, $params);
+        return $driver->getOutput();
     }
 
     /**

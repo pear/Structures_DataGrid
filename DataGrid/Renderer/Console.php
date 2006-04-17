@@ -154,22 +154,20 @@ class Structures_DataGrid_Renderer_Console extends Structures_DataGrid_Renderer
     }
 
     /**
-     * Handles building the body of the table
+     * Build a body row
      *
-     * @access  protected
-     * @return  void
+     * @param int   $index Row index (zero-based)
+     * @param array $data  Record data. 
+     *                     Structure: array(0 => <value0>, 1 => <value1>, ...)
+     * @return void
+     * @access protected
+     * @abstract
      */
-    function buildBody()
+    function buildRow($index,$data)
     {
-        for ($row = 0; $row < $this->_recordsNum; $row++) {
-            $cellList = array();
-            for ($col = 0; $col < $this->_columnsNum; $col++) {
-                $cellList[] = $this->_records[$row][$col];
-            }
-            $this->_table->addRow($cellList);
-        }
+        $this->_table->addRow($data);
     }
-
+    
     /**
      * Retrieve output from the container object 
      *

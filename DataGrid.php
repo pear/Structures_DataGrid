@@ -32,6 +32,7 @@ define('DATAGRID_RENDER_XLS',      'XLS');
 define('DATAGRID_RENDER_XUL',      'XUL');
 define('DATAGRID_RENDER_CSV',      'CSV');
 define('DATAGRID_RENDER_CONSOLE',  'Console');
+define('DATAGRID_RENDER_PAGER',    'Pager');
 
 define('DATAGRID_RENDER_DEFAULT',  DATAGRID_RENDER_TABLE);
 
@@ -61,6 +62,8 @@ define('DATAGRID_SOURCE_MDB2',      'MDB2');
  * be sorted and paged, each cell can have custom output, and the table can be
  * custom designed with alternating color rows.
  *
+ * //FIXME: this is a very old example...
+ * 
  * Quick Example:
  * <code>
  * <?php
@@ -246,6 +249,7 @@ class Structures_DataGrid
      * @param string $className Name of the driver class
      * @access private
      * @return object The driver object or a PEAR_Error
+     * @static
      */
     function &loadDriver($className)
     {
@@ -368,14 +372,24 @@ class Structures_DataGrid
     /**
      * Render the datagrid
      *
-     * @param  string   $limit  The row limit per page.
-     * @param  string   $page   The current page viewed.
+     * You can call this method several times with different renderers.
+     * 
+     * @param  int      $type   Renderer type (optional)
      * @access public
      * @return mixed    True or PEAR_Error
      */
-    function render()
+    function render($type = null)
     {
-        isset($this->_renderer) or $this->setRenderer(DATAGRID_RENDER_DEFAULT);
+        if (!is_null($type)) {
+            if ($this->_rendererType != $type) {
+                $test = $this->setRenderer($type);
+                if (PEAR::isError($test)) {
+                    return $test;
+                }
+            }
+        } else if (!isset($this->_renderer)) {
+            $this->setRenderer(DATAGRID_RENDER_DEFAULT);
+        }
         
         $this->_renderer->isBuilt() or $this->build();
         $test = $this->_renderer->render();
@@ -402,7 +416,17 @@ class Structures_DataGrid
      */
     function getOutput()
     {
-        isset($this->_renderer) or $this->setRenderer(DATAGRID_RENDER_DEFAULT);
+        if (!is_null($type)) {
+            if ($this->_rendererType != $type) {
+                $test = $this->setRenderer($type);
+                if (PEAR::isError($test)) {
+                    return $test;
+                }
+            }
+        } else if (!isset($this->_renderer)) {
+            $this->setRenderer(DATAGRID_RENDER_DEFAULT);
+        }
+        
         $this->_renderer->isBuilt() or $this->build();
         return $this->_renderer->getOutput();
     }
@@ -465,6 +489,8 @@ class Structures_DataGrid
         return true;
     }
 
+    
+    
     /**
      * Fill a rendering container with data
      * 
@@ -490,6 +516,7 @@ class Structures_DataGrid
 
         /* Is a renderer driver already loaded and does it exactly match 
          * the driver class name that corresponds to $type ? */
+        //FIXME: is this redundant with the $rendererType property ?
         if (!isset ($this->_renderer) 
             or !is_a($this->_renderer, "Structures_DataGrid_Renderer_$type")) {
             /* No, then load the right driver */
@@ -591,7 +618,10 @@ class Structures_DataGrid
         if (isset($this->_dataSource)) {
             return $this->_dataSource->count();
         } else {
-            return count($this->recordSet);
+            // If there is no datasource then there is no data. The old way
+            // of putting an array into the recordSet property does not exist
+            // anymore. Binding an array loads the Array datasource driver.
+            return 0;
         }
     }    
 
@@ -759,19 +789,16 @@ class Structures_DataGrid
             // Determine Page
             $page = $this->page ? $this->page - 1 : 0;
 
-            // Fetch the Data
+            // Sort the data
             reset($this->sortSpec);
             if (list($field,$direction) = each($this->sortSpec)) {
-                $recordSet = $this->_dataSource->fetch(
-                                ($page * $this->rowLimit),
-                                $this->rowLimit,
-                                $field,
-                                $direction);
-            } else {
-                $recordSet = $this->_dataSource->fetch(
-                                ($page * $this->rowLimit),
-                                $this->rowLimit);
+                $this->_dataSource->sort($field,$direction);
             }
+
+            // Fetch the Data
+            $recordSet = $this->_dataSource->fetch(
+                            ($page * $this->rowLimit),
+                            $this->rowLimit);
 
             if (PEAR::isError($recordSet)) {
                 return $recordSet;
@@ -799,30 +826,7 @@ class Structures_DataGrid
         $this->sortSpec = array($sortBy => $direction);
         if (isset($this->_dataSource)) {
             $this->_dataSource->sort($sortBy, $direction);
-        } else {
-            $this->_sortCallbackField = $sortBy;
-            $this->_sortCallbackDirection = $direction;
-            usort($this->recordSet, array($this, '_sort'));
-        }
-    }
-
-    /**
-     * Callback method used in sortRecordSet()
-     *
-     * @access  private
-     * @param   string $a           First value
-     * @param   string $direction   Second value
-     * @return  boolean
-     */
-    function _sort($a, $b)
-    {
-        $bool = strnatcasecmp($a[$this->_sortCallbackField], $b[$this->_sortCallbackField]);
-        
-        if ($this->_sortCallbackDirection == 'DESC') {
-            $bool = $bool * -1;
-        }
-        
-        return $bool;
+        } 
     }
 
     /**
