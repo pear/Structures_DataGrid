@@ -378,7 +378,7 @@ class Structures_DataGrid
      * @access public
      * @return mixed    True or PEAR_Error
      */
-    function render($type = null)
+    function render($type = null,$options = array())
     {
         if (!is_null($type)) {
             if ($this->_rendererType != $type) {
@@ -389,6 +389,10 @@ class Structures_DataGrid
             }
         } else if (!isset($this->_renderer)) {
             $this->setRenderer(DATAGRID_RENDER_DEFAULT);
+        }
+        
+        if ($options) {
+            $this->_renderer->setOptions($options);
         }
         
         $this->_renderer->isBuilt() or $this->build();
@@ -414,7 +418,7 @@ class Structures_DataGrid
      * @return mixed The datagrid output (Usually a string : HTML, CSV, etc...)
      *               or a PEAR_Error
      */
-    function getOutput()
+    function getOutput($type = null, $options = array())
     {
         if (!is_null($type)) {
             if ($this->_rendererType != $type) {
@@ -425,6 +429,10 @@ class Structures_DataGrid
             }
         } else if (!isset($this->_renderer)) {
             $this->setRenderer(DATAGRID_RENDER_DEFAULT);
+        }
+        
+        if ($options) {
+            $this->_renderer->setOptions($options);
         }
         
         $this->_renderer->isBuilt() or $this->build();
@@ -985,6 +993,10 @@ class Structures_DataGrid
                    or is_subclass_of($container, 
                                      'console_table')) {
             return DATAGRID_RENDER_CONSOLE;
+        } else if (is_a($container, 'pager_common') 
+                   or is_subclass_of($container, 
+                                     'pager_common')) {
+            return DATAGRID_RENDER_PAGER;
         } 
 
         return null;

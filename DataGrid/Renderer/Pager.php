@@ -187,5 +187,45 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
         $options['extraVars'] = $renderer->_options['extraVars'];
         $this->setOptions($options);
     }
+
+    /**
+     * Set multiple options
+     *
+     * @param   mixed   $options    An associative array of the form :
+     *                              array("option_name" => "option_value",...)
+     * @access  public
+     */
+    function setOptions($options)
+    {
+        /* This method is overloaded here because array_merge() needs to be called
+         * over the "pagerOptions" option. Otherwise, if the user only provide a few
+         * pager options, built-in defaults generally get overwritten.
+         *
+         * setOptions() is a public method, so it can be overloaded. But, because
+         * the $_options method is considered read-only, this method does not write 
+         * into this property directly. It calls parent::setOptions() instead.
+         */
+        if (isset($options['pagerOptions'])) {
+            $options['pagerOptions'] = array_merge ($this->_options['pagerOptions'], 
+                                                    $options['pagerOptions']);
+        }
+        parent::setOptions($options);
+    }
+
+    /**
+     * Set a single option
+     *
+     * @param   string  $name       Option name
+     * @param   mixed   $value      Option value
+     * @access  public
+     */
+    function setOption($name,$value)
+    {
+        // see notes in setOptions()
+        if ($name == 'pagerOptions') {
+            $value = array_merge ($this->_options['pagerOptions'],$value);
+        }
+        parent::setOption($name,$value);
+    }
 }
 
