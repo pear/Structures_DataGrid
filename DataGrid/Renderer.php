@@ -372,7 +372,8 @@ class Structures_DataGrid_Renderer
         $this->_page            = $currentPage;
         $this->_pageLimit       = $rowsPerPage;
         $this->_totalRecordsNum = $totalRowNum;
-        $this->_pagesNum        = ceil($totalRowNum / $rowsPerPage);
+        $this->_pagesNum        = (is_null($rowsPerPage) || $totalRowNum) ?
+            1 : ceil($totalRowNum / $rowsPerPage);
         $this->_firstRecord     = ($currentPage - 1) * $rowsPerPage + 1;
         $this->_lastRecord      = $currentPage * $rowsPerPage;
         if ($this->_lastRecord > $totalRowNum) {
