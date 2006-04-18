@@ -26,7 +26,12 @@ require_once 'Pager/Pager.php';
 /**
  * Pager rendering driver
  *
- * This driver provide generic paging.
+ * This driver provides generic paging.
+ * 
+ * This driver has full container support. You can use the
+ * Structures_DataGrid::fill() method with it. 
+ *
+ * It buffers output, you can use Structures_DataGrid::getOutput()
  * 
  * RECOGNIZED OPTIONS:
  *
