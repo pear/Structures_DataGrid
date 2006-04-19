@@ -62,19 +62,14 @@ define('DATAGRID_SOURCE_MDB2',      'MDB2');
  * be sorted and paged, each cell can have custom output, and the table can be
  * custom designed with alternating color rows.
  *
- * //FIXME: this is a very old example...
- * 
  * Quick Example:
  * <code>
  * <?php
  * require('Structures/DataGrid.php');
- * $dg = new Structures_DataGrid();
- * $result = mysql_query('SELECT * FROM users');
- * while ($rs = mysql_fetch_assoc($result)) {
- *     $dataSet[] = $rs;
- * }
- * $dg->bind($dataSet);
- * echo $dg->render();
+ * $datagrid =& new Structures_DataGrid();
+ * $options = array('dsn' => 'mysql://user:password@host/db_name');
+ * $datagrid->bind("SELECT * FROM my_table", $options);
+ * $datagrid->render();
  * ?>
  * </code>
  *
