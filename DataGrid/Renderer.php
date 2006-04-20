@@ -342,10 +342,10 @@ class Structures_DataGrid_Renderer
      * @param array $records 2D array of records values
      * @access public
      */
-    function setData(&$columns, &$records)
+    function setData(&$columns, $records)
     {
         $this->_columnObjects = &$columns;
-        $this->_records = &$records;
+        $this->_records = $records;
     }
   
     /**
