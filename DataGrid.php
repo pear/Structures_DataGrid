@@ -92,10 +92,24 @@ class Structures_DataGrid
 
     /**
      * Renderer driver type
-     * @var object Structures_DataGrid_Renderer_* family
+     * @var int DATAGRID_RENDER_* constant family
      * @access private
      */ 
     var $_rendererType = null;
+
+    /**
+     * Renderer driver backup
+     * @var object Structures_DataGrid_Renderer_* family
+     * @access private
+     */ 
+    var $_rendererBackup;
+
+    /**
+     * Renderer driver type backup
+     * @var int DATAGRID_RENDER_* constant family
+     * @access private
+     */ 
+    var $_rendererTypeBackup = null;
 
     /**
      * Array of columns.  Columns are defined as a DataGridColumn object.
@@ -376,11 +390,12 @@ class Structures_DataGrid
     function render($type = null,$options = array())
     {
         if (!is_null($type)) {
-            if ($this->_rendererType != $type) {
-                $test = $this->setRenderer($type);
-                if (PEAR::isError($test)) {
-                    return $test;
-                }
+            $this->_saveRenderer();
+            
+            $test = $this->setRenderer($type);
+            if (PEAR::isError($test)) {
+                $this->_restoreRenderer();
+                return $test;
             }
         } else if (!isset($this->_renderer)) {
             $this->setRenderer(DATAGRID_RENDER_DEFAULT);
@@ -390,7 +405,7 @@ class Structures_DataGrid
             $this->_renderer->setOptions($options);
         }
         
-        $this->_renderer->isBuilt() or $this->build();
+        $this->_renderer->isBuilt() || $this->build();
         $test = $this->_renderer->render();
 
         if (PEAR::isError($test)) {
@@ -398,12 +413,15 @@ class Structures_DataGrid
                 $type = is_null($this->_rendererType) 
                         ? get_class($this->_renderer)
                         : $this->_rendererType;
+                $this->_restoreRenderer();
                 return PEAR::raiseError("The $type driver does not support the ".
-                                      "render() method. Try using fill().");
+                                        "render() method. Try using fill().");
             } else {
+                $this->_restoreRenderer();
                 return $test;
             }
         }
+        $this->_restoreRenderer();
     }
 
     /**
@@ -416,11 +434,12 @@ class Structures_DataGrid
     function getOutput($type = null, $options = array())
     {
         if (!is_null($type)) {
-            if ($this->_rendererType != $type) {
-                $test = $this->setRenderer($type);
-                if (PEAR::isError($test)) {
-                    return $test;
-                }
+            $this->_saveRenderer();
+            
+            $test = $this->setRenderer($type);
+            if (PEAR::isError($test)) {
+                $this->_restoreRenderer();
+                return $test;
             }
         } else if (!isset($this->_renderer)) {
             $this->setRenderer(DATAGRID_RENDER_DEFAULT);
@@ -430,8 +449,21 @@ class Structures_DataGrid
             $this->_renderer->setOptions($options);
         }
         
-        $this->_renderer->isBuilt() or $this->build();
-        return $this->_renderer->getOutput();
+        $this->_renderer->isBuilt() || $this->build();
+        
+        $output = $this->_renderer->getOutput();
+        
+        if (PEAR::isError($output) && $output->getCode() == DATAGRID_ERROR_UNSUPPORTED) {
+            $type = is_null($this->_rendererType) 
+                    ? get_class($this->_renderer)
+                    : $this->_rendererType;
+            $this->_restoreRenderer();
+            return PEAR::raiseError("The $type driver does not support the ".
+                                    "getOutput() method. Try using render().");
+        }
+        
+        $this->_restoreRenderer();
+        return $output;
     }
 
     /**
@@ -467,6 +499,44 @@ class Structures_DataGrid
         }
     }
 
+    /**
+     * Backup the current renderer
+     * 
+     * @return void
+     * @access private
+     */
+    function _saveRenderer()
+    {
+        if (isset($this->_renderer)) {
+            $this->_rendererBackup =& $this->_renderer;
+            $this->_rendererTypeBackup =& $this->_rendererType;
+        } else {
+            $this->_rendererBackup = null;
+        }
+    }
+    
+    /**
+     * Restore a previously saved renderer
+     * 
+     * If the $_renderer property was not set when _saveRenderer() got 
+     * previously called, _restoreRenderer() will unset it.
+     * 
+     * @return void
+     * @access private
+     */
+    function _restoreRenderer()
+    {
+        if (isset($this->_rendererBackup)) {
+            $this->_renderer =& $this->_rendererBackup;
+            $this->_rendererType =& $this->_rendererTypeBackup;
+        } else if (@is_null($this->_rendererBackup)) {
+            unset($this->_renderer);
+            $this->_rendererType = null;
+        }
+        unset($this->_rendererBackup);
+        $this->_rendererTypeBackup = null;
+    }
+    
     /**
      * Attach a rendering driver
      * 
@@ -523,7 +593,9 @@ class Structures_DataGrid
         if (!isset ($this->_renderer) 
             or !is_a($this->_renderer, "Structures_DataGrid_Renderer_$type")) {
             /* No, then load the right driver */
+            $this->_saveRenderer();
             if (PEAR::isError($test = $this->setRenderer($type, $options))) {
+                $this->_restoreRenderer();
                 return $test;
             }
         }
@@ -531,15 +603,18 @@ class Structures_DataGrid
         $test = $this->_renderer->setContainer($container);
         if (PEAR::isError($test)) {
             if ($test->getCode() == DATAGRID_ERROR_UNSUPPORTED) {
+                $this->_restoreRenderer();
                 return PEAR::raiseError("The $type driver does not support the " . 
-                                      "fill() method. Try using render().");
+                                        "fill() method. Try using render().");
             } else {
+                $this->_restoreRenderer();
                 return $test;
             }
         }
 
         $this->_renderer->build();
 
+        $this->_restoreRenderer();
         return true;
     }
 
@@ -1082,34 +1157,6 @@ class Structures_DataGrid
         }
     }
 
-    /**
-     * Return paging links
-     *
-     * This method will return paging links if the renderer driver supports
-     * generating them.
-     *
-     * Useful options (See Pager's documentation for more) :
-     * mode      : The mode of pager to use
-     * separator : The string to use to separate each page link
-     * prevImg   : The string for the previous page link
-     * nextImg   : The string for the forward page link
-     * delta     : The number of pages to display before and
-     *             after the current page
-     * 
-     * Notice : Some drivers may not use HTML::Pager. In a such case, the above
-     * options may not be supported. See the driver-specific documentation for 
-     * more.
-     *             
-     * @param  array $options Paging options as supported by the driver 
-     * @return mixed          Links as a string, array,... (driver-specific)
-     *                        or a PEAR_Error if not implemented
-     * @access public
-     */
-    function getPaging($options = array())
-    {
-        isset($this->_renderer) or $this->setRenderer(DATAGRID_RENDER_DEFAULT);
-        return $this->_renderer->getPaging($options);
-    }
 }
 
 ?>
