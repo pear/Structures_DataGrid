@@ -868,6 +868,10 @@ class Structures_DataGrid
             $page = $this->page ? $this->page - 1 : 0;
 
             // Sort the data
+            if (empty($this->sortSpec) and $this->defaultSortSpec) {
+                $this->sortSpec = $this->defaultSortSpec;
+            }
+            
             reset($this->sortSpec);
             if (list($field,$direction) = each($this->sortSpec)) {
                 $this->_dataSource->sort($field,$direction);
@@ -891,6 +895,7 @@ class Structures_DataGrid
 
     /**
      * Sorts the records by the defined field.
+     *
      * Do not use this method if data is coming from a database as sorting
      * is much faster coming directly from the database itself.
      *
@@ -907,6 +912,26 @@ class Structures_DataGrid
         } 
     }
 
+    /**
+     * Set default sorting specification
+     *
+     * If there is no sorting query in the HTTP request, and if the 
+     * sortRecordSet() method is not called, then the specification
+     * passed to setDefaultSort() will be used.
+     * 
+     * This is especially useful if you want the data to already be
+     * sorted when a user first see the datagrid.
+     * 
+     * @param array $sortSpec   Sorting specification
+     *                          Structure : array(fieldName => direction, ...)
+     * @return void
+     * @access public
+     */
+    function setDefaultSort($sortSpec)
+    {
+        $this->defaultSortSpec = $sortSpec;
+    }
+    
     /**
      * Parse HTTP Request parameters
      *
