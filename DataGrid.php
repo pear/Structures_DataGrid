@@ -141,6 +141,14 @@ class Structures_DataGrid
     var $sortSpec = array();
 
     /**
+     * Default fields/directions to sort the data by
+     *
+     * @var array Form: array (fieldName => direction, ....)
+     * @access private
+     */
+    var $defaultSortSpec = array();
+
+    /**
      * Limit of records to show per page.
      * @var string
      * @access private
