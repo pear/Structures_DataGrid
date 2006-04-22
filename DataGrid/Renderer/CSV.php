@@ -25,7 +25,7 @@ require_once 'Structures/DataGrid/Renderer.php';
 /**
  * CSV Rendering Driver
  *
- * Recognized options:
+ * SUPPORTED OPTIONS:
  *
  * - delimiter: (string) Field delimiter
  *                       (default: ',')
@@ -38,12 +38,11 @@ require_once 'Structures/DataGrid/Renderer.php';
  *                       true: always, false: never, "auto": when needed
  *                       (default: "auto")
  *                       
- * GENERAL NOTES :
+ * SUPPORTED OPERATION MODES:
  *
- * This driver has no container support. You can not use 
- * Structures_DataGrid::fill() with it.
- *
- * It buffers output, you can use getOutput().
+ * - Container Support : no
+ * - Output Buffering  : yes
+ * - Direct Rendering  : no
  *                       
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>

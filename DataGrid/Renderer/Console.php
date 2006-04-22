@@ -28,11 +28,12 @@ require_once 'Console/Table.php';
  *
  * This renderer generates nicely formatted and padded ascii tables.
  * 
- * This driver has container support. You can use the 
- * Structures_DataGrid::fill() method with it. 
+ * SUPPORTED OPERATION MODES:
  *
- * It buffers output, you can use Structures_DataGrid::getOutput()
- * 
+ * - Container Support : yes
+ * - Output Buffering  : yes
+ * - Direct Rendering  : no
+ *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
  * @author   Olivier Guilyardi <olivier@samalyse.com>

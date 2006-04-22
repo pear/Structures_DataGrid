@@ -26,7 +26,7 @@ require_once 'Spreadsheet/Excel/Writer.php';
 /**
  * Excel Spreadsheet Rendering Driver
  *
- * RECOGNIZED OPTIONS:
+ * SUPPORTED OPTIONS:
  *
  * - headerFormat:  (mixed)  The format for header cells (either 0 or a
  *                           Spreadsheet_Excel_Writer_Format object)
@@ -60,8 +60,14 @@ require_once 'Spreadsheet/Excel/Writer.php';
  *                           (default: 0)
  *                           (NOT IMPLEMENTED YET)
  *
- * GENERAL NOTES :
+ * SUPPORTED OPERATION MODES:
+ *
+ * - Container Support : yes
+ * - Output Buffering  : no
+ * - Direct Rendering  : not really, see below
  * 
+ * GENERAL NOTES :
+ *
  * This driver does not support the flatten() method. You can not retrieve
  * its output with DataGrid::getOutput(). You can either render it directly 
  * to the browser or save it to a file. See the "sendToBrowser" and "filename" 
@@ -70,7 +76,7 @@ require_once 'Spreadsheet/Excel/Writer.php';
  * This driver has container support. You can use Structures_DataGrid::fill()
  * with it ; that's even recommended.
  * 
- * NOTE ABOUT FORMATTING :
+ * NOTE ABOUT FORMATTING:
  * 
  * You can specify some formatting with the 'headerFormat' and 'bodyFormat' 
  * options, or with setBodyFormat() and setHeaderFormat(). 
@@ -87,7 +93,8 @@ require_once 'Spreadsheet/Excel/Writer.php';
  * <code>
  * // Create a workbook
  * $workbook = new Spreadsheet_Excel_Writer();
- * // Sending the spreadsheet to the browser
+ *
+ * // Specify that spreadsheet must be sent the browser
  * $workbook->send('test.xls');
  *
  * // Create your format

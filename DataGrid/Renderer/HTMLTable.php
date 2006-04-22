@@ -28,7 +28,7 @@ require_once 'HTML/Table.php';
  *
  * Driver for rendering the DataGrid as an HTMLTable
  *
- * Recognized options :
+ * SUPPORTED OPTIONS:
  *
  * - evenRowAttributes  : An associative array containing each attribute of the 
  *                        even rows
@@ -51,6 +51,12 @@ require_once 'HTML/Table.php';
  * - sortingResetsPaging: whether sorting HTTP queries reset paging  
  *                        (default : true)
  *                  
+ * SUPPORTED OPERATION MODES:
+ *
+ * - Container Support : yes
+ * - Output Buffering  : yes
+ * - Direct Rendering  : no
+ *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
  * @author   Olivier Guilyardi <olivier@samalyse.com>

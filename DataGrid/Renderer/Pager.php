@@ -33,7 +33,7 @@ require_once 'Pager/Pager.php';
  *
  * It buffers output, you can use Structures_DataGrid::getOutput()
  * 
- * RECOGNIZED OPTIONS:
+ * SUPPORTED OPTIONS:
  *
  * - pagerOptions (array)   Options passed to Pager::factory().
  *                          Basic defaults are: mode: Sliding, delta:5, 
@@ -49,6 +49,12 @@ require_once 'Pager/Pager.php';
  *                          overload these values here if you know what your 
  *                          are doing.
  *                          
+ * SUPPORTED OPERATION MODES:
+ *
+ * - Container Support : yes
+ * - Output Buffering  : yes
+ * - Direct Rendering  : no
+ *
  * @version  $Revision$
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @author   Mark Wiesemann <wiesemann@php.net>

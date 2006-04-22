@@ -27,19 +27,21 @@ require_once 'XML/Util.php';
 /**
  * XUL Rendering Driver
  *
+ * SUPPORTED OPERATION MODES:
+ *
+ * - Container Support : no
+ * - Output Buffering  : yes
+ * - Direct Rendering  : no
+ * 
  * This renderer class will render a XUL listbox.
  * For additional information on the XUL Listbox, refer to this url:
  * http://www.xulplanet.com/references/elemref/ref_listbox.html
  *
- * This driver does not support the setContainer() method, and can not
- * be used in conjunction with the Structures_DataGrid::fill() method.
- *
- * The generated XUL is buffered so you can use the 
- * Structures_DataGrid::getOutput() method as an alternative to render()
- *
  * You have to setup your XUL document, just as you would with an HTML
  * document. This driver will only generated the <listbox> element and
  * content.
+ * 
+ * GENERAL NOTES :
  * 
  * Basic example : 
  * <code>

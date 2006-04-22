@@ -25,7 +25,7 @@ require_once 'Structures/DataGrid/Renderer.php';
 /**
  * Smarty Rendering Driver
  *
- * Recognized options :
+ * SUPPORTED OPTIONS:
  * 
  * - selfPath           : The complete path for sorting and paging links.  If not 
  *                        defined, PHP_SELF is used.
@@ -33,8 +33,15 @@ require_once 'Structures/DataGrid/Renderer.php';
  *                        (default : true)
  * - convertEntities    : whether or not to convert html entities. Default: true
  *                        This calls htmlspecialchars(). 
- *
  * 
+ * SUPPORTED OPERATION MODES:
+ *
+ * - Container Support : yes
+ * - Output Buffering  : no
+ * - Direct Rendering  : no
+ *
+ * GENERAL NOTES :
+ *
  * This driver does not support the render() method, it only is able to "fill"
  * a Smarty object, by calling Smarty::assign() and Smarty::register_function().
  *

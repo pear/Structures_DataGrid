@@ -34,7 +34,7 @@ require_once 'XML/Util.php';
  * @package  Structures_DataGrid
  * @category Structures
  *
- * Recognized options:
+ * SUPPORTED OPTIONS:
  *
  * - useXMLDecl: (bool)   Whether the XML declaration string should be added
  *                        to the output
@@ -43,6 +43,12 @@ require_once 'XML/Util.php';
  *                        (default: 'DataGrid')
  * - rowTag:     (string) The name of the tag for each row (without brackets)
  *                        (default: 'Row')
+ *
+ * SUPPORTED OPERATION MODES:
+ *
+ * - Container Support : no
+ * - Output Buffering  : yes
+ * - Direct Rendering  : no
  */
 class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer
 {
