@@ -113,7 +113,7 @@ class Structures_DataGrid_DataSource_MDB2
             return PEAR::raiseError('No MDB2 object or dsn string specified');
         }
 
-        $this->_db->loadModule('Extended');
+        $this->_db->loadModule('Extended', null, false);
 
         if (is_string($query)) {
             $this->_query = $query;
@@ -223,7 +223,7 @@ class Structures_DataGrid_DataSource_MDB2
      *
      * @access  public
      * @param   string  $sortField  Field to sort by
-     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
+     * @param   string  $sortDir    Sort direction: 'ASC' or 'DESC'
      */
     function sort($sortField, $sortDir)
     {

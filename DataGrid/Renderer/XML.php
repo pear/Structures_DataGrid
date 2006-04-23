@@ -46,9 +46,9 @@ require_once 'XML/Util.php';
  *
  * SUPPORTED OPERATION MODES:
  *
- * - Container Support : no
- * - Output Buffering  : yes
- * - Direct Rendering  : no
+ * - Container Support: no
+ * - Output Buffering:  yes
+ * - Direct Rendering:  no
  */
 class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer
 {

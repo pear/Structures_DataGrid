@@ -169,7 +169,7 @@ class Structures_DataGrid_DataSource_DBTable
      *
      * @access  public
      * @param   string  $sortField  Field to sort by
-     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
+     * @param   string  $sortDir    Sort direction: 'ASC' or 'DESC'
      */
     function sort($sortField, $sortDir)
     {

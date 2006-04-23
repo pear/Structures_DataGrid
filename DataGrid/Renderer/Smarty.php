@@ -27,20 +27,21 @@ require_once 'Structures/DataGrid/Renderer.php';
  *
  * SUPPORTED OPTIONS:
  * 
- * - selfPath           : The complete path for sorting and paging links.  If not 
- *                        defined, PHP_SELF is used.
- * - sortingResetsPaging: whether sorting HTTP queries reset paging  
- *                        (default : true)
- * - convertEntities    : whether or not to convert html entities. Default: true
- *                        This calls htmlspecialchars(). 
+ * - selfPath:            (string) The complete path for sorting and paging links.
+ *                                 (default: $_SERVER['PHP_SELF'])
+ * - sortingResetsPaging: (bool)   Whether sorting HTTP queries reset paging.  
+ *                                 (default: true)
+ * - convertEntities:     (bool)   Whether or not to convert html entities.
+ *                                 This calls htmlspecialchars(). 
+ *                                 (default: true)
  * 
  * SUPPORTED OPERATION MODES:
  *
- * - Container Support : yes
- * - Output Buffering  : no
- * - Direct Rendering  : no
+ * - Container Support: yes
+ * - Output Buffering:  no
+ * - Direct Rendering:  no
  *
- * GENERAL NOTES :
+ * GENERAL NOTES:
  *
  * This driver does not support the render() method, it only is able to "fill"
  * a Smarty object, by calling Smarty::assign() and Smarty::register_function().
@@ -48,24 +49,24 @@ require_once 'Structures/DataGrid/Renderer.php';
  * It's up to you to called Smarty::display() after the Smarty object has been
  * filled.
  *
- * This driver assigns the following Smarty variables : 
- * - $columnSet       : array of columns' labels and sorting links
- * - $recordSet       : array of records values
- * - $currentPage     : current page (starting from 1)
- * - $recordLimit     : number of rows per page
- * - $pagesNum        : number of pages
- * - $columnsNum      : number of columns
- * - $recordsNum      : number of records in the current page
- * - $totalRecordsNum : total number of records
- * - $firstRecord     : first record number (starting from 1)
- * - $lastRecord      : last record number (starting from 1)
+ * This driver assigns the following Smarty variables: 
+ * - $columnSet:       array of columns' labels and sorting links
+ * - $recordSet:       array of records values
+ * - $currentPage:     current page (starting from 1)
+ * - $recordLimit:     number of rows per page
+ * - $pagesNum:        number of pages
+ * - $columnsNum:      number of columns
+ * - $recordsNum:      number of records in the current page
+ * - $totalRecordsNum: total number of records
+ * - $firstRecord:     first record number (starting from 1)
+ * - $lastRecord:      last record number (starting from 1)
  * 
  * This driver also register a Smarty custom function named getPaging
  * that can be called from Smarty templates with {getPaging} in order
  * to print paging links. This function accepts any of the Pager::factory()
  * options as parameters.
  *
- * Template example, featuring sorting and paging :
+ * Template example, featuring sorting and paging:
  * 
  * <code>
  * <!-- Show paging links using the custom getPaging function -->
@@ -267,7 +268,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
      * Smarty custom function "getPaging"
      *
      * This is only meant to be called from a smarty template, using the
-     * expression : {getPaging <options>}
+     * expression: {getPaging <options>}
      *
      * <options> are any Pager::factory() options
      *

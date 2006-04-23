@@ -24,30 +24,42 @@ require_once 'PHP/Compat/Function/http_build_query.php';
 /**
  * Base class of all Renderer drivers
  *
- * Recognized options :
+ * Recognized options:
  *
- * - buildHeader            : whether to build the header (default : true)
- * - buildFooter            : whether to build the footer (default : true)
- * - fillWithEmptyRows      : ensures that all pages have the same number of 
- *                            rows (default : false) 
- * - numberAlign            : whether to right-align numeric values (default : true)
- * - defaultCellValue       : what value to put by default into empty cells
- * - defaultColumnValues    : per-column default cell value. This is an array
- *                            of the form : array(fieldName => value, ...)
- * - hideColumnLinks        : by default sorting links are enabled on all columns. With 
- *                            this option it is possible to disable sorting links on 
- *                            specific columns.
- *                            This is an array of the form : array(fieldName, ...).
- *                            This option only affects drivers that support sorting.
- * - encoding               : the content encoding. If the mbstring extension is 
- *                            present the default value is set from 
- *                            mb_internal_encoding(), otherwise it is ISO-8859-1
- * - extraVars              : variables to be added to the generated HTTP queries
- * - excludeVars            : variables to be removed from the generated HTTP queries
+ * - buildHeader:         (bool)   Whether to build the header.
+ *                                 (default: true)
+ * - buildFooter:         (bool)   Whether to build the footer.
+ *                                 (default: true)
+ * - fillWithEmptyRows:   (bool)   Ensures that all pages have the same number of 
+ *                                 rows.
+ *                                 (default: false) 
+ * - numberAlign:         (bool)   Whether to right-align numeric values.
+ *                                 (default: true)
+ * - defaultCellValue:    (string) What value to put by default into empty cells.
+ *                                 (default: null)
+ * - defaultColumnValues: (array)  Per-column default cell value. This is an array
+ *                                 of the form: array(fieldName => value, ...).
+ *                                 (default: array())
+ * - hideColumnLinks:     (bool)   By default sorting links are enabled on all
+ *                                 columns. With this option it is possible to
+ *                                 disable sorting links on specific columns. This
+ *                                 is an array of the form: array(fieldName, ...).
+ *                                 This option only affects drivers that support
+ *                                 sorting.
+ *                                 (default: array())
+ * - encoding:            (string) The content encoding. If the mbstring extension
+ *                                 is present the default value is set from 
+ *                                 mb_internal_encoding(), otherwise it is ISO-8859-1.
+ * - extraVars:           (array)  Variables to be added to the generated HTTP
+ *                                 queries.
+ *                                 (default: array())
+ * - excludeVars:         (array)  Variables to be removed from the generated
+ *                                 HTTP queries.
+ *                                 (default: array())
  * 
  * --- DRIVER INTERFACE ---
  *
- * Methods (none required) :    
+ * Methods (none required):    
  *     - Constructor
  *     - setContainer()
  *     - getContainer()
@@ -63,7 +75,7 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  *     - render()
  *     - getPaging()
  * 
- * Properties (all read-only) :    
+ * Properties (all read-only):    
  *     - $_columns
  *     - $_records
  *     - $_columnsNum
@@ -79,7 +91,7 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  *     - $_sortableFields
  *     - $_options
  *     
- * Options that drivers may handle :
+ * Options that drivers may handle:
  *     - encoding
  *     - fillWithEmptyRows
  *     - numberAlign
@@ -114,7 +126,7 @@ class Structures_DataGrid_Renderer
      * @var array Structure: 
      *            array(
      *              <rowIndex> => array(
-     *                 <columnIndex> => array (<cellValue>, ...), 
+     *                 <columnIndex> => array(<cellValue>, ...), 
      *              ...), 
      *            ...)
      *            Where <rowIndex> and <columnIndex> are zero-based
@@ -127,7 +139,7 @@ class Structures_DataGrid_Renderer
      *
      * Drivers can read the content of this property but must not change it.
      *
-     * @var array Structure: array (fieldName => direction, ....)
+     * @var array Structure: array(fieldName => direction, ....)
      * @access protected
      */
     var $_currentSort = array();
@@ -237,7 +249,7 @@ class Structures_DataGrid_Renderer
     /**
      * Columns objects 
      * 
-     * Beware : this is a private property, it is not meant to be accessed
+     * Beware: this is a private property, it is not meant to be accessed
      * by drivers. Use the $_columns property instead
      * 
      * @var array
@@ -314,7 +326,7 @@ class Structures_DataGrid_Renderer
     /**
      * Set multiple options
      *
-     * @param   mixed   $options    An associative array of the form :
+     * @param   mixed   $options    An associative array of the form:
      *                              array("option_name" => "option_value",...)
      * @access  public
      */
@@ -352,7 +364,7 @@ class Structures_DataGrid_Renderer
      * Specify how the datagrid is currently sorted
      *
      * @var array 
-     * @param array $spec Form: array (fieldName => direction, ....)
+     * @param array $spec Form: array(fieldName => direction, ....)
      * @access public
      */
     function setCurrentSorting($spec)
@@ -565,7 +577,7 @@ class Structures_DataGrid_Renderer
      * @return string Formatted cell value
      * @access protected
      */
-    function defaultCellFormatter ($value)
+    function defaultCellFormatter($value)
     {
         return $value;
     }
@@ -814,7 +826,7 @@ class Structures_DataGrid_Renderer
                 $ignore[] = $prefix . $var;
             }
             foreach ($_GET as $key => $val) {
-                if (!in_array ($key, $ignore)) {
+                if (!in_array($key, $ignore)) {
                     $this->_sortingHttpQueryCommon[$key] = $val;
                 }
             }
@@ -859,13 +871,13 @@ class Structures_DataGrid_Renderer
             $class = get_class($this);
         }
        
-        $parent = get_parent_class ($class);
+        $parent = get_parent_class($class);
         
         if (!$parent) {
             return false;
         } else {
             $methods = get_class_methods($class);
-            if (in_array ($method, $methods)) {
+            if (in_array($method, $methods)) {
                 return true;
             } else {
                 return $this->_isOverloaded($method, $parent);

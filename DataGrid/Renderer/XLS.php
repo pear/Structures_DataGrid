@@ -51,22 +51,22 @@ require_once 'Spreadsheet/Excel/Writer.php';
  *                           (default: 0)
  * - startRow:      (int)    The Worksheet row number to start rendering at
  *                           (default: 0)
- * - border:        (int)    Border drawn around the whole datagrid : 
+ * - border:        (int)    Border drawn around the whole datagrid: 
  *                           0 => none, 1 => thin, 2 => thick 
  *                           (default: 0) 
  *                           (NOT IMPLEMENTED YET)
- * - headerBorder   (int)    Border between the header and body :
+ * - headerBorder   (int)    Border between the header and body:
  *                           0 => none, 1 => thin, 2 => thick 
  *                           (default: 0)
  *                           (NOT IMPLEMENTED YET)
  *
  * SUPPORTED OPERATION MODES:
  *
- * - Container Support : yes
- * - Output Buffering  : no
- * - Direct Rendering  : not really, see below
+ * - Container Support: yes
+ * - Output Buffering:  no
+ * - Direct Rendering:  not really, see below
  * 
- * GENERAL NOTES :
+ * GENERAL NOTES:
  *
  * This driver does not support the flatten() method. You can not retrieve
  * its output with DataGrid::getOutput(). You can either render it directly 
@@ -74,14 +74,14 @@ require_once 'Spreadsheet/Excel/Writer.php';
  * options.
  *
  * This driver has container support. You can use Structures_DataGrid::fill()
- * with it ; that's even recommended.
+ * with it; that's even recommended.
  * 
  * NOTE ABOUT FORMATTING:
  * 
  * You can specify some formatting with the 'headerFormat' and 'bodyFormat' 
  * options, or with setBodyFormat() and setHeaderFormat(). 
  * 
- * But beware of the following from the Spreadsheet_Excel_Writer manual :
+ * But beware of the following from the Spreadsheet_Excel_Writer manual:
  * "Formats can't be created directly by a new call. You have to create a 
  * format using the addFormat() method from a Workbook, which associates your 
  * Format with this Workbook (you can't use the Format with another Workbook)."
@@ -89,7 +89,7 @@ require_once 'Spreadsheet/Excel/Writer.php';
  * What this means is that if you want to pass a format to this driver you
  * have to "derive" the Format object out of the workbook used in the driver.
  * 
- * The easiest way to do this is : 
+ * The easiest way to do this is: 
  * <code>
  * // Create a workbook
  * $workbook = new Spreadsheet_Excel_Writer();

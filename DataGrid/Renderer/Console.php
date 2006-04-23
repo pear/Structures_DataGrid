@@ -26,13 +26,13 @@ require_once 'Console/Table.php';
 /**
  * Console Table Rendering Driver
  *
- * This renderer generates nicely formatted and padded ascii tables.
+ * This renderer generates nicely formatted and padded ASCII tables.
  * 
  * SUPPORTED OPERATION MODES:
  *
- * - Container Support : yes
- * - Output Buffering  : yes
- * - Direct Rendering  : no
+ * - Container Support: yes
+ * - Output Buffering:  yes
+ * - Direct Rendering:  no
  *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>

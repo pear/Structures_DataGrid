@@ -135,7 +135,7 @@ class Structures_DataGrid
     /**
      * Fields/directions to sort the data by
      *
-     * @var array Form: array (fieldName => direction, ....)
+     * @var array Form: array(fieldName => direction, ....)
      * @access private
      */
     var $sortSpec = array();
@@ -143,7 +143,7 @@ class Structures_DataGrid
     /**
      * Default fields/directions to sort the data by
      *
-     * @var array Form: array (fieldName => direction, ....)
+     * @var array Form: array(fieldName => direction, ....)
      * @access private
      */
     var $defaultSortSpec = array();
@@ -184,7 +184,7 @@ class Structures_DataGrid
      *
      * @param  string   $limit      The row limit per page.
      * @param  int      $page       The current page viewed.
-     *                              Note : if you specify this, the "page" GET 
+     *                              Note: if you specify this, the "page" GET 
      *                              variable will be ignored.
      * @param  string   $rendererType   The type of renderer to use.
      * @return void
@@ -197,7 +197,7 @@ class Structures_DataGrid
         $this->rowLimit = $limit;
         
         //Use set page number, otherwise automatically detect the page number
-        if (!is_null ($page)) {
+        if (!is_null($page)) {
             $this->page = $page;
             $this->_forcePage = true;
         } else {
@@ -208,7 +208,7 @@ class Structures_DataGrid
         // Automatic handling of GET/POST/COOKIE variables
         $this->_parseHttpRequest();
 
-        if (!is_null ($rendererType)) {
+        if (!is_null($rendererType)) {
             $this->setRenderer($rendererType);
         }
     }
@@ -292,28 +292,28 @@ class Structures_DataGrid
      *
      * A clever method which loads and instantiate data source drivers.
      *
-     * Can be called in various ways :
+     * Can be called in various ways:
      *
      * Detect the source type and load the appropriate driver with default
-     * options :
+     * options:
      * <code>
      * $driver =& Structures_DataGrid::datasourceFactory($source);
      * </code>
      *
      * Detect the source type and load the appropriate driver with custom
-     * options :
+     * options:
      * <code>
      * $driver =& Structures_DataGrid::datasourceFactory($source, $options);
      * </code>
      *
-     * Load a driver for an explicit type (faster, bypasses detection routine) :
+     * Load a driver for an explicit type (faster, bypasses detection routine):
      * <code>
      * $driver =& Structures_DataGrid::datasourceFactory($source, $options, $type);
      * </code>
      *
      * @access  private
      * @param   mixed   $source     The data source respective to the driver
-     * @param   array   $options    An associative array of the form :
+     * @param   array   $options    An associative array of the form:
      *                              array(optionName => optionValue, ...)
      * @param   string  $type       The data source type constant (of the form 
      *                              DATAGRID_DATASOURCE_*)  
@@ -328,7 +328,7 @@ class Structures_DataGrid
             !($type = Structures_DataGrid::_detectSourceType($source,
                                                              $options))) {
             $error = PEAR::raiseError('Unable to determine the data source type. '.
-                                    'You may want to explicitly specify it.');
+                                      'You may want to explicitly specify it.');
             return $error;
         }
 
@@ -354,7 +354,7 @@ class Structures_DataGrid
      * 
      * @access  private
      * @param   mixed   $source     The rendering container respective to the driver
-     * @param   array   $options    An associative array of the form :
+     * @param   array   $options    An associative array of the form:
      *                              array(optionName => optionValue, ...)
      * @param   string  $type       The renderer type constant (of the form 
      *                              DATAGRID_RENDER_*)  
@@ -364,7 +364,6 @@ class Structures_DataGrid
      */
     function &rendererFactory($type, $options = array())
     {
-        // FIXME: any security risk here (like including /etc/passwd) ?
         $className = "Structures_DataGrid_Renderer_$type";
 
         if (PEAR::isError($driver =& $this->loadDriver($className))) {
@@ -436,7 +435,7 @@ class Structures_DataGrid
      * Return the datagrid output
      *
      * @access public
-     * @return mixed The datagrid output (Usually a string : HTML, CSV, etc...)
+     * @return mixed The datagrid output (Usually a string: HTML, CSV, etc...)
      *               or a PEAR_Error
      */
     function getOutput($type = null, $options = array())
@@ -557,14 +556,14 @@ class Structures_DataGrid
     {
         if (is_subclass_of($renderer, 'structures_datagrid_renderer')) {
             $this->_renderer =& $renderer;
-            if (isset ($this->_dataSource)) {
+            if (isset($this->_dataSource)) {
                 $this->_renderer->setData($this->columnSet, $this->recordSet);
                 $this->_renderer->setLimit($this->page, $this->rowLimit, 
                                           $this->getRecordCount());
             }
         } else {
             return PEAR::raiseError('Invalid renderer type, ' . 
-                                  'must be a valid renderer driver class');
+                                    'must be a valid renderer driver class');
         }
 
         return true;
@@ -576,7 +575,7 @@ class Structures_DataGrid
      * Fill a rendering container with data
      * 
      * @param object $container A rendering container of any of the supported
-     *                          types (example : an HTML_Table object, 
+     *                          types (example: an HTML_Table object, 
      *                          a Spreadsheet_Excel_Writer object, etc...)
      * @param array  $options   Options for the corresponding rendering driver
      * @param string $type      Explicit type in case the container type 
@@ -590,15 +589,15 @@ class Structures_DataGrid
             $type = $this->_detectRendererType($container);
             if (is_null($type)) {
                 return PEAR::raiseError('The rendering container type can not '.
-                                      'be automatically detected. Please ' . 
-                                      'specify its type explicitly.');
+                                        'be automatically detected. Please ' . 
+                                        'specify its type explicitly.');
             }
         }
 
         /* Is a renderer driver already loaded and does it exactly match 
          * the driver class name that corresponds to $type ? */
         //FIXME: is this redundant with the $rendererType property ?
-        if (!isset ($this->_renderer) 
+        if (!isset($this->_renderer) 
             or !is_a($this->_renderer, "Structures_DataGrid_Renderer_$type")) {
             /* No, then load the right driver */
             $this->_saveRenderer();
@@ -844,20 +843,20 @@ class Structures_DataGrid
         if (is_subclass_of($source, 'structures_datagrid_datasource')) {
             $this->_dataSource =& $source;
             if (PEAR::isError($result = $this->fetchDataSource())) {
-                unset ($this->_dataSource);
+                unset($this->_dataSource);
                 return $result;
             }
             if ($columnSet = $this->_dataSource->getColumns()) {
                 $this->columnSet = array_merge($this->columnSet, $columnSet);
             }
-            if (isset ($this->_renderer)) {
+            if (isset($this->_renderer)) {
                 $this->_renderer->setData($this->columnSet, $this->recordSet);
                 $this->_renderer->setLimit($this->page, $this->rowLimit, 
                                           $this->getRecordCount());
             }
         } else {
             return PEAR::raiseError('Invalid data source type, ' . 
-                                  'must be a valid data source driver class');
+                                    'must be a valid data source driver class');
         }
 
         return true;
@@ -931,7 +930,7 @@ class Structures_DataGrid
      * sorted when a user first see the datagrid.
      * 
      * @param array $sortSpec   Sorting specification
-     *                          Structure : array(fieldName => direction, ...)
+     *                          Structure: array(fieldName => direction, ...)
      * @return void
      * @access public
      */
@@ -966,7 +965,7 @@ class Structures_DataGrid
             } else {
                 $this->page = 1;
             }
-            if (!is_numeric ($this->page)) {
+            if (!is_numeric($this->page)) {
                 $this->page = 1;
             }
         } 
@@ -1124,7 +1123,7 @@ class Structures_DataGrid
     }
 
     /**
-     * Provide some BC fix (require PHP5)
+     * Provide some BC fix (requires PHP5)
      * 
      * This is a PHP5 magic method used to simulate the old public 
      * $renderer property
@@ -1152,7 +1151,7 @@ class Structures_DataGrid
     /**
      * Set multiple renderer options
      *
-     * @param   array   $options    An associative array of the form :
+     * @param   array   $options    An associative array of the form:
      *                              array("option_name" => "option_value",...)
      * @access  public
      */
@@ -1177,7 +1176,7 @@ class Structures_DataGrid
     /**
      * Set multiple datasource options
      *
-     * @param   array   $options    An associative array of the form :
+     * @param   array   $options    An associative array of the form:
      *                              array("option_name" => "option_value",...)
      * @access  public
      */
@@ -1186,7 +1185,7 @@ class Structures_DataGrid
         if (isset($this->_dataSource)) {
             $this->_dataSource->setOptions($options);
         } else {
-            return PEAR::raiseError('Unable to set options ; No datasource loaded.');
+            return PEAR::raiseError('Unable to set options; no datasource loaded.');
         }
     }
 

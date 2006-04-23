@@ -30,32 +30,41 @@ require_once 'HTML/Table.php';
  *
  * SUPPORTED OPTIONS:
  *
- * - evenRowAttributes  : An associative array containing each attribute of the 
- *                        even rows
- * - oddRowAttributes   : An associative array containing each attribute of the 
- *                        odd rows
- * - emptyRowAttributes : An associative array containing the attributes for 
- *                        empty rows
- * - selfPath           : The complete path for sorting and paging links.  If not 
- *                        defined, PHP_SELF is used.
- * - sortIconASC        : The icon to define that sorting is currently Ascending.  
- *                        Can be text or HTML to define an image.
- * - sortIconDESC       : The icon to define that sorting is currently Descending. 
- *                        Can be text or HTML to define an image.
- * - headerAttributes   : attributes for the header row. This is an array of the
- *                        form: array(attribute => value, ...)
- * - columnAttributes   : column cells attributes. This is an array of the form :
- *                        array(fieldName => array(attribute => value, ...) ... )
- * - convertEntities    : whether or not to convert html entities. Default: true
- *                        This calls htmlspecialchars(). 
- * - sortingResetsPaging: whether sorting HTTP queries reset paging  
- *                        (default : true)
+ * - evenRowAttributes:   (array)  An associative array containing each attribute
+ *                                 of the even rows.
+ *                                 (default: array())
+ * - oddRowAttributes:    (array)  An associative array containing each attribute
+ *                                 of the odd rows.
+ *                                 (default: array())
+ * - emptyRowAttributes:  (array)  An associative array containing the attributes
+ *                                 for empty rows.
+ *                                  (default: array())
+ * - selfPath:            (string) The complete path for sorting and paging links.
+ *                                 (default: $_SERVER['PHP_SELF'])
+ * - sortIconASC:         (string) The icon to define that sorting is currently
+ *                                 ascending. Can be text or HTML to define an image.
+ *                                 (default: '')
+ * - sortIconDESC:        (string) The icon to define that sorting is currently
+ *                                 descending. Can be text or HTML to define an image.
+ *                                 (default: '')
+ * - headerAttributes:    (array)  Attributes for the header row. This is an array
+ *                                 of the form: array(attribute => value, ...)
+ *                                 (default: array())
+ * - columnAttributes:    (array)  Column cells attributes. This is an array of
+ *                                 the form:
+ *                                 array(fieldName => array(attribute => value, ...) ...)
+ *                                 (default: array())
+ * - convertEntities:     (bool)   Whether or not to convert html entities.
+ *                                 This calls htmlspecialchars(). 
+ *                                 (default: true)
+ * - sortingResetsPaging: (bool)   Whether sorting HTTP queries reset paging.  
+ *                                 (default: true)
  *                  
  * SUPPORTED OPERATION MODES:
  *
- * - Container Support : yes
- * - Output Buffering  : yes
- * - Direct Rendering  : no
+ * - Container Support: yes
+ * - Output Buffering:  yes
+ * - Direct Rendering:  no
  *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
@@ -351,7 +360,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
             $label = $spec['label'];
 
             // Define Content
-            if (in_array ($field, $this->_sortableFields)) {
+            if (in_array($field, $this->_sortableFields)) {
                 
                 // Determine next sort direction and current sort icon
                 reset($this->_currentSort);
@@ -370,8 +379,8 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 }
 
                 // Build HTTP query
-                $extra = array ('page' => $this->_options['sortingResetsPaging'] 
-                                          ? 1 : $this->_page);
+                $extra = array('page' => $this->_options['sortingResetsPaging'] 
+                                         ? 1 : $this->_page);
                 $query = $this->_buildSortingHttpQuery($field, $direction, true, $extra);
 
                 // Build Link URL
@@ -477,12 +486,12 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      * 
      * This method uses the HTML::Pager class
      *
-     * Useful options (See Pager's documentation for more) :
-     * mode      : The mode of pager to use
-     * separator : The string to use to separate each page link
-     * prevImg   : The string for the previous page link
-     * nextImg   : The string for the forward page link
-     * delta     : The number of pages to display before and
+     * Useful options (See Pager's documentation for more):
+     * mode:       The mode of pager to use
+     * separator:  The string to use to separate each page link
+     * prevImg:    The string for the previous page link
+     * nextImg:    The string for the forward page link
+     * delta:      The number of pages to display before and
      *             after the current page
      *
      * @access  public
@@ -500,12 +509,12 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
 
             for ($i = 0; $i < $argsNum; $i++) {
                 switch ($i) {
-                    case 0 : $options['mode'] = $args[$i]; break;
-                    case 1 : $options['separator'] = $args[$i]; break;
-                    case 2 : $options['prevImg'] = $args[$i]; break;  
-                    case 3 : $options['nextImg'] = $args[$i]; break;  
-                    case 4 : $options['delta'] = $args[$i]; break;  
-                    case 5 : $options = array_merge($options, $args[$i]); break;  
+                    case 0: $options['mode'] = $args[$i]; break;
+                    case 1: $options['separator'] = $args[$i]; break;
+                    case 2: $options['prevImg'] = $args[$i]; break;  
+                    case 3: $options['nextImg'] = $args[$i]; break;  
+                    case 4: $options['delta'] = $args[$i]; break;  
+                    case 5: $options = array_merge($options, $args[$i]); break;  
                 }
             }
         }

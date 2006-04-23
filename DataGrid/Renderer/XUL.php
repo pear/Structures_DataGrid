@@ -29,9 +29,9 @@ require_once 'XML/Util.php';
  *
  * SUPPORTED OPERATION MODES:
  *
- * - Container Support : no
- * - Output Buffering  : yes
- * - Direct Rendering  : no
+ * - Container Support: no
+ * - Output Buffering:  yes
+ * - Direct Rendering:  no
  * 
  * This renderer class will render a XUL listbox.
  * For additional information on the XUL Listbox, refer to this url:
@@ -41,9 +41,9 @@ require_once 'XML/Util.php';
  * document. This driver will only generated the <listbox> element and
  * content.
  * 
- * GENERAL NOTES :
+ * GENERAL NOTES:
  * 
- * Basic example : 
+ * Basic example: 
  * <code>
  * <?php 
  * header('Content-type: application/vnd.mozilla.xul+xml'); 
@@ -54,7 +54,7 @@ require_once 'XML/Util.php';
  * echo "<window title=\"MyDataGrid\" 
  *        xmlns=\"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul\">\n";
  *        
- * // Instantiate your datagrid and setup its datasource, then call :
+ * // Instantiate your datagrid and setup its datasource, then call:
  * $datagrid->setRenderer(DATAGRID_RENDER_XUL);
  * $datagrid->render();
  * 
@@ -62,7 +62,7 @@ require_once 'XML/Util.php';
  * ?> 
  * </code>
  * 
- * Recognized options:
+ * SUPPORTED OPTIONS:
  *
  * - selfPath:      (string) The complete path for sorting and paging links
  *                           (default: $_SERVER['PHP_SELF'])
@@ -126,7 +126,7 @@ class Structures_DataGrid_Renderer_XUL extends Structures_DataGrid_Renderer
             $label = $this->_columns[$col]['label'];
 
             if (in_array($field, $this->_sortableFields)) {
-                reset ($this->_currentSort);
+                reset($this->_currentSort);
                 if (list($currentField, $direction) = each($this->_currentSort) 
                      and $currentField == $field) {
                     if ($direction == 'ASC') {

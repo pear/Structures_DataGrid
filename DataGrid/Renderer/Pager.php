@@ -35,7 +35,7 @@ require_once 'Pager/Pager.php';
  * 
  * SUPPORTED OPTIONS:
  *
- * - pagerOptions (array)   Options passed to Pager::factory().
+ * - pagerOptions: (array)  Options passed to Pager::factory().
  *                          Basic defaults are: mode: Sliding, delta:5, 
  *                          separator: "|", prevImg: "<<", nextImg: ">>".
  *                          The extraVars and excludeVars options are 
@@ -51,9 +51,9 @@ require_once 'Pager/Pager.php';
  *                          
  * SUPPORTED OPERATION MODES:
  *
- * - Container Support : yes
- * - Output Buffering  : yes
- * - Direct Rendering  : no
+ * - Container Support: yes
+ * - Output Buffering:  yes
+ * - Direct Rendering:  no
  *
  * @version  $Revision$
  * @author   Olivier Guilyardi <olivier@samalyse.com>
@@ -90,10 +90,10 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
                     'separator'   => '|',
                     'prevImg'     => '<<',
                     'nextImg'     => '>>',
-                    'totalItems'  => null, // dynamic ; see init()
-                    'perPage'     => null, // dynamic ; see init()
-                    'urlVar'      => null, // dynamic ; see init()
-                    'currentPage' => null, // dynamic ; see init()
+                    'totalItems'  => null, // dynamic; see init()
+                    'perPage'     => null, // dynamic; see init()
+                    'urlVar'      => null, // dynamic; see init()
+                    'currentPage' => null, // dynamic; see init()
                     'extraVars'   => array(),
                     'excludeVars' => array(),
                 ),
@@ -140,17 +140,17 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
             $options['totalItems'] = $this->_totalRecordsNum;
         }
         
-        if (is_null ($this->_options['pagerOptions']['perPage'])) {
+        if (is_null($this->_options['pagerOptions']['perPage'])) {
             $options['perPage'] = is_null($this->_pageLimit) 
                                 ? $this->_totalRecordsNum 
                                 : $this->_pageLimit;
         }
         
-        if (is_null ($this->_options['pagerOptions']['urlVar'])) {
+        if (is_null($this->_options['pagerOptions']['urlVar'])) {
             $options['urlVar'] = $this->_requestPrefix . 'page';
         }
         
-        if (is_null ($this->_options['pagerOptions']['currentPage'])) {
+        if (is_null($this->_options['pagerOptions']['currentPage'])) {
             $options['currentPage'] = $this->_page;
         }
         
@@ -217,7 +217,7 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
     /**
      * Set multiple options
      *
-     * @param   mixed   $options    An associative array of the form :
+     * @param   mixed   $options    An associative array of the form:
      *                              array("option_name" => "option_value",...)
      * @access  public
      */
@@ -232,7 +232,7 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
          * into this property directly. It calls parent::setOptions() instead.
          */
         if (isset($options['pagerOptions'])) {
-            $options['pagerOptions'] = array_merge ($this->_options['pagerOptions'], 
+            $options['pagerOptions'] = array_merge($this->_options['pagerOptions'], 
                                                     $options['pagerOptions']);
             if (isset($this->_pager)) {
                 $this->_pager->setOptions($options['pagerOptions']);
@@ -252,7 +252,7 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
     {
         // see notes in setOptions()
         if ($name == 'pagerOptions') {
-            $value = array_merge ($this->_options['pagerOptions'],$value);
+            $value = array_merge($this->_options['pagerOptions'],$value);
             if (isset($this->_pager)) {
                 $this->_pager->setOptions($value);
             }

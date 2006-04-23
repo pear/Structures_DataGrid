@@ -26,17 +26,17 @@ require_once 'Structures/DataGrid/DataSource.php';
  *
  * This class is a data source driver for a PEAR::DB::DB_DataObject object
  *
- * Recognized options :
+ * Recognized options:
  *
- * <b>"labels_property" : </b> The name of a property that you can set
+ * <b>"labels_property": </b> The name of a property that you can set
  * within your DataObject. This property is expected to contain the
  * same kind of information as the "labels" options. If the "labels" 
- * option is set, this one will not be used. Default : "fb_fieldsLabels".
+ * option is set, this one will not be used. Default: "fb_fieldsLabels".
  *
- * <b>"fields_property" : </b> The name of a property that you can set
+ * <b>"fields_property": </b> The name of a property that you can set
  * within your DataObject. This property is expected to contain the
  * same kind of information as the "fields" options. If the "fields"
- * option is set, this one will not be used. Default : "fb_fieldsToRender".
+ * option is set, this one will not be used. Default: "fb_fieldsToRender".
  * 
  * @version  $Revision$
  * @author   Olivier Guilyardi <olivier@samalyse.com>
@@ -60,7 +60,7 @@ class Structures_DataGrid_DataSource_DataObject
      * Total number of rows 
      * 
      * This property caches the result of DataObject::count(), that 
-     * can't be called after DataObject::fetch() (DataObject bug ?).
+     * can't be called after DataObject::fetch() (DataObject bug?).
      *
      * @var int
      * @access private
@@ -259,13 +259,13 @@ class Structures_DataGrid_DataSource_DataObject
      */    
     function count()
     {
-        if (is_null ($this->_rowNum)) {
+        if (is_null($this->_rowNum)) {
             if ($this->_dataobject->N) {
                 $this->_rowNum = $this->_dataobject->N;
             } else {
                 $test = $this->_dataobject->count();
                 if ($test === false) {
-                    return PEAR::raiseError ('Can\'t count the number of rows');
+                    return PEAR::raiseError('Can\'t count the number of rows');
                 }
                 $this->_rowNum = $test;
             }
@@ -279,9 +279,9 @@ class Structures_DataGrid_DataSource_DataObject
      * 
      * @access  public
      * @param   mixed   $sortSpec   A single field (string) to sort by, or a 
-     *                              sort specification array of the form :
+     *                              sort specification array of the form:
      *                              array(field => direction, ...)
-     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
+     * @param   string  $sortDir    Sort direction: 'ASC' or 'DESC'
      *                              This is ignored if $sortDesc is an array
      */
     function sort($sortSpec, $sortDir = null)
@@ -291,7 +291,7 @@ class Structures_DataGrid_DataSource_DataObject
                 $this->_dataobject->orderBy($item['field'].' '.$item['direction']);
             }
         } else {
-            if (is_null ($sortDir)) {
+            if (is_null($sortDir)) {
                 $this->_dataobject->orderBy($sortSpec);
             } else {
                 $this->_dataobject->orderBy($sortSpec . ' ' . $sortDir);

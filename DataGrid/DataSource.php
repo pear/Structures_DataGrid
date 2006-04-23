@@ -23,41 +23,41 @@
 /**
 * Base abstract class for data source drivers
 * 
-* <b>Recognized options (valid for all drivers) :</b>
+* <b>Recognized options (valid for all drivers):</b>
 *
-* <b>"generate_columns" </b> Generate 
-* Structures_DataGrid_Column objects with labels. (default : false)
+* <b>"generate_columns":</b> Generate 
+* Structures_DataGrid_Column objects with labels. (default: false)
 * 
-* <b>"labels" : </b> How to translate the field names to column labels. 
-* Only used when "generate_columns" is true. Default : array().
-* This is an associative array of the form :
+* <b>"labels":</b> How to translate the field names to column labels. 
+* Only used when "generate_columns" is true. Default: array().
+* This is an associative array of the form:
 * <code> 
-* array ("fieldName" => "fieldLabel", ...) 
+* array("fieldName" => "fieldLabel", ...) 
 * </code>
 * 
-* <b>"fields" : </b> Which fields should be rendered (Only used when
-* "generate_columns" is true. The default is an empty array : all of
+* <b>"fields":</b> Which fields should be rendered (Only used when
+* "generate_columns" is true. The default is an empty array: all of
 * the DataObject's fields will be rendered.
-* This is an array of the form :
+* This is an array of the form:
 * <code>
-* array ("fieldName1", "fieldName2", ...)
+* array("fieldName1", "fieldName2", ...)
 * </code>
 * 
 * Users may want to see the create() factory method
 *
-* Developers :
+* Developers:
 *
 * <b>HOWTO develop a new source driver</b>
 *
-* Subclass this Structures_DataGrid_DataSource class :
+* Subclass this Structures_DataGrid_DataSource class:
 * <code>
 * class Structures_DataGrid_DataSource_Foo extends
 *     Structures_DataGrid_DataSource
 * </code>
 *
-* In the constructor, initialize default options . These defaults will be
+* In the constructor, initialize default options. These defaults will be
 * used to validate user provided options, so you need to set all possible
-* ones
+* ones.
 * <code>
 *     function Structures_DataGrid_DataSource_Foo()
 *     {
@@ -72,10 +72,10 @@
 *
 * Do not forget to call Structures_DataGrid_DataSource::setOptions()
 * from your bind() method.
-* ex : if ($options) $this->setOptions($options);
+* ex.: if ($options) $this->setOptions($options);
 *
 * Eventually, use the dump() debugging method to test your brand new
-* driver
+* driver.
 *
 * @author   Olivier Guilyardi <olivier@samalyse.com>
 * @author   Andrew Nagy <asnagy@webitecture.org>
@@ -155,7 +155,7 @@ class Structures_DataGrid_DataSource
     /**
      * Set options
      *
-     * @param   mixed   $options    An associative array of the form :
+     * @param   mixed   $options    An associative array of the form:
      *                              array("option_name" => "option_value",...)
      * @access  protected
      */
@@ -179,7 +179,7 @@ class Structures_DataGrid_DataSource
     /**
      * Generate columns if options are properly set
      *
-     * Note : must be called after fetch()
+     * Note: must be called after fetch()
      * 
      * @access public
      * @return array Array of Column objects. Empty array if irrelevant.
@@ -236,7 +236,7 @@ class Structures_DataGrid_DataSource
     /**
      * Counting method prototype
      *
-     * Note : must be called before fetch() 
+     * Note: must be called before fetch() 
      *
      * When overloaded, this method must return the total number or records 
      * or a PEAR_Error object on failure
@@ -257,16 +257,16 @@ class Structures_DataGrid_DataSource
      * When overloaded this method must return true on success or a PEAR_Error 
      * object on failure.
      * 
-     * Note : must be called before fetch() 
+     * Note: must be called before fetch() 
      * 
      * @abstract
      * @param   string  $sortSpec   If the driver supports the "multiSort" 
      *                              feature this can be either a single field 
      *                              (string), or a sort specification array of 
-     *                              the form : array(field => direction, ...)
+     *                              the form: array(field => direction, ...)
      *                              If "multiSort" is not supported, then this
      *                              can only be a string.
-     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
+     * @param   string  $sortDir    Sort direction: 'ASC' or 'DESC'
      * @return  object              PEAR_Error with message 
      *                              "No data source driver loaded" 
      * @access  public                          
@@ -330,7 +330,7 @@ class Structures_DataGrid_DataSource
      * @param   integer $offset     Limit offset (starting from 0)
      * @param   integer $len        Limit length
      * @param   string  $sortField  Field to sort by
-     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC'
+     * @param   string  $sortDir    Sort direction: 'ASC' or 'DESC'
      * @return  string              The table string, ready to be printed
      * @uses    Structures_DataGrid_DataSource::fetch()
      * @access  public

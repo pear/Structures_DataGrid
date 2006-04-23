@@ -25,9 +25,9 @@ require_once 'XML/Unserializer.php';
 /**
  * XML data source driver
  *
- * This driver accepts the following options :
+ * This driver accepts the following options:
  *
- * <b>"xpath" : </b> XPath to a subset of the XML data.
+ * <b>"xpath":</b> XPath to a subset of the XML data.
  *
  * @package Structures_DataGrid
  * @author Olivier Guilyardi <olivier@samalyse.com>
@@ -61,7 +61,7 @@ class Structures_DataGrid_DataSource_XML extends
             $this->setOptions($options); 
         }
         
-        // Extract a subset from the XML data if an XPath is provided :
+        // Extract a subset from the XML data if an XPath is provided:
         if ($this->_options['xpath']) {
             include_once 'XML/XPath.php';
             $xpath = new XML_XPath($xml);
@@ -90,13 +90,13 @@ class Structures_DataGrid_DataSource_XML extends
         // Fetch the unserialized Data
         $data = $unserializer->getUnserializedData();
 
-        // Build a simple array  :
+        // Build a simple array:
         list($junk,$data) = each($data);
         foreach ($data as $index => $row)
         {
             if (!is_array($row) or !is_numeric($index)) {
                 return PEAR::raiseError('Unable to bind the xml data. '.
-                                      'You may want to set the \'xpath\' option.');
+                                        'You may want to set the \'xpath\' option.');
             }
 
             $this->_ar[] = $row;

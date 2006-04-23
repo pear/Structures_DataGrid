@@ -104,8 +104,8 @@ class Structures_DataGrid_DataSource_Array
 
         // Filter out fields that are to not be rendered
         //
-        // With the new array_intersect_key() the following would be :
-        // $records = array_intersect_key($slice, array_flip ($fieldList));
+        // With the new array_intersect_key() the following would be:
+        // $records = array_intersect_key($slice, array_flip($fieldList));
         // One line... And faster... But this function is cvs-only.
         $records = array();
         foreach ($slice as $rec) {
@@ -126,7 +126,7 @@ class Structures_DataGrid_DataSource_Array
      * 
      * @access  public
      * @param   string  $sortField  Field to sort by
-     * @param   string  $sortDir    Sort direction : 'ASC' or 'DESC' 
+     * @param   string  $sortDir    Sort direction: 'ASC' or 'DESC' 
      *                              (default: ASC)
      */
     function sort($sortField, $sortDir = null)

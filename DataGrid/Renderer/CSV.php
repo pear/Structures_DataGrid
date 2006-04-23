@@ -40,9 +40,9 @@ require_once 'Structures/DataGrid/Renderer.php';
  *                       
  * SUPPORTED OPERATION MODES:
  *
- * - Container Support : no
- * - Output Buffering  : yes
- * - Direct Rendering  : no
+ * - Container Support: no
+ * - Output Buffering:  yes
+ * - Direct Rendering:  no
  *                       
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
