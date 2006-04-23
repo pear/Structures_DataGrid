@@ -1032,7 +1032,7 @@ class Structures_DataGrid
             // RSS
             case (is_string($source) && stristr('<rss', $source)):
             case (is_string($source) && stristr('<rdf:RDF', $source)):
-            case (is_string($source) && stristr('.rss', $source)):
+            case (is_string($source) && strpos($source, '.rss') !== false):
                 return DATAGRID_SOURCE_RSS;
                 break;
 
