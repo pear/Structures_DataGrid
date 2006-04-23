@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE package SYSTEM "http://pear.php.net/dtd/package-1.0">
+<package version="1.0">
+  <name>Structures_DataGrid_Renderer_HTMLTable</name>
+  <summary>Renderer driver using PEAR::HTML_Table</summary>
+  <description>
+    This is a Renderer driver for Structures_DataGrid using PEAR::HTML_Table.
+  </description>
+  <maintainers>
+    <maintainer>
+      <user>asnagy</user>
+      <name>Andrew S. Nagy</name>
+      <email>asnagy@webitecture.org</email>
+      <role>lead</role>
+    </maintainer>
+    <maintainer>
+      <user>olivierg</user>
+      <name>Olivier Guilyardi</name>
+      <email>olivier@samalyse.com</email>
+      <role>developer</role>
+    </maintainer>
+    <maintainer>
+      <user>wiesemann</user>
+      <name>Mark Wiesemann</name>
+      <email>wiesemann@php.net</email>
+      <role>developer</role>
+    </maintainer>
+  </maintainers>
+  <release>
+    <version>0.1.0</version>
+    <date>2006-05-01</date>
+    <license>PHP License</license>
+    <state>beta</state>
+    <notes>
+      Changes since Structures_DataGrid 0.6.3:
+
+      - Renderer driver unbundled from Structures_DataGrid core
+      - now using grouping into &lt;thead&gt;, &lt;tfoot&gt; and &lt;tbody&gt;
+      - auto-alignment: now automatic aligning of numeric values to the right;
+        this is configurable with the 'numberAlign' option
+      - bug #5829: renderer is now compatible with multi-bytes caracters
+        (thanks &lt;kenchou77 at gmail dot com&gt;)
+      - bug #6031: charsets like GB2312 weren't displayed correctly; new
+        'encoding' option (passed to htmlspecialchars())
+        (thanks &lt;digit_shine at yahoo dot com dot cn&gt;)
+        request #5886 is related to this bug: the default value of the new
+        'encoding' option is now set from mb_internal_encoding() if the 
+        mbstring extension is loaded; otherwise, the default is ISO-8859-1
+        (thanks &lt;tobias at neuyork dot de&gt;)
+      - request #5838: new 'convertEntities' option
+        (thanks &lt;abriening at comcast dot net&gt;)
+      - new excludeVars() method: this method allows to exclude some GET
+        variables from the generated links, much like Pager's 'excludeVars'
+        option
+    </notes>
+    <deps>
+      <dep type="pkg" rel="ge" version="0.7.0" optional="no">Structures_DataGrid</dep>
+      <dep type="pkg" rel="ge" version="0.1.0" optional="no">Structures_DataGrid_Renderer_Pager</dep>
+      <dep type="pkg" rel="ge" version="1.6.1" optional="no">HTML_Table</dep>
+    </deps>
+    <filelist>
+      <dir name="/" baseinstalldir="Structures" role="php">
+        <dir name="DataGrid" role="php">
+          <dir name="Renderer" role="php">
+            <file role="php" name="HTMLTable.php"/>
+          </dir>
+        </dir>
+      </dir>
+    </filelist>
+  </release>
+</package>
