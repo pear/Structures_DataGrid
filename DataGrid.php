@@ -65,7 +65,7 @@ define('DATAGRID_ERROR_UNSUPPORTED', 1);
  * Quick Example:
  * <code>
  * <?php
- * require('Structures/DataGrid.php');
+ * require 'Structures/DataGrid.php';
  * $datagrid =& new Structures_DataGrid();
  * $options = array('dsn' => 'mysql://user:password@host/db_name');
  * $datagrid->bind("SELECT * FROM my_table", $options);
@@ -1031,7 +1031,8 @@ class Structures_DataGrid
 
             // RSS
             case (is_string($source) && stristr('<rss', $source)):
-            case (is_string($source) and stristr('<rdf:RDF', $source)):
+            case (is_string($source) && stristr('<rdf:RDF', $source)):
+            case (is_string($source) && stristr('.rss', $source)):
                 return DATAGRID_SOURCE_RSS;
                 break;
 
