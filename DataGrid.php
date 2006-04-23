@@ -24,7 +24,7 @@ require_once 'PEAR.php';
 
 require_once 'Structures/DataGrid/Column.php';
 
-// Renderer Drivers
+// Rendering Drivers
 define('DATAGRID_RENDER_TABLE',    'HTMLTable');
 define('DATAGRID_RENDER_SMARTY',   'Smarty');
 define('DATAGRID_RENDER_XML',      'XML');
@@ -36,10 +36,7 @@ define('DATAGRID_RENDER_PAGER',    'Pager');
 
 define('DATAGRID_RENDER_DEFAULT',  DATAGRID_RENDER_TABLE);
 
-// PEAR_Error code for unsupported features
-define('DATAGRID_ERROR_UNSUPPORTED', 1);
-
-// Data Source Drivers
+// DataSource Drivers
 define('DATAGRID_SOURCE_ARRAY',     'Array');
 define('DATAGRID_SOURCE_DATAOBJECT','DataObject');
 define('DATAGRID_SOURCE_DB',        'DB');
@@ -49,6 +46,9 @@ define('DATAGRID_SOURCE_CSV',       'CSV');
 define('DATAGRID_SOURCE_DBQUERY',   'DBQuery');
 define('DATAGRID_SOURCE_DBTABLE',   'DBTable');
 define('DATAGRID_SOURCE_MDB2',      'MDB2');
+
+// PEAR_Error code for unsupported features
+define('DATAGRID_ERROR_UNSUPPORTED', 1);
 
 /**
  * Structures_DataGrid Class
