@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.4.9" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+http://pear.php.net/dtd/tasks-1.0.xsd
+http://pear.php.net/dtd/package-2.0
+http://pear.php.net/dtd/package-2.0.xsd">
+ <name>Structures_DataGrid</name>
+ <channel>pear.php.net</channel>
+ <summary>A tabular structure that contains a record set of data for paging and sorting purposes.</summary>
+ <description>This package offers a toolkit to render out a datagrid in HTML format as well as
+many other formats such as an XML Document, an Excel Spreadsheet, an XUL Document and more.
+It also offers paging and sorting functionallity to limit the data that is presented and processed.
+This concept is based on the .NET Framework DataGrid control and works very well with database and XML result sets.
+ </description>
+ <lead>
+  <name>Andrew S. Nagy</name>
+  <user>asnagy</user>
+  <email>asnagy@webitecture.org</email>
+  <active>yes</active>
+ </lead>
+ <developer>
+  <name>Olivier Guilyardi</name>
+  <user>olivierg</user>
+  <email>olivier@samalyse.com</email>
+  <active>yes</active>
+ </developer>
+ <developer>
+  <name>Mark Wiesemann</name>
+  <user>wiesemann</user>
+  <email>wiesemann@php.net</email>
+  <active>yes</active>
+ </developer>
+ <date>2006-04-24</date>
+ <time>10:51:12</time>
+ <version>
+  <release>0.7.0</release>
+  <api>0.7.0</api>
+ </version>
+ <stability>
+  <release>beta</release>
+  <api>beta</api>
+ </stability>
+ <license uri="http://www.php.net/license">PHP License</license>
+ <notes>
+##########################################################################
+#                 WARNING - BACKWARDS INCOMPATIBILITIES                  #
+#                                                                        #
+# The Structures_DataGrid::renderer property is not public anymore. It   #
+# is now required to use the Structures_DataGrid::getRenderer() method   #
+# in order to access the renderer object.                                #
+#                                                                        #
+# Adding or removing single records via Structures_DataGrid::addRecord() #
+# and Structures_DataGrid::dropRecord() isn't possible anymore.          #
+##########################################################################
+
+BUGS:
+
+- bug #4415: example files were installed in the package directory, now they
+  will be installed into [PEAR-DOC-DIR]/Structures_DataGrid/docs/examples/
+- bug #5858: removed @ before include() in DataSource.php (could crash silently)           
+- bug #6624: column formatters using class names didn't handle parameters and
+  class methods at the same time
+
+FEATURE REQUESTS:
+
+- request #5758: new parameters for Structures_DataGrid_Column::formatter()
+  callback: 'fieldName', 'columnName', 'orderBy', 'attribs'
+- request #6621: new method getColumnByName() that returns a reference to
+  a column object
+- request #5859: the rendering layer has gone through a long refactoring
+  process and a new and flexible renderer driver interface has been
+  implemented
+
+OTHER FIXES AND CHANGES:
+
+- all DataSource and Renderer drivers have been unbundled
+- new DataSource drivers: DBTable, DBQuery and MDB2
+- query building:
+  The query building process has been optimized, and is now more
+  flexible due to the use of http_build_query(). This adds a 
+  new dependency: PHP_Compat &gt;= 1.4.1.
+- custom rendering containers:
+  The containers that rendering drivers use to do their job, such as 
+  HTML_Table, Spreadsheet_Excel_Writer, etc. can now be instantiated
+  and customized by the user. They are then passed to the rendering
+  driver with new methods such as Structures_DataGrid::fill() or 
+  Structures_DataGrid_Renderer_*::setContainer().
+- new fill() method:
+  This method is meant to be to renderers what bind() is to datasources.
+  It accepts a &quot;rendering container&quot; object (where bind() accepts a 
+  &quot;datasource container&quot;) which it fills with data. No data is output
+  during this process. It is up to the user to decide what to do with 
+  the container once it's been filled up.
+- sortable and unsortable fields:
+  Better support for the $orderBy parameter of the column constructor:
+  if it is null, then the corresponding column is considered unsortable,
+  which is taken into account by various renderer drivers (HTMLTable, XUL, 
+  etc.)
+ </notes>
+ <contents>
+  <dir name="/">
+   <dir name="DataGrid">
+    <file baseinstalldir="Structures" name="Column.php" role="php" />
+    <file baseinstalldir="Structures" name="DataSource.php" role="php" />
+    <file baseinstalldir="Structures" name="Renderer.php" role="php" />
+   </dir> <!-- /DataGrid -->
+   <dir name="docs">
+    <dir name="examples">
+     <file baseinstalldir="Structures" name="example-smarty.php" role="doc" />
+     <file baseinstalldir="Structures" name="example-xls.php" role="doc" />
+     <file baseinstalldir="Structures" name="example-xml.php" role="doc" />
+     <file baseinstalldir="Structures" name="example-xul.php" role="doc" />
+     <file baseinstalldir="Structures" name="example.php" role="doc" />
+    </dir> <!-- /docs/examples -->
+   </dir> <!-- /docs -->
+   <file baseinstalldir="Structures" name="DataGrid.php" role="php" />
+  </dir> <!-- / -->
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>4.2</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.0b1</min>
+   </pearinstaller>
+   <package>
+    <name>PEAR</name>
+    <channel>pear.php.net</channel>
+    <min>1.2</min>
+   </package>
+   <package>
+    <name>PHP_Compat</name>
+    <channel>pear.php.net</channel>
+    <min>1.4.1</min>
+   </package>
+   <subpackage>
+    <name>Structures_DataGrid_DataSource_Array</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_DataSource_DB</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_DataSource_MDB2</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_DataSource_DBDataObject</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_DataSource_DBQuery</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_DataSource_DBTable</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_Renderer_HTMLTable</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_Renderer_Pager</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+  </required>
+  <optional>
+   <subpackage>
+    <name>Structures_DataGrid_DataSource_CSV</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_DataSource_RSS</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_DataSource_XML</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_Renderer_XLS</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_Renderer_XUL</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_Renderer_XML</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_Renderer_Smarty</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_Renderer_Console</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_Renderer_CSV</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+  </optional>
+ </dependencies>
+ <phprelease />
+</package>
