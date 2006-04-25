@@ -72,16 +72,6 @@ $dg->addColumn($column);
 $column = new Structures_DataGrid_Column('Delete', null, null, array('align' => 'center'));
 $dg->addColumn($column);
 
-/* Add rows to the DataGrid
-Option #1
-foreach ($rs as $row) {
-    $row = new Structures_DataGrid_Record($row);
-    $result = $dg->addRecord($row);
-    if (PEAR::isError($result)) {
-        echo $result->getMessage();
-    }
-}
-*/
 
 /* Bind a datasource object
 Option #2

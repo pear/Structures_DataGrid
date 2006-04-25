@@ -174,7 +174,7 @@ OTHER FIXES AND CHANGES:
     <min>0.1.0</min>
    </subpackage>
   </required>
-  <optional>
+  <group name="datasources" hint="(un)installs all optional DataSource drivers">
    <subpackage>
     <name>Structures_DataGrid_DataSource_CSV</name>
     <channel>pear.php.net</channel>
@@ -190,6 +190,8 @@ OTHER FIXES AND CHANGES:
     <channel>pear.php.net</channel>
     <min>0.1.0</min>
    </subpackage>
+  </group>
+  <group name="renderers" hint="(un)installs all optional Renderer drivers">
    <subpackage>
     <name>Structures_DataGrid_Renderer_XLS</name>
     <channel>pear.php.net</channel>
@@ -220,7 +222,7 @@ OTHER FIXES AND CHANGES:
     <channel>pear.php.net</channel>
     <min>0.1.0</min>
    </subpackage>
-  </optional>
+  </group>
  </dependencies>
  <phprelease />
 </package>
