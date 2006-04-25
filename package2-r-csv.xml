@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.4.9" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0
+http://pear.php.net/dtd/tasks-1.0.xsd
+http://pear.php.net/dtd/package-2.0
+http://pear.php.net/dtd/package-2.0.xsd">
+ <name>Structures_DataGrid_Renderer_CSV</name>
+ <channel>pear.php.net</channel>
+ <summary>Renderer driver that generates a CSV string</summary>
+ <description>This is a Renderer driver for Structures_DataGrid that generates a CSV string.
+ </description>
+ <lead>
+  <name>Andrew S. Nagy</name>
+  <user>asnagy</user>
+  <email>asnagy@webitecture.org</email>
+  <active>yes</active>
+ </lead>
+ <developer>
+  <name>Olivier Guilyardi</name>
+  <user>olivierg</user>
+  <email>olivier@samalyse.com</email>
+  <active>yes</active>
+ </developer>
+ <developer>
+  <name>Mark Wiesemann</name>
+  <user>wiesemann</user>
+  <email>wiesemann@php.net</email>
+  <active>yes</active>
+ </developer>
+ <date>2006-04-25</date>
+ <time>10:26:51</time>
+ <version>
+  <release>0.1.0</release>
+  <api>0.1.0</api>
+ </version>
+ <stability>
+  <release>beta</release>
+  <api>beta</api>
+ </stability>
+ <license uri="http://www.php.net/license">PHP License</license>
+ <notes>Changes since Structures_DataGrid 0.6.3:
+
+- Renderer driver unbundled from Structures_DataGrid core
+- fixed quote handling
+- fixed handling of line breaks
+- added automatic quote handling (quote are used when they are needed)
+- new option 'enclosure' (default is a double quotation mark: ")
+ </notes>
+ <contents>
+  <dir name="/">
+   <dir name="DataGrid">
+    <dir name="Renderer">
+     <file baseinstalldir="Structures" name="CSV.php" role="php" />
+    </dir> <!-- //DataGrid/Renderer -->
+   </dir> <!-- //DataGrid -->
+  </dir> <!-- / -->
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>4.0.0</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.0b1</min>
+   </pearinstaller>
+   <package>
+    <name>Structures_DataGrid</name>
+    <channel>pear.php.net</channel>
+    <min>0.7.0</min>
+   </package>
+  </required>
+ </dependencies>
+ <phprelease />
+</package>
