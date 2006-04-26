@@ -1042,19 +1042,13 @@ class Structures_DataGrid
                 break;
             
             // DBQuery / MDB2
-            case (   is_string($source) 
-                  && preg_match('#SELECT\s.*\sFROM#is', $source) === 1
-                 ):
-                if ((     array_key_exists('dbc', $options)
-                       && is_subclass_of($options['dbc'],
-                                         'mdb2_driver_common')
-                    ) || (
-                          array_key_exists('backend', $options)
-                       && $options['backend'] == 'MDB2'
-                )) {
-                    return DATAGRID_SOURCE_MDB2;
+            case (is_string($source) &&
+                  preg_match('#SELECT\s.*\sFROM#is', $source) === 1):
+                if (array_key_exists('dbc', $options) &&
+                    is_subclass_of($options['dbc'], 'db_common')) {
+                    return DATAGRID_SOURCE_DBQUERY;
                 }
-                return DATAGRID_SOURCE_DBQUERY; 
+                return DATAGRID_SOURCE_MDB2;
                 break;
 
             // DBTable
