@@ -167,18 +167,6 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
         $this->_tableBody =& $this->_table->getBody();
 
         $this->_bodyStartRow = $this->_tableBody->getRowCount();
-
-        // Define alternating row attributes
-        if ($this->_options['evenRowAttributes'] 
-            or $this->_options['oddRowAttributes']) {
-
-            $this->_tableBody->altRowAttributes(
-                0,
-                $this->_options['evenRowAttributes'],
-                $this->_options['oddRowAttributes'],
-                true
-            );
-        }
     }
 
     /**
@@ -478,6 +466,18 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      */
     function flatten()
     {
+        // Define alternating row attributes
+        if ($this->_options['evenRowAttributes'] 
+            or $this->_options['oddRowAttributes']) {
+
+            $this->_tableBody->altRowAttributes(
+                0,
+                $this->_options['evenRowAttributes'],
+                $this->_options['oddRowAttributes'],
+                true
+            );
+        }
+
         return $this->_table->toHTML();
     }
 
