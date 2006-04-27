@@ -555,6 +555,10 @@ class Structures_DataGrid
     function attachRenderer(&$renderer)
     {
         if (is_subclass_of($renderer, 'structures_datagrid_renderer')) {
+            // The following line is a workaround for PHP bug 32660
+            // See: http://bugs.php.net/bug.php?id=32660
+            $this->_renderer = 1;
+            
             $this->_renderer =& $renderer;
             if (isset($this->_dataSource)) {
                 $this->_renderer->setData($this->columnSet, $this->recordSet);
