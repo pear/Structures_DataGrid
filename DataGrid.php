@@ -1018,36 +1018,35 @@ class Structures_DataGrid
     {
         switch(true) {
             // DB_DataObject
-            // FIXME: should use is_subclass_of() 
-            case (strtolower(get_parent_class($source)) == 'db_dataobject'):
+            case is_object($source) && is_subclass_of($source, 'db_dataobject'):
                 return DATAGRID_SOURCE_DATAOBJECT;
                 break;
 
             // DB_Result
-            case (strtolower(get_class($source)) == 'db_result'):
+            case strtolower(get_class($source)) == 'db_result':
                 return DATAGRID_SOURCE_DB;
                 break;
                 
             // Array
-            case (is_array($source)):
+            case is_array($source):
                 return DATAGRID_SOURCE_ARRAY;
                 break;
 
             // RSS
-            case (is_string($source) && stristr('<rss', $source)):
-            case (is_string($source) && stristr('<rdf:RDF', $source)):
-            case (is_string($source) && strpos($source, '.rss') !== false):
+            case is_string($source) && stristr('<rss', $source):
+            case is_string($source) && stristr('<rdf:RDF', $source):
+            case is_string($source) && strpos($source, '.rss') !== false:
                 return DATAGRID_SOURCE_RSS;
                 break;
 
             // XML
-            case (is_string($source) and ereg('^ *<\?xml', $source)):
+            case is_string($source) && preg_match('#^ *<\?xml#', $source) === 1:
                 return DATAGRID_SOURCE_XML;
                 break;
             
             // DBQuery / MDB2
-            case (is_string($source) &&
-                  preg_match('#SELECT\s.*\sFROM#is', $source) === 1):
+            case is_string($source) &&
+                preg_match('#SELECT\s.*\sFROM#is', $source) === 1:
                 if (array_key_exists('dbc', $options) &&
                     is_subclass_of($options['dbc'], 'db_common')) {
                     return DATAGRID_SOURCE_DBQUERY;
@@ -1055,13 +1054,13 @@ class Structures_DataGrid
                 return DATAGRID_SOURCE_MDB2;
                 break;
 
-            // DBTable
-            case (strtolower(get_parent_class($source)) == 'db_table'):
+            // DB_Table
+            case is_object($source) && is_subclass_of($source, 'db_table'):
                 return DATAGRID_SOURCE_DBTABLE;
                 break;
 
             // CSV
-            //case (is_string($source)):
+            //case is_string($source):
             //    return DATAGRID_SOURCE_CSV;
             //    break;
                 
