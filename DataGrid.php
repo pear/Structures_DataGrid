@@ -405,7 +405,10 @@ class Structures_DataGrid
                 return $test;
             }
         } else if (!isset($this->_renderer)) {
-            $this->setRenderer(DATAGRID_RENDER_DEFAULT);
+            $test = $this->setRenderer(DATAGRID_RENDER_DEFAULT);
+            if (PEAR::isError($test)) {
+                return $test;
+            }
         }
         
         if ($options) {
