@@ -107,7 +107,8 @@ class Structures_DataGrid_DataSource_MDB2
             $this->_db =& MDB2::factory($this->_options['dsn'], $dbOptions);
             if (PEAR::isError($this->_db)) {
                 return PEAR::raiseError('Could not create connection: ' .
-                                        $this->_db->getMessage());
+                                        $this->_db->getMessage() . ', ' .
+                                        $this->_db->getUserInfo());
             }
         } else {
             return PEAR::raiseError('No MDB2 object or dsn string specified');
