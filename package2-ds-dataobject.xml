@@ -3,7 +3,7 @@
 http://pear.php.net/dtd/tasks-1.0.xsd
 http://pear.php.net/dtd/package-2.0
 http://pear.php.net/dtd/package-2.0.xsd">
- <name>Structures_DataGrid_DataSource_DBDataObject</name>
+ <name>Structures_DataGrid_DataSource_DataObject</name>
  <channel>pear.php.net</channel>
  <summary>DataSource driver using PEAR::DB_DataObject</summary>
  <description>This is a DataSource driver for Structures_DataGrid using PEAR::DB_DataObject.
