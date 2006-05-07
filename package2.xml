@@ -149,7 +149,7 @@ OTHER FIXES AND CHANGES:
     <min>0.1.0</min>
    </subpackage>
    <subpackage>
-    <name>Structures_DataGrid_DataSource_DBDataObject</name>
+    <name>Structures_DataGrid_DataSource_DataObject</name>
     <channel>pear.php.net</channel>
     <min>0.1.0</min>
    </subpackage>
