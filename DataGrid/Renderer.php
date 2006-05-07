@@ -618,7 +618,8 @@ class Structures_DataGrid_Renderer
             }
 
             if (isset($column->attribs) && 
-                strtolower(get_class($this)) == 'structures_datagrid_renderer_htmltable')
+                (strtolower(get_class($this)) == 'structures_datagrid_renderer_htmltable' ||
+                strtolower(get_parent_class($this)) == 'structures_datagrid_renderer_htmltable'))
             {
                 if (!array_key_exists($field, $this->_options['columnAttributes'])) {
                     $this->_options['columnAttributes'][$field] = array();
