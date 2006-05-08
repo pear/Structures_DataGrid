@@ -199,6 +199,7 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
             } else {
                 $this->_workbook = new Spreadsheet_Excel_Writer($this->_options['filename']);
             }
+            $this->_workbook->setVersion(8);
         }
 
         // Use user-provided worksheet if present
@@ -208,7 +209,8 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
             // Use the first worksheet or create one if the workbook is empty
             $worksheets = $this->_workbook->worksheets();
             if (empty($worksheets)) {
-                $this->_worksheet =& $this->_workbook->addWorksheet();        
+                $this->_worksheet =& $this->_workbook->addWorksheet();
+                $this->_worksheet->setInputEncoding($this->_options['encoding']);
             } else {
                 $this->_worksheet =& $worksheets[0];
             }

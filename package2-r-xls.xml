@@ -43,6 +43,7 @@ PEAR::Spreadsheet_Excel_Writer.
 - Renderer driver unbundled from Structures_DataGrid core
 - request #5806 and request #5808: added support for custom Excel Writer
   and Format objects (thanks Vincent Vermersch for these requests)
+- bug #7534: version and encoding need to be set for the workbook / worksheet
  </notes>
  <contents>
   <dir name="/">
