@@ -103,15 +103,6 @@ OTHER FIXES AND CHANGES:
     <file baseinstalldir="Structures" name="DataSource.php" role="php" />
     <file baseinstalldir="Structures" name="Renderer.php" role="php" />
    </dir> <!-- /DataGrid -->
-   <dir name="docs">
-    <dir name="examples">
-     <file baseinstalldir="Structures" name="example-smarty.php" role="doc" />
-     <file baseinstalldir="Structures" name="example-xls.php" role="doc" />
-     <file baseinstalldir="Structures" name="example-xml.php" role="doc" />
-     <file baseinstalldir="Structures" name="example-xul.php" role="doc" />
-     <file baseinstalldir="Structures" name="example.php" role="doc" />
-    </dir> <!-- /docs/examples -->
-   </dir> <!-- /docs -->
    <file baseinstalldir="Structures" name="DataGrid.php" role="php" />
   </dir> <!-- / -->
  </contents>
