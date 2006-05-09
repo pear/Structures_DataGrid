@@ -617,9 +617,8 @@ class Structures_DataGrid_Renderer
                 $column->setAutoFillValue($this->_options['defaultCellValue']);
             }
 
-            if (isset($column->attribs) && 
-                (strtolower(get_class($this)) == 'structures_datagrid_renderer_htmltable' ||
-                strtolower(get_parent_class($this)) == 'structures_datagrid_renderer_htmltable'))
+            if (isset($column->attribs) &&
+                is_a($this, 'Structures_DataGrid_Renderer_HTMLTable'))
             {
                 if (!array_key_exists($field, $this->_options['columnAttributes'])) {
                     $this->_options['columnAttributes'][$field] = array();
