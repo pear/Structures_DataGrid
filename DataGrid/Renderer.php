@@ -288,8 +288,7 @@ class Structures_DataGrid_Renderer
         $this->_options = array(
             
             /* Options that the drivers may/should handle */    
-            'encoding'              => function_exists('mb_internal_encoding')
-                                       ? mb_internal_encoding() : 'ISO-8859-1',
+            'encoding'              => 'ISO-8859-1',
             'fillWithEmptyRows'     => false,
             'numberAlign'           => true,
             'extraVars'             => array(),
@@ -303,6 +302,12 @@ class Structures_DataGrid_Renderer
             'hideColumnLinks'       => array(), 
 
         );
+        if (function_exists('mb_internal_encoding')) {
+            $encoding = mb_internal_encoding();
+            if ($encoding != 'pass') {
+                $this->_options['encoding'] = $encoding;
+            }
+        }
 
     }
 
