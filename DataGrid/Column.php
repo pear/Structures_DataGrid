@@ -77,7 +77,6 @@ class Structures_DataGrid_Column
      *                                      to be mapped to
      * @param   string      $orderBy        The field to order the data by
      * @param   string      $attribs        The HTML attributes for the TR tag
-     * @param   boolean     $autoFill       Whether or not to use the autoFill
      * @param   string      $autoFillValue  The value to use for the autoFill
      * @param   mixed       $formatter      A defined function to call upon
      *                                      rendering to allow for special
