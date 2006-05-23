@@ -138,7 +138,7 @@ class Structures_DataGrid_DataSource_Array
             $sortAr[$i] = $this->_ar[$i][$sortField];
         }
 
-        $sortDir = is_null($sortDir) or strtoupper($sortDir) == 'ASC' 
+        $sortDir = (is_null($sortDir) or strtoupper($sortDir) == 'ASC') 
                  ? SORT_ASC : SORT_DESC;
         array_multisort($sortAr, $sortDir, $this->_ar);
     }
