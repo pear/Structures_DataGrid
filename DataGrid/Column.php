@@ -62,10 +62,18 @@ class Structures_DataGrid_Column
     var $autoFillValue;
 
     /**
-     * A function to be called for each cell to modify the output
-     * @var array
+     * A callback function to be called for each cell to modify the output
+     * @var     mixed
+     * @access  private
      */
     var $formatter;
+    
+    /**
+     * User defined parameters passed to the formatter callback function
+     * @var     array
+     * @access  private
+     */
+    var $formatterArgs;
 
     /**
      * Constructor
@@ -78,26 +86,27 @@ class Structures_DataGrid_Column
      * @param   string      $orderBy        The field to order the data by
      * @param   string      $attribs        The HTML attributes for the TR tag
      * @param   string      $autoFillValue  The value to use for the autoFill
-     * @param   mixed       $formatter      A defined function to call upon
-     *                                      rendering to allow for special
-     *                                      formatting.  This allows for
-     *                                      call-back function to print out a 
-     *                                      link or a form element, or whatever 
-     *                                      you can possibly think of.
+     * @param   mixed       $formatter      Formatter callback. See setFormatter()
+     * @param   array       $formatterArgs  Associative array of arguments 
+     *                                      passed to the formatter callback
      * @see http://www.php.net/manual/en/language.pseudo-types.php
+     * @see setFormatter()
      * @access  public
      */
     function Structures_DataGrid_Column($columnName, $fieldName = null,
                                         $orderBy = null, $attribs = array(),
                                         $autoFillValue = null,
-                                        $formatter = null)
+                                        $formatter = null,
+                                        $formatterArgs = array())
     {
         $this->columnName = $columnName;
         $this->fieldName = $fieldName;
         $this->orderBy = $orderBy;
         $this->attribs = $attribs;
         $this->autoFillValue = $autoFillValue;
-        $this->formatter = $formatter;
+        if (!is_null($formatter)) {
+            $this->setFormatter($formatter, $formatterArgs);
+        }
     }
 
     /**
@@ -116,78 +125,60 @@ class Structures_DataGrid_Column
     /**
      * Set Formatter
      *
-     * Defines the function and paramters to be called by the formatter method.
+     * Define a formatting callback function with optional arguments for 
+     * this column.
      *
-     * @param   mixed   Callback PHP pseudo-type (Array or String)
+     * @param   mixed   $formatter  Callback PHP pseudo-type (Array or String)
+     * @param   array   $arguments  Associative array of parameters passed to 
+     *                              the callback function
+     * @return  mixed               PEAR_Error on failure 
      * @see http://www.php.net/manual/en/language.pseudo-types.php
      * @access  public
      */
-    function setFormatter($str)
+    function setFormatter($formatter, $arguments = array())
     {
-        $this->formatter = $str;
+        $this->formatterArgs = $arguments;
+        if (is_array($formatter)) {
+            $formatter[1] = $this->_parseCallbackString ($formatter[1], 
+                                                         $this->formatterArgs);
+        } else {
+            $formatter = $this->_parseCallbackString ($formatter, 
+                                                      $this->formatterArgs);
+        }
+        if (is_callable ($formatter)) {
+            $this->formatter = $formatter;
+        } else {
+            return PEAR::raiseError('Column formatter is not a valid callback');
+        }
     }
 
     /**
-     * Formatter
+     * Parse a callback function string
      *
-     * Calls a predefined function to develop custom output for the column. The
-     * defined function can accept paramaters so that each cell in the column
-     * can be unique based on the record.  The function will also automatically
-     * receive the record array as a parameter.  All parameters passed into the
-     * function will be in one array.
-     *
-     * Example:
-     * <code>
-     * <?php
-     * ...
-     * $linkTitle = 'Edit';
-     * $column->formatter = 'printLink($linkTitle=' . $linkTitle . ')';
-     * $dg->addColumn($column);
-     * $dg->render();
-     * function printLink($params) {
-     *      extract($params);
-     *      return '<a href="edit.php?id=' . $record['id'] . ">' . $linkTitle . 
-     *             '</a>';
-     * }
-     * ?>
-     * </code>
-     *
-     * @access  public
+     * This method parses a string of the type "myFunction($param1=foo,...)",
+     * return the isolated function name ("myFunction") and fills $paramList 
+     * with the extracted parameters (array('param1' => foo, ...))
+     * 
+     * @param   string  $callback   Callback function string
+     * @param   array   $paramList  Reference to an array of parameters
+     * @return  string              Function name
+     * @access  private
      */
-    function formatter($record)
-    {
-        // Define the parameter list
-        $paramList = array();
-        $paramList['record'] = $record;
-        $paramList['fieldName'] = $this->fieldName;
-        $paramList['columnName'] = $this->columnName;
-        $paramList['orderBy'] = $this->orderBy;
-        $paramList['attribs'] = $this->attribs;
-
-        // $this->formatter may be an array with a class name and the formatter
-        // ==> split into class name and the formatter
-        $class = '';
-        if (is_array($this->formatter)) {
-            $class = $this->formatter[0];
-            $formatter = $this->formatter[1];
-        } else {
-            $formatter = $this->formatter;
-        }
-
-        // Determine callback and additional parameters
-        if (is_string($formatter) and $size = strpos($formatter, '(')) {
-            $orig_formatter = $formatter;
+    function _parseCallbackString($callback, &$paramList)
+    {   
+        if ($size = strpos($callback, '(')) {
+            $orig_callback = $callback;
             // Retrieve the name of the function to call
-            $formatter = substr($formatter, 0, $size);
-            if (strstr($formatter, '->')) { 
-                $formatter = explode('->', $formatter);
-            } elseif (strstr($formatter, '::')) {
-                $formatter = explode('::', $formatter);
+            $callback = substr($callback, 0, $size);
+            if (strstr($callback, '->')) { 
+                $callback = explode('->', $callback);
+            } elseif (strstr($callback, '::')) {
+                $callback = explode('::', $callback);
             }
 
             // Build the list of parameters
-            $length = strlen($orig_formatter) - $size - 2;
-            $parameters = substr($orig_formatter, $size + 1, $length);
+            $length = strlen($orig_callback) - $size - 2;
+            $parameters = substr($orig_callback, $size + 1, $length);
             $parameters = ($parameters === '') ? array() : split(',', $parameters);
 
             // Process the parameters
@@ -204,22 +195,35 @@ class Structures_DataGrid_Column
             }
         }
 
-        // $this->formatter may be an array with a class name and the formatter
-        // ==> join class name and the formatter back into an array
-        if ($class !== '') {
-            $formatter = array($class, $formatter);
-        }
+        return $callback;
+    }
+    
+    /**
+     * Formatter
+     *
+     * This method is not meant to be called by user-space code.
+     * 
+     * Calls a predefined function to develop custom output for the column. The
+     * defined function can accept parameters so that each cell in the column
+     * can be unique based on the record.  The function will also automatically
+     * receive the record array as a parameter.  All parameters passed into the
+     * function will be in one array.
+     *
+     * @access  public
+     */
+    function formatter($record)
+    {
+        // Define the parameter list
+        $paramList = array();
+        $paramList['record'] = $record;
+        $paramList['fieldName'] = $this->fieldName;
+        $paramList['columnName'] = $this->columnName;
+        $paramList['orderBy'] = $this->orderBy;
+        $paramList['attribs'] = $this->attribs;
 
         // Call the formatter
-        if (is_callable($formatter)) {
-            $result = call_user_func($formatter, $paramList);
-        } else {
-            $result = false;
-            PEAR::raiseError('Unable to process formatter', '1',
-                             PEAR_ERROR_TRIGGER);
-        }
-
-        return $result;
+        return call_user_func ($this->formatter, 
+                               array_merge ($this->formatterArgs, $paramList));
     }
 
 }
