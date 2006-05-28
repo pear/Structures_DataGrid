@@ -22,15 +22,17 @@ require_once 'Structures/DataGrid/Renderer.php';
 require_once 'HTML/QuickForm.php';
 
 /**
- * Multiple fields sorting Rendering driver
+ * Multiple fields sorting form rendering driver
  *
  * This driver renders a form (using HTML_QuickForm) so that the user can
  * select several fields and directions to the sort the datagrid by.
  *
  * SUPPORTED OPTIONS:
  * 
- * - sortFieldsNum:     (int)       How many fields the user will be able to sort by
- *                                  (default: number of sortable fields)
+ * - sortFieldsNum:     (int)       How many fields the user will be able to sort by.
+ *                                  This has not effect if the backend does not 
+ *                                  support sorting by multiple fields.
+ *                                  (default: 3)
  * - directionStyle:    (string)    Wether to render the direction form 
  *                                  elements as "select" or "radio" elements
  *                                  (default: "select")
@@ -60,7 +62,7 @@ require_once 'HTML/QuickForm.php';
  * @package  Structures_DataGrid
  * @category Structures
  */
-class Structures_DataGrid_Renderer_HTMLMultiSort extends Structures_DataGrid_Renderer
+class Structures_DataGrid_Renderer_HTMLSortForm extends Structures_DataGrid_Renderer
 {
     /**
      * Rendering container
@@ -83,12 +85,12 @@ class Structures_DataGrid_Renderer_HTMLMultiSort extends Structures_DataGrid_Ren
      *
      * @access  public
      */
-    function Structures_DataGrid_Renderer_HTMLMultiSort()
+    function Structures_DataGrid_Renderer_HTMLSortForm()
     {
         parent::Structures_DataGrid_Renderer();
         $this->_addDefaultOptions(
             array(
-                'sortFieldsNum'     => null, // dynamic ; see init()
+                'sortFieldsNum'     => 3,
                 'directionStyle'    => 'select',
                 'textChoose'        => 'Choose...',
                 'textAscending'     => 'Ascending',
@@ -135,14 +137,10 @@ class Structures_DataGrid_Renderer_HTMLMultiSort extends Structures_DataGrid_Ren
         if (!isset($this->_form)) {
             // Try to give the form a unique name using $_requestPrefix
             $this->_form =& new HTML_QuickForm(
-                    "{$this->_requestPrefix}MultiSort", 'get');
+                    "{$this->_requestPrefix}DataGridSortForm", 'get');
             $this->_isUserContainer = false;
         } else {
             $this->_isUserContainer = true;
-        }
-
-        if (is_null ($this->_options['sortFieldsNum'])) {
-            $this->_options['sortFieldsNum'] = count($this->_sortableFields);
         }
     }
 
@@ -169,8 +167,9 @@ class Structures_DataGrid_Renderer_HTMLMultiSort extends Structures_DataGrid_Ren
             $options = array_merge(array('' => $this->_options['textChoose']), 
                                    $options);
             
-            // Build elements groups
-            for ($i=0; $i < $this->_options['sortFieldsNum']; $i++) {
+            // Build element groups
+            $ii = $this->_multiSort ? $this->_options['sortFieldsNum'] : 1;
+            for ($i=0; $i < $ii; $i++) {
                 
                 // Create the field select element
                 $select =& HTML_QuickForm::createElement(

@@ -139,10 +139,20 @@ class Structures_DataGrid_Renderer
      *
      * Drivers can read the content of this property but must not change it.
      *
-     * @var array Structure: array(fieldName => direction, ....)
-     * @access protected
+     * @var     array       Structure: array(fieldName => direction, ....)
+     * @access  protected
      */
     var $_currentSort = array();
+
+    /**
+     * Wether the backend support sorting by multiple fields
+     *
+     * Drivers can read the content of this property but must not change it.
+     *
+     * @var     bool
+     * @access  protected
+     */
+    var $_multiSort = array();
 
     /**
      * Number of columns
@@ -369,12 +379,16 @@ class Structures_DataGrid_Renderer
      * Specify how the datagrid is currently sorted
      *
      * @var array 
-     * @param array $spec Form: array(fieldName => direction, ....)
+     * @param array $spec               Structure: 
+     *                                  array(fieldName => direction, ....)
+     * @param bool  $multiSortCapable   Wether the backend support sorting by
+     *                                  multiple fields
      * @access public
      */
-    function setCurrentSorting($spec)
+    function setCurrentSorting($spec, $multiSortCapable = false)
     {
         $this->_currentSort = $spec;
+        $this->_multiSort   = $multiSortCapable;
     }
 
     /**

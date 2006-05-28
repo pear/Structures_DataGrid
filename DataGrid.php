@@ -33,7 +33,7 @@ define('DATAGRID_RENDER_XUL',      'XUL');
 define('DATAGRID_RENDER_CSV',      'CSV');
 define('DATAGRID_RENDER_CONSOLE',  'Console');
 define('DATAGRID_RENDER_PAGER',    'Pager');
-define('DATAGRID_RENDER_MULTISORT','HTMLMultiSort');
+define('DATAGRID_RENDER_SORTFORM', 'HTMLSortForm');
 
 define('DATAGRID_RENDER_DEFAULT',  DATAGRID_RENDER_TABLE);
 
@@ -136,7 +136,7 @@ class Structures_DataGrid
     /**
      * Fields/directions to sort the data by
      *
-     * @var array Form: array(fieldName => direction, ....)
+     * @var array Structure: array(fieldName => direction, ....)
      * @access private
      */
     var $sortSpec = array();
@@ -144,7 +144,7 @@ class Structures_DataGrid
     /**
      * Default fields/directions to sort the data by
      *
-     * @var array Form: array(fieldName => direction, ....)
+     * @var array Structure: array(fieldName => direction, ....)
      * @access private
      */
     var $defaultSortSpec = array();
@@ -539,6 +539,37 @@ class Structures_DataGrid
         unset($this->_rendererBackup);
         $this->_rendererTypeBackup = null;
     }
+  
+    /**
+     * Tell the renderer how the data is sorted
+     *
+     * This method takes the "multiSort" capabilities of the datasource
+     * into account. The idea is to correctly inform the renderer : for
+     * example, a GET request may contain multiple fields and directions
+     * to sort by. But, if the datasource does not support "multiSort"
+     * then the renderer should not be told that the data is sorted according
+     * to multiple fields. 
+     *
+     * It also properly set the "multiSortCapable" renderer flag (second argument
+     * to Renderer::setCurrentSorting()).
+     * 
+     * This method requires both a datasource and renderer to be loaded,
+     * and should only be called if $sortSpec is not empty.
+     *
+     * @return void
+     * @access private
+     */
+    function _setRendererCurrentSorting()
+    {
+        if ($this->_dataSource->hasFeature('multiSort')) {
+            $this->_renderer->setCurrentSorting($this->sortSpec, true);
+        } else {
+            reset($this->sortSpec);
+            list($field, $direction) = each($this->sortSpec);
+            $this->_renderer->setCurrentSorting(
+                    array($field => $direction), false);
+        }
+    }
     
     /**
      * Attach a rendering driver
@@ -560,14 +591,14 @@ class Structures_DataGrid
                 $this->_renderer->setData($this->columnSet, $this->recordSet);
                 $this->_renderer->setLimit($this->page, $this->rowLimit, 
                                           $this->getRecordCount());
+                if ($this->sortSpec) {
+                    $this->_setRendererCurrentSorting();
+                }
             }
             if ($this->_requestPrefix) {
                 $this->_renderer->setRequestPrefix($this->_requestPrefix); 
             }
 
-            if ($this->sortSpec) {
-                $this->_renderer->setCurrentSorting($this->sortSpec);
-            }
         } else {
             return PEAR::raiseError('Invalid renderer type, ' . 
                                     'must be a valid renderer driver class');
@@ -773,8 +804,8 @@ class Structures_DataGrid
              * to pass them again to the renderer */
             $this->_renderer->setLimit($this->page, $this->rowLimit, 
                                       $this->getRecordCount());
-            if ($this->sortSpec) {
-                $this->_renderer->setCurrentSorting($this->sortSpec);
+            if ($this->sortSpec and isset($this->_dataSource)) {
+                $this->setRendererCurrentSorting();
             }
         }
     }
@@ -860,6 +891,9 @@ class Structures_DataGrid
                 $this->_renderer->setData($this->columnSet, $this->recordSet);
                 $this->_renderer->setLimit($this->page, $this->rowLimit, 
                                           $this->getRecordCount());
+                if ($this->sortSpec) {
+                    $this->_setRendererCurrentSorting();
+                }
             }
         } else {
             return PEAR::raiseError('Invalid data source type, ' . 
@@ -1008,9 +1042,8 @@ class Structures_DataGrid
     {
         if (!$this->_forcePage) {
             if (!($this->page = $this->_getRequestArgument ('page'))) {
-            } else {
                 $this->page = 1;
-            }
+            } 
             if (!is_numeric($this->page)) {
                 $this->page = 1;
             }
