@@ -318,6 +318,7 @@ class Structures_DataGrid_DataSource
      */
     function hasFeature($name)
     {
+        return $this->_features[$name];
     }
     
     /**

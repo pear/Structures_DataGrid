@@ -287,14 +287,14 @@ class Structures_DataGrid_DataSource_DataObject
     function sort($sortSpec, $sortDir = null)
     {
         if (is_array($sortSpec)) {
-            foreach ($sortSpec as $item) {
-                $this->_dataobject->orderBy($item['field'].' '.$item['direction']);
+            foreach ($sortSpec as $field => $direction) {
+                $this->_dataobject->orderBy("$field $direction");
             }
         } else {
             if (is_null($sortDir)) {
                 $this->_dataobject->orderBy($sortSpec);
             } else {
-                $this->_dataobject->orderBy($sortSpec . ' ' . $sortDir);
+                $this->_dataobject->orderBy("$sortSpec $sortDir");
             }
         }
     }

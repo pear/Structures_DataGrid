@@ -33,6 +33,7 @@ define('DATAGRID_RENDER_XUL',      'XUL');
 define('DATAGRID_RENDER_CSV',      'CSV');
 define('DATAGRID_RENDER_CONSOLE',  'Console');
 define('DATAGRID_RENDER_PAGER',    'Pager');
+define('DATAGRID_RENDER_MULTISORT','HTMLMultiSort');
 
 define('DATAGRID_RENDER_DEFAULT',  DATAGRID_RENDER_TABLE);
 
@@ -374,14 +375,6 @@ class Structures_DataGrid
             $driver->setOptions($options);
         }
 
-        if ($this->_requestPrefix) {
-            $driver->setRequestPrefix($this->_requestPrefix); 
-        }
-
-        if ($this->sortSpec) {
-            $driver->setCurrentSorting($this->sortSpec);
-        }
-
         return $driver;
     }
 
@@ -567,6 +560,13 @@ class Structures_DataGrid
                 $this->_renderer->setData($this->columnSet, $this->recordSet);
                 $this->_renderer->setLimit($this->page, $this->rowLimit, 
                                           $this->getRecordCount());
+            }
+            if ($this->_requestPrefix) {
+                $this->_renderer->setRequestPrefix($this->_requestPrefix); 
+            }
+
+            if ($this->sortSpec) {
+                $this->_renderer->setCurrentSorting($this->sortSpec);
             }
         } else {
             return PEAR::raiseError('Invalid renderer type, ' . 
@@ -870,6 +870,25 @@ class Structures_DataGrid
     }
 
     /**
+     * Request the datasource to sort its data
+     *
+     * @return void
+     * @access private
+     */
+    function _sortDataSource()
+    {
+        if (!empty($this->sortSpec)) {
+            if ($this->_dataSource->hasFeature('multiSort')) {
+                $this->_dataSource->sort($this->sortSpec);
+            } else {
+                reset ($this->sortSpec);
+                list ($sortBy, $direction) = each ($this->sortSpec);
+                $this->_dataSource->sort($sortBy, $direction);
+            }
+        }
+    }
+    
+    /**
      * Fetch data from the datasource 
      *
      * @return mixed Either true or a PEAR_Error object
@@ -885,11 +904,8 @@ class Structures_DataGrid
             if (empty($this->sortSpec) and $this->defaultSortSpec) {
                 $this->sortSpec = $this->defaultSortSpec;
             }
-            
-            reset($this->sortSpec);
-            if (list($field,$direction) = each($this->sortSpec)) {
-                $this->_dataSource->sort($field,$direction);
-            }
+           
+            $this->_sortDataSource();
 
             // Fetch the Data
             $recordSet = $this->_dataSource->fetch(
@@ -914,15 +930,22 @@ class Structures_DataGrid
      * is much faster coming directly from the database itself.
      *
      * @access  public
-     * @param   string $sortBy      The field to sort the record set by.
-     * @param   string $direction   The sort direction, either ASC or DESC.
+     * @param   array   $sortSpec   Sorting specification
+     *                              Structure: array(fieldName => direction, ...)
+     * @param   string  $direction  Deprecated. Put the direction(s) into
+     *                              $sortSpec
      * @return  void
      */
-    function sortRecordSet($sortBy, $direction = 'ASC')
+    function sortRecordSet($sortSpec, $direction = 'ASC')
     {
-        $this->sortSpec = array($sortBy => $direction);
+        if (is_array ($sortSpec)) {
+            $this->sortSpec = $sortSpec;
+        } else {
+            $this->sortSpec = array($sortBy => $direction);
+        } 
+
         if (isset($this->_dataSource)) {
-            $this->_dataSource->sort($sortBy, $direction);
+            $this->_sortDataSource();
         } 
     }
 
@@ -945,30 +968,46 @@ class Structures_DataGrid
     {
         $this->defaultSortSpec = $sortSpec;
     }
+   
+    /**
+     * Read an HTTP request argument
+     *
+     * This methods take the $_requestPrefix into account, and respect the 
+     * POST, GET, COOKIE read order.
+     *
+     * @param   string  $name   Argument name
+     * @return  mixed           Argument value or null
+     * @access  private
+     */
+    function _getRequestArgument($name)
+    {
+        $value = null;
+        $prefix = $this->_requestPrefix;
+        if (isset($_REQUEST["$prefix$name"])) {
+            if (isset($_POST["$prefix$name"])) {
+                $value = $_POST["$prefix$name"];
+            } elseif (isset($_GET["$prefix$name"])) {
+                $value = $_GET["$prefix$name"];
+            } elseif (isset($_COOKIE["$prefix$name"])) {
+                $value = $_COOKIE["$prefix$name"];
+            } 
+        }
+        return $value;
+    }
     
     /**
      * Parse HTTP Request parameters
-     *
+     * 
+     * Determine page, sort and direction values
+     * 
      * @access  private
      * @return  array      Associative array of parsed arguments, each of these 
      *                     defaulting to null if not found. 
      */
     function _parseHttpRequest()
     {
-        $prefix = $this->_requestPrefix;
-
-        // Determine page, sort and direction values
-
         if (!$this->_forcePage) {
-            if (isset($_REQUEST[$prefix . 'page'])) {
-                // Use POST, GET, or COOKIE value in respective order
-                if (isset($_POST[$prefix . 'page'])) {
-                    $this->page = $_POST[$prefix . 'page'];
-                } elseif (isset($_GET[$prefix . 'page'])) {
-                    $this->page = $_GET[$prefix . 'page'];
-                } elseif (isset($_COOKIE[$prefix . 'page'])) {
-                    $this->page = $_COOKIE[$prefix . 'page'];
-                } 
+            if (!($this->page = $this->_getRequestArgument ('page'))) {
             } else {
                 $this->page = 1;
             }
@@ -977,32 +1016,21 @@ class Structures_DataGrid
             }
         } 
 
-        $orderBy = '';
-        if (isset($_REQUEST[$prefix . 'orderBy'])) {
-            // Use POST, GET, or COOKIE value in respective order
-            if (isset($_POST[$prefix . 'orderBy'])) {
-                $orderBy = $_POST[$prefix . 'orderBy'];
-            } elseif (isset($_GET[$prefix . 'orderBy'])) {
-                $orderBy = $_GET[$prefix . 'orderBy'];
-            } elseif (isset($_COOKIE[$prefix . 'orderBy'])) {
-                $orderBy = $_COOKIE[$prefix . 'orderBy'];
+        if ($orderBy = $this->_getRequestArgument('orderBy')) {
+            if (is_array($orderBy)) {
+                $direction = $this->_getRequestArgument('direction');
+                $this->sortSpec = array();
+                foreach ($orderBy as $index => $field) {
+                    if (!empty($field)) {
+                        $this->sortSpec[$field] = $direction[$index];
+                    }
+                } 
+            } else {
+                if (!($direction = $this->_getRequestArgument('direction'))) {
+                    $direction = 'ASC';
+                }
+                $this->sortSpec = array ($orderBy => $direction);
             }
-        }
-
-        $direction = 'ASC';
-        if (isset($_REQUEST[$prefix . 'direction'])) {
-            // Use POST, GET, or COOKIE value in respective order
-            if (isset($_POST[$prefix . 'direction'])) {
-                $direction = $_POST[$prefix . 'direction'];
-            } elseif (isset($_GET[$prefix . 'direction'])) {
-                $direction = $_GET[$prefix . 'direction'];
-            } elseif (isset($_COOKIE[$prefix . 'direction'])) {
-                $direction = $_COOKIE[$prefix . 'direction'];
-            }
-        }
-
-        if ($orderBy) {
-            $this->sortSpec[$orderBy] = $direction;
         }
     }     
 
