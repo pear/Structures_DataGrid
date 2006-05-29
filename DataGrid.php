@@ -553,8 +553,9 @@ class Structures_DataGrid
      * It also properly set the "multiSortCapable" renderer flag (second argument
      * to Renderer::setCurrentSorting()).
      * 
-     * This method requires both a datasource and renderer to be loaded,
-     * and should only be called if $sortSpec is not empty.
+     * This method requires both a datasource and renderer to be loaded.
+     * 
+     * It should be called even if $sortSpec is empty.
      *
      * @return void
      * @access private
@@ -591,9 +592,7 @@ class Structures_DataGrid
                 $this->_renderer->setData($this->columnSet, $this->recordSet);
                 $this->_renderer->setLimit($this->page, $this->rowLimit, 
                                           $this->getRecordCount());
-                if ($this->sortSpec) {
-                    $this->_setRendererCurrentSorting();
-                }
+                $this->_setRendererCurrentSorting();
             }
             if ($this->_requestPrefix) {
                 $this->_renderer->setRequestPrefix($this->_requestPrefix); 
@@ -804,8 +803,8 @@ class Structures_DataGrid
              * to pass them again to the renderer */
             $this->_renderer->setLimit($this->page, $this->rowLimit, 
                                       $this->getRecordCount());
-            if ($this->sortSpec and isset($this->_dataSource)) {
-                $this->setRendererCurrentSorting();
+            if (isset($this->_dataSource)) {
+                $this->_setRendererCurrentSorting();
             }
         }
     }

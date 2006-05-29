@@ -71,7 +71,7 @@ class Structures_DataGrid_DataSource_MDB2
     {
         parent::Structures_DataGrid_DataSource();
         
-        // For clarity, supported options should be declared with 
+        // FIXME: For clarity, supported options should be declared with 
         // _addDefaultOptions()
         
         $this->_setFeatures(array('multiSort' => true));
