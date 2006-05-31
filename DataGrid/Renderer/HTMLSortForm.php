@@ -25,15 +25,15 @@ require_once 'HTML/QuickForm.php';
  * Multiple fields sorting form rendering driver
  *
  * This driver renders a form (using HTML_QuickForm) so that the user can
- * select several fields and directions to the sort the datagrid by.
+ * select several fields and directions to sort the datagrid by.
  *
  * SUPPORTED OPTIONS:
  * 
  * - sortFieldsNum:     (int)       How many fields the user will be able to sort by.
- *                                  This has not effect if the backend does not 
+ *                                  This has no effect if the backend does not 
  *                                  support sorting by multiple fields.
  *                                  (default: 3)
- * - directionStyle:    (string)    Wether to render the direction form 
+ * - directionStyle:    (string)    Whether to render the direction form 
  *                                  elements as "select" or "radio" elements
  *                                  (default: "select")
  * - textChoose:        (string)    What to display in the select box when no 
