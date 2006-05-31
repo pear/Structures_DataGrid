@@ -32,7 +32,7 @@
 class Structures_DataGrid_Column
 {
     /**
-     * The name of the column
+     * The name (label) of the column
      * @var string
      */
     var $columnName;

@@ -663,19 +663,23 @@ class Structures_DataGrid
     }
 
     /**
-     * Set Default Headers
+     * Create Default Columns
      *
-     * This method handles determining if column headers need to be set.
+     * This method handles the instantiation of default column objects,
+     * when some records have been fetched from the datasource but columns
+     * have neither been generated, nor provided by the user.
      *
      * @access private
+     * @return void
      */
-    function _setDefaultHeaders()
+    function _createDefaultColumns()
     {
-        if ((!count($this->columnSet)) && (count($this->recordSet))) {
+        if ((empty($this->columnSet)) && (!empty($this->recordSet))) {
             $arrayKeys = array_keys($this->recordSet[0]);
             foreach ($arrayKeys as $key) {
                 $column = new Structures_DataGrid_Column($key, $key, $key);
                 $this->addColumn($column);
+                unset($column);
             }
         }
     }
@@ -810,41 +814,104 @@ class Structures_DataGrid
     }
 
     /**
-     * Adds a DataGrid_Column object to this DataGrid object
+     * Add a column, with optional position 
      *
      * @access  public
-     * @param   object Structures_DataGrid_Column   $column     The column
-     *          object to add. This object should be a
-     *          Structures_DataGrid_Column object.
-     * @return  bool    True if successful, otherwise false.
+     * @param   object  $column     The Structures_DataGrid_Column object 
+     *                              (reference to) 
+     * @param   string  $position   One of: "last", "first", "after" or "before"
+     *                              (default: "last")
+     * @param   string  $relativeTo The name (label) or field name of the 
+     *                              relative column, if $position is "after" 
+     *                              or "before"
+     * @return  mixed               PEAR_Error on failure, void otherwise
      */
-    function addColumn($column)
+    function addColumn(&$column, $position = 'last', $relativeTo = null)
     {
-        if (is_a($column, 'structures_datagrid_column')) {
-            $this->columnSet = array_merge($this->columnSet, array($column));
-            return true;
+        if (!is_a($column, 'structures_datagrid_column')) {
+            return PEAR::raiseError(__FUNCTION__ . "(): not a valid ".
+                                    " Structures_DataGrid_Column object");
         } else {
-            return false;
-        }
+            switch ($position) {
+                case 'first'  :
+                    array_unshift($this->columnSet, '');
+                    $this->columnSet[0] =& $column;
+                    break;
+                case 'last'   :    
+                    $this->columnSet[] =& $column;
+                    break;
+                case 'after'  :
+                case 'before' :
+                    $this->_createDefaultColumns();
+                    // Has a relative column been specified ?
+                    if (is_null($relativeTo)) {
+                        return PEAR::raiseError(
+                                __FUNCTION__ . "(): a relative column must be".
+                                "specified when using position \"$position\"");
+                    }
+                    // Yes, does it exist ?
+                    foreach ($this->columnSet as $i => $relColumn) {
+                        if ($relColumn->columnName == $relativeTo 
+                                || $relColumn->fieldName == $relativeTo) {
+                            $relIndex = $i;
+                        }
+                    }
+                    // If it does not exist, return an error
+                    if (!isset($relIndex)) {
+                        return PEAR::raiseError(
+                                __FUNCTION__ . "(): Can't find a relative ".
+                                "column which name or field name is: ".
+                                $relativeTo);
+                    }
+                    // It exists, add the column after or before it
+                    if ($position == 'after') {
+                        array_splice($this->columnSet, $relIndex + 1,  0, '');
+                        $this->columnSet[$relIndex + 1] =& $column;
+                    } else {
+                        array_splice($this->columnSet, $relIndex,  0, '');
+                        $this->columnSet[$relIndex] =& $column;
+                    }
+                    break;
+            }
+        } 
     }
 
     /**
-     * Returns a reference to a DataGrid_Column object
+     * Find a column by name (label) 
      *
      * @access  public
-     * @param   string   $name     The name of the column to be returned.
-     * @return  object   Either the column object or a PEAR_Error if there is
-     *          no such column.
+     * @param   string   $name      The name (label) of the column to look for
+     * @return  object              Either the column object (reference to) or 
+     *                              false if there is no such column
      */
     function &getColumnByName($name)
     {
+        $this->_createDefaultColumns();
         foreach ($this->columnSet as $key => $column) {
             if ($column->columnName === $name) {
                 return $this->columnSet[$key];
             }
         }
-        $error = PEAR::raiseError("Column '$name' does not exist");
-        return $error;
+        return false;
+    }
+
+    /**
+     * Find a column by field name
+     *
+     * @access  public
+     * @param   string   $fieldName The field name of the column to look for
+     * @return  object              Either the column object (reference to) or 
+     *                              false if there is no such column
+     */
+    function &getColumnByField($fieldName)
+    {
+        $this->_createDefaultColumns();
+        foreach ($this->columnSet as $key => $column) {
+            if ($column->fieldName === $fieldName) {
+                return $this->columnSet[$key];
+            }
+        }
+        return false;
     }
 
     /**
@@ -1173,7 +1240,7 @@ class Structures_DataGrid
      */
     function build()
     {
-        $this->_setDefaultHeaders();
+        $this->_createDefaultColumns();
         if (isset($this->_dataSource)) {
             isset($this->_renderer) or $this->setRenderer(DATAGRID_RENDER_DEFAULT);
             $this->_renderer->build();
