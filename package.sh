@@ -18,4 +18,5 @@ pear package package2-r-smarty.xml
 pear package package2-r-xls.xml
 pear package package2-r-xml.xml
 pear package package2-r-xul.xml
+pear package package2-r-htmlsortform.xml
 

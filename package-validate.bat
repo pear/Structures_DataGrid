@@ -18,3 +18,4 @@ call pear package-validate package2-r-smarty.xml
 call pear package-validate package2-r-xls.xml
 call pear package-validate package2-r-xml.xml
 call pear package-validate package2-r-xul.xml
+call pear package-validate package2-r-htmlsortform.xml

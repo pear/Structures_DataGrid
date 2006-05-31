@@ -95,6 +95,8 @@ OTHER FIXES AND CHANGES:
   if it is null, then the corresponding column is considered unsortable,
   which is taken into account by various renderer drivers (HTMLTable, XUL, 
   etc.)
+- new rendering driver : Structures_DataGrid_Renderer_HTMLSortForm
+  
  </notes>
  <contents>
   <dir name="/">
@@ -161,6 +163,11 @@ OTHER FIXES AND CHANGES:
    </subpackage>
    <subpackage>
     <name>Structures_DataGrid_Renderer_Pager</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_Renderer_HTMLSortForm</name>
     <channel>pear.php.net</channel>
     <min>0.1.0</min>
    </subpackage>
