@@ -513,7 +513,10 @@ class Structures_DataGrid
     {
         if (isset($this->_renderer)) {
             $this->_rendererBackup =& $this->_renderer;
-            $this->_rendererTypeBackup =& $this->_rendererType;
+            $this->_rendererTypeBackup = $this->_rendererType;
+
+            unset($this->_renderer);
+            $this->_rendererType = null;
         } else {
             $this->_rendererBackup = null;
         }
@@ -532,7 +535,7 @@ class Structures_DataGrid
     {
         if (isset($this->_rendererBackup)) {
             $this->_renderer =& $this->_rendererBackup;
-            $this->_rendererType =& $this->_rendererTypeBackup;
+            $this->_rendererType = $this->_rendererTypeBackup;
         } else if (@is_null($this->_rendererBackup)) {
             unset($this->_renderer);
             $this->_rendererType = null;
