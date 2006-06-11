@@ -40,7 +40,7 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  * - defaultColumnValues: (array)  Per-column default cell value. This is an array
  *                                 of the form: array(fieldName => value, ...).
  *                                 (default: array())
- * - hideColumnLinks:     (bool)   By default sorting links are enabled on all
+ * - hideColumnLinks:     (array)  By default sorting links are enabled on all
  *                                 columns. With this option it is possible to
  *                                 disable sorting links on specific columns. This
  *                                 is an array of the form: array(fieldName, ...).
@@ -77,24 +77,27 @@ require_once 'PHP/Compat/Function/http_build_query.php';
  * 
  * Properties (all read-only):    
  *     - $_columns
- *     - $_records
  *     - $_columnsNum
- *     - $_recordsNum
- *     - $_firstRecord;
- *     - $_lastRecord;
- *     - $_totalRecordsNum
  *     - $_currentSort
+ *     - $_firstRecord
+ *     - $_lastRecord
+ *     - $_multiSort 
+ *     - $_options
  *     - $_page
  *     - $_pageLimit
  *     - $_pagesNum
+ *     - $_records
+ *     - $_recordsNum
  *     - $_requestPrefix
  *     - $_sortableFields
- *     - $_options
+ *     - $_totalRecordsNum
  *     
  * Options that drivers may handle:
  *     - encoding
  *     - fillWithEmptyRows
  *     - numberAlign
+ *     - extraVars
+ *     - excludeVars
  * 
  * @version  $Revision$
  * @author   Olivier Guilyardi <olivier@samalyse.com>
@@ -145,17 +148,20 @@ class Structures_DataGrid_Renderer
     var $_currentSort = array();
 
     /**
-     * Wether the backend support sorting by multiple fields
+     * Whether the backend support sorting by multiple fields
      *
      * Drivers can read the content of this property but must not change it.
      *
      * @var     bool
      * @access  protected
      */
-    var $_multiSort = array();
+    var $_multiSort = false;
 
     /**
      * Number of columns
+     *
+     * Drivers can read the content of this property but must not change it.
+     * 
      * @var int
      * @access protected
      */
@@ -183,6 +189,9 @@ class Structures_DataGrid_Renderer
 
     /**
      * First record number (starting from 1), in the current page
+     * 
+     * Drivers can read the content of this property but must not change it.
+     *
      * @var int
      * @access protected
      */
@@ -190,6 +199,9 @@ class Structures_DataGrid_Renderer
     
     /**
      * Last record number (starting from 1), in the current page
+     * 
+     * Drivers can read the content of this property but must not change it.
+     *
      * @var int
      * @access protected
      */
@@ -219,6 +231,9 @@ class Structures_DataGrid_Renderer
 
     /**
      * Number of pages
+     * 
+     * Drivers can read the content of this property but must not change it.
+     *
      * @var int
      * @access protected
      */
@@ -378,10 +393,9 @@ class Structures_DataGrid_Renderer
     /**
      * Specify how the datagrid is currently sorted
      *
-     * @var array 
      * @param array $spec               Structure: 
      *                                  array(fieldName => direction, ....)
-     * @param bool  $multiSortCapable   Wether the backend support sorting by
+     * @param bool  $multiSortCapable   Whether the backend support sorting by
      *                                  multiple fields
      * @access public
      */
@@ -447,11 +461,13 @@ class Structures_DataGrid_Renderer
     /**
      * Create or/and prepare the container
      *
-     * Drivers may optionally implement this method.
+     * Drivers may optionally implement this method for any pre-build() 
+     * operations.
      *
-     * This method is responsible for creating the container if it has not 
-     * already been provided by the user with the setContainer() method.
-     * It is where preliminary container setup should also be done.
+     * For the container support, it is responsible for creating the 
+     * container if it has not already been provided by the user with 
+     * the setContainer() method. It is where preliminary container 
+     * setup should also be done.
      *
      * @abstract
      * @access protected
@@ -550,7 +566,8 @@ class Structures_DataGrid_Renderer
     /**
      * Finish building the datagrid.
      *
-     * Drivers may optionally implement this method.
+     * Drivers may optionally implement this method for any post-build() 
+     * operations.
      *
      * @abstract
      * @access  protected
@@ -708,7 +725,6 @@ class Structures_DataGrid_Renderer
      * writing to the standard output (like calling header(), etc...).
      * 
      * @access  public
-     * @return mixed True or a PEAR_Error
      */
     function render()
     {

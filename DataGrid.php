@@ -489,6 +489,7 @@ class Structures_DataGrid
      *
      * @param  string   $renderer       The defined renderer string
      * @param  array    $options        Rendering options
+     * @return mixed  True or PEAR_Error
      * @access public
      */
     function setRenderer($type, $options = array())
@@ -1041,7 +1042,7 @@ class Structures_DataGrid
         if (is_array ($sortSpec)) {
             $this->sortSpec = $sortSpec;
         } else {
-            $this->sortSpec = array($sortBy => $direction);
+            $this->sortSpec = array($sortSpec => $direction);
         } 
 
         if (isset($this->_dataSource)) {

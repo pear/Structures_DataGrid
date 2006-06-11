@@ -72,7 +72,7 @@ class Structures_DataGrid_Renderer_HTMLSortForm extends Structures_DataGrid_Rend
     var $_form;
 
     /**
-     * Wether the container was provided by the user
+     * Whether the container was provided by the user
      * @var bool
      * @access protected
      */
@@ -140,6 +140,7 @@ class Structures_DataGrid_Renderer_HTMLSortForm extends Structures_DataGrid_Rend
                     "{$this->_requestPrefix}DataGridSortForm", 'get');
             $this->_isUserContainer = false;
         } else {
+            // FIXME: Isn't it a bit risky to set this flag here, because this method could be called more than once?
             $this->_isUserContainer = true;
         }
     }

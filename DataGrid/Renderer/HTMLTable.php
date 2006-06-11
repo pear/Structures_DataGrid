@@ -253,12 +253,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      */
     function allowEmptyRows($value, $attributes = array())
     {
-        if ($value) {
-            $this->_options['fillWithEmptyRows'] = true;
-        } else {
-            $this->_options['fillWithEmptyRows'] = false;
-        }
- 
+        $this->_options['fillWithEmptyRows'] = (bool)$value;
         $this->_options['emptyRowAttributes'] = $attributes;
     }
 
@@ -310,8 +305,10 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     /**
      * Generates the HTML for the DataGrid
      *
+     * @deprecated Use getOutput() instead.
      * @access  public
      * @return  string      The HTML of the DataGrid
+     * @see Structures_DataGrid_Renderer::getOutput
      */
     function toHTML()
     {
@@ -321,8 +318,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     /**
      * Gets the HTML_Table object for the DataGrid
      *
-     * OBSOLETE
-     * 
+     * @deprecated Use getContainer() instead.
      * @access  public
      * @return  object HTML_Table   The HTML Table object for the DataGrid
      */
