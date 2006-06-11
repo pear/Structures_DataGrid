@@ -88,7 +88,8 @@ class Structures_DataGrid_Column
      * @param   string      $autoFillValue  The value to use for the autoFill
      * @param   mixed       $formatter      Formatter callback. See setFormatter()
      * @param   array       $formatterArgs  Associative array of arguments 
-     *                                      passed to the formatter callback
+     *                                      passed as second argument to the 
+     *                                      formatter callback
      * @see http://www.php.net/manual/en/language.pseudo-types.php
      * @see setFormatter()
      * @access  public
@@ -130,7 +131,7 @@ class Structures_DataGrid_Column
      *
      * @param   mixed   $formatter  Callback PHP pseudo-type (Array or String)
      * @param   array   $arguments  Associative array of parameters passed to 
-     *                              the callback function
+     *                              as second argument to the callback function
      * @return  mixed               PEAR_Error on failure 
      * @see http://www.php.net/manual/en/language.pseudo-types.php
      * @access  public
@@ -222,8 +223,14 @@ class Structures_DataGrid_Column
         $paramList['attribs'] = $this->attribs;
 
         // Call the formatter
-        return call_user_func ($this->formatter, 
-                               array_merge ($this->formatterArgs, $paramList));
+        if ($this->formatterArgs) {
+            $formatted = call_user_func ($this->formatter, $paramList, 
+                                         $this->formatterArgs);
+        } else {
+            $formatted = call_user_func ($this->formatter, $paramList);
+        }
+
+        return $formatted;
     }
 
 }
