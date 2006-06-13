@@ -455,12 +455,12 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
     }
 
     /**
-     * Retrieve output from the container object 
+     * Finish building the datagrid.
      *
-     * @return mixed Output
-     * @access protected
+     * @access  protected
+     * @return  void
      */
-    function flatten()
+    function finalize()
     {
         // Define alternating row attributes
         if ($this->_options['evenRowAttributes'] 
@@ -473,7 +473,16 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 true
             );
         }
-
+    }
+    
+    /**
+     * Retrieve output from the container object 
+     *
+     * @return mixed Output
+     * @access protected
+     */
+    function flatten()
+    {
         return $this->_table->toHTML();
     }
 
