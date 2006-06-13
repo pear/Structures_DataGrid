@@ -113,6 +113,17 @@ class Structures_DataGrid
     var $_rendererTypeBackup = null;
 
     /**
+     * Whether the backup is an empty renderer
+     * 
+     * This property is set to true when _saveRenderer() is called and there
+     * is no renderer loaded.
+     * 
+     * @var bool
+     * @access private
+     */ 
+    var $_rendererEmptyBackup = false;
+
+    /**
      * Array of columns.  Columns are defined as a DataGridColumn object.
      * @var array
      * @access private
@@ -518,7 +529,7 @@ class Structures_DataGrid
             unset($this->_renderer);
             $this->_rendererType = null;
         } else {
-            $this->_rendererBackup = null;
+            $this->_rendererEmptyBackup = true;
         }
     }
     
@@ -533,15 +544,17 @@ class Structures_DataGrid
      */
     function _restoreRenderer()
     {
-        if (isset($this->_rendererBackup)) {
-            $this->_renderer =& $this->_rendererBackup;
-            $this->_rendererType = $this->_rendererTypeBackup;
-        } else if (@is_null($this->_rendererBackup)) {
+        if ($this->_rendererEmptyBackup) {
             unset($this->_renderer);
             $this->_rendererType = null;
-        }
+        } elseif (isset($this->_rendererBackup)) {
+            $this->_renderer =& $this->_rendererBackup;
+            $this->_rendererType = $this->_rendererTypeBackup;
+        } 
+        
         unset($this->_rendererBackup);
         $this->_rendererTypeBackup = null;
+        $this->_rendererEmptyBackup = false;
     }
   
     /**
