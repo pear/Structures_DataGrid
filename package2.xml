@@ -15,22 +15,22 @@ This concept is based on the .NET Framework DataGrid control and works very well
   <name>Andrew S. Nagy</name>
   <user>asnagy</user>
   <email>asnagy@webitecture.org</email>
-  <active>yes</active>
+  <active>no</active>
  </lead>
- <developer>
+ <lead>
   <name>Olivier Guilyardi</name>
   <user>olivierg</user>
   <email>olivier@samalyse.com</email>
   <active>yes</active>
- </developer>
- <developer>
+ </lead>
+ <lead>
   <name>Mark Wiesemann</name>
   <user>wiesemann</user>
   <email>wiesemann@php.net</email>
   <active>yes</active>
- </developer>
- <date>2006-04-24</date>
- <time>10:51:12</time>
+ </lead>
+ <date>2006-06-14</date>
+ <time>21:07:00</time>
  <version>
   <release>0.7.0</release>
   <api>0.7.0</api>
@@ -114,7 +114,7 @@ OTHER FIXES AND CHANGES:
     <min>4.2</min>
    </php>
    <pearinstaller>
-    <min>1.4.0b1</min>
+    <min>1.4.9</min>
    </pearinstaller>
    <package>
     <name>PEAR</name>
@@ -124,8 +124,25 @@ OTHER FIXES AND CHANGES:
    <package>
     <name>PHP_Compat</name>
     <channel>pear.php.net</channel>
-    <min>1.4.1</min>
+    <min>1.4.9</min>
    </package>
+  </required>
+  <group name="datasources" hint="(un)installs all optional DataSource drivers">
+   <subpackage>
+    <name>Structures_DataGrid_DataSource_CSV</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_DataSource_RSS</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_DataSource_XML</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
    <subpackage>
     <name>Structures_DataGrid_DataSource_Array</name>
     <channel>pear.php.net</channel>
@@ -156,40 +173,8 @@ OTHER FIXES AND CHANGES:
     <channel>pear.php.net</channel>
     <min>0.1.0</min>
    </subpackage>
-   <subpackage>
-    <name>Structures_DataGrid_Renderer_HTMLTable</name>
-    <channel>pear.php.net</channel>
-    <min>0.1.0</min>
-   </subpackage>
-   <subpackage>
-    <name>Structures_DataGrid_Renderer_Pager</name>
-    <channel>pear.php.net</channel>
-    <min>0.1.0</min>
-   </subpackage>
-   <subpackage>
-    <name>Structures_DataGrid_Renderer_HTMLSortForm</name>
-    <channel>pear.php.net</channel>
-    <min>0.1.0</min>
-   </subpackage>
-  </required>
-  <group name="datasources" hint="(un)installs all optional DataSource drivers">
-   <subpackage>
-    <name>Structures_DataGrid_DataSource_CSV</name>
-    <channel>pear.php.net</channel>
-    <min>0.1.0</min>
-   </subpackage>
-   <subpackage>
-    <name>Structures_DataGrid_DataSource_RSS</name>
-    <channel>pear.php.net</channel>
-    <min>0.1.0</min>
-   </subpackage>
-   <subpackage>
-    <name>Structures_DataGrid_DataSource_XML</name>
-    <channel>pear.php.net</channel>
-    <min>0.1.0</min>
-   </subpackage>
   </group>
-  <group name="renderers" hint="(un)installs all optional Renderer drivers">
+  <group name="renderers" hint="(un)installs all Renderer drivers">
    <subpackage>
     <name>Structures_DataGrid_Renderer_XLS</name>
     <channel>pear.php.net</channel>
@@ -217,6 +202,21 @@ OTHER FIXES AND CHANGES:
    </subpackage>
    <subpackage>
     <name>Structures_DataGrid_Renderer_CSV</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_Renderer_HTMLTable</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_Renderer_Pager</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_Renderer_HTMLSortForm</name>
     <channel>pear.php.net</channel>
     <min>0.1.0</min>
    </subpackage>
