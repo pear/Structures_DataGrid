@@ -27,8 +27,8 @@ base package for some other DataSource drivers like CSV or XML.
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </developer>
- <date>2006-04-25</date>
- <time>10:22:19</time>
+ <date>2006-06-14</date>
+ <time>21:21:00</time>
  <version>
   <release>0.1.0</release>
   <api>0.1.0</api>
@@ -56,10 +56,10 @@ base package for some other DataSource drivers like CSV or XML.
  <dependencies>
   <required>
    <php>
-    <min>4.0.0</min>
+    <min>4.2</min>
    </php>
    <pearinstaller>
-    <min>1.4.0b1</min>
+    <min>1.4.9</min>
    </pearinstaller>
    <package>
     <name>Structures_DataGrid</name>

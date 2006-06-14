@@ -12,22 +12,16 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <name>Andrew S. Nagy</name>
   <user>asnagy</user>
   <email>asnagy@webitecture.org</email>
-  <active>yes</active>
+  <active>no</active>
  </lead>
- <developer>
+ <lead>
   <name>Olivier Guilyardi</name>
   <user>olivierg</user>
   <email>olivier@samalyse.com</email>
   <active>yes</active>
- </developer>
- <developer>
-  <name>Mark Wiesemann</name>
-  <user>wiesemann</user>
-  <email>wiesemann@php.net</email>
-  <active>yes</active>
- </developer>
- <date>2006-04-25</date>
- <time>10:23:49</time>
+ </lead>
+ <date>2006-06-14</date>
+ <time>21:24:00</time>
  <version>
   <release>0.1.0</release>
   <api>0.1.0</api>
@@ -54,10 +48,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <dependencies>
   <required>
    <php>
-    <min>4.0.0</min>
+    <min>4.2</min>
    </php>
    <pearinstaller>
-    <min>1.4.0b1</min>
+    <min>1.4.9</min>
    </pearinstaller>
    <package>
     <name>Structures_DataGrid</name>
@@ -70,6 +64,13 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <min>1.8.4</min>
    </package>
   </required>
+  <optional>
+   <package>
+    <name>DB_DataObject_FormBuilder</name>
+    <channel>pear.php.net</channel>
+    <min>1.0.0RC4</min>
+   </package>
+   </optional>
  </dependencies>
  <phprelease />
 </package>

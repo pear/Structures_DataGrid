@@ -12,20 +12,14 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <name>Andrew S. Nagy</name>
   <user>asnagy</user>
   <email>asnagy@webitecture.org</email>
-  <active>yes</active>
+  <active>no</active>
  </lead>
- <developer>
-  <name>Olivier Guilyardi</name>
-  <user>olivierg</user>
-  <email>olivier@samalyse.com</email>
-  <active>yes</active>
- </developer>
- <developer>
+ <lead>
   <name>Mark Wiesemann</name>
   <user>wiesemann</user>
   <email>wiesemann@php.net</email>
   <active>yes</active>
- </developer>
+ </lead>
  <date>2006-04-25</date>
  <time>10:20:04</time>
  <version>
@@ -53,10 +47,10 @@ This is a new DataSource driver for Structures_DataGrid.
  <dependencies>
   <required>
    <php>
-    <min>4.0.0</min>
+    <min>4.2</min>
    </php>
    <pearinstaller>
-    <min>1.4.0b1</min>
+    <min>1.4.9</min>
    </pearinstaller>
    <package>
     <name>Structures_DataGrid</name>

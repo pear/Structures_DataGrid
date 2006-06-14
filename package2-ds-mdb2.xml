@@ -13,14 +13,14 @@ SQL query.
   <name>Andrew S. Nagy</name>
   <user>asnagy</user>
   <email>asnagy@webitecture.org</email>
-  <active>yes</active>
+  <active>no</active>
  </lead>
- <developer>
+ <lead>
   <name>Olivier Guilyardi</name>
   <user>olivierg</user>
   <email>olivier@samalyse.com</email>
   <active>yes</active>
- </developer>
+ </lead>
  <developer>
   <name>Mark Wiesemann</name>
   <user>wiesemann</user>
@@ -54,10 +54,10 @@ This is a new DataSource driver for Structures_DataGrid.
  <dependencies>
   <required>
    <php>
-    <min>4.0.0</min>
+    <min>4.2</min>
    </php>
    <pearinstaller>
-    <min>1.4.0b1</min>
+    <min>1.4.9</min>
    </pearinstaller>
    <package>
     <name>Structures_DataGrid</name>
@@ -67,7 +67,7 @@ This is a new DataSource driver for Structures_DataGrid.
    <package>
     <name>MDB2</name>
     <channel>pear.php.net</channel>
-    <min>2.0.1</min>
+    <min>2.0.3</min>
    </package>
   </required>
  </dependencies>
