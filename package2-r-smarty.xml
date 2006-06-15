@@ -15,12 +15,12 @@ couple of variables to a Smarty instance.
   <email>asnagy@webitecture.org</email>
   <active>no</active>
  </lead>
- <developer>
+ <lead>
   <name>Olivier Guilyardi</name>
   <user>olivierg</user>
   <email>olivier@samalyse.com</email>
   <active>yes</active>
- </developer>
+ </lead>
  <lead>
   <name>Mark Wiesemann</name>
   <user>wiesemann</user>
