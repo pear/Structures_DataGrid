@@ -9,12 +9,6 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <description>This is a DataSource driver for Structures_DataGrid using PEAR::DB_Table.
  </description>
  <lead>
-  <name>Andrew S. Nagy</name>
-  <user>asnagy</user>
-  <email>asnagy@webitecture.org</email>
-  <active>no</active>
- </lead>
- <lead>
   <name>Mark Wiesemann</name>
   <user>wiesemann</user>
   <email>wiesemann@php.net</email>

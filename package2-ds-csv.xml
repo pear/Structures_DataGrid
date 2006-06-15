@@ -20,12 +20,12 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>olivier@samalyse.com</email>
   <active>yes</active>
  </lead>
- <developer>
+ <lead>
   <name>Mark Wiesemann</name>
   <user>wiesemann</user>
   <email>wiesemann@php.net</email>
   <active>yes</active>
- </developer>
+ </lead>
  <date>2006-04-25</date>
  <time>10:24:50</time>
  <version>

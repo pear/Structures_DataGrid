@@ -23,12 +23,6 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </developer>
- <developer>
-  <name>Andrew S. Nagy</name>
-  <user>asnagy</user>
-  <email>asnagy@webitecture.org</email>
-  <active>yes</active>
- </developer>
  <date>2006-04-25</date>
  <time>10:27:19</time>
  <version>
@@ -56,10 +50,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <dependencies>
   <required>
    <php>
-    <min>4.0.0</min>
+    <min>4.2</min>
    </php>
    <pearinstaller>
-    <min>1.4.0b1</min>
+    <min>1.4.9</min>
    </pearinstaller>
    <package>
     <name>Structures_DataGrid</name>

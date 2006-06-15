@@ -21,12 +21,12 @@ SQL query.
   <email>olivier@samalyse.com</email>
   <active>yes</active>
  </lead>
- <developer>
+ <lead>
   <name>Mark Wiesemann</name>
   <user>wiesemann</user>
   <email>wiesemann@php.net</email>
   <active>yes</active>
- </developer>
+ </lead>
  <date>2006-04-25</date>
  <time>10:23:34</time>
  <version>
