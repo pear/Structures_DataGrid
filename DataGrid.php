@@ -436,6 +436,8 @@ class Structures_DataGrid
             }
         }
         $this->_restoreRenderer();
+
+        return true;
     }
 
     /**
