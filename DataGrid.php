@@ -911,7 +911,8 @@ class Structures_DataGrid
                 return $this->columnSet[$key];
             }
         }
-        return false;
+        $ret = false;
+        return $ret;
     }
 
     /**
@@ -930,7 +931,8 @@ class Structures_DataGrid
                 return $this->columnSet[$key];
             }
         }
-        return false;
+        $ret = false;
+        return $ret;
     }
 
     /**
