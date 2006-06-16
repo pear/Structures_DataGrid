@@ -48,6 +48,14 @@ This concept is based on the .NET Framework DataGrid control and works very well
 # is now required to use the Structures_DataGrid::getRenderer() method   #
 # in order to access the renderer object.                                #
 #                                                                        #
+# Arguments for column formatters are not available anymore in the first #
+# parameter of self-defined formatter functions. There is a new second   #
+# parameter which holds these arguments (see also below, request #6720). #
+# If you want to have the old behaviour (i.e. all arguments in the array #
+# of the first parameter), just add the following line                   #
+#     $_STRUCTURES_DATAGRID['column_formatter_BC'] = true;               #
+# before adding your columns to the datagrid.                            #
+#                                                                        #
 # Adding or removing single records via Structures_DataGrid::addRecord() #
 # and Structures_DataGrid::dropRecord() isn't possible anymore.          #
 ##########################################################################
@@ -64,11 +72,13 @@ FEATURE REQUESTS:
 
 - request #5758: new parameters for Structures_DataGrid_Column::formatter()
   callback: 'fieldName', 'columnName', 'orderBy', 'attribs'
-- request #6621: new method getColumnByName() that returns a reference to
-  a column object
 - request #5859: the rendering layer has gone through a long refactoring
   process and a new and flexible renderer driver interface has been
   implemented
+- request #6720: arguments for column formatters can now be added via the (new)
+  seventh column constructor (for example, you can now add arrays as arguments)
+- request #6621: new method getColumnByName() that returns a reference to
+  a column object
 
 OTHER FIXES AND CHANGES:
 

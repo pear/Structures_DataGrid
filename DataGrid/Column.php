@@ -223,11 +223,16 @@ class Structures_DataGrid_Column
         $paramList['attribs'] = $this->attribs;
 
         // Call the formatter
-        if ($this->formatterArgs) {
-            $formatted = call_user_func ($this->formatter, $paramList, 
-                                         $this->formatterArgs);
+        if (isset($GLOBALS['_STRUCTURES_DATAGRID']['column_formatter_BC'])) {
+            $paramList = array_merge($this->formatterArgs, $paramList);
+            $formatted = call_user_func($this->formatter, $paramList);
         } else {
-            $formatted = call_user_func ($this->formatter, $paramList);
+            if ($this->formatterArgs) {
+                $formatted = call_user_func($this->formatter, $paramList, 
+                                            $this->formatterArgs);
+            } else {
+                $formatted = call_user_func($this->formatter, $paramList);
+            }
         }
 
         return $formatted;
