@@ -676,12 +676,17 @@ class Structures_DataGrid_Renderer
             $this->_pageLimit = $this->_recordsNum;
         }
 
+        $row = 0;
         for ($rec = 0; $rec < $this->_recordsNum; $rec++) {
             $content = array();
+            $col = 0;
             foreach ($this->_columnObjects as $column) {
-                $content[] = $this->recordToCell($column, $this->_records[$rec]);
+                $content[] = $this->recordToCell($column, $this->_records[$rec],
+                                                 $row, $col);
+                $col++;
             }
             $this->_records[$rec] = $content;
+            $row++;
         }
 
         if ($this->_options['buildHeader']) {
@@ -797,14 +802,16 @@ class Structures_DataGrid_Renderer
      * 
      * @param  object $column The column object
      * @param  array  $record Array of record values
+     * @param  int    $row    The row number of the cell
+     * @param  int    $col    The column number of the cell
      * @return string Formatted cell value
      * @access private
      */
-    function recordToCell(&$column, $record)
+    function recordToCell(&$column, $record, $row = null, $col = null)
     {
         $value = '';
         if (isset($column->formatter) and !empty($column->formatter)) {
-            $value = $column->formatter($record);
+            $value = $column->formatter($record, $row, $col);
         } else if (isset($column->fieldName) and isset($record[$column->fieldName])) {
             $value = $this->defaultCellFormatter($record[$column->fieldName]);
         }

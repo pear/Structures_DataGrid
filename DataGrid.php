@@ -525,6 +525,11 @@ class Structures_DataGrid
     function _saveRenderer()
     {
         if (isset($this->_renderer)) {
+            // The following line is a workaround for PHP bug 32660
+            // See: http://bugs.php.net/bug.php?id=32660
+            // Another solution would be to remove __get which is used only for BC
+            $this->_rendererBackup = 1; 
+
             $this->_rendererBackup =& $this->_renderer;
             $this->_rendererTypeBackup = $this->_rendererType;
 

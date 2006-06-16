@@ -212,7 +212,7 @@ class Structures_DataGrid_Column
      *
      * @access  public
      */
-    function formatter($record)
+    function formatter($record, $row, $col)
     {
         // Define the parameter list
         $paramList = array();
@@ -221,6 +221,8 @@ class Structures_DataGrid_Column
         $paramList['columnName'] = $this->columnName;
         $paramList['orderBy'] = $this->orderBy;
         $paramList['attribs'] = $this->attribs;
+        $paramList['currRow'] = $row;
+        $paramList['currCol'] = $col;
 
         // Call the formatter
         if (isset($GLOBALS['_STRUCTURES_DATAGRID']['column_formatter_BC'])) {
