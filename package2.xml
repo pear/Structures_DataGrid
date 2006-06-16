@@ -75,10 +75,10 @@ FEATURE REQUESTS:
 - request #5859: the rendering layer has gone through a long refactoring
   process and a new and flexible renderer driver interface has been
   implemented
-- request #6720: arguments for column formatters can now be added via the (new)
-  seventh column constructor (for example, you can now add arrays as arguments)
 - request #6621: new method getColumnByName() that returns a reference to
   a column object
+- request #6720: arguments for column formatters can now be added via the (new)
+  seventh column constructor (for example, you can now add arrays as arguments)
 
 OTHER FIXES AND CHANGES:
 
