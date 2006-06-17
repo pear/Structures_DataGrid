@@ -186,7 +186,21 @@ class Structures_DataGrid
      * @var string
      * @access private
      */
-     var $_requestPrefix = '';    
+    var $_requestPrefix = '';    
+
+    /**
+     * Possible renderer types and their equivalent renderer constants
+     * @var array
+     * @access private
+     */
+    var $_rendererTypes = array(
+        'html_table' => DATAGRID_RENDER_TABLE,
+        'smarty' => DATAGRID_RENDER_SMARTY,
+        'spreadsheet_excel_writer_workbook' => DATAGRID_RENDER_XLS,
+        'console_table' => DATAGRID_RENDER_CONSOLE,
+        'pager_common' => DATAGRID_RENDER_PAGER,
+        'html_quickform' => DATAGRID_RENDER_SORTFORM
+    );
 
     /**
      * Constructor
@@ -1235,25 +1249,11 @@ class Structures_DataGrid
      */
     function _detectRendererType(&$container)
     {
-        if (is_a($container, 'html_table') 
-            or is_subclass_of($container, 'html_table')) {
-            return DATAGRID_RENDER_TABLE;
-        } else if (is_a($container, 'smarty') 
-                   or is_subclass_of($container, 'smarty')) {
-            return DATAGRID_RENDER_SMARTY;
-        } else if (is_a($container, 'spreadsheet_excel_writer_workbook') 
-                   or is_subclass_of($container, 
-                                     'spreadsheet_excel_writer_workbook')) {
-            return DATAGRID_RENDER_XLS;
-        } else if (is_a($container, 'console_table') 
-                   or is_subclass_of($container, 
-                                     'console_table')) {
-            return DATAGRID_RENDER_CONSOLE;
-        } else if (is_a($container, 'pager_common') 
-                   or is_subclass_of($container, 
-                                     'pager_common')) {
-            return DATAGRID_RENDER_PAGER;
-        } 
+        foreach ($this->_rendererTypes as $class => $type) {
+            if (is_a($container, $class)) {
+                return $type;
+            }
+        }
 
         return null;
     }
