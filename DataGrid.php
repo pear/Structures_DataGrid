@@ -680,7 +680,7 @@ class Structures_DataGrid
             }
         }
 
-        $this->_renderer->build();
+        $this->_renderer->isBuilt() || $this->build();
 
         $this->_restoreRenderer();
         return true;
