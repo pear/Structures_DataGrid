@@ -60,6 +60,23 @@ This concept is based on the .NET Framework DataGrid control and works very well
 # and Structures_DataGrid::dropRecord() isn't possible anymore.          #
 ##########################################################################
 
+##########################################################################
+#                               ATTENTION                                #
+#                                                                        #
+# All drivers (i.e. all DataSources and all Renderers) have been         #
+# unbundled from Structures_DataGrid and are now available as separate   #
+# PEAR packages.                                                         #
+#                                                                        #
+# Therefore, to run your scripts, you have to install some of these new  #
+# packages as well. For example, most users will need to install the     #
+# package Structures_DataGrid_Renderer_HTMLTable.                        #
+#                                                                        #
+# The installation of *all* DataSources is possible via:                 #
+#   pear install Structures_DataGrid-beta#datasources                    #
+# The installation of *all* Renderers is possible via:                   #
+#   pear install Structures_DataGrid-beta#renderers                      #
+##########################################################################
+
 BUGS:
 
 - bug #4415: example files were installed in the package directory, now they
