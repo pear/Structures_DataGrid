@@ -4,7 +4,7 @@ call pear package package2.xml
 call pear package package2-ds-array.xml
 call pear package package2-ds-csv.xml
 call pear package package2-ds-db.xml
-call pear package package2-ds-dbdataobject.xml
+call pear package package2-ds-dataobject.xml
 call pear package package2-ds-dbquery.xml
 call pear package package2-ds-dbtable.xml
 call pear package package2-ds-mdb2.xml
