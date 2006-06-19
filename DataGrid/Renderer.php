@@ -19,8 +19,6 @@
 //
 // $Id$
 
-require_once 'PHP/Compat/Function/http_build_query.php';
-
 /**
  * Base class of all Renderer drivers
  *
@@ -928,5 +926,73 @@ class Structures_DataGrid_Renderer
     }
 
 }
+
+// This function is here because we can't depend on PHP_Compat
+if (!function_exists('http_build_query')) {
+    function http_build_query($formdata, $numeric_prefix = null)
+    {
+        // If $formdata is an object, convert it to an array
+        if (is_object($formdata)) {
+            $formdata = get_object_vars($formdata);
+        }
+
+        // Check we have an array to work with
+        if (!is_array($formdata)) {
+            user_error('http_build_query() Parameter 1 expected to be Array or Object. Incorrect value given.',
+                E_USER_WARNING);
+            return false;
+        }
+
+        // If the array is empty, return null
+        if (empty($formdata)) {
+            return;
+        }
+
+        // Argument seperator
+        $separator = ini_get('arg_separator.output');
+
+        // Start building the query
+        $tmp = array ();
+        foreach ($formdata as $key => $val) {
+            if (is_integer($key) && $numeric_prefix != null) {
+                $key = $numeric_prefix . $key;
+            }
+
+            if (is_scalar($val)) {
+                array_push($tmp, urlencode($key).'='.urlencode($val));
+                continue;
+            }
+
+            // If the value is an array, recursively parse it
+            if (is_array($val)) {
+                array_push($tmp, __http_build_query($val, urlencode($key)));
+                continue;
+            }
+        }
+
+        return implode($separator, $tmp);
+    }
+
+    // Helper function
+    function __http_build_query ($array, $name)
+    {
+        $tmp = array ();
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                array_push($tmp, __http_build_query($value, sprintf('%s[%s]', $name, $key)));
+            } elseif (is_scalar($value)) {
+                array_push($tmp, sprintf('%s[%s]=%s', $name, urlencode($key), urlencode($value)));
+            } elseif (is_object($value)) {
+                array_push($tmp, __http_build_query(get_object_vars($value), sprintf('%s[%s]', $name, $key)));
+            }
+        }
+
+        // Argument seperator
+        $separator = ini_get('arg_separator.output');
+
+        return implode($separator, $tmp);
+    }
+}
+
 
 ?>

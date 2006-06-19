@@ -30,10 +30,10 @@ This concept is based on the .NET Framework DataGrid control and works very well
   <active>yes</active>
  </lead>
  <date>2006-06-19</date>
- <time>18:00:00</time>
+ <time>19:40:00</time>
  <version>
-  <release>0.7.0</release>
-  <api>0.7.0</api>
+  <release>0.7.1</release>
+  <api>0.7.1</api>
  </version>
  <stability>
   <release>beta</release>
@@ -103,8 +103,7 @@ OTHER FIXES AND CHANGES:
 - new DataSource drivers: DBTable, DBQuery and MDB2
 - query building:
   The query building process has been optimized, and is now more
-  flexible due to the use of http_build_query(). This adds a 
-  new dependency: PHP_Compat &gt;= 1.4.1.
+  flexible due to the use of http_build_query(). 
 - custom rendering containers:
   The containers that rendering drivers use to do their job, such as 
   HTML_Table, Spreadsheet_Excel_Writer, etc. can now be instantiated
@@ -146,11 +145,6 @@ OTHER FIXES AND CHANGES:
     <name>PEAR</name>
     <channel>pear.php.net</channel>
     <min>1.2</min>
-   </package>
-   <package>
-    <name>PHP_Compat</name>
-    <channel>pear.php.net</channel>
-    <min>1.4.9</min>
    </package>
   </required>
   <group name="datasources" hint="(un)installs all optional DataSource drivers">
