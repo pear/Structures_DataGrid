@@ -27,8 +27,8 @@ base package for some other DataSource drivers like CSV or XML.
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-06-14</date>
- <time>21:21:00</time>
+ <date>2006-06-19</date>
+ <time>18:00:00</time>
  <version>
   <release>0.1.0</release>
   <api>0.1.0</api>
