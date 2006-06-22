@@ -225,8 +225,8 @@ class Structures_DataGrid_DataSource_DBQuery
      */
     function sort($sortField, $sortDir)
     {
-        $this->sortField = $sortField;
-        $this->sortDir = $sortDir;
+        $this->_sortField = $sortField;
+        $this->_sortDir = $sortDir;
     }
 
 
