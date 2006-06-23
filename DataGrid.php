@@ -199,7 +199,8 @@ class Structures_DataGrid
         'spreadsheet_excel_writer_workbook' => DATAGRID_RENDER_XLS,
         'console_table' => DATAGRID_RENDER_CONSOLE,
         'pager_common' => DATAGRID_RENDER_PAGER,
-        'html_quickform' => DATAGRID_RENDER_SORTFORM
+        // FIXME: There might be other types of quickforms...
+        'html_quickform' => DATAGRID_RENDER_SORTFORM 
     );
 
     /**
