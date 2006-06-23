@@ -219,8 +219,11 @@ class Structures_DataGrid_DataSource_DBQuery
      * This can only be called prior to the fetch method.
      *
      * @access  public
-     * @param   string  $sortField  Field to sort by
+     * @param   mixed   $sortSpec   A single field (string) to sort by, or a 
+     *                              sort specification array of the form:
+     *                              array(field => direction, ...)
      * @param   string  $sortDir    Sort direction: 'ASC' or 'DESC'
+     *                              This is ignored if $sortDesc is an array
      */
     function sort($sortSpec, $sortDir = 'ASC')
     {
