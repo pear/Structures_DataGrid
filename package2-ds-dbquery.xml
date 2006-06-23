@@ -30,8 +30,8 @@ SQL query.
  <date>2006-06-22</date>
  <time>19:23:00</time>
  <version>
-  <release>0.1.1</release>
-  <api>0.1.0</api>
+  <release>0.1.2</release>
+  <api>0.1.1</api>
  </version>
  <stability>
   <release>beta</release>
@@ -39,8 +39,7 @@ SQL query.
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-- Fixed request #7965 'Please reintroduce sorting in DBQuery or MDB2' 
-  Thanks Benny Labach (bennythebee at gmail dot com)
+ - added multiple fields sorting support (multiSort)
 
  </notes>
  <contents>

@@ -55,21 +55,13 @@ class Structures_DataGrid_DataSource_DBQuery
     var $_query;
 
     /**
-     * The field to sort by
+     * Fields/directions to sort the data by
      *
-     * @var string
+     * @var array Structure: array(fieldName => direction, ....)
      * @access private
      */
-    var $_sortField;
+    var $_sortSpec = array();
 
-    /**
-     * The direction to sort by
-     *
-     * @var string
-     * @access private
-     */
-    var $_sortDir;
-    
     /**
      * Constructor
      *
@@ -78,6 +70,11 @@ class Structures_DataGrid_DataSource_DBQuery
     function Structures_DataGrid_DataSource_DBQuery()
     {
         parent::Structures_DataGrid_DataSource();
+
+        // FIXME: For clarity, supported options should be declared with 
+        // _addDefaultOptions()
+        
+        $this->_setFeatures(array('multiSort' => true));
     }
   
     /**
@@ -132,9 +129,11 @@ class Structures_DataGrid_DataSource_DBQuery
     */
     function &fetch($offset=0, $limit=null)
     {
-        if (!is_null($this->_sortField) && !is_null($this->_sortDir)) {
-            $sortString = ' ORDER BY '. $this->_sortField .
-                          ' ' . $this->_sortDir;
+        if (!empty($this->_sortSpec)) {
+            foreach ($this->_sortSpec as $field => $direction) {
+                $sortArray[] = "$field $direction";
+            }
+            $sortString = ' ORDER BY '. join(', ', $sortArray);
         } else {
             $sortString = '';
         }
@@ -223,10 +222,13 @@ class Structures_DataGrid_DataSource_DBQuery
      * @param   string  $sortField  Field to sort by
      * @param   string  $sortDir    Sort direction: 'ASC' or 'DESC'
      */
-    function sort($sortField, $sortDir)
+    function sort($sortSpec, $sortDir = 'ASC')
     {
-        $this->_sortField = $sortField;
-        $this->_sortDir = $sortDir;
+        if (is_array($sortSpec)) {
+            $this->_sortSpec = $sortSpec;
+        } else {
+            $this->_sortSpec[$sortSpec] = $sortDir;
+        }
     }
 
 
