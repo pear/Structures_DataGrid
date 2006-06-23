@@ -15,6 +15,7 @@
 // +----------------------------------------------------------------------+
 // | Author: Andrew Nagy <asnagy@php.net>                                 |
 // |         Mark Wiesemann <wiesemann@php.net>                           |
+// |         Olivier Guilyardi <olivier@samalyse.com>                     |
 // +----------------------------------------------------------------------+
 //
 // $Id$
@@ -31,6 +32,7 @@ require_once 'Structures/DataGrid/DataSource.php';
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@php.net>
  * @author   Mark Wiesemann <wiesemann@php.net>
+ * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @access   public
  * @package  Structures_DataGrid
  * @category Structures
