@@ -215,10 +215,13 @@ class Structures_DataGrid_Renderer_HTMLSortForm extends Structures_DataGrid_Rend
             }
             $this->_form->setConstants($values);
 
-            // Only add a submit button if the QF container wasn't provided 
-            // by the user
+            // Only add a submit button and extraVars if the QF container wasn't
+            // provided by the user
             if (!$this->_isUserContainer) {
                 $this->_form->addElement('submit', null, $this->_options['textSubmit']);
+                foreach($this->_options['extraVars'] as $var => $value) {
+                    $this->_form->addElement('hidden', $var, $value);
+                }
             }
         }
     }

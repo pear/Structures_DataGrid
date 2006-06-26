@@ -499,6 +499,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      * delta:      The number of pages to display before and
      *             after the current page
      *
+     * @deprecated Use Structures_DataGrid_Renderer_Pager instead
      * @access  public
      * @param   array  $options        Array of HTML::Pager options
      * @return  string                 The HTML for the page links
