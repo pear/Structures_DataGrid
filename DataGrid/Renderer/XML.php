@@ -36,13 +36,24 @@ require_once 'XML/Util.php';
  *
  * SUPPORTED OPTIONS:
  *
- * - useXMLDecl: (bool)   Whether the XML declaration string should be added
- *                        to the output
- *                        (default: true)
- * - outerTag:   (string) The name of the tag for the datagrid (without brackets)
- *                        (default: 'DataGrid')
- * - rowTag:     (string) The name of the tag for each row (without brackets)
- *                        (default: 'Row')
+ * - useXMLDecl:    (bool)   Whether the XML declaration string should be added
+ *                           to the output
+ *                           (default: true)
+ * - outerTag:      (string) The name of the tag for the datagrid, without 
+ *                           brackets
+ *                           (default: 'DataGrid')
+ * - rowTag:        (string) The name of the tag for each row, without brackets
+ *                           (default: 'Row')
+ * - fieldTag       (string) The name of the tag for each field inside a row, 
+ *                           without brackets. The special value '{field}' is 
+ *                           replaced by the field name.
+ *                           (default: '{field}')
+ * - fieldAttribute (string) The name of the attribute for the field name.
+ *                           null stands for no attribute 
+ *                           (default: null)
+ * - labelAttribute (string) The name of the attribute for the column label.
+ *                           null stands for no attribute 
+ *                           (default: null)
  *
  * SUPPORTED OPERATION MODES:
  *
@@ -72,9 +83,12 @@ class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer
         parent::Structures_DataGrid_Renderer();
         $this->_addDefaultOptions(
             array(
-                'useXMLDecl' => true,
-                'outerTag'   => 'DataGrid',
-                'rowTag'     => 'Row'
+                'useXMLDecl'        => true,
+                'outerTag'          => 'DataGrid',
+                'rowTag'            => 'Row',
+                'fieldTag'          => '{field}',
+                'fieldAttribute'    => null,
+                'labelAttribute'    => null,
             )
         );
     }
@@ -131,9 +145,21 @@ class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer
     {
         $this->_xml .= "  <{$this->_options['rowTag']}>\n";
         foreach ($data as $col => $value) {
-            $field = $this->_columns[$col]['field'];
+            $field = ($this->_options['fieldTag'] == '{field}') 
+                   ? $this->_columns[$col]['field']
+                   : $this->_options['fieldTag'];
 
-            $this->_xml .= '    ' . XML_Util::createTag($field, null, $value) . "\n";
+            $attributes = array();
+            if (!is_null($this->_options['fieldAttribute'])) {
+                $attributes[$this->_options['fieldAttribute']] 
+                    = $this->_columns[$col]['field'];
+            }
+            if (!is_null($this->_options['labelAttribute'])) {
+                $attributes[$this->_options['labelAttribute']] 
+                    = $this->_columns[$col]['label'];
+            }
+
+            $this->_xml .= '    ' . XML_Util::createTag($field, $attributes, $value) . "\n";
         }
         $this->_xml .= "  </{$this->_options['rowTag']}>\n";
     }
