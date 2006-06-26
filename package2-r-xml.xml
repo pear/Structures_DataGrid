@@ -30,19 +30,19 @@ string.
  <date>2006-06-19</date>
  <time>18:00:00</time>
  <version>
-  <release>0.1.0</release>
-  <api>0.1.0</api>
+  <release>0.1.1</release>
+  <api>0.1.1</api>
  </version>
  <stability>
   <release>beta</release>
   <api>beta</api>
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
- <notes>Changes since Structures_DataGrid 0.6.3:
+ <notes>
 
-- Renderer driver unbundled from Structures_DataGrid core
-- new options 'useXMLDecl', 'outerTag' and 'rowTag' that allow customization
-  of the output of this renderer
+- fixed request #8007 'Options for customizing XML renderer'
+  new options : fieldTag, fieldAttribute and labelAttribute
+
  </notes>
  <contents>
   <dir name="/">
