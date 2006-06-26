@@ -157,6 +157,7 @@ class Structures_DataGrid_DataSource_MDB2
                                   $query);
         }
 
+        //FIXME: What about SQL injection ?
         if (is_null($limit)) {
             $result = $this->_db->query($query);
         } else {

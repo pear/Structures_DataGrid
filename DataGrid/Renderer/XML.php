@@ -44,14 +44,14 @@ require_once 'XML/Util.php';
  *                           (default: 'DataGrid')
  * - rowTag:        (string) The name of the tag for each row, without brackets
  *                           (default: 'Row')
- * - fieldTag       (string) The name of the tag for each field inside a row, 
+ * - fieldTag:      (string) The name of the tag for each field inside a row, 
  *                           without brackets. The special value '{field}' is 
  *                           replaced by the field name.
  *                           (default: '{field}')
- * - fieldAttribute (string) The name of the attribute for the field name.
+ * - fieldAttribute:(string) The name of the attribute for the field name.
  *                           null stands for no attribute 
  *                           (default: null)
- * - labelAttribute (string) The name of the attribute for the column label.
+ * - labelAttribute:(string) The name of the attribute for the column label.
  *                           null stands for no attribute 
  *                           (default: null)
  *
