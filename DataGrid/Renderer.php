@@ -71,7 +71,7 @@
  *     - finalize()
  *     - flatten()
  *     - render()
- *     - getPaging()
+ *     - getPaging()  (deprecated)
  * 
  * Properties (all read-only):    
  *     - $_columns
@@ -378,6 +378,9 @@ class Structures_DataGrid_Renderer
     /**
      * Provide columns and records data
      * 
+     * This method is supposed to be called ONLY by the code that loads the 
+     * driver. In most cases, that'll be the Structures_DataGrid class.
+     * 
      * @param array $columns Array of Structures_DataGrid_Column objects
      * @param array $records 2D array of records values
      * @access public
@@ -391,20 +394,31 @@ class Structures_DataGrid_Renderer
     /**
      * Specify how the datagrid is currently sorted
      *
-     * @param array $spec               Structure: 
+     * 
+     * This method is supposed to be called ONLY by the code that loads the 
+     * driver. In most cases, that'll be the Structures_DataGrid class.
+     * 
+     * The multiSort capabilities is related to the multiSort DataSource
+     * feature. In short : the DataGrid checks if the DataSource supports
+     * multiSort and informs the Renderer about it.
+     * 
+     * @param array $currentSort        Structure: 
      *                                  array(fieldName => direction, ....)
      * @param bool  $multiSortCapable   Whether the backend support sorting by
      *                                  multiple fields
      * @access public
      */
-    function setCurrentSorting($spec, $multiSortCapable = false)
+    function setCurrentSorting($currentSort, $multiSortCapable = false)
     {
-        $this->_currentSort = $spec;
+        $this->_currentSort = $currentSort;
         $this->_multiSort   = $multiSortCapable;
     }
 
     /**
      * Specify page and row limits
+     * 
+     * This method is supposed to be called ONLY by the code that loads the 
+     * driver. In most cases, that'll be the Structures_DataGrid class.
      * 
      * @param int $currentPage Current page number
      * @param int $rowsPerPage Maximum number of rows per page

@@ -409,24 +409,30 @@ class Structures_DataGrid
      *
      * You can call this method several times with different renderers.
      * 
-     * @param  int      $type   Renderer type (optional)
+     * @param  mixed  $renderer Renderer type (optional)
+     * @param  array  $options  An associative array of the form:
+     *                          array(optionName => optionValue, ...)
      * @access public
      * @return mixed    True or PEAR_Error
      */
-    function render($type = null,$options = array())
+    function render($renderer = null, $options = array())
     {
-        if (!is_null($type)) {
+        if (!is_null($renderer)) {
             $this->_saveRenderer();
             
-            $test = $this->setRenderer($type);
-            if (PEAR::isError($test)) {
+            if (is_a($renderer, 'Structures_DataGrid_Renderer')) {
+                $result = $this->attachRenderer($renderer);
+            } else {
+                $result = $this->setRenderer($renderer);
+            }
+            if (PEAR::isError($result)) {
                 $this->_restoreRenderer();
-                return $test;
+                return $result;
             }
         } else if (!isset($this->_renderer)) {
-            $test = $this->setRenderer(DATAGRID_RENDER_DEFAULT);
-            if (PEAR::isError($test)) {
-                return $test;
+            $result = $this->setRenderer(DATAGRID_RENDER_DEFAULT);
+            if (PEAR::isError($result)) {
+                return $result;
             }
         }
         
@@ -435,10 +441,10 @@ class Structures_DataGrid
         }
         
         $this->_renderer->isBuilt() || $this->build();
-        $test = $this->_renderer->render();
+        $result = $this->_renderer->render();
 
-        if (PEAR::isError($test)) {
-            if ($test->getCode() == DATAGRID_ERROR_UNSUPPORTED) {
+        if (PEAR::isError($result)) {
+            if ($result->getCode() == DATAGRID_ERROR_UNSUPPORTED) {
                 $type = is_null($this->_rendererType) 
                         ? get_class($this->_renderer)
                         : $this->_rendererType;
@@ -447,7 +453,7 @@ class Structures_DataGrid
                                         "render() method. Try using fill().");
             } else {
                 $this->_restoreRenderer();
-                return $test;
+                return $result;
             }
         }
         $this->_restoreRenderer();
@@ -513,22 +519,23 @@ class Structures_DataGrid
     /**
      * Set Renderer
      *
-     * Defines which renderer to be used by the DataGrid
+     * Defines which renderer to be used by the DataGrid based on given
+     * $type and $options. To attach an existing renderer instance, use
+     * attachRenderer() instead.
      *
-     * @param  string   $renderer       The defined renderer string
+     * @param  string   $type           The defined renderer string
      * @param  array    $options        Rendering options
-     * @return mixed  True or PEAR_Error
+     * @return mixed    Renderer instance or PEAR_Error
      * @access public
      */
-    function setRenderer($type, $options = array())
+    function &setRenderer($type, $options = array())
     {
         $renderer =& $this->rendererFactory($type, $options);
-        if (!PEAR::isError($renderer)) {
-            $this->_rendererType = $type;
-            return $this->attachRenderer($renderer);
-        } else {
+        if (PEAR::isError($renderer)) {
             return $renderer;
         }
+        $this->_rendererType = $type;
+        return $this->attachRenderer($renderer);
     }
 
     /**
@@ -612,14 +619,15 @@ class Structures_DataGrid
     }
     
     /**
-     * Attach a rendering driver
+     * Attach an existing rendering driver
      * 
      * @param object $renderer Driver object, subclassing 
      *                         Structures_DataGrid_Renderer
-     * @return mixed           Either true or a PEAR_Error object
+     * @return mixed           Renderer instance or a PEAR_Error object
      * @access public
+     * @see Structures_DataGrid::setRenderer
      */
-    function attachRenderer(&$renderer)
+    function &attachRenderer(&$renderer)
     {
         if (is_subclass_of($renderer, 'structures_datagrid_renderer')) {
             // The following line is a workaround for PHP bug 32660
@@ -642,11 +650,9 @@ class Structures_DataGrid
                                     'must be a valid renderer driver class');
         }
 
-        return true;
+        return $renderer;
     }
 
-    
-    
     /**
      * Fill a rendering container with data
      * 
