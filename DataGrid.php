@@ -435,11 +435,11 @@ class Structures_DataGrid
                 return $result;
             }
         }
-        
+
         if ($options) {
             $this->_renderer->setOptions($options);
         }
-        
+
         $this->_renderer->isBuilt() || $this->build();
         $result = $this->_renderer->render();
 
@@ -687,6 +687,8 @@ class Structures_DataGrid
                 $this->_restoreRenderer();
                 return $test;
             }
+        } else {
+            $this->_renderer->setOptions($options);
         }
 
         $test = $this->_renderer->setContainer($container);
