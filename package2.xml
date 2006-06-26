@@ -29,11 +29,11 @@ This concept is based on the .NET Framework DataGrid control and works very well
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-06-19</date>
- <time>19:40:00</time>
+ <date>?</date>
+ <time>?</time>
  <version>
-  <release>0.7.1</release>
-  <api>0.7.1</api>
+  <release>0.7.2</release>
+  <api>0.7.2</api>
  </version>
  <stability>
   <release>beta</release>
@@ -41,87 +41,8 @@ This concept is based on the .NET Framework DataGrid control and works very well
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-##########################################################################
-#                 WARNING - BACKWARDS INCOMPATIBILITIES                  #
-#                                                                        #
-# The Structures_DataGrid::renderer property is not public anymore. It   #
-# is now required to use the Structures_DataGrid::getRenderer() method   #
-# in order to access the renderer object.                                #
-#                                                                        #
-# Arguments for column formatters are not available anymore in the first #
-# parameter of self-defined formatter functions. There is a new second   #
-# parameter which holds these arguments (see also below, request #6720). #
-# If you want to have the old behaviour (i.e. all arguments in the array #
-# of the first parameter), just add the following line                   #
-#     $_STRUCTURES_DATAGRID['column_formatter_BC'] = true;               #
-# before adding your columns to the datagrid.                            #
-#                                                                        #
-# Adding or removing single records via Structures_DataGrid::addRecord() #
-# and Structures_DataGrid::dropRecord() isn't possible anymore.          #
-##########################################################################
-
-##########################################################################
-#                               ATTENTION                                #
-#                                                                        #
-# All drivers (i.e. all DataSources and all Renderers) have been         #
-# unbundled from Structures_DataGrid and are now available as separate   #
-# PEAR packages.                                                         #
-#                                                                        #
-# Therefore, to run your scripts, you have to install some of these new  #
-# packages as well. For example, most users will need to install the     #
-# package Structures_DataGrid_Renderer_HTMLTable.                        #
-#                                                                        #
-# The installation of *all* DataSources is possible via:                 #
-#   pear install Structures_DataGrid-beta#datasources                    #
-# The installation of *all* Renderers is possible via:                   #
-#   pear install Structures_DataGrid-beta#renderers                      #
-##########################################################################
-
-BUGS:
-
-- bug #4415: example files were installed in the package directory, now they
-  will be installed into [PEAR-DOC-DIR]/Structures_DataGrid/docs/examples/
-- bug #5858: removed @ before include() in DataSource.php (could crash silently)           
-- bug #6624: column formatters using class names didn't handle parameters and
-  class methods at the same time
-
-FEATURE REQUESTS:
-
-- requests #5758 and #7927: new parameters for Structures_DataGrid_Column::formatter()
-  callback: 'fieldName', 'columnName', 'orderBy', 'attribs', 'currRow', 'currCol'
-- request #5859: the rendering layer has gone through a long refactoring
-  process and a new and flexible renderer driver interface has been
-  implemented
-- request #6621: new method getColumnByName() that returns a reference to
-  a column object
-- request #6720: arguments for column formatters can now be added via the (new)
-  seventh column constructor (for example, you can now add arrays as arguments)
-
-OTHER FIXES AND CHANGES:
-
-- all DataSource and Renderer drivers have been unbundled
-- new DataSource drivers: DBTable, DBQuery and MDB2
-- query building:
-  The query building process has been optimized, and is now more
-  flexible due to the use of http_build_query(). 
-- custom rendering containers:
-  The containers that rendering drivers use to do their job, such as 
-  HTML_Table, Spreadsheet_Excel_Writer, etc. can now be instantiated
-  and customized by the user. They are then passed to the rendering
-  driver with new methods such as Structures_DataGrid::fill() or 
-  Structures_DataGrid_Renderer_*::setContainer().
-- new fill() method:
-  This method is meant to be to renderers what bind() is to datasources.
-  It accepts a &quot;rendering container&quot; object (where bind() accepts a 
-  &quot;datasource container&quot;) which it fills with data. No data is output
-  during this process. It is up to the user to decide what to do with 
-  the container once it's been filled up.
-- sortable and unsortable fields:
-  Better support for the $orderBy parameter of the column constructor:
-  if it is null, then the corresponding column is considered unsortable,
-  which is taken into account by various renderer drivers (HTMLTable, XUL, 
-  etc.)
-- new rendering driver: Structures_DataGrid_Renderer_HTMLSortForm
+- Bug #8005: fill() did not pass options to the renderer
+  (thanks to Daniel Rossi, pear at electroteque dot org)
  </notes>
  <contents>
   <dir name="/">
