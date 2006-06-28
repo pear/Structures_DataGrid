@@ -415,7 +415,7 @@ class Structures_DataGrid
      *
      * You can call this method several times with different renderers.
      * 
-     * @param  mixed  $renderer Renderer type (optional)
+     * @param  int    $renderer Renderer type (optional)
      * @param  array  $options  An associative array of the form:
      *                          array(optionName => optionValue, ...)
      * @access public
@@ -470,6 +470,9 @@ class Structures_DataGrid
     /**
      * Return the datagrid output
      *
+     * @param  int    $type     Renderer type (optional)
+     * @param  array  $options  An associative array of the form:
+     *                          array(optionName => optionValue, ...)
      * @access public
      * @return mixed The datagrid output (Usually a string: HTML, CSV, etc...)
      *               or a PEAR_Error
