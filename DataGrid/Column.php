@@ -91,6 +91,7 @@ class Structures_DataGrid_Column
      *                                      passed as second argument to the 
      *                                      formatter callback
      * @see http://www.php.net/manual/en/language.pseudo-types.php
+     * @see Structures_DataGrid::addColumn()
      * @see setFormatter()
      * @access  public
      */

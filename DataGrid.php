@@ -210,11 +210,16 @@ class Structures_DataGrid
      * seperated for maintainability and to keep cohesion high.
      *
      * @example constructor.php     Instantiation
-     * @param  string   $limit      The row limit per page.
+     * @param  string   $limit      The number of records to display per page.
      * @param  int      $page       The current page viewed.
+     *                              In most cases, this is useless.
      *                              Note: if you specify this, the "page" GET 
      *                              variable will be ignored.
-     * @param  string   $rendererType   The type of renderer to use.
+     * @param  string   $rendererType  The type of renderer to use.
+     *                                 You may prefer to use the $type argument
+     *                                 of {@link render}, {@link fill} or 
+     *                                 {@link getOutput}
+     *                                  
      * @return void
      * @access public
      */
@@ -620,7 +625,7 @@ class Structures_DataGrid
     }
     
     /**
-     * Attach an existing rendering driver
+     * Attach an already instantiated Rendering driver
      * 
      * @param object $renderer Driver object, subclassing 
      *                         Structures_DataGrid_Renderer
@@ -657,7 +662,7 @@ class Structures_DataGrid
     /**
      * Fill a rendering container with data
      * 
-     * @example fill.php Filling a Pager object
+     * @example fill-pager.php  Filling a Pager object
      * @param object $container A rendering container of any of the supported
      *                          types (example: an HTML_Table object, 
      *                          a Spreadsheet_Excel_Writer object, etc...)
@@ -745,7 +750,9 @@ class Structures_DataGrid
     }
 
     /**
-     * Define the current page number.  This is used when paging is implemented
+     * Define the current page number.  
+     *
+     * This method is used when paging is implemented
      *
      * @access public
      * @param  mixed     $page       The current page number (as string or int).
@@ -757,9 +764,9 @@ class Structures_DataGrid
 
     /**
      * Returns the total number of pages
-     * (returns 0 if there are no records, returns 1 if there is no row limit)
      *
-     * @return int       the total number of pages
+     * @return int       the total number of pages, 0 if there are no records,
+     *                   1 if there is no row limit
      * @access public
      */
     function getPageCount()
@@ -802,9 +809,9 @@ class Structures_DataGrid
 
     /**
      * Returns the number of the first record of the current page
-     * (returns 0 if there are no records, returns 1 if there is no row limit)
      *
-     * @return int       the number of the first record currently shown
+     * @return int       the number of the first record currently shown, or : 0 
+     *                   if there are no records, 1 if there is no row limit
      * @access public
      */
     function getCurrentRecordNumberStart()
@@ -836,6 +843,8 @@ class Structures_DataGrid
     }
 
     /**
+     * Set the global GET/POST variables prefix
+     * 
      * If you need to change the request variables, you can define a prefix.
      * This is extra useful when using multiple datagrids.
      *
@@ -990,7 +999,7 @@ class Structures_DataGrid
     }
 
     /**
-     * Allows binding to a data source driver.
+     * Bind an already instantiated DataSource driver
      *
      * @access  public
      * @param   mixed   $source     The data source driver object
