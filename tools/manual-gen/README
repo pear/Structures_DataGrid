@@ -1,0 +1,46 @@
+                 #######################################
+                 #  How To Generate API Documentation  #
+                 #          For The Manual             #
+                 #         From The Source             #
+                 #######################################
+
+I - Introduction
+
+The Structures_DataGrid and Structures_DataGrid_Column API documentation in the 
+PEAR manual is generated from :
+- doc blocks in the source
+- examples in the docs/examples/ folder that are linked into the doc blocks with @example tags
+
+To add explanation, description, etc... to a method entry in the manual, just add 
+comments in its doc block in the source.
+
+To add an example to a given method, add a tag to its doc block like :
+@example    my-example.php      My Example
+
+And then create a file named my-example.php in the docs/examples/ directory
+
+II - Generate the documentation
+
+Note: This has been tested on Linux with PhpDocumentor 1.3.0RC6
+
+1 - Change your current directory to the Structures_DataGrid root directory 
+(where you checked it out from CVS)
+
+2 - run tools/manual/mkmanual.sh <peardoc_path> 
+
+Where peardoc_path is the CVS PEAR manual root (where you have checked out the 
+whole PEAR manual source)
+
+This will 
+    - build the documentation with phpDocumentor, merging the examples files
+    - copy (replace) the newly generated files into the pear manual file tree
+
+It will only modify the files in : 
+- en/package/structures/structures-datagrid/structures-datagrid/
+- en/package/structures/structures-datagrid/structures-datagrid-column/
+
+Modifying the Structures_DataGrid front page, constants, etc... is up to you.
+
+3 - then rebuild the manual as usual
+
+

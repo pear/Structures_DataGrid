@@ -209,6 +209,7 @@ class Structures_DataGrid
      * Builds the DataGrid class.  The Core functionality and Renderer are
      * seperated for maintainability and to keep cohesion high.
      *
+     * @example constructor.php     Instantiation
      * @param  string   $limit      The row limit per page.
      * @param  int      $page       The current page viewed.
      *                              Note: if you specify this, the "page" GET 
@@ -277,7 +278,7 @@ class Structures_DataGrid
      * @param  string  className
      * @return bool true success and false on error
      *
-     * @access public
+     * @access private
      */
     function classExists($className)
     {
@@ -656,6 +657,7 @@ class Structures_DataGrid
     /**
      * Fill a rendering container with data
      * 
+     * @example fill.php Filling a Pager object
      * @param object $container A rendering container of any of the supported
      *                          types (example: an HTML_Table object, 
      *                          a Spreadsheet_Excel_Writer object, etc...)
@@ -863,6 +865,7 @@ class Structures_DataGrid
     /**
      * Add a column, with optional position 
      *
+     * @example addColumn.php       Adding a simple column
      * @access  public
      * @param   object  $column     The Structures_DataGrid_Column object 
      *                              (reference to) 
@@ -966,6 +969,8 @@ class Structures_DataGrid
     /**
      * A simple way to add a record set to the datagrid
      *
+     * @example bind-dataobject.php Bind a DB_DataObject
+     * @example bind-sql.php        Bind an SQL query
      * @access  public
      * @param   mixed   $container  The record set in any of the supported data
      *                              source types
@@ -1290,6 +1295,7 @@ class Structures_DataGrid
      * 
      * This is a PHP5 magic method used to simulate the old public 
      * $renderer property
+     * @access private
      */
     function __get($var)
     {
