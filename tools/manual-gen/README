@@ -26,7 +26,7 @@ Note: This has been tested on Linux with PhpDocumentor 1.3.0RC6
 1 - Change your current directory to the Structures_DataGrid root directory 
 (where you checked it out from CVS)
 
-2 - run tools/manual/mkmanual.sh <peardoc_path> 
+2 - run tools/manual-gen/mkmanual.sh <peardoc_path> 
 
 Where peardoc_path is the CVS PEAR manual root (where you have checked out the 
 whole PEAR manual source)
