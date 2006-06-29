@@ -43,13 +43,13 @@ done
 echo
 
 # Patching new/modified files
-cd $TARGET_DIR/en/package/structures/structures-datagrid
+cd $BUILD_DIR/structures/structures-datagrid
 echo "Patching new/modified file : "
 for f in structures-datagrid/*.xml structures-datagrid-column/*.xml; do
-    if ! diff -Nu -I '\$Revision.*\$' $f $BUILD_DIR/structures/structures-datagrid/$f > $BUILD_DIR/diff
+    if ! diff -Nu -I '\$Revision.*\$' $TARGET_DIR/en/package/structures/structures-datagrid/$f \
+        $f > $BUILD_DIR/diff
     then 
-        #echo "  $f"
-        patch $f < $BUILD_DIR/diff
+        patch $TARGET_DIR/en/package/structures/structures-datagrid/$f < $BUILD_DIR/diff
     fi            
 done       
 
