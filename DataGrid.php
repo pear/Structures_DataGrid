@@ -330,18 +330,18 @@ class Structures_DataGrid
      * Detect the source type and load the appropriate driver with default
      * options:
      * <code>
-     * $driver =& Structures_DataGrid::datasourceFactory($source);
+     * $driver =& Structures_DataGrid::dataSourceFactory($source);
      * </code>
      *
      * Detect the source type and load the appropriate driver with custom
      * options:
      * <code>
-     * $driver =& Structures_DataGrid::datasourceFactory($source, $options);
+     * $driver =& Structures_DataGrid::dataSourceFactory($source, $options);
      * </code>
      *
      * Load a driver for an explicit type (faster, bypasses detection routine):
      * <code>
-     * $driver =& Structures_DataGrid::datasourceFactory($source, $options, $type);
+     * $driver =& Structures_DataGrid::dataSourceFactory($source, $options, $type);
      * </code>
      *
      * @access  public
@@ -349,13 +349,13 @@ class Structures_DataGrid
      * @param   array   $options    An associative array of the form:
      *                              array(optionName => optionValue, ...)
      * @param   string  $type       The data source type constant (of the form 
-     *                              DATAGRID_DATASOURCE_*)  
-     * @uses    Structures_DataGrid_DataSource::_detectSourceType()     
-     * @return  mixed               Returns the source driver object or 
-     *                              PEAR_Error on failure
+     *                              DATAGRID_SOURCE_*)  
+     * @uses    Structures_DataGrid::_detectSourceType()     
+     * @return  Structures_DataGrid_DataSource|PEAR_Error
+     *                              driver object or PEAR_Error on failure
      * @static
      */
-    function &datasourceFactory($source, $options=array(), $type=null)
+    function &dataSourceFactory($source, $options=array(), $type=null)
     {
         if (is_null($type) &&
             !($type = Structures_DataGrid::_detectSourceType($source,
@@ -1010,7 +1010,7 @@ class Structures_DataGrid
      */
     function bind($container, $options = array(), $type = null)
     {
-        $source =& Structures_DataGrid::datasourceFactory($container, $options, $type);
+        $source =& Structures_DataGrid::dataSourceFactory($container, $options, $type);
         if (!PEAR::isError($source)) {
             return $this->bindDataSource($source);
         } else {
