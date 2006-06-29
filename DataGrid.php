@@ -666,7 +666,7 @@ class Structures_DataGrid
      * Fill a rendering container with data
      * 
      * @example fill-pager.php  Filling a Pager object
-     * @param object $container A rendering container of any of the supported
+     * @param object &$container A rendering container of any of the supported
      *                          types (example: an HTML_Table object, 
      *                          a Spreadsheet_Excel_Writer object, etc...)
      * @param array  $options   Options for the corresponding rendering driver
