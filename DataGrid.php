@@ -682,7 +682,8 @@ class Structures_DataGrid
     /**
      * Fill a rendering container with data
      * 
-     * @example fill-pager.php  Filling a Pager object
+     * @example fill-sortform.php Fill a form with sort fields
+     * @example fill-pager.php    Filling a Pager object
      * @param object &$container A rendering container of any of the supported
      *                          types (example: an HTML_Table object, 
      *                          a Spreadsheet_Excel_Writer object, etc...)
