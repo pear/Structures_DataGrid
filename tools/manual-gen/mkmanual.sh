@@ -2,22 +2,37 @@
 
 BUILD_DIR=/tmp/sdgdoc
 TARGET_DIR=$1
+VERSION=0.1
 
-if [ "$TARGET_DIR" == "" ]; then
-    echo "Please provide a target directory (peardoc root)"
+echo "Structures_DataGrid Manual Generator $VERSION"
+
+if [ "$TARGET_DIR" == "" ] 
+then
+    echo "Usage: $0 <peardoc_root>"
     exit 1
 fi
 
+echo
+
 # Cleaning build directory
+echo "Cleaning build directory : $BUILD_DIR"
 rm -rf $BUILD_DIR
 
+echo
+
 # Building doc
-phpdoc -c tools/manual-gen/sdg-manual.ini
+printf "Running PhpDocumentor... "
+phpdoc -c tools/manual-gen/sdg-manual.ini 2>&1 > /dev/null
+echo "Done"
+
+echo
 
 # Cleaning "Warnings" and fixing require_once()
+echo "Removing Warnings and fixing require_once() into :"
 cd $BUILD_DIR/structures/structures-datagrid
-for f in structures-datagrid/*.xml structures-datagrid-column/*.xml; do
-    echo "Removing Warnings and fixing require_once() into $f"
+for f in structures-datagrid/*.xml structures-datagrid-column/*.xml 
+do
+    echo "  $f"
     cat $f \
         | grep -v '^Warning' \
         | sed 's/require_once &apos;\/DataGrid/require_once \&apos;Structures\/DataGrid/' \
@@ -25,21 +40,21 @@ for f in structures-datagrid/*.xml structures-datagrid-column/*.xml; do
         && mv $BUILD_DIR/grep.tmp $f 
 done
 
-# Removing old files from target
+echo
+
+# Patching new/modified files
 cd $TARGET_DIR/en/package/structures/structures-datagrid
-rm structures-datagrid/*.xml structures-datagrid-column/*.xml
+echo "Patching new/modified file : "
+for f in structures-datagrid/*.xml structures-datagrid-column/*.xml; do
+    if ! diff -Nu $f $BUILD_DIR/structures/structures-datagrid/$f > $BUILD_DIR/diff
+    then 
+        #echo "  $f"
+        patch $f < $BUILD_DIR/diff
+    fi            
+done       
 
-# Copying new files
-
-echo "Copying all XML files :"
-echo "  from $BUILD_DIR/structures/structures-datagrid/structures-datagrid"
-echo "  to $(pwd)/structures-datagrid"
-cp $BUILD_DIR/structures/structures-datagrid/structures-datagrid/*.xml structures-datagrid
-
-echo "Copying all XML files :"
-echo "  from $BUILD_DIR/structures/structures-datagrid/structures-datagrid-column"
-echo "  to $(pwd)/structures-datagrid-column"
-cp $BUILD_DIR/structures/structures-datagrid/structures-datagrid-column/*.xml structures-datagrid-column
+echo
+echo Done. You can now regenerate the html manual.
 
 
 

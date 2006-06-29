@@ -43,4 +43,28 @@ Modifying the Structures_DataGrid front page, constants, etc... is up to you.
 
 3 - then rebuild the manual as usual
 
+III - Notes
 
+1 - the PhpDocumentor manual states : 
+
+    Although documentation parsed directly from source code is
+    tremendously useful, it cannot stand on its own. In addition, truly
+    useful in-code documentation must be succinct enough so that the
+    code is not completely obscured by the documentation. External
+    documentation is a must for a complete documentation
+    solution. However, external documentation must be able to link to
+    API source documentation to be useful. With a constantly changing API
+    documentation, it is very easy for external documentation to become
+    out of date. In addition, external documentation must be in a format
+    that can be converted into other formats such as HTML, PDF and XML.
+
+    phpDocumentor provides a simple and elegant solution to all
+    of these problems. External documentation in DocBook format
+    can be easily converted to other formats. Using inline tags,
+    phpDocumentor can generate a consistent manual in many
+    different formats by combining the output from parsing the
+    source and parsing external documentation. The words you
+    read at this moment are in a DocBook-based file located in
+    tutorials/phpDocumentor/phpDocumentor.quickstart.pkg
+
+But apart from examples, how to include such descriptive documentation ? What tag ?   
