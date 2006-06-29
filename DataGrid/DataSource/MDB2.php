@@ -34,7 +34,7 @@ require_once 'Structures/DataGrid/DataSource.php';
  * @author   Mark Wiesemann <wiesemann@php.net>
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @access   public
- * @package  Structures_DataGrid
+ * @package  Structures_DataGrid_DataSource_MDB2
  * @category Structures
  */
 class Structures_DataGrid_DataSource_MDB2

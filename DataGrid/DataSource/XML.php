@@ -29,7 +29,7 @@ require_once 'XML/Unserializer.php';
  *
  * <b>"xpath":</b> XPath to a subset of the XML data.
  *
- * @package Structures_DataGrid
+ * @package Structures_DataGrid_DataSource_XML
  * @author Olivier Guilyardi <olivier@samalyse.com>
  * @category Structures
  * @version  $Revision $

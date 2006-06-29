@@ -25,7 +25,7 @@ require_once 'XML/RSS.php';
  * RSS data source driver
  *
  * @author      Andrew Nagy <asnagy@webitecture.org>
- * @package     Structures_DataGrid
+ * @package     Structures_DataGrid_DataSource_RSS
  * @category    Structures
  * @version     $Revision $
  */

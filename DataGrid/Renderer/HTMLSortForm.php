@@ -59,10 +59,11 @@ require_once 'HTML/QuickForm.php';
  * @version  $Revision$
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @access   public
- * @package  Structures_DataGrid
+ * @package  Structures_DataGrid_Renderer_HTMLSortForm 
  * @category Structures
  */
-class Structures_DataGrid_Renderer_HTMLSortForm extends Structures_DataGrid_Renderer
+class Structures_DataGrid_Renderer_HTMLSortForm 
+    extends Structures_DataGrid_Renderer
 {
     /**
      * Rendering container

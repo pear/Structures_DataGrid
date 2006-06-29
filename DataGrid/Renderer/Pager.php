@@ -60,7 +60,7 @@ require_once 'Pager/Pager.php';
  * @author   Mark Wiesemann <wiesemann@php.net>
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
  * @access   public
- * @package  Structures_DataGrid
+ * @package  Structures_DataGrid_Renderer_Pager
  * @category Structures
  */
 class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer

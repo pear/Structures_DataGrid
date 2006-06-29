@@ -30,7 +30,7 @@ require_once 'Structures/DataGrid/DataSource.php';
 * @author   Andrew S. Nagy <asnagy@php.net>
 * @author   Mark Wiesemann <wiesemann@php.net>
 * @access   public
-* @package  Structures_DataGrid
+* @package  Structures_DataGrid_DataSource_DBTable
 * @category Structures
 */
 class Structures_DataGrid_DataSource_DBTable

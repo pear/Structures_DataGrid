@@ -42,7 +42,7 @@ require_once 'Structures/DataGrid/DataSource.php';
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @author   Andrew Nagy <asnagy@webitecture.org>
  * @access   public
- * @package  Structures_DataGrid
+ * @package  Structures_DataGrid_DataSource_DataObject
  * @category Structures
  */
 class Structures_DataGrid_DataSource_DataObject

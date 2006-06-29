@@ -39,7 +39,7 @@ require_once 'Console/Table.php';
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @author   Mark Wiesemann <wiesemann@php.net>
  * @access   public
- * @package  Structures_DataGrid
+ * @package  Structures_DataGrid_Renderer_Console
  * @category Structures
  */
 class Structures_DataGrid_Renderer_Console extends Structures_DataGrid_Renderer

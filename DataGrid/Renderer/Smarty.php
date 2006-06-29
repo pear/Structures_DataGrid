@@ -105,7 +105,7 @@ require_once 'Structures/DataGrid/Renderer.php';
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @access   public
- * @package  Structures_DataGrid
+ * @package  Structures_DataGrid_Renderer_Smarty
  * @category Structures
  */
 class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer

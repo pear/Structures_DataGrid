@@ -29,7 +29,7 @@ require_once 'Structures/DataGrid/DataSource/Array.php';
  * @version  $Revision$
  * @author   Andrew Nagy <asnagy@webitecture.org>
  * @access   public
- * @package  Structures_DataGrid
+ * @package  Structures_DataGrid_DataSource_CSV
  * @category Structures
  */
 class Structures_DataGrid_DataSource_CSV extends

@@ -71,7 +71,7 @@ require_once 'HTML/Table.php';
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @author   Mark Wiesemann <wiesemann@php.net>
  * @access   public
- * @package  Structures_DataGrid
+ * @package  Structures_DataGrid_Renderer_HTMLTable
  * @category Structures
  */
 class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Renderer

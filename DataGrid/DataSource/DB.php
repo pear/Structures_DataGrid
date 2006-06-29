@@ -30,7 +30,7 @@ require_once 'Structures/DataGrid/DataSource/Array.php';
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
  * @author   Olivier Guilyardi <olivier@samalyse.com> 
  * @access   public
- * @package  Structures_DataGrid
+ * @package  Structures_DataGrid_DataSource_DB
  * @category Structures
  */
 class Structures_DataGrid_DataSource_DB

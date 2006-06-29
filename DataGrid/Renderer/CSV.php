@@ -49,7 +49,7 @@ require_once 'Structures/DataGrid/Renderer.php';
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @author   Mark Wiesemann <wiesemann@php.net>
  * @access   public
- * @package  Structures_DataGrid
+ * @package  Structures_DataGrid_Renderer_CSV
  * @category Structures
  */
 class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
