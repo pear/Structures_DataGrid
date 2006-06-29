@@ -344,7 +344,7 @@ class Structures_DataGrid
      * $driver =& Structures_DataGrid::datasourceFactory($source, $options, $type);
      * </code>
      *
-     * @access  private
+     * @access  public
      * @param   mixed   $source     The data source respective to the driver
      * @param   array   $options    An associative array of the form:
      *                              array(optionName => optionValue, ...)
@@ -513,16 +513,33 @@ class Structures_DataGrid
     }
 
     /**
-     * Get Renderer
+     * Get the current or default Rendering driver
      *
      * Retrieves the renderer object as a reference
      *
+     * @return object Renderer object reference
      * @access public
      */
     function &getRenderer()
     {
         isset($this->_renderer) or $this->setRenderer(DATAGRID_RENDER_DEFAULT);
         return $this->_renderer;
+    }
+
+    /**
+     * Get the currently loaded DataSource driver
+     *
+     * Retrieves the DataSource object as a reference
+     *
+     * @return object DataSource object reference or null if no driver is loaded
+     * @access public
+     */
+    function &getDataSource()
+    {
+        if (isset($this->_dataSource)) {
+            return $this->_dataSource;
+        }
+        return null;
     }
 
     /**
