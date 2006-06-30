@@ -42,6 +42,7 @@ string.
 
 - fixed request #8007 'Options for customizing XML renderer'
   new options : fieldTag, fieldAttribute and labelAttribute
+  thanks Markus Ernst (derernst at gmx dot ch)
 
  </notes>
  <contents>

@@ -34,9 +34,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <api>beta</api>
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
- <notes>Changes since Structures_DataGrid 0.6.3:
-
-    This is a new rendering driver for Structures_DataGrid.
+ <notes>
+- exclude extraVars option if we have a user provided QF container    
  </notes>
  <contents>
   <dir name="/">

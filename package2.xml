@@ -43,6 +43,13 @@ This concept is based on the .NET Framework DataGrid control and works very well
  <notes>
 - Bug #8005: fill() did not pass options to the renderer
   (thanks to Daniel Rossi, pear at electroteque dot org)
+- use native http_build_query() if PHP 5 is installed
+- (not yet fixed) Request #8061 'Get data as an array' :
+  add getDataSource(), make datasourceFactory() public 
+  (thanks to Markus Ernst, derernst at gmx dot ch)
+- Request #7969 'Documentation for using my own form container': 
+  added example to the fill() method 
+  thanks Benny Labach (bennythebee at gmail dot com)
  </notes>
  <contents>
   <dir name="/">
