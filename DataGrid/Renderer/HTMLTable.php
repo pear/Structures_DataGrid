@@ -38,7 +38,7 @@ require_once 'HTML/Table.php';
  *                                 (default: array())
  * - emptyRowAttributes:  (array)  An associative array containing the attributes
  *                                 for empty rows.
- *                                  (default: array())
+ *                                 (default: array())
  * - selfPath:            (string) The complete path for sorting and paging links.
  *                                 (default: $_SERVER['PHP_SELF'])
  * - sortIconASC:         (string) The icon to define that sorting is currently

@@ -55,7 +55,7 @@ require_once 'Spreadsheet/Excel/Writer.php';
  *                           0 => none, 1 => thin, 2 => thick 
  *                           (default: 0) 
  *                           (NOT IMPLEMENTED YET)
- * - headerBorder   (int)    Border between the header and body:
+ * - headerBorder:  (int)    Border between the header and body:
  *                           0 => none, 1 => thin, 2 => thick 
  *                           (default: 0)
  *                           (NOT IMPLEMENTED YET)
