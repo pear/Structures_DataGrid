@@ -112,6 +112,124 @@ class Structures_DataGrid_Column
     }
 
     /**
+     * Get column name
+     *
+     * Returns the name of the column
+     *
+     * @return  string
+     * @access  public
+     */
+    function getColumnName()
+    {
+        return $this->columnName;
+    }
+
+    /**
+     * Set column name
+     *
+     * Defines the name of the column
+     *
+     * @param   string      $str        The name of the column
+     * @access  public
+     */
+    function setColumnName($str)
+    {
+        $this->columnName = $str;
+    }
+
+    /**
+     * Get name of the field for the column to be mapped to
+     *
+     * Returns the name of the field for the column to be mapped to
+     *
+     * @return  string
+     * @access  public
+     */
+    function getFieldName()
+    {
+        return $this->fieldName;
+    }
+
+    /**
+     * Set name of the field for the column to be mapped to
+     *
+     * Defines the name of the field for the column to be mapped to
+     *
+     * @param   string      $str        The name of the field for the column to
+     *                                  be mapped to
+     * @access  public
+     */
+    function setFieldName($str)
+    {
+        $this->fieldName = $str;
+    }
+
+    /**
+     * Get name of the field to order the data by
+     *
+     * Returns the name of the field to order the data by
+     *
+     * @return  string
+     * @access  public
+     */
+    function getOrderBy()
+    {
+        return $this->orderBy;
+    }
+
+    /**
+     * Set name of the field to order the data by
+     *
+     * Defines the name of the field to order the data by
+     *
+     * @param   string      $str        The name of the field to order the data by
+     * @access  public
+     */
+    function setOrderBy($str)
+    {
+        $this->orderBy = $str;
+    }
+
+    /**
+     * Get HTML attributes for the TR tag
+     *
+     * Returns the HTML attributes for the TR tag
+     *
+     * @return  string
+     * @access  public
+     */
+    function getAttribs()
+    {
+        return $this->attribs;
+    }
+
+    /**
+     * Set HTML attributes for the TR tag
+     *
+     * Defines the HTML attributes for the TR tag
+     *
+     * @param   string      $str        The HTML attributes for the TR tag
+     * @access  public
+     */
+    function setAttribs($str)
+    {
+        $this->attribs = $str;
+    }
+
+    /**
+     * Get auto fill value
+     *
+     * Returns the value to be printed if a cell in the column is null.
+     *
+     * @return  string
+     * @access  public
+     */
+    function getAutoFillValue()
+    {
+        return $this->autoFillValue;
+    }
+
+    /**
      * Set auto fill value
      *
      * Defines a value to be printed if a cell in the column is null.
