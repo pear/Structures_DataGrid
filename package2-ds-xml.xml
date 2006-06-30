@@ -37,9 +37,11 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <api>beta</api>
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
- <notes>Changes since Structures_DataGrid 0.6.3:
-
+ <notes>
 - DataSource driver unbundled from Structures_DataGrid core
+- Request #8059 Customization options for XML datasource driver: fixed,
+  user patch applied. 
+  Thanks to Markus Ernst (derernst at gmx dot ch)
  </notes>
  <contents>
   <dir name="/">
