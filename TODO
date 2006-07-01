@@ -1,0 +1,51 @@
+            #############################################
+            #       Structures_DataGrid TODO File       #
+            #############################################
+
+
+* SQL sort expression support (olivierg)
+
+Ensure that when one sets Column::orderBy with an SQL expression (like an
+SQL function etc...)  the SQL based drivers properly pass this expression
+to the backend
+
+* SQL sort expression / field name mapping (olivierg)
+
+if Column::orderBy is an SQL expression then it does not make sense for
+this expression to make the trip to and back from the browser. Let's
+the take the following example :
+
+$column->setOrderBy("IF(LOCATE('foo',bar),1,0)");
+
+With the current implementation, this expression is likely to
+be printed directly into the html links, with something like :
+<a href="...?orderBy=IF%28LOCATE%28foo%2Cbar%29%2C1%2C0%29">
+
+It might work, but it raises a security issue, because we can't properly
+escape that string before including it into our SQL query.  In this
+context, when one supplies a value with setOrderBy(), it should be
+required to also have something set with setField()
+
+Example : 
+$column->setLabel("The Bar");
+$column->setField("bar");
+$column->setOrderBy("IF(LOCATE('foo',bar),1,0)");
+
+Should produce links like : 
+<a href="...?orderBy=bar">
+
+And when generating SQL, this "bar" value should be mapped to the 
+orderBy value : IF(LOCATE('foo',bar),1,0)
+ 
+* XML attributes set from the Column object (olivierg)
+
+The HTML driver renders the Column::atribs, but attributes are also
+valid with XML, and should also be rendered by the XML renderer.
+ 
+* Ensure protection against SQL injection (olivierg)
+
+- Are orderBy, direction and page HTTP arguments properly escaped before
+they are included in SQL queries ?
+  
+- Could we write security tests that try to perform SQL injection ?
+  
