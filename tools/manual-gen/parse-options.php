@@ -3,9 +3,15 @@
 // run me from the command line, using: php parse-options.php
 error_reporting(E_ALL);
 
+require_once 'File/Util.php';
+
 // we do this only for Renderer drivers, maybe later also for DataSource drivers
 define('PATH', '../../DataGrid/Renderer/');
-define('TMP_PATH', $_SERVER['TMP'] . '/sdgdoc/');
+define('TMP_PATH',  File_Util::tmpDir() . '/sdgdoc/');
+
+if (!is_dir (TMP_PATH)) {
+    mkdir(TMP_PATH, 0770, true);
+}
 
 // parse every file in the given path
 $dir = dir(PATH);
@@ -112,10 +118,19 @@ function getOptions($file, $startRow, $endRow) {
         }
         
         // okay, now default value, then we have to add it to the description
-        $options[$currOption]['desc'] .= ' ' . $text;
+        $options[$currOption]['desc'] = wordwrap($options[$currOption]['desc'] . ' ' . $text);
     }
 
     return $options;
+}
+
+function indentMultiLine($content, $indentStr, $indentNum)
+{
+    $prefix = str_repeat($indentStr, $indentNum);
+    $width = 80 - $indentNum - 1;
+    $content = ereg_replace("[ \n]+", ' ', $content);
+    $content = wordwrap($content, $width);
+    return $prefix . trim(str_replace("\n", "\n$prefix$indentStr", $content));
 }
 
 function writeXMLFile($driver, $options) {
@@ -135,7 +150,7 @@ function writeXMLFile($driver, $options) {
       $xml .= '   <row>' . "\n";
       $xml .= '    <entry>' . $option . '</entry>' . "\n";
       $xml .= '    <entry>' . $details['type'] . '</entry>' . "\n";
-      $xml .= '    <entry>' . $details['desc'] . '</entry>' . "\n";
+      $xml .= indentMultiLine('<entry>' . $details['desc'] . '</entry>', ' ', 4) . "\n";
       $xml .= '    <entry>' . (isset($details['default']) ? $details['default'] : '') . '</entry>' . "\n";
       $xml .= '   </row>' . "\n";
     }
