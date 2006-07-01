@@ -80,11 +80,11 @@ class Structures_DataGrid_Column
      *
      * Creates default table style settings
      *
-     * @param   string      $columnName     The name of the column to be printed
-     * @param   string      $fieldName      The name of the field for the column
+     * @param   string      $label          The label of the column to be printed
+     * @param   string      $field          The name of the field for the column
      *                                      to be mapped to
-     * @param   string      $orderBy        The field to order the data by
-     * @param   string      $attribs        The HTML attributes for the TR tag
+     * @param   string      $orderBy        The field or expression to order the data by
+     * @param   string      $attributes     The HTML attributes for the TR tag
      * @param   string      $autoFillValue  The value to use for the autoFill
      * @param   mixed       $formatter      Formatter callback. See setFormatter()
      * @param   array       $formatterArgs  Associative array of arguments 
@@ -95,8 +95,10 @@ class Structures_DataGrid_Column
      * @see setFormatter()
      * @access  public
      */
-    function Structures_DataGrid_Column($columnName, $fieldName = null,
-                                        $orderBy = null, $attribs = array(),
+    function Structures_DataGrid_Column($label, 
+                                        $field = null,
+                                        $orderBy = null, 
+                                        $attributes = array(),
                                         $autoFillValue = null,
                                         $formatter = null,
                                         $formatterArgs = array())
@@ -112,27 +114,27 @@ class Structures_DataGrid_Column
     }
 
     /**
-     * Get column name
+     * Get column label
      *
-     * Returns the name of the column
+     * The label is the text rendered into the column header. 
      *
      * @return  string
      * @access  public
      */
-    function getColumnName()
+    function getLabel()
     {
         return $this->columnName;
     }
 
     /**
-     * Set column name
+     * Set column label
      *
-     * Defines the name of the column
+     * The label is the text rendered into the column header. 
      *
-     * @param   string      $str        The name of the column
+     * @param   string      $str        Column label
      * @access  public
      */
-    function setColumnName($str)
+    function setLabel($str)
     {
         $this->columnName = $str;
     }
@@ -145,7 +147,7 @@ class Structures_DataGrid_Column
      * @return  string
      * @access  public
      */
-    function getFieldName()
+    function getField()
     {
         return $this->fieldName;
     }
@@ -159,15 +161,16 @@ class Structures_DataGrid_Column
      *                                  be mapped to
      * @access  public
      */
-    function setFieldName($str)
+    function setField($str)
     {
         $this->fieldName = $str;
     }
 
     /**
-     * Get name of the field to order the data by
+     * Get the field name or the expression to order the data by
      *
-     * Returns the name of the field to order the data by
+     * Returns the name of the field to order the data by. With SQL based
+     * datasources, this may be an SQL expression (function, etc..). 
      *
      * @return  string
      * @access  public
@@ -178,11 +181,12 @@ class Structures_DataGrid_Column
     }
 
     /**
-     * Set name of the field to order the data by
+     * Set the field name or the expression to order the data by
      *
-     * Defines the name of the field to order the data by
+     * Set the name of the field to order the data by. With SQL based
+     * datasources, this may be an SQL expression (function, etc..). 
      *
-     * @param   string      $str        The name of the field to order the data by
+     * @param   string      $str  field name or expression 
      * @access  public
      */
     function setOrderBy($str)
@@ -191,29 +195,31 @@ class Structures_DataGrid_Column
     }
 
     /**
-     * Get HTML attributes for the TR tag
+     * Get the column XML/HTML attributes 
      *
-     * Returns the HTML attributes for the TR tag
+     * Return the attributes applied to all cells in this column.
+     * This only makes sense for HTML or XML rendering
      *
-     * @return  string
+     * @return  array   Attributes ; form: array(name => value, ...)
      * @access  public
      */
-    function getAttribs()
+    function getAttributes()
     {
         return $this->attribs;
     }
 
     /**
-     * Set HTML attributes for the TR tag
+     * Set the column XML/HTML attributes 
      *
-     * Defines the HTML attributes for the TR tag
-     *
-     * @param   string      $str        The HTML attributes for the TR tag
+     * Set the attributes to be applied to all cells in this column.
+     * This only makes sense for HTML or XML rendering
+     * 
+     * @param   array   $attributes form: array(name => value, ...)
      * @access  public
      */
-    function setAttribs($str)
+    function setAttributes($attributes)
     {
-        $this->attribs = $str;
+        $this->attribs = $attributes;
     }
 
     /**
