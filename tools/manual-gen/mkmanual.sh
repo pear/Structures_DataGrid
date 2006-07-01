@@ -17,13 +17,14 @@ echo
 # Cleaning build directory
 echo "Cleaning build directory : $BUILD_DIR"
 rm -rf $BUILD_DIR
+mkdir $BUILD_DIR
 
 echo
 
 # Building doc
-printf "Running PhpDocumentor... "
-phpdoc -c tools/manual-gen/sdg-manual.ini > /dev/null
-echo "Done"
+printf "Running PhpDocumentor... Logging output into $BUILD_DIR/phpdoc.log"
+phpdoc -c tools/manual-gen/sdg-manual.ini > $BUILD_DIR/phpdoc.log 2>&1 
+echo "Done."
 
 echo
 
