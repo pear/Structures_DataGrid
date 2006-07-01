@@ -22,13 +22,14 @@ echo
 
 # Building doc
 printf "Running PhpDocumentor... "
-phpdoc -c tools/manual-gen/sdg-manual.ini 2>&1 > /dev/null
+phpdoc -c tools/manual-gen/sdg-manual.ini > /dev/null
 echo "Done"
 
 echo
 
 # Cleaning "Warnings" and fixing require_once()
-echo "Removing Warnings and fixing require_once() into :"
+# The sed command that removes examples line numbers might be dangerous
+echo "Removing Warnings and examples line numbers, fixing require_once() into :"
 cd $BUILD_DIR/structures/structures-datagrid
 for f in structures-datagrid/*.xml structures-datagrid-column/*.xml 
 do
@@ -36,6 +37,7 @@ do
     cat $f \
         | grep -v '^Warning' \
         | sed 's/require_once &apos;\/DataGrid/require_once \&apos;Structures\/DataGrid/' \
+        | sed 's/[0-9]\{1,2\} \{4,5\}//' \
         > $BUILD_DIR/grep.tmp \
         && mv $BUILD_DIR/grep.tmp $f 
 done
