@@ -103,10 +103,10 @@ class Structures_DataGrid_Column
                                         $formatter = null,
                                         $formatterArgs = array())
     {
-        $this->columnName = $columnName;
-        $this->fieldName = $fieldName;
+        $this->columnName = $label;
+        $this->fieldName = $field;
         $this->orderBy = $orderBy;
-        $this->attribs = $attribs;
+        $this->attribs = $attributes;
         $this->autoFillValue = $autoFillValue;
         if (!is_null($formatter)) {
             $this->setFormatter($formatter, $formatterArgs);
