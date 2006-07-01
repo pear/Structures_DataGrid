@@ -43,6 +43,10 @@ Modifying the Structures_DataGrid front page, constants, etc... is up to you.
 
 3 - then rebuild the manual as usual
 
+Beware that the XML may be broken, you many not be able to build the manual, 
+if you have XML_Beautifier installed (observed with PhpDocumentor 1.3.0RC6
+and XML_Beautifier 1.1).
+
 III - Notes
 
 1 - the PhpDocumentor manual states : 
@@ -67,4 +71,5 @@ III - Notes
     read at this moment are in a DocBook-based file located in
     tutorials/phpDocumentor/phpDocumentor.quickstart.pkg
 
-But apart from examples, how to include such descriptive documentation ? What tag ?   
+This can be achieved with something like :
+    @tutorial phpDocumentor.howto.pkg#using.command-line.output 
