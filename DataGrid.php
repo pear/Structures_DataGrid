@@ -886,9 +886,7 @@ class Structures_DataGrid
              * to pass them again to the renderer */
             $this->_renderer->setLimit($this->page, $this->rowLimit, 
                                       $this->getRecordCount());
-            if (isset($this->_dataSource)) {
-                $this->_setRendererCurrentSorting();
-            }
+            $this->_setRendererCurrentSorting();
         }
     }
 
