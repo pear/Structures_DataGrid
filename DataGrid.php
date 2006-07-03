@@ -46,7 +46,7 @@ define('STRUCTURES_DATAGRID_CONSOLE',  'Console');
 define('STRUCTURES_DATAGRID_PAGER',    'Pager');
 define('STRUCTURES_DATAGRID_SORTFORM', 'HTMLSortForm');
 
-define('STRUCTURES_DATAGRID_DEFAULT',  DATAGRID_RENDER_TABLE);
+define('STRUCTURES_DATAGRID_DEFAULT',  STRUCTURES_DATAGRID_TABLE);
 
 // DataSource Drivers
 // FIXME: these constants should be properly documented with docblocks
