@@ -1,89 +1,98 @@
 <?php
-/* vim: set expandtab tabstop=4 shiftwidth=4: */
-// +----------------------------------------------------------------------+
-// | PHP version 4                                                        |
-// +----------------------------------------------------------------------+
-// | Copyright (c) 1997-2005 The PHP Group                                |
-// +----------------------------------------------------------------------+
-// | This source file is subject to version 2.0 of the PHP license,       |
-// | that is bundled with this package in the file LICENSE, and is        |
-// | available through the world-wide-web at                              |
-// | http://www.php.net/license/2_02.txt.                                 |
-// | If you did not receive a copy of the PHP license and are unable to   |
-// | obtain it through the world-wide-web, please send a note to          |
-// | license@php.net so we can mail you a copy immediately.               |
-// +----------------------------------------------------------------------+
-// | Authors: Olivier Guilyardi <olivier@samalyse.com>                    |
-// |          Andrew Nagy <asnagy@webitecture.org>                        |
-// +----------------------------------------------------------------------+
-//
-// $Id$
-
+/**
+ * Base abstract class for data source drivers
+ * 
+ * <pre>
+ * +----------------------------------------------------------------------+
+ * | PHP version 4                                                        |
+ * +----------------------------------------------------------------------+
+ * | Copyright (c) 1997-2005 The PHP Group                                |
+ * +----------------------------------------------------------------------+
+ * | This source file is subject to version 2.0 of the PHP license,       |
+ * | that is bundled with this package in the file LICENSE, and is        |
+ * | available through the world-wide-web at                              |
+ * | http://www.php.net/license/2_02.txt.                                 |
+ * | If you did not receive a copy of the PHP license and are unable to   |
+ * | obtain it through the world-wide-web, please send a note to          |
+ * | license@php.net so we can mail you a copy immediately.               |
+ * +----------------------------------------------------------------------+
+ * | Authors: Andrew Nagy <asnagy@webitecture.org>                        |
+ * |          Olivier Guilyardi <olivier@samalyse.com>                    |
+ * |          Mark Wiesemann <wiesemann@php.net>                          |
+ * +----------------------------------------------------------------------+
+ * </pre>
+ *
+ * CSV file id: $Id$
+ * 
+ * @version  $Revision$
+ * @package  Structures_DataGrid
+ * @category Structures
+ */
 
 /**
-* Base abstract class for data source drivers
-* 
-* <b>Recognized options (valid for all drivers):</b>
-*
-* <b>"generate_columns":</b> Generate 
-* Structures_DataGrid_Column objects with labels. (default: false)
-* 
-* <b>"labels":</b> How to translate the field names to column labels. 
-* Only used when "generate_columns" is true. Default: array().
-* This is an associative array of the form:
-* <code> 
-* array("fieldName" => "fieldLabel", ...) 
-* </code>
-* 
-* <b>"fields":</b> Which fields should be rendered (Only used when
-* "generate_columns" is true. The default is an empty array: all of
-* the DataObject's fields will be rendered.
-* This is an array of the form:
-* <code>
-* array("fieldName1", "fieldName2", ...)
-* </code>
-* 
-* Users may want to see the create() factory method
-*
-* Developers:
-*
-* <b>HOWTO develop a new source driver</b>
-*
-* Subclass this Structures_DataGrid_DataSource class:
-* <code>
-* class Structures_DataGrid_DataSource_Foo extends
-*     Structures_DataGrid_DataSource
-* </code>
-*
-* In the constructor, initialize default options. These defaults will be
-* used to validate user provided options, so you need to set all possible
-* ones.
-* <code>
-*     function Structures_DataGrid_DataSource_Foo()
-*     {
-*         parent::Structures_DataGrid_DataSource(); // required
-*         $this->_addDefaultOptions(array( 'bar' => true));
-*     }
-* </code>
-*
-* Expose the fetch(), count() and bind() methods, overloading 
-* the provided skeleton. See the corresponding prototypes
-* for more information on how to do this.
-*
-* Do not forget to call Structures_DataGrid_DataSource::setOptions()
-* from your bind() method.
-* ex.: if ($options) $this->setOptions($options);
-*
-* Eventually, use the dump() debugging method to test your brand new
-* driver.
-*
-* @author   Olivier Guilyardi <olivier@samalyse.com>
-* @author   Andrew Nagy <asnagy@webitecture.org>
-* @author   Mark Wiesemann <wiesemann@php.net>
-* @package  Structures_DataGrid
-* @category Structures
-* @version  $Revision $
-*/
+ * Base abstract class for data source drivers
+ * 
+ * <b>Recognized options (valid for all drivers):</b>
+ *
+ * <b>"generate_columns":</b> Generate 
+ * Structures_DataGrid_Column objects with labels. (default: false)
+ * 
+ * <b>"labels":</b> How to translate the field names to column labels. 
+ * Only used when "generate_columns" is true. Default: array().
+ * This is an associative array of the form:
+ * <code> 
+ * array("fieldName" => "fieldLabel", ...) 
+ * </code>
+ * 
+ * <b>"fields":</b> Which fields should be rendered (Only used when
+ * "generate_columns" is true. The default is an empty array: all of
+ * the DataObject's fields will be rendered.
+ * This is an array of the form:
+ * <code>
+ * array("fieldName1", "fieldName2", ...)
+ * </code>
+ * 
+ * Users may want to see the create() factory method
+ *
+ * Developers:
+ *
+ * <b>HOWTO develop a new source driver</b>
+ *
+ * Subclass this Structures_DataGrid_DataSource class:
+ * <code>
+ * class Structures_DataGrid_DataSource_Foo extends
+ *     Structures_DataGrid_DataSource
+ * </code>
+ *
+ * In the constructor, initialize default options. These defaults will be
+ * used to validate user provided options, so you need to set all possible
+ * ones.
+ * <code>
+ *     function Structures_DataGrid_DataSource_Foo()
+ *     {
+ *         parent::Structures_DataGrid_DataSource(); // required
+ *         $this->_addDefaultOptions(array( 'bar' => true));
+ *     }
+ * </code>
+ *
+ * Expose the fetch(), count() and bind() methods, overloading 
+ * the provided skeleton. See the corresponding prototypes
+ * for more information on how to do this.
+ *
+ * Do not forget to call Structures_DataGrid_DataSource::setOptions()
+ * from your bind() method.
+ * ex.: if ($options) $this->setOptions($options);
+ *
+ * Eventually, use the dump() debugging method to test your brand new
+ * driver.
+ *
+ * @author   Olivier Guilyardi <olivier@samalyse.com>
+ * @author   Andrew Nagy <asnagy@webitecture.org>
+ * @author   Mark Wiesemann <wiesemann@php.net>
+ * @package  Structures_DataGrid
+ * @category Structures
+ * @version  $Revision $
+ */
 class Structures_DataGrid_DataSource
 {
     /**
@@ -369,4 +378,6 @@ class Structures_DataGrid_DataSource
     }
   
 }
+
+/* vim: set expandtab tabstop=4 shiftwidth=4: */
 ?>
