@@ -49,3 +49,19 @@ they are included in SQL queries ?
   
 - Could we write security tests that try to perform SQL injection ?
   
+* Don't fetch data if it not needed
+
+- renderers like Pager or HTMLSortForm don't need all data: Pager needs
+only the number of records, HTMLSortForm needs only the field names
+
+- Olivier's (agreed and accepted) idea for this from a bug report:
+<<<
+In this regard, I think that
+a mechanism similar to the DataSource "features" (hasFeature(),
+setFeatures(), etc...) could be needed.
+There could then be features like "renderLimits",
+"renderContent" (both true by default) and the DataGrid would
+"ask" with : 
+if ($renderer->hasFeature('renderLimits')) {count the rows}
+if ($renderer->hasFeature('renderContent')) {fetch the rows}
+>>>
