@@ -44,12 +44,13 @@ This concept is based on the .NET Framework DataGrid control and works very well
 - Bug #8005: fill() did not pass options to the renderer
   (thanks to Daniel Rossi, pear at electroteque dot org)
 - use native http_build_query() if PHP 5 is installed
-- (not yet fixed) Request #8061:
+- Request #8061:
   added getDataSource(), made datasourceFactory() public 
+  added getter and setter methods for all column object attributes
+  fixed non-static call in dataSourceFactory()
   (thanks to Markus Ernst, derernst at gmx dot ch)
 - Request #7969: added example to the fill() method 
   (thanks to Benny Labach, bennythebee at gmail dot com)
-- added getter and setter methods for all column object attributes
 - Request #8089: fixed the DataSource class documentation
   (thanks to Michel D'HOOGE, michel dot dhooge at gmail dot com)
  </notes>
