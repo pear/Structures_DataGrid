@@ -50,6 +50,8 @@ This concept is based on the .NET Framework DataGrid control and works very well
 - Request #7969: added example to the fill() method 
   (thanks to Benny Labach, bennythebee at gmail dot com)
 - added getter and setter methods for all column object attributes
+- Request #8089: fixed the DataSource class documentation
+  (thanks to Michel D'HOOGE, michel dot dhooge at gmail dot com)
  </notes>
  <contents>
   <dir name="/">

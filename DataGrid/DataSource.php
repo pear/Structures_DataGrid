@@ -32,59 +32,19 @@
 /**
  * Base abstract class for data source drivers
  * 
- * <b>Recognized options (valid for all drivers):</b>
+ * SUPPORTED OPTIONS:
  *
- * <b>"generate_columns":</b> Generate 
- * Structures_DataGrid_Column objects with labels. (default: false)
- * 
- * <b>"labels":</b> How to translate the field names to column labels. 
- * Only used when "generate_columns" is true. Default: array().
- * This is an associative array of the form:
- * <code> 
- * array("fieldName" => "fieldLabel", ...) 
- * </code>
- * 
- * <b>"fields":</b> Which fields should be rendered (Only used when
- * "generate_columns" is true. The default is an empty array: all of
- * the DataObject's fields will be rendered.
- * This is an array of the form:
- * <code>
- * array("fieldName1", "fieldName2", ...)
- * </code>
- * 
- * Users may want to see the create() factory method
- *
- * Developers:
- *
- * <b>HOWTO develop a new source driver</b>
- *
- * Subclass this Structures_DataGrid_DataSource class:
- * <code>
- * class Structures_DataGrid_DataSource_Foo extends
- *     Structures_DataGrid_DataSource
- * </code>
- *
- * In the constructor, initialize default options. These defaults will be
- * used to validate user provided options, so you need to set all possible
- * ones.
- * <code>
- *     function Structures_DataGrid_DataSource_Foo()
- *     {
- *         parent::Structures_DataGrid_DataSource(); // required
- *         $this->_addDefaultOptions(array( 'bar' => true));
- *     }
- * </code>
- *
- * Expose the fetch(), count() and bind() methods, overloading 
- * the provided skeleton. See the corresponding prototypes
- * for more information on how to do this.
- *
- * Do not forget to call Structures_DataGrid_DataSource::setOptions()
- * from your bind() method.
- * ex.: if ($options) $this->setOptions($options);
- *
- * Eventually, use the dump() debugging method to test your brand new
- * driver.
+ * - generate_columns:  (bool)  Generate Structures_DataGrid_Column objects 
+ *                              with labels. See the "labels" option.
+ *                              (default: false)
+ * - fields:            (array) Which Data Fields to fetch from the datasource.
+ *                              An empty array means : all fields.
+ *                              Form: array(field1, field2, ...)
+ *                              (default: array())
+ * - labels:            (array) Data Field to Column Label mapping. Only used 
+ *                              when "generate_columns" is true. 
+ *                              Form : array(field => label, ...)
+ *                              (default: array())
  *
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @author   Andrew Nagy <asnagy@webitecture.org>
