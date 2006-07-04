@@ -39,7 +39,7 @@ require_once 'Structures/DataGrid/Column.php';
 define('STRUCTURES_DATAGRID_TABLE',    'HTMLTable');
 define('STRUCTURES_DATAGRID_SMARTY',   'Smarty');
 define('STRUCTURES_DATAGRID_XML',      'XML');
-define('STRUCTURES_DATAGRID_XLS',      'XLS');
+define('STRUCTURES_DATAGRID_EXCEL',    'XLS');
 define('STRUCTURES_DATAGRID_XUL',      'XUL');
 define('STRUCTURES_DATAGRID_CSV',      'CSV');
 define('STRUCTURES_DATAGRID_CONSOLE',  'Console');
