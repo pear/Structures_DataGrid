@@ -400,7 +400,7 @@ class Structures_DataGrid
 
         $className = "Structures_DataGrid_DataSource_$type";
 
-        if (PEAR::isError($driver =& $this->loadDriver($className))) {
+        if (PEAR::isError($driver =& Structures_DataGrid::loadDriver($className))) {
             return $driver;
         }
         
