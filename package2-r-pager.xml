@@ -53,7 +53,7 @@ This is a new Renderer driver for Structures_DataGrid.
  <dependencies>
   <required>
    <php>
-    <min>4.2</min>
+    <min>4.3</min>
    </php>
    <pearinstaller>
     <min>1.4.9</min>
