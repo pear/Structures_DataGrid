@@ -57,7 +57,7 @@ couple of variables to a Smarty instance.
  <dependencies>
   <required>
    <php>
-    <min>4.2</min>
+    <min>4.3</min>
    </php>
    <pearinstaller>
     <min>1.4.9</min>
