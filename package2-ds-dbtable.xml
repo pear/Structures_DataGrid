@@ -14,10 +14,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-06-19</date>
- <time>18:00:00</time>
+ <date>2006-07-06</date>
+ <time>17:40:00</time>
  <version>
-  <release>0.1.0</release>
+  <release>0.1.1</release>
   <api>0.1.0</api>
  </version>
  <stability>
@@ -25,9 +25,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <api>beta</api>
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
- <notes>Changes since Structures_DataGrid 0.6.3:
-
-This is a new DataSource driver for Structures_DataGrid.
+ <notes>
+- Bug #8125: DB_Table can be used with both DB or MDB2, but a DB constant was
+  always used for setting the fetch mode
+  (thanks to Ken, kenchou77 at gmail dot com)
  </notes>
  <contents>
   <dir name="/">

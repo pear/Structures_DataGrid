@@ -144,11 +144,17 @@ class Structures_DataGrid_DataSource_DBTable
             return $this->_result;
         }
 
+        if (is_a($this->_result, 'db_result')) {
+            $fetchmode = DB_FETCHMODE_ASSOC;
+        } else {
+            $fetchmode = MDB2_FETCHMODE_ASSOC;
+        }
+
         $recordSet = array();
 
         // Fetch the Data
         if ($numRows = $this->_result->numRows()) {
-            while ($record = $this->_result->fetchRow(DB_FETCHMODE_ASSOC)) {
+            while ($record = $this->_result->fetchRow($fetchmode)) {
                 $recordSet[] = $record;
             }
         }
