@@ -32,12 +32,29 @@
 require_once 'MDB2.php';
 require_once 'Structures/DataGrid/DataSource.php';
 
-
 /**
  * PEAR::MDB2 Data Source Driver
  *
  * This class is a data source driver for the PEAR::MDB2 object
  *
+ * SUPPORTED OPTIONS:
+ * 
+ * - dbc:         (object) A PEAR::MDB2 instance that will be used by this driver.
+ * - dsn:         (string) A PEAR::MDB2 dsn string. The MDB2 connection will be
+ *                         established by this driver.
+ * 
+ * GENERAL NOTES:
+ *
+ * You need to specify either a MDB2 instance or a MDB2 compatible dsn string as
+ * an option to use this driver.
+ * 
+ * You can specify a ORDER BY statement in your query. Please be aware that this
+ * sorting statement is then used in *every* query before the sorting options
+ * that come from a renderer (e.g. by clicking on the column header when using
+ * the HTML_Table renderer which is sent in the HTTP request).
+ * If you want to give a default sorting statement that is only used if there is
+ * no sorting query in the HTTP request, then use $datagrid->setDefaultSort().
+ * 
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@php.net>
  * @author   Mark Wiesemann <wiesemann@php.net>
@@ -147,7 +164,7 @@ class Structures_DataGrid_DataSource_MDB2
             foreach ($this->_sortSpec as $field => $direction) {
                 $sortArray[] = "$field $direction";
             }
-            $sortString = ' ORDER BY '. join(', ', $sortArray);
+            $sortString = join(', ', $sortArray);
         } else {
             $sortString = '';
         }
@@ -157,13 +174,16 @@ class Structures_DataGrid_DataSource_MDB2
         // drop LIMIT statement
         $query = preg_replace('#LIMIT\s.*$#isD', '', $query);
 
-        // add or overwrite ORDER BY statement
-        if (preg_match('#ORDER\s*BY#is', $query) === 0) {
-            $query .= $sortString;
-        } else {
-            $query = preg_replace('#ORDER\s*BY\s.*$#isD',
-                                  $sortString,
-                                  $query);
+        // if we have a sort string, we need to add it to the query string
+        if ($sortString != '') {
+            // if there is an existing ORDER BY statement, we can just add the
+            // sort string
+            $result = preg_match('#ORDER\s*BY#is', $query);
+            if ($result === 1) {
+                $query .= ', ' . $sortString;
+            } else {  // otherwise we need to specify 'ORDER BY'
+                $query .= ' ORDER BY ' . $sortString;
+            }
         }
 
         //FIXME: What about SQL injection ?
