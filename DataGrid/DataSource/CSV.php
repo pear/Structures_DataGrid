@@ -37,6 +37,11 @@ require_once 'Structures/DataGrid/DataSource/Array.php';
  * This class is a data source driver for a CSV File.  It will also support any
  * other delimiter.
  *
+ * SUPPORTED OPTIONS:
+ *
+ * - delimiter:  (string)  Field delimiter
+ *                         (default: ',')
+ * 
  * @version  $Revision$
  * @author   Andrew Nagy <asnagy@webitecture.org>
  * @author   Olivier Guilyardi <olivier@samalyse.com>

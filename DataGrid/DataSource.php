@@ -35,15 +35,15 @@
  * SUPPORTED OPTIONS:
  *
  * - generate_columns:  (bool)  Generate Structures_DataGrid_Column objects 
- *                              with labels. See the "labels" option.
+ *                              with labels. See the 'labels' option.
  *                              (default: false)
- * - fields:            (array) Which Data Fields to fetch from the datasource.
- *                              An empty array means : all fields.
+ * - fields:            (array) Which data fields to fetch from the datasource.
+ *                              An empty array means: all fields.
  *                              Form: array(field1, field2, ...)
  *                              (default: array())
- * - labels:            (array) Data Field to Column Label mapping. Only used 
- *                              when "generate_columns" is true. 
- *                              Form : array(field => label, ...)
+ * - labels:            (array) Data field to column label mapping. Only used 
+ *                              when 'generate_columns' is true. 
+ *                              Form: array(field => label, ...)
  *                              (default: array())
  *
  * @author   Olivier Guilyardi <olivier@samalyse.com>

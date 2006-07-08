@@ -39,9 +39,11 @@ require_once 'Structures/DataGrid/DataSource.php';
  *
  * SUPPORTED OPTIONS:
  * 
- * - dbc:         (object) A PEAR::MDB2 instance that will be used by this driver.
+ * - dbc:         (object) A PEAR::MDB2 instance that will be used by this
+ *                         driver. Either this or the 'dsn' option is required.
  * - dsn:         (string) A PEAR::MDB2 dsn string. The MDB2 connection will be
- *                         established by this driver.
+ *                         established by this driver. Either this or the 'dbc'
+ *                         option is required.
  * 
  * GENERAL NOTES:
  *

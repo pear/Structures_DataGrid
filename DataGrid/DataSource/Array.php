@@ -38,7 +38,7 @@ require_once 'Structures/DataGrid/DataSource.php';
  *
  * @version  $Revision$
  * @author   Olivier Guilyardi <olivier@samalyse.com>
- * @author   Andrew Nagy <asnagy@webitecture.org>
+ * @author   Andrew Nagy <asnagy@webitecture.org>
  * @author   Mark Wiesemann <wiesemann@php.net>
  * @access   public
  * @package  Structures_DataGrid_DataSource_Array

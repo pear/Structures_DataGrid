@@ -37,6 +37,9 @@ require_once 'Structures/DataGrid/DataSource.php';
  * PEAR::DB SQL Query Data Source Driver
  *
  * This class is a data source driver for the PEAR::DB object
+ * 
+ * FIXME: add information about supported options here (can be adopted from
+ * MDB2 driver)
  *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@php.net>

@@ -45,7 +45,7 @@ require_once 'Pager/Pager.php';
  * SUPPORTED OPTIONS:
  *
  * - pagerOptions: (array)  Options passed to Pager::factory().
- *                          Basic defaults are: mode: Sliding, delta:5, 
+ *                          Basic defaults are: mode: Sliding, delta: 5, 
  *                          separator: "|", prevImg: "<<", nextImg: ">>".
  *                          The extraVars and excludeVars options are 
  *                          populated according to the Renderer common 

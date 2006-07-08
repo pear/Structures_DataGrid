@@ -32,7 +32,7 @@
 /**
  * Base class of all Renderer drivers
  *
- * Recognized options:
+ * SUPPORTED OPTIONS:
  *
  * - buildHeader:         (bool)   Whether to build the header.
  *                                 (default: true)

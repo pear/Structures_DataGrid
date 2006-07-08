@@ -35,6 +35,13 @@ require_once 'Structures/DataGrid/DataSource.php';
  *
  * This class is a data source driver for the PEAR::DB_Table object
  *
+ * SUPPORTED OPTIONS:
+ * 
+ * - view:   (string)  The view from $sql array in your DB_Table object. This
+ *                     option is required.
+ * - where:  (string)  A where clause for the SQL query.
+ *                     (default: null)
+ *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@php.net>
  * @author   Mark Wiesemann <wiesemann@php.net>

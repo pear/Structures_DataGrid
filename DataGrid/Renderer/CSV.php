@@ -36,16 +36,16 @@ require_once 'Structures/DataGrid/Renderer.php';
  *
  * SUPPORTED OPTIONS:
  *
- * - delimiter: (string) Field delimiter
- *                       (default: ',')
- * - enclosure: (string) Field enclosure
- *                       (default: a double quotation mark: ")
- * - lineBreak: (string) The character(s) to use for line breaks
- *                       (default: '\n')
- * - useQuotes: (mixed)  Whether or not to encapuslate the values with the 
- *                       enclosure value.
- *                       true: always, false: never, "auto": when needed
- *                       (default: "auto")
+ * - delimiter:  (string)  Field delimiter
+ *                         (default: ',')
+ * - enclosure:  (string)  Field enclosure
+ *                         (default: a double quotation mark: ")
+ * - lineBreak:  (string)  The character(s) to use for line breaks
+ *                         (default: '\n')
+ * - useQuotes:  (mixed)   Whether or not to encapuslate the values with the 
+ *                         enclosure value.
+ *                         true: always, false: never, "auto": when needed
+ *                         (default: "auto")
  *                       
  * SUPPORTED OPERATION MODES:
  *
