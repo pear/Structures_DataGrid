@@ -13,15 +13,44 @@ if (!is_dir(TMP_PATH)) {
     mkdir(TMP_PATH, 0770, true);
 }
 
+$options = array();
+$inheritance = array();
+
 // parse all directories whose names begin with 'Structures_DataGrid'
 $directories = scandir(PATH);
 foreach ($directories as $directory) {
     if (substr($directory, 0, 19) == 'Structures_DataGrid') {
-        parseDirectory($directory);
+        parseDirectory($options, $inheritance, $directory);
     }
 }
 
-function parseDirectory($dir)
+// loop over the inheritance array to store the (own and inherited) options of
+// all drivers
+foreach ($inheritance as $class => $extends) {
+    // ignore classes that don't extend other classes because they
+    // - either have no options (e.g. DataGrid.php, Column.php)
+    // - or should not occur with options in the manual (e.g. DataSource.php)
+    if (is_null($extends)) {
+        continue;
+    }
+    // save the class name
+    $orig_class = $class;
+    // sum up the optionx for the current driver; driver's own options override
+    // general options from extended classes
+    $driver_options = $options[$class];
+    $extends_rel = $inheritance[$class];
+    while (!is_null($extends_rel)) {
+        $class = $extends_rel;
+        $extends_rel = $inheritance[$class];
+        $driver_options = array_merge($options[$class], $driver_options);
+    }
+    // sort the options alphabetically
+    ksort($driver_options);
+    // save the options as an XML file
+    writeXMLFile($orig_class, $driver_options);
+}
+
+function parseDirectory(&$options, &$inheritance, $dir)
 {
     $entries = scandir(PATH . $dir);
     foreach ($entries as $entry) {
@@ -30,17 +59,17 @@ function parseDirectory($dir)
         if (!in_array($entry, array('.', '..', 'CVS', 'docs', 'tools'))) {
             // step recursive into subdirectories
             if (is_dir(PATH . $dir . '/' . $entry)) {
-                parseDirectory($dir . '/' . $entry);
+                parseDirectory($options, $inheritance, $dir . '/' . $entry);
             }
             // parse the file if the extension is .php
             if (substr($entry, -4) == '.php') {
-                parseFile($dir . '/' . $entry);
+                parseFile($options, $inheritance, $dir . '/' . $entry);
             }
         }
     }
 }
 
-function parseFile($filename)
+function parseFile(&$options, &$inheritance, $filename)
 {
     echo 'Parsing ' . $filename . ' ... ';
 
@@ -50,12 +79,19 @@ function parseFile($filename)
     // problem here)
     $file = file(PATH . $filename);
 
+    // get the class name and the name of the extended class
+    list($class, $extends) = getClassName($file);
+
+    // save the inheritance relation
+    $inheritance[$class] = $extends;
+
     // search for the row after that the options are documented
     $startRow = getStartRow($file);
 
     // the driver has no options
     if ($startRow === false) {
         echo "NO OPTIONS FOUND\n";
+        $options[$class] = array();
         return;
     }
 
@@ -69,13 +105,7 @@ function parseFile($filename)
     }
 
     // collect the options
-    $options = getOptions($file, $startRow, $endRow);
-    
-    // get the class name
-    $class = getClassName($file);
-
-    // save the options as an XML file
-    writeXMLFile($class, $options);
+    $options[$class] = getOptions($file, $startRow, $endRow);
     
     // we're done with this file
     echo "DONE\n";
@@ -149,8 +179,13 @@ function getOptions($file, $startRow, $endRow)
 function getClassName($file)
 {
     $file = join("\n", $file);
-    if (preg_match('#class ([a-z0-9_]+)\s+(extends ([a-z0-9_]+)\s+)?\{#im', $file, $matches)) {
-        return $matches[1];
+    if (preg_match('#class ([a-z0-9_]+)\s+(extends\s+([a-z0-9_]+)\s+)?\{#im', $file, $matches)) {
+        $class = $matches[1];
+        $extends = null;
+        if (array_key_exists(3, $matches)) {
+            $extends = $matches[3];
+        }
+        return array($class, $extends);
     }
     die('CLASS NAME NOT FOUND');
 }
