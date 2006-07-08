@@ -1,36 +1,54 @@
 <?php
 
-// run me from the command line, using: php parse-options.php
+// run me from the command line (while being in tools/manual-gen), using:
+//   php parse-options.php
+
 error_reporting(E_ALL);
 
 require_once 'File/Util.php';
 
-// we do this only for Renderer drivers, maybe later also for DataSource drivers
-define('PATH', '../../DataGrid/Renderer/');
-define('TMP_PATH',  File_Util::tmpDir() . '/sdgdoc/');
-
-if (!is_dir (TMP_PATH)) {
+define('PATH', '../../../');
+define('TMP_PATH', File_Util::tmpDir() . '/sdgdoc/');
+if (!is_dir(TMP_PATH)) {
     mkdir(TMP_PATH, 0770, true);
 }
 
-// parse every file in the given path
-$dir = dir(PATH);
-while (false !== ($entry = $dir->read())) {
-
-    $driver = substr($entry, 0, strrpos($entry, '.'));
-    $extension = substr($entry, strrpos($entry, '.'));
-
-    // parse only files with an .php extension
-    if ($extension != '.php') {
-        continue;
+// parse all directories whose names begin with 'Structures_DataGrid'
+$directories = scandir(PATH);
+foreach ($directories as $directory) {
+    if (substr($directory, 0, 19) == 'Structures_DataGrid') {
+        parseDirectory($directory);
     }
-    echo 'Parsing ' . $entry . ' ... ';
+}
+
+function parseDirectory($dir)
+{
+    $entries = scandir(PATH . $dir);
+    foreach ($entries as $entry) {
+        // ignore pointers to current and parent directory
+        // ignore CVS, documentation and tools directories
+        if (!in_array($entry, array('.', '..', 'CVS', 'docs', 'tools'))) {
+            // step recursive into subdirectories
+            if (is_dir(PATH . $dir . '/' . $entry)) {
+                parseDirectory($dir . '/' . $entry);
+            }
+            // parse the file if the extension is .php
+            if (substr($entry, -4) == '.php') {
+                parseFile($dir . '/' . $entry);
+            }
+        }
+    }
+}
+
+function parseFile($filename)
+{
+    echo 'Parsing ' . $filename . ' ... ';
 
     // read the file contents
     // (using file() instead of file_get_contents() to avoid a complex regular
     // expression; the format is almost fixed, so using single lines is not a
     // problem here)
-    $file = file(PATH . $entry);
+    $file = file(PATH . $filename);
 
     // search for the row after that the options are documented
     $startRow = getStartRow($file);
@@ -38,7 +56,7 @@ while (false !== ($entry = $dir->read())) {
     // the driver has no options
     if ($startRow === false) {
         echo "NO OPTIONS FOUND\n";
-        continue;
+        return;
     }
 
     // search for the row that indicates the end of the options block
@@ -52,21 +70,22 @@ while (false !== ($entry = $dir->read())) {
 
     // collect the options
     $options = getOptions($file, $startRow, $endRow);
+    
+    // get the class name
+    $class = getClassName($file);
 
     // save the options as an XML file
-    writeXMLFile($driver, $options);
+    writeXMLFile($class, $options);
     
     // we're done with this file
     echo "DONE\n";
 }
 
-// close the directory handle
-$dir->close();
-
-function getStartRow($file) {
+function getStartRow($file)
+{
     $startRow = false;
     foreach ($file as $rowNumber => $row) {
-        // we've found the row
+        // we've found the row where the options documentation begins
         if (strpos($row, ' * SUPPORTED OPTIONS:') !== false) {
             $startRow = $rowNumber;
             break;
@@ -76,9 +95,11 @@ function getStartRow($file) {
     return $startRow;
 }
 
-function getEndRow($file, $startRow) {
+function getEndRow($file, $startRow)
+{
     $endRow = false;
     for ($i = $startRow + 2; $i < count($file); $i++) {
+        // we've found the row where the options documentation ends
         if (trim($file[$i]) == '*') {
             $endRow = $i;
             break;
@@ -88,14 +109,15 @@ function getEndRow($file, $startRow) {
     return $endRow;
 }
 
-function getOptions($file, $startRow, $endRow) {
+function getOptions($file, $startRow, $endRow)
+{
     $currOption = '';
     $options = array();
     for ($i = $startRow + 2; $i < $endRow; $i++) {
 
         // do we have a new option?
         if (substr($file[$i], 3, 1) == '-') {
-            $res = preg_match('#- ([a-z]+):\s*\(([a-z]+)\)\s+(.*)#i', $file[$i], $matches);
+            $res = preg_match('#- ([a-z_]+):\s*\(([a-z]+)\)\s+(.*)#i', $file[$i], $matches);
             // check whether the regular expression matched
             // (if not: die, this should not happen)
             if ($res !== 1) {
@@ -117,11 +139,20 @@ function getOptions($file, $startRow, $endRow) {
             continue;
         }
         
-        // okay, now default value, then we have to add it to the description
+        // okay, no default value, then we have to add it to the description
         $options[$currOption]['desc'] = wordwrap($options[$currOption]['desc'] . ' ' . $text);
     }
 
     return $options;
+}
+
+function getClassName($file)
+{
+    $file = join("\n", $file);
+    if (preg_match('#class ([a-z0-9_]+)\s+(extends ([a-z0-9_]+)\s+)?\{#im', $file, $matches)) {
+        return $matches[1];
+    }
+    die('CLASS NAME NOT FOUND');
 }
 
 function indentMultiLine($content, $indentStr, $indentNum)
@@ -133,7 +164,8 @@ function indentMultiLine($content, $indentStr, $indentNum)
     return $prefix . trim(str_replace("\n", "\n$prefix$indentStr", $content));
 }
 
-function writeXMLFile($driver, $options) {
+function writeXMLFile($driver, $options)
+{
     $xml  = '<table>' . "\n";
     $xml .= ' <title>Options for this driver</title>' . "\n";
     $xml .= ' <tgroup cols="4">' . "\n";
