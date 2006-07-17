@@ -39,9 +39,10 @@ couple of variables to a Smarty instance.
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-- Request #8233: new variable 'currentSort' added to the Smarty instance, this
+- Request #8233: added new variable 'currentSort' to the Smarty instance, which
 is an array with the column names and the directions used for sorting currently
-  (thanks to alexkunin at gmail dot com)
+(in addition, $columnSet[col].name is now available, containing the column name)
+  (thanks to Alex Kunin, alexkunin at gmail dot com)
  </notes>
  <contents>
   <dir name="/">

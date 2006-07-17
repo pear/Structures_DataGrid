@@ -69,6 +69,7 @@ require_once 'Structures/DataGrid/Renderer.php';
  * - $totalRecordsNum: total number of records
  * - $firstRecord:     first record number (starting from 1)
  * - $lastRecord:      last record number (starting from 1)
+ * - $currentSort:     array with column names and the directions used for sorting
  * 
  * This driver also register a Smarty custom function named getPaging
  * that can be called from Smarty templates with {getPaging} in order
@@ -231,6 +232,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
                 $query = '';
                 $prepared[$index]['link'] = "";
             }
+            $prepared[$index]['name'] = $spec['field'];
             $prepared[$index]['label'] = $spec['label'];
         }
 
