@@ -187,8 +187,10 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
         $this->_smarty->assign('pagesNum', $this->_pagesNum);
         $this->_smarty->assign('firstRecord', $this->_firstRecord);
         $this->_smarty->assign('lastRecord', $this->_lastRecord);
+        $this->_smarty->assign('currentSort', $this->_currentSort);
 
-        $this->_smarty->register_function('getPaging',array(&$this,'_smartyGetPaging'));
+        $this->_smarty->register_function('getPaging',
+                                          array(&$this, '_smartyGetPaging'));
     }
 
     /**
@@ -210,8 +212,8 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
         foreach ($columns as $index => $spec) {
             if (in_array($spec['field'], $this->_sortableFields)) {
                 reset($this->_currentSort);
-                if (list($currentField,$currentDirection) = each($this->_currentSort)
-                    and $currentField == $spec['field']) {
+                if (list($currentField, $currentDirection) = each($this->_currentSort)
+                    && $currentField == $spec['field']) {
                     if ($currentDirection == 'ASC') {
                         $direction = 'DESC';
                     } else {
@@ -220,8 +222,8 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
                 } else {
                     $direction = 'ASC';
                 }
-                $extra = array ('page' => $this->_options['sortingResetsPaging'] 
-                                          ? 1 : $this->_page);
+                $extra = array('page' => $this->_options['sortingResetsPaging'] 
+                                         ? 1 : $this->_page);
                 $query = $this->_buildSortingHttpQuery($spec['field'], 
                                                        $direction, true, $extra);
                 $prepared[$index]['link'] = "{$this->_options['selfPath']}?$query";
@@ -243,7 +245,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
      */
     function buildBody()
     {
-        $this->_smarty->assign('recordSet',   $this->_records);
+        $this->_smarty->assign('recordSet', $this->_records);
     }
 
     /**
