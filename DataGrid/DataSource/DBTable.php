@@ -107,7 +107,7 @@ class Structures_DataGrid_DataSource_DBTable
      */
     function bind(&$object, $options=array())
     {
-        if (strtolower(get_parent_class($object)) == 'db_table') {
+        if (is_object($object) && is_subclass_of($object, 'db_table')) {
             $this->_object =& $object;
         } else {
             return PEAR::raiseError(
