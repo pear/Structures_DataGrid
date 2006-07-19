@@ -69,20 +69,12 @@ class Structures_DataGrid_DataSource_DBTable
     var $_object;
 
     /**
-     * The field to sort by
+     * Fields/directions to sort the data by
      *
-     * @var string
+     * @var array Structure: array(fieldName => direction, ....)
      * @access private
      */
-    var $_sortField;
-
-    /**
-     * The direction to sort by
-     *
-     * @var string
-     * @access private
-     */
-    var $_sortDir;
+    var $_sortSpec = array();
     
     /**
      * Constructor
@@ -93,6 +85,11 @@ class Structures_DataGrid_DataSource_DBTable
     {
         parent::Structures_DataGrid_DataSource();
         $this->_addDefaultOptions(array('where' => null));
+
+        // FIXME: For clarity, supported options should be declared with 
+        // _addDefaultOptions()
+
+        $this->_setFeatures(array('multiSort' => true));
     }
   
     /**
@@ -134,18 +131,20 @@ class Structures_DataGrid_DataSource_DBTable
      */
     function &fetch($offset=0, $limit=null)
     {
-        if (!is_null($this->_sortField) && !is_null($this->_sortDir)) {
-            $this->_result = $this->_object->selectResult(
-                                $this->_options['view'],
-                                $this->_options['where'], 
-                                $this->_sortField . ' ' . $this->_sortDir, 
-                                $offset, $limit);
+        if (!empty($this->_sortSpec)) {
+            foreach ($this->_sortSpec as $field => $direction) {
+                $sortArray[] = "$field $direction";
+            }
+            $sortString = join(', ', $sortArray);
         } else {
-            $this->_result = $this->_object->selectResult(
-                                $this->_options['view'],
-                                $this->_options['where'],
-                                null, $offset, $limit);
+            $sortString = null;
         }
+
+        $this->_result = $this->_object->selectResult(
+                            $this->_options['view'],
+                            $this->_options['where'], 
+                            $sortString, 
+                            $offset, $limit);
 
         if (PEAR::isError($this->_result)) {
             return $this->_result;
@@ -185,20 +184,25 @@ class Structures_DataGrid_DataSource_DBTable
         return $this->_object->selectCount($this->_options['view'],
                                            $this->_options['where']);
     }
-    
+
     /**
      * This can only be called prior to the fetch method.
      *
      * @access  public
-     * @param   string  $sortField  Field to sort by
+     * @param   mixed   $sortSpec   A single field (string) to sort by, or a 
+     *                              sort specification array of the form:
+     *                              array(field => direction, ...)
      * @param   string  $sortDir    Sort direction: 'ASC' or 'DESC'
+     *                              This is ignored if $sortDesc is an array
      */
-    function sort($sortField, $sortDir)
+    function sort($sortSpec, $sortDir = 'ASC')
     {
-        $this->sortField = $sortField;
-        $this->sortDir = $sortDir;
+        if (is_array($sortSpec)) {
+            $this->_sortSpec = $sortSpec;
+        } else {
+            $this->_sortSpec[$sortSpec] = $sortDir;
+        }
     }
-
 
 }
 
