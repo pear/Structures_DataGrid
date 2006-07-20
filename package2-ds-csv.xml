@@ -26,11 +26,11 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-06-29</date>
- <time>11:40:00</time>
+ <date>2006-07-20</date>
+ <time>15:20:00</time>
  <version>
-  <release>0.1.1</release>
-  <api>0.1.0</api>
+  <release>0.1.2</release>
+  <api>0.1.1</api>
  </version>
  <stability>
   <release>beta</release>
@@ -38,8 +38,11 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-- Request #8054: this DataSource driver is now compatible with tab delimiters
-  (thanks to Markus Ernst, derernst at gmx dot ch)
+- Request #8252: new option 'header' (boolean) that indicates whether the first
+  row of the CSV file (or string) contains column names; these columns names
+  are then also used as the DataGrid column names when the columns are
+  auto-generated
+  (thanks to Gregor Gramlich, gramlich at eosc dot de, for the patch)
  </notes>
  <contents>
   <dir name="/">

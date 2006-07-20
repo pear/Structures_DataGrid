@@ -41,6 +41,8 @@ require_once 'Structures/DataGrid/DataSource/Array.php';
  *
  * - delimiter:  (string)  Field delimiter
  *                         (default: ',')
+ * - header:     (bool)    Whether the CSV file (or string) contains a header row
+ *                         (default: false)
  * 
  * @version  $Revision$
  * @author   Andrew Nagy <asnagy@webitecture.org>
@@ -56,7 +58,8 @@ class Structures_DataGrid_DataSource_CSV extends
     function Structures_DataGrid_DataSource_CSV()
     {
         parent::Structures_DataGrid_DataSource_Array();
-        $this->_addDefaultOptions(array('delimiter' => ','));
+        $this->_addDefaultOptions(array('delimiter' => ',',
+                                        'header'    => false));
     }
 
     /**
@@ -81,10 +84,32 @@ class Structures_DataGrid_DataSource_CSV extends
             $rowList = explode("\n", $csv);
         }
 
+        // if the options say that there is a header row, use the contents of it
+        // as the column names
+        if ($this->_options['header']) {
+            $keys = explode($this->_options['delimiter'], rtrim($rowList[0]));
+            unset($rowList[0]);
+        } else {
+            $keys = null;
+        }
+
         foreach ($rowList as $row) {
             $row = rtrim($row); // to remove DOSish \r
             if (!empty($row)) {
-                $this->_ar[] = explode($this->_options['delimiter'], $row);
+                if (empty($keys)) {
+                    $this->_ar[] = explode($this->_options['delimiter'], $row);
+                } else {
+                    $rowAssoc = array();
+                    $rowArray = explode($this->_options['delimiter'], $row);
+                    foreach ($rowArray as $index => $val) {
+                        if (!empty($keys[$index])) {
+                            $rowAssoc[$keys[$index]] = $val;
+                        } else {
+                            $rowAssoc[$index] = $val;
+                        }
+                    }
+                    $this->_ar[] = $rowAssoc;
+                }
             }
         }
         
