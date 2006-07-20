@@ -235,6 +235,9 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
             }
         }
 
+        // remove the last delimiter because it would indicate an additional column
+        $str = substr($str, 0, strlen($this->_options['delimiter']) * -1);
+
         $str .= $this->_options['lineBreak'];
 
         return $str;
