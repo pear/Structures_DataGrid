@@ -40,7 +40,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <notes>
 - Bug #8271: fixed a possible PHP error message in bind() that could occur for
   CSV strings longer than 255 characters
-  (thanks to Gregor Gramlich, gramlich at eosc dot de, for the patch)
+  (thanks to Gregor Gramlich, gramlich at eosc dot de)
+- Request #8272: added code for the case that a CSV file has actually more
+  columns than the contents of the first row indicates
+  (thanks to Gregor Gramlich, gramlich at eosc dot de)
  </notes>
  <contents>
   <dir name="/">

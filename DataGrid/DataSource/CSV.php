@@ -93,11 +93,19 @@ class Structures_DataGrid_DataSource_CSV extends
             $keys = null;
         }
 
+        // store every field (column name) that is actually used
+        $fields = $keys;
+
+        // helper variable for the case that we have a file without a header row
+        $maxkeys = 0;
+
         foreach ($rowList as $row) {
             $row = rtrim($row); // to remove DOSish \r
             if (!empty($row)) {
                 if (empty($keys)) {
-                    $this->_ar[] = explode($this->_options['delimiter'], $row);
+                    $rowArray = explode($this->_options['delimiter'], $row);
+                    $this->_ar[] = $rowArray;
+                    $maxkeys = max($maxkeys, count($rowArray));
                 } else {
                     $rowAssoc = array();
                     $rowArray = explode($this->_options['delimiter'], $row);
@@ -105,6 +113,12 @@ class Structures_DataGrid_DataSource_CSV extends
                         if (!empty($keys[$index])) {
                             $rowAssoc[$keys[$index]] = $val;
                         } else {
+                            // there are more fields than we have column names
+                            // from the header of the CSV file => we need to use
+                            // the numeric index.
+                            if (!in_array($index, $fields, true)) {
+                                $fields[] = $index;
+                            }
                             $rowAssoc[$index] = $val;
                         }
                     }
@@ -113,6 +127,15 @@ class Structures_DataGrid_DataSource_CSV extends
             }
         }
         
+        // set field names if they were not set as an option
+        if (!$this->_options['fields']) {
+            if (empty($keys)) {
+                $this->_options['fields'] = range(0, $maxkeys - 1);
+            } else {
+                $this->_options['fields'] = $fields;
+            }
+        }
+
         return true;
     }
 }
