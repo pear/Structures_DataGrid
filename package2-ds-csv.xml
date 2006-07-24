@@ -29,7 +29,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <date>2006-07-20</date>
  <time>15:20:00</time>
  <version>
-  <release>0.1.2</release>
+  <release>0.1.3</release>
   <api>0.1.1</api>
  </version>
  <stability>
@@ -38,10 +38,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-- Request #8252: new option 'header' (boolean) that indicates whether the first
-  row of the CSV file (or string) contains column names; these columns names
-  are then also used as the DataGrid column names when the columns are
-  auto-generated
+- Bug #8271: fixed a possible PHP error message in bind() that could occur for
+  CSV strings longer than 255 characters
   (thanks to Gregor Gramlich, gramlich at eosc dot de, for the patch)
  </notes>
  <contents>
