@@ -1,6 +1,12 @@
 #!/bin/bash
 
-BUILD_DIR=/tmp/sdgdoc
+if [ "$MKMANUAL_BUILD_DIR" != "" ]
+then 
+    BUILD_DIR=$MKMANUAL_BUILD_DIR
+else    
+    BUILD_DIR=/tmp/sdgdoc
+fi
+
 TARGET_DIR=$1
 VERSION=0.1
 
@@ -23,7 +29,14 @@ echo
 
 # Building doc
 printf "Running PhpDocumentor... Logging output into $BUILD_DIR/phpdoc.log"
-phpdoc -c tools/manual-gen/sdg-manual.ini > $BUILD_DIR/phpdoc.log 2>&1 
+phpdoc  -dn Structures_DataGrid \
+        -dc Structures \
+        -f "DataGrid.php,DataGrid/Column.php" \
+        -t $BUILD_DIR \
+        -o "XML:DocBook/peardoc2:default" \
+        -ed docs/examples \
+        > $BUILD_DIR/phpdoc.log 2>&1 
+
 echo "Done."
 
 echo
