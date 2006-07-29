@@ -6,18 +6,18 @@
 Remarks about this file : 
 - each entry should be separated by a "-" line
 - each entry should have a title formatted as :
-  TODO #<number> - <summary> (<pear user name>) - Priority: High|Medium|Low
+  TODO <number> - <summary> (<pear user name>) - Priority: High|Medium|Low
 - once an entry is fixed, I recommend not to remove it. Mark it as "Done" instead.
 
 --------------------------------------------------------------------------------
-TODO #1 - SQL sort expression support (olivierg) - Priority: Medium
+TODO 1 - SQL sort expression support (olivierg) - Priority: Medium
 
 Ensure that when one sets Column::orderBy with an SQL expression (like an
 SQL function etc...)  the SQL based drivers properly pass this expression
 to the backend
 
 --------------------------------------------------------------------------------
-TODO #2 - SQL sort expression / field name mapping (olivierg) - Priority: Medium
+TODO 2 - SQL sort expression / field name mapping (olivierg) - Priority: Medium
 
 if Column::orderBy is an SQL expression then it does not make sense for
 this expression to make the trip to and back from the browser. Let's
@@ -46,13 +46,13 @@ And when generating SQL, this "bar" value should be mapped to the
 orderBy value : IF(LOCATE('foo',bar),1,0)
  
 --------------------------------------------------------------------------------
-TODO #3 - XML attributes set from the Column object (olivierg) - Priority: Medium
+TODO 3 - XML attributes set from the Column object (olivierg) - Priority: Medium
 
 The HTML driver renders the Column::atribs, but attributes are also
 valid with XML, and should also be rendered by the XML renderer.
  
 --------------------------------------------------------------------------------
-TODO #4 - Ensure protection against SQL injection (olivierg) - Priority: Medium
+TODO 4 - Ensure protection against SQL injection (olivierg) - Priority: Medium
 
 - Are orderBy, direction and page HTTP arguments properly escaped before
 they are included in SQL queries ?
@@ -60,7 +60,7 @@ they are included in SQL queries ?
 - Could we write security tests that try to perform SQL injection ?
   
 --------------------------------------------------------------------------------
-TODO #5 - Don't fetch data if it not needed (wiesemann) - Priority: Medium
+TODO 5 - Don't fetch data if it not needed (wiesemann) - Priority: Medium
 
 - renderers like Pager or HTMLSortForm don't need all data: Pager needs
 only the number of records, HTMLSortForm needs only the field names
@@ -78,8 +78,18 @@ if ($renderer->hasFeature('renderContent')) {fetch the rows}
 >>>
 
 --------------------------------------------------------------------------------
-TODO #6 - Predefined column formatters (olivierg) - Priority: Medium
+TODO 6 - Predefined column formatters (olivierg) - Priority: Medium
 
 There are common formatting needs such as date, numbers. These could be achieved
 with predefined column formatters.
 
+--------------------------------------------------------------------------------
+TODO 7 - Using Datasources out of SDG (olivierg) - Priority: Medium
+
+Document how to use the DataSource layer out of SDG, as an abstract way to fetch
+tabular data from a variety of sources.
+
+--------------------------------------------------------------------------------
+TODO 8 - "Custom renderers" manual page (olivierg) - Priority: Medium
+
+This manual page is not finished.

@@ -180,6 +180,8 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
             // possible. We need to set the core options anyway.
             $options = array_merge($this->_pager->getOptions(), $options);
 
+            // FIXME: does not forward get arguments
+
             $options['excludeVars'] = array_merge($this->_options['excludeVars'],
                                                   $options['excludeVars']);    
             
