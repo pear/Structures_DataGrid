@@ -93,3 +93,24 @@ tabular data from a variety of sources.
 TODO 8 - "Custom renderers" manual page (olivierg) - Priority: Medium
 
 This manual page is not finished.
+
+--------------------------------------------------------------------------------
+TODO 9 - Debugging (?) - Priority: Medium
+
+Add some debugging possibilities, e.g. similar to the way DBDO does it.
+
+--------------------------------------------------------------------------------
+TODO 10 - Remove constants (?) - Priority: High
+
+Remove the new constants for Renderers and DataSources (STRUCTURES_DATAGRID_*),
+use strings insteads. To be discussed: Renderer file for HTML_Table is named
+HTMLTable.php, 'HTML_Table' as parameter for render()/fill() would be more
+precise and consistent. Similar for DataObject.php (=> DB_DataObject),
+DBTable.php (=> DB_Table), Console.php (=> Console_Table) and others.
+
+--------------------------------------------------------------------------------
+TODO 11 - Allow access to the record set (?) - Priority: Medium
+
+Users should be able to access the record set. This can be achieved either by
+a new method in the core class or by a new (rather trivial) array renderer.
+(Idea/request from Gregor Gramlich)
