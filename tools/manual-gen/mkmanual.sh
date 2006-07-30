@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# how phpDoc needs to be calld
+if [ "$MKMANUAL_PHPDOC" != "" ]
+then 
+    PHPDOC=$MKMANUAL_PHPDOC
+else    
+    PHPDOC=phpdoc
+fi
+
+# temporal build dir
 if [ "$MKMANUAL_BUILD_DIR" != "" ]
 then 
     BUILD_DIR=$MKMANUAL_BUILD_DIR
@@ -7,8 +16,19 @@ else
     BUILD_DIR=/tmp/sdgdoc
 fi
 
-TARGET_DIR=$1
-VERSION=0.1
+# temporal build dir for phpDoc
+TARGET_DIR_PHPDOC=/tmp/sdgdoc
+
+# target dir for the built
+# (i.e. the directory where the checkout of peardoc is located)
+if [ "$MKMANUAL_TARGET_DIR" != "" ]
+then 
+    TARGET_DIR=$MKMANUAL_TARGET_DIR
+else    
+    TARGET_DIR=$1
+fi
+
+VERSION=0.2
 
 echo "Structures_DataGrid Manual Generator $VERSION"
 
@@ -21,7 +41,7 @@ fi
 echo
 
 # Cleaning build directory
-echo "Cleaning build directory : $BUILD_DIR"
+echo "Cleaning build directory: $BUILD_DIR"
 rm -rf $BUILD_DIR
 mkdir $BUILD_DIR
 
@@ -29,13 +49,13 @@ echo
 
 # Building doc
 printf "Running PhpDocumentor... Logging output into $BUILD_DIR/phpdoc.log"
-phpdoc  -dn Structures_DataGrid \
-        -dc Structures \
-        -f "DataGrid.php,DataGrid/Column.php" \
-        -t $BUILD_DIR \
-        -o "XML:DocBook/peardoc2:default" \
-        -ed docs/examples \
-        > $BUILD_DIR/phpdoc.log 2>&1 
+$PHPDOC  -dn Structures_DataGrid \
+         -dc Structures \
+         -f "DataGrid.php,DataGrid/Column.php" \
+         -t $TARGET_DIR_PHPDOC \
+         -o "XML:DocBook/peardoc2:default" \
+         -ed docs/examples \
+         > $BUILD_DIR/phpdoc.log 2>&1 
 
 echo "Done."
 
@@ -43,13 +63,13 @@ echo
 
 # Cleaning "Warnings" and fixing require_once()
 # The sed command that removes examples line numbers might be dangerous
-echo "Removing Warnings and examples line numbers, fixing require_once() into :"
+echo "Removing Warnings and examples line numbers, fixing require_once() into:"
 cd $BUILD_DIR/structures/structures-datagrid
-for f in structures-datagrid/*.xml structures-datagrid-column/*.xml 
+for f in ../*.xml *.xml structures-datagrid/*.xml structures-datagrid-column/*.xml 
 do
     echo "  $f"
     cat $f \
-        | grep -v '^Warning' \
+        | grep -v '^ *Warning' \
         | sed 's/require_once &apos;\/DataGrid/require_once \&apos;Structures\/DataGrid/' \
         | sed 's/[0-9]\{1,2\} \{4,5\}//' \
         > $BUILD_DIR/grep.tmp \
@@ -60,7 +80,7 @@ echo
 
 # Patching new/modified files
 cd $BUILD_DIR/structures/structures-datagrid
-echo "Patching new/modified file : "
+echo "Patching new/modified file: "
 for f in structures-datagrid/*.xml structures-datagrid-column/*.xml; do
     if ! diff -Nu -I '\$Revision.*\$' $TARGET_DIR/en/package/structures/structures-datagrid/$f \
         $f > $BUILD_DIR/diff
@@ -71,6 +91,3 @@ done
 
 echo
 echo Done. You can now regenerate the html manual.
-
-
-
