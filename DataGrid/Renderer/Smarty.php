@@ -43,6 +43,10 @@ require_once 'Structures/DataGrid/Renderer.php';
  * - convertEntities:     (bool)   Whether or not to convert html entities.
  *                                 This calls htmlspecialchars(). 
  *                                 (default: true)
+ * - columnAttributes:    (array)  Column cells attributes. This is an array of
+ *                                 the form:
+ *                                 array(fieldName => array(attribute => value, ...) ...)
+ *                                 (default: array())
  * 
  * SUPPORTED OPERATION MODES:
  *
@@ -59,7 +63,17 @@ require_once 'Structures/DataGrid/Renderer.php';
  * filled.
  *
  * This driver assigns the following Smarty variables: 
- * - $columnSet:       array of columns' labels and sorting links
+ * - $columnSet:       array of columns specifications
+ *                     structure : 
+ *                          array ( 
+ *                              0 => array (
+ *                                  'name'       => field name,
+ *                                  'label'      => column label,
+ *                                  'link'       => sorting link,
+ *                                  'attributes' => attributes string,
+ *                              ),
+ *                              ... 
+ *                          )
  * - $recordSet:       array of records values
  * - $currentPage:     current page (starting from 1)
  * - $recordLimit:     number of rows per page
@@ -89,7 +103,7 @@ require_once 'Structures/DataGrid/Renderer.php';
  *     <!-- Build header -->
  *     <tr>
  *         {section name=col loop=$columnSet}
- *             <th>
+ *             <th {$columnSet[col].attributes}>
  *                 <!-- Check if the column is sortable -->
  *                 {if $columnSet[col].link != ""}
  *                     <a href="{$columnSet[col].link}">{$columnSet[col].label}</a>
@@ -104,7 +118,7 @@ require_once 'Structures/DataGrid/Renderer.php';
  *     {section name=row loop=$recordSet}
  *         <tr {if $smarty.section.row.iteration is even}bgcolor="#EEEEEE"{/if}>
  *             {section name=col loop=$recordSet[row]}
- *                 <td>{$recordSet[row][col]}</td>
+ *                 <td {$columnSet[col].attributes}>{$recordSet[row][col]}</td>
  *             {/section}
  *         </tr>
  *     {/section}
@@ -139,6 +153,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
                 'selfPath'            => $_SERVER['PHP_SELF'],
                 'convertEntities'     => true,
                 'sortingResetsPaging' => true,
+                'columnAttributes'    => array(),
             )
         );
     }
@@ -232,8 +247,18 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
                 $query = '';
                 $prepared[$index]['link'] = "";
             }
-            $prepared[$index]['name'] = $spec['field'];
-            $prepared[$index]['label'] = $spec['label'];
+            $prepared[$index]['name']   = $spec['field'];
+            $prepared[$index]['label']  = $spec['label'];
+
+            $prepared[$index]['attributes'] = "";
+            if (isset($this->_options['columnAttributes'][$spec['field']])) {
+                foreach ($this->_options['columnAttributes'][$spec['field']] 
+                            as $name => $value) {
+                    $value = htmlspecialchars($value, ENT_COMPAT, 
+                                              $this->_options['encoding']);
+                    $prepared[$index]['attributes'] .= "$name=\"$value\" "; 
+                }
+            }
         }
 
         $this->_smarty->assign('columnSet', $prepared);

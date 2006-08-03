@@ -676,7 +676,8 @@ class Structures_DataGrid_Renderer
             }
 
             if (isset($column->attribs) &&
-                is_a($this, 'Structures_DataGrid_Renderer_HTMLTable'))
+                (is_a($this, 'Structures_DataGrid_Renderer_HTMLTable')) 
+                    || is_a($this, 'Structures_DataGrid_Renderer_Smarty'))
             {
                 if (!array_key_exists($field, $this->_options['columnAttributes'])) {
                     $this->_options['columnAttributes'][$field] = array();
