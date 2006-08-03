@@ -1028,6 +1028,27 @@ class Structures_DataGrid
     }
 
     /**
+     * Remove a column 
+     *
+     * @access  public
+     * @param   object  $column     The Structures_DataGrid_Column object 
+     *                              (reference to) 
+     * @return  void
+     */
+    function dropColumn(&$column)
+    {
+        $ii = count($this->columnSet);
+        for ($i = 0; $i < $ii; $i++) {
+            if ($this->columnSet[$i] == $column) {
+                for ($i++; $i < $ii; $i++) {
+                    $this->columnSet[$i - 1] =& $this->columnSet[$i];
+                }
+                unset($this->columnSet[$ii - 1]);
+            }
+        }
+    }
+
+    /**
      * A simple way to add a record set to the datagrid
      *
      * @example bind-dataobject.php Bind a DB_DataObject
