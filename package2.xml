@@ -53,6 +53,8 @@ This concept is based on the .NET Framework DataGrid control and works very well
   (thanks to Benny Labach, bennythebee at gmail dot com)
 - Request #8089: fixed the DataSource class documentation
   (thanks to Michel D'HOOGE, michel dot dhooge at gmail dot com)
+- Request #8320: new dropColumn() method
+  (thanks to Arcadius, arcadius at menelic dot com)
  </notes>
  <contents>
   <dir name="/">
