@@ -39,10 +39,14 @@ couple of variables to a Smarty instance.
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-- Request #8233: added new variable 'currentSort' to the Smarty instance, which
-is an array with the column names and the directions used for sorting currently
-(in addition, $columnSet[col].name is now available, containing the column name)
+- Request #8233: added new variable 'currentSort' to the Smarty instance,
+  which is an array with the column names and the directions used for
+  sorting currently (in addition, $columnSet[col].name is now available,
+  containing the column name)
   (thanks to Alex Kunin, alexkunin at gmail dot com)
+- Request #8341: it is now possible to access the Column attributes from
+  a Smarty template
+  (thanks to Michael Caplan,  michael at apison dot com)
  </notes>
  <contents>
   <dir name="/">
