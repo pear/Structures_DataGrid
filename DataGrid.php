@@ -1030,6 +1030,7 @@ class Structures_DataGrid
     /**
      * Remove a column 
      *
+     * @example dropColumn.php      Drop an unneeded column
      * @access  public
      * @param   object  $column     The Structures_DataGrid_Column object 
      *                              (reference to) 
