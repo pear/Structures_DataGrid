@@ -119,7 +119,9 @@ a new method in the core class or by a new (rather trivial) array renderer.
 TODO 12 - Let renderers access Column objects directly (olivierg) - Priority: High
 
 When refactoring the rendering layer, I thought Column objects were like Records
-objects: a waste of memory.
+objects: a waste of memory. So i tried to minimize their use, thinking we could
+suppress them in the future. That's mainly why I chose to make renderers completely
+ignore the existence of these Column objects.
 
 But I now realize they're very useful, and the $_columns property is now what wastes
 memory by duplicating all of the informations contained in $_columnObjects.
@@ -127,7 +129,7 @@ memory by duplicating all of the informations contained in $_columnObjects.
 Additionally, such options as columnAttributes are redundant with the informations
 contained in Column objects, etc...
 
-So we should change this ASAP, so that it does not cause too many BC breaks for
+We should change this ASAP, so that it does not cause too many BC breaks for
 people who are writing their own renderers.
 
 I propose to remove the $_columnObjects property, and put Column objects references
