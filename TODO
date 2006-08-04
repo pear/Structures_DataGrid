@@ -114,3 +114,22 @@ TODO 11 - Allow access to the record set (?) - Priority: Medium
 Users should be able to access the record set. This can be achieved either by
 a new method in the core class or by a new (rather trivial) array renderer.
 (Idea/request from Gregor Gramlich)
+
+--------------------------------------------------------------------------------
+TODO 12 - Let renderers access Column objects directly (olivierg) - Priority: High
+
+When refactoring the rendering layer, I thought Column objects were like Records
+objects: a waste of memory.
+
+But I now realize they're very useful, and the $_columns property is now what wastes
+memory by duplicating all of the informations contained in $_columnObjects.
+
+Additionally, such options as columnAttributes are redundant with the informations
+contained in Column objects, etc...
+
+So we should change this ASAP, so that it does not cause too many BC breaks for
+people who are writing their own renderers.
+
+I propose to remove the $_columnObjects property, and put Column objects references
+directly into $_columns
+
