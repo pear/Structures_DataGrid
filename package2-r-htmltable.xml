@@ -26,10 +26,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-06-19</date>
- <time>18:00:00</time>
+ <date>?</date>
+ <time>?</time>
  <version>
-  <release>0.1.0</release>
+  <release>0.1.1</release>
   <api>0.1.0</api>
  </version>
  <stability>
@@ -37,26 +37,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <api>beta</api>
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
- <notes>Changes since Structures_DataGrid 0.6.3:
-
-- Renderer driver unbundled from Structures_DataGrid core
-- now using grouping into &lt;thead&gt;, &lt;tfoot&gt; and &lt;tbody&gt;
-- auto-alignment: now automatic aligning of numeric values to the right;
-  this is configurable with the 'numberAlign' option
-- bug #5829: renderer is now compatible with multi-bytes caracters
-  (thanks &lt;kenchou77 at gmail dot com&gt;)
-- bug #6031: charsets like GB2312 weren't displayed correctly; new
-  'encoding' option (passed to htmlspecialchars())
-  (thanks &lt;digit_shine at yahoo dot com dot cn&gt;)
-  request #5886 is related to this bug: the default value of the new
-  'encoding' option is now set from mb_internal_encoding() if the 
-  mbstring extension is loaded; otherwise, the default is ISO-8859-1
-  (thanks &lt;tobias at neuyork dot de&gt;)
-- request #5838: new 'convertEntities' option
-  (thanks &lt;abriening at comcast dot net&gt;)
-- new excludeVars() method: this method allows to exclude some GET
-  variables from the generated links, much like Pager's 'excludeVars'
-  option
+ <notes>
+- bug #8172: fixed a minor space problem
  </notes>
  <contents>
   <dir name="/">

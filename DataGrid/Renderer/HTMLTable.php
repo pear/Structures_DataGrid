@@ -380,7 +380,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 $url = $this->_options['selfPath'] . '?' . $query;
 
                 // Build HTML Link
-                $str = "<a href=\"$url\">$label $icon</a>";
+                $str = "<a href=\"$url\">$label$icon</a>";
             } else {
                 $str = $label;
             }
