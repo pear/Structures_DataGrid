@@ -1,6 +1,6 @@
 <?php
 /**
- * PEAR::MDB2 Data Source Driver
+ * PEAR::MDB2 SQL Query Data Source Driver
  * 
  * <pre>
  * +----------------------------------------------------------------------+
@@ -33,7 +33,7 @@ require_once 'MDB2.php';
 require_once 'Structures/DataGrid/DataSource.php';
 
 /**
- * PEAR::MDB2 Data Source Driver
+ * PEAR::MDB2 SQL Query Data Source Driver
  *
  * This class is a data source driver for the PEAR::MDB2 object
  *
@@ -49,6 +49,13 @@ require_once 'Structures/DataGrid/DataSource.php';
  *
  * You need to specify either a MDB2 instance or a MDB2 compatible dsn string as
  * an option to use this driver.
+ * 
+ * If you use complex queries (e.g. with complex joins or with aliases),
+ * $datagrid->getRecordCount() might return a wrong result. For the case of
+ * GROUP BY or DISTINCT in your queries, this driver already has special
+ * handling. However, if you observe wrong record counts, you need to specify
+ * a special query that returns only the number of records (e.g. 'SELECT COUNT(*)
+ * FROM ...') as an additional option 'count_query' to the bind() call.
  * 
  * You can specify a ORDER BY statement in your query. Please be aware that this
  * sorting statement is then used in *every* query before the sorting options
@@ -100,7 +107,7 @@ class Structures_DataGrid_DataSource_MDB2
     function Structures_DataGrid_DataSource_MDB2()
     {
         parent::Structures_DataGrid_DataSource();
-        
+
         // FIXME: For clarity, supported options should be declared with 
         // _addDefaultOptions()
         
@@ -232,8 +239,10 @@ class Structures_DataGrid_DataSource_MDB2
             // $count has an integer value with number of rows or is a
             // PEAR_Error instance on failure
         }
-        elseif (preg_match('#GROUP\s*BY#is', $this->_query) === 1) {
-            // GROUP BY is a special case
+        elseif (preg_match('#GROUP\s*BY#is', $this->_query) === 1 ||
+                preg_match('#SELECT.*DISTINCT.*FROM#is', $this->_query) === 1
+            ) {
+            // GROUP BY and DISTINCT are special cases
             // ==> use the normal query and then numRows()
             $result = $this->_db->query($this->_query);
             if (PEAR::isError($result)) {
