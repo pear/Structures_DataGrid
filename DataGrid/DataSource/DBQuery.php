@@ -25,21 +25,44 @@
  * CSV file id: $Id$
  * 
  * @version  $Revision$
- * @package  Structures_DataGrid_DataSource_DBQuery
  * @category Structures
+ * @package  Structures_DataGrid_DataSource_DBQuery
  */
 
 require_once 'DB.php';
 require_once 'Structures/DataGrid/DataSource.php';
 
-
 /**
  * PEAR::DB SQL Query Data Source Driver
  *
  * This class is a data source driver for the PEAR::DB object
+ *
+ * SUPPORTED OPTIONS:
  * 
- * FIXME: add information about supported options here (can be adopted from
- * MDB2 driver)
+ * - dbc:         (object) A PEAR::DB instance that will be used by this
+ *                         driver. Either this or the 'dsn' option is required.
+ * - dsn:         (string) A PEAR::DB dsn string. The DB connection will be
+ *                         established by this driver. Either this or the 'dbc'
+ *                         option is required.
+ * 
+ * GENERAL NOTES:
+ *
+ * You need to specify either a DB instance or a DB compatible dsn string as
+ * an option to use this driver.
+ * 
+ * If you use complex queries (e.g. with complex joins or with aliases),
+ * $datagrid->getRecordCount() might return a wrong result. For the case of
+ * GROUP BY or DISTINCT in your queries, this driver already has special
+ * handling. However, if you observe wrong record counts, you need to specify
+ * a special query that returns only the number of records (e.g. 'SELECT COUNT(*)
+ * FROM ...') as an additional option 'count_query' to the bind() call.
+ * 
+ * You can specify a ORDER BY statement in your query. Please be aware that this
+ * sorting statement is then used in *every* query before the sorting options
+ * that come from a renderer (e.g. by clicking on the column header when using
+ * the HTML_Table renderer which is sent in the HTTP request).
+ * If you want to give a default sorting statement that is only used if there is
+ * no sorting query in the HTTP request, then use $datagrid->setDefaultSort().
  *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@php.net>
@@ -94,12 +117,12 @@ class Structures_DataGrid_DataSource_DBQuery
     /**
      * Bind
      *
-     * @param   string    $query      The query string
-     * @param   mixed     $options    array('dbc' => [PEAR::DB object])
-     *                                or
-     *                                array('dsn' => [PEAR::DB dsn string])
+     * @param   string    $query     The query string
+     * @param   mixed     $options   array('dbc' => [PEAR::DB object])
+     *                               or
+     *                               array('dsn' => [PEAR::DB dsn string])
      * @access  public
-     * @return  mixed                 True on success, PEAR_Error on failure
+     * @return  mixed                True on success, PEAR_Error on failure
      */
     function bind($query, $options=array())
     {
@@ -118,7 +141,8 @@ class Structures_DataGrid_DataSource_DBQuery
             $this->_db =& DB::connect($this->_options['dsn'], $dbOptions);
             if (PEAR::isError($this->_db)) {
                 return PEAR::raiseError('Could not create connection: ' .
-                                        $this->_db->getMessage());
+                                        $this->_db->getMessage() . ', ' .
+                                        $this->_db->getUserInfo());
             }
         } else {
             return PEAR::raiseError('No DB object or dsn string specified');
@@ -147,7 +171,7 @@ class Structures_DataGrid_DataSource_DBQuery
             foreach ($this->_sortSpec as $field => $direction) {
                 $sortArray[] = "$field $direction";
             }
-            $sortString = ' ORDER BY '. join(', ', $sortArray);
+            $sortString = join(', ', $sortArray);
         } else {
             $sortString = '';
         }
@@ -157,13 +181,16 @@ class Structures_DataGrid_DataSource_DBQuery
         // drop LIMIT statement
         $query = preg_replace('#LIMIT\s.*$#isD', '', $query);
 
-        // add or overwrite ORDER BY statement
-        if (preg_match('#ORDER\s*BY#is', $query) === 0) {
-            $query .= $sortString;
-        } else {
-            $query = preg_replace('#ORDER\s*BY\s.*$#isD',
-                                  $sortString,
-                                  $query);
+        // if we have a sort string, we need to add it to the query string
+        if ($sortString != '') {
+            // if there is an existing ORDER BY statement, we can just add the
+            // sort string
+            $result = preg_match('#ORDER\s*BY#is', $query);
+            if ($result === 1) {
+                $query .= ', ' . $sortString;
+            } else {  // otherwise we need to specify 'ORDER BY'
+                $query .= ' ORDER BY ' . $sortString;
+            }
         }
 
         if (is_null($limit)) {
@@ -209,8 +236,10 @@ class Structures_DataGrid_DataSource_DBQuery
             // $count has an integer value with number of rows or is a
             // PEAR_Error instance on failure
         }
-        elseif (preg_match('#GROUP\s*BY#is', $this->_query) === 1) {
-            // GROUP BY is a special case
+        elseif (preg_match('#GROUP\s*BY#is', $this->_query) === 1 ||
+                preg_match('#SELECT.*DISTINCT.*FROM#is', $this->_query) === 1
+            ) {
+            // GROUP BY and DISTINCT are special cases
             // ==> use the normal query and then numRows()
             $result = $this->_db->query($this->_query);
             if (PEAR::isError($result)) {
