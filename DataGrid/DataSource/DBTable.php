@@ -41,6 +41,15 @@ require_once 'Structures/DataGrid/DataSource.php';
  *                     option is required.
  * - where:  (string)  A where clause for the SQL query.
  *                     (default: null)
+ * 
+ * GENERAL NOTES:
+ *
+ * If you use aliases in the select part of your view, the count() method from
+ * DB_Table and, therefore, $datagrid->getRecordCount() might return a wrong
+ * result. To avoid this, DB_Table uses a special query for counting if it is
+ * given via a view that needs to be named as '__count_' followed by the name
+ * of the view that this counting view belongs to. (For example: if you have a
+ * view named 'all', the counting view needs to be named as '__count_all'.)
  *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@php.net>
