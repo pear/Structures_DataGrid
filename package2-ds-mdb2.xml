@@ -27,20 +27,22 @@ SQL query.
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-06-19</date>
- <time>18:00:00</time>
+ <date>2006-08-05</date>
+ <time>11:00:00</time>
  <version>
-  <release>0.1.0</release>
-  <api>0.1.0</api>
+  <release>0.1.1</release>
+  <api>0.1.1</api>
  </version>
  <stability>
   <release>beta</release>
   <api>beta</api>
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
- <notes>Changes since Structures_DataGrid 0.6.3:
-
-This is a new DataSource driver for Structures_DataGrid.
+ <notes>
+- Bug #7870: this driver now takes an existing ORDER BY statement in the query
+  into account
+- in addition to 'GROUP BY', also 'DISTINCT' in queries needs special handling
+  for determing the number of rows
  </notes>
  <contents>
   <dir name="/">
