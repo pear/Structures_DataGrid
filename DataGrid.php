@@ -1044,7 +1044,7 @@ class Structures_DataGrid
                 for ($i++; $i < $ii; $i++) {
                     $this->columnSet[$i - 1] =& $this->columnSet[$i];
                 }
-                unset($this->columnSet[$ii - 1]);
+                array_pop($this->columnSet);
             }
         }
     }
