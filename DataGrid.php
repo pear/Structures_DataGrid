@@ -1198,12 +1198,16 @@ class Structures_DataGrid
      * 
      * @param array $sortSpec   Sorting specification
      *                          Structure: array(fieldName => direction, ...)
-     * @return void
+     * @return mixed Either true or a PEAR_Error object
      * @access public
      */
     function setDefaultSort($sortSpec)
     {
+        if (!is_array($sortSpec)) {
+            return PEAR::raiseError('Invalid parameter, array expected');
+        }
         $this->defaultSortSpec = $sortSpec;
+        return true;
     }
    
     /**

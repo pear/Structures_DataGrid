@@ -442,7 +442,10 @@ class Structures_DataGrid_Renderer
         $this->_pagesNum        = (is_null($rowsPerPage) or $totalRowNum == 0) ?
             1 : ceil($totalRowNum / $rowsPerPage);
         $this->_firstRecord     = ($currentPage - 1) * $rowsPerPage + 1;
-        $this->_lastRecord      = $currentPage * $rowsPerPage;
+        $this->_lastRecord      = (is_null($rowsPerPage))
+                                  ? $totalRowNum
+                                  : min($this->_firstRecord + $rowsPerPage - 1,
+                                        $totalRowNum);
         if ($this->_lastRecord > $totalRowNum) {
             $this->_lastRecord  = $totalRowNum;
         }

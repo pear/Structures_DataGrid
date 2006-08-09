@@ -229,7 +229,9 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
             if (in_array($spec['field'], $this->_sortableFields)) {
                 reset($this->_currentSort);
                 if (list($currentField, $currentDirection) = each($this->_currentSort)
-                    && $currentField == $spec['field']) {
+                    && isset($currentField)
+                    && $currentField == $spec['field']
+                   ) {
                     if ($currentDirection == 'ASC') {
                         $direction = 'DESC';
                     } else {

@@ -55,6 +55,7 @@ This concept is based on the .NET Framework DataGrid control and works very well
   (thanks to Michel D'HOOGE, michel dot dhooge at gmail dot com)
 - Request #8320: new removeColumn() method
   (thanks to Arcadius, arcadius at menelic dot com)
+- fixed calculation of the number of the last record
  </notes>
  <contents>
   <dir name="/">
