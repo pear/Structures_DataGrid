@@ -91,9 +91,9 @@ define('DATAGRID_ERROR_UNSUPPORTED', 1);
  * A PHP class to implement the functionality provided by the .NET Framework's
  * DataGrid control.  This class can produce a data driven list in many formats
  * based on a defined record set.  Commonly, this is used for outputting an HTML
- * table based on a record set from a database or an XML document.  It allows
+ * table based on a record set from a database or an XML document. It allows
  * for the output to be published in many ways, including an HTML table,
- * an HTML Template, an Excel spreadsheet, an XML document.  The data can
+ * an HTML Template, an Excel spreadsheet, an XML document. The data can
  * be sorted and paged, each cell can have custom output, and the table can be
  * custom designed with alternating color rows.
  *
@@ -239,7 +239,7 @@ class Structures_DataGrid
     /**
      * Constructor
      *
-     * Builds the DataGrid class.  The Core functionality and Renderer are
+     * Builds the DataGrid class. The Core functionality and Renderer are
      * seperated for maintainability and to keep cohesion high.
      *
      * @example constructor.php     Instantiation
@@ -697,7 +697,7 @@ class Structures_DataGrid
             if (isset($this->_dataSource)) {
                 $this->_renderer->setData($this->columnSet, $this->recordSet);
                 $this->_renderer->setLimit($this->page, $this->rowLimit, 
-                                          $this->getRecordCount());
+                                           $this->getRecordCount());
                 $this->_setRendererCurrentSorting();
             }
             if ($this->_requestPrefix) {
@@ -819,8 +819,8 @@ class Structures_DataGrid
     /**
      * Returns the total number of pages
      *
-     * @return int       the total number of pages, 0 if there are no records,
-     *                   1 if there is no row limit
+     * @return int       the total number of pages or 1 if there are no records
+     *                   or if there is no row limit
      * @access public
      */
     function getPageCount()
@@ -918,7 +918,7 @@ class Structures_DataGrid
              * The page and sort request might have changed, so we need
              * to pass them again to the renderer */
             $this->_renderer->setLimit($this->page, $this->rowLimit, 
-                                      $this->getRecordCount());
+                                       $this->getRecordCount());
             $this->_setRendererCurrentSorting();
         }
     }
@@ -1118,8 +1118,8 @@ class Structures_DataGrid
             if ($this->_dataSource->hasFeature('multiSort')) {
                 $this->_dataSource->sort($this->sortSpec);
             } else {
-                reset ($this->sortSpec);
-                list ($sortBy, $direction) = each ($this->sortSpec);
+                reset($this->sortSpec);
+                list($sortBy, $direction) = each($this->sortSpec);
                 $this->_dataSource->sort($sortBy, $direction);
             }
         }
@@ -1134,6 +1134,17 @@ class Structures_DataGrid
     function fetchDataSource()
     {
         if (isset($this->_dataSource)) {
+            // sometimes we have to fix the page number:
+            // if we have a page number greater than 1, we have a row limit and
+            // the real page count is lower than the given page number indicates,
+            // the page number will be set to 1
+            if (   $this->page > 1
+                && !is_null($this->rowLimit)
+                && $this->getPageCount() < $this->page
+               ) {
+                $this->page = 1;
+            }
+
             // Determine Page
             $page = $this->page ? $this->page - 1 : 0;
 
@@ -1175,7 +1186,7 @@ class Structures_DataGrid
      */
     function sortRecordSet($sortSpec, $direction = 'ASC')
     {
-        if (is_array ($sortSpec)) {
+        if (is_array($sortSpec)) {
             $this->sortSpec = $sortSpec;
         } else {
             $this->sortSpec = array($sortSpec => $direction);
@@ -1248,9 +1259,9 @@ class Structures_DataGrid
     function _parseHttpRequest()
     {
         if (!$this->_forcePage) {
-            if (!($this->page = $this->_getRequestArgument ('page'))) {
+            if (!($this->page = $this->_getRequestArgument('page'))) {
                 $this->page = 1;
-            } 
+            }
             if (!is_numeric($this->page)) {
                 $this->page = 1;
             }
@@ -1269,7 +1280,7 @@ class Structures_DataGrid
                 if (!($direction = $this->_getRequestArgument('direction'))) {
                     $direction = 'ASC';
                 }
-                $this->sortSpec = array ($orderBy => $direction);
+                $this->sortSpec = array($orderBy => $direction);
             }
         }
     }     

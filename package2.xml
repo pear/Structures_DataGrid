@@ -56,6 +56,10 @@ This concept is based on the .NET Framework DataGrid control and works very well
 - Request #8320: new removeColumn() method
   (thanks to Arcadius, arcadius at menelic dot com)
 - fixed calculation of the number of the last record
+- fixed internal usage of the page number that was either given via the second
+  constructor parameter or via the 'page' GET variable: if it is too high, it is
+  now resetted to 1 ("too high" means: the real page count is lower than the
+  given page number)
  </notes>
  <contents>
   <dir name="/">
