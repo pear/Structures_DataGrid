@@ -38,7 +38,11 @@ require_once 'XML/Util.php';
  * SUPPORTED OPTIONS:
  *
  * - useXMLDecl:    (bool)   Whether the XML declaration string should be added
- *                           to the output
+ *                           to the output. The encoding attribute value will 
+ *                           get set from the common "encoding" option. If you 
+ *                           need to further customize the XML declaration 
+ *                           (version, etc..), then please set "useXMLDecl" to
+ *                           false, and add your own declaration string.
  *                           (default: true)
  * - outerTag:      (string) The name of the tag for the datagrid, without 
  *                           brackets
@@ -132,7 +136,8 @@ class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer
     function buildBody()
     {
         if ($this->_options['useXMLDecl']) {
-            $this->_xml .= XML_Util::getXMLDeclaration() . "\n";
+            $this->_xml .= XML_Util::getXMLDeclaration("1.0", 
+                                $this->_options['encoding']) . "\n";
         }
 
         $this->_xml .= "<{$this->_options['outerTag']}>\n";
