@@ -62,14 +62,6 @@ class Structures_DataGrid_DataSource_DBTable
     extends Structures_DataGrid_DataSource
 {   
     /**
-     * Reference to the Result object returned by DB_Table
-     *
-     * @var object DB_Result
-     * @access private
-     */
-    var $_result;
-
-    /**
      * Reference to the DB_Table object
      *
      * @var object DB_Table
@@ -160,17 +152,17 @@ class Structures_DataGrid_DataSource_DBTable
             $sortString = null;
         }
 
-        $this->_result = $this->_object->selectResult(
+        $result = $this->_object->selectResult(
                             $this->_options['view'],
                             $this->_options['where'], 
                             $sortString, 
                             $offset, $limit);
 
-        if (PEAR::isError($this->_result)) {
-            return $this->_result;
+        if (PEAR::isError($result)) {
+            return $result;
         }
 
-        if (is_a($this->_result, 'db_result')) {
+        if (is_a($result, 'db_result')) {
             $fetchmode = DB_FETCHMODE_ASSOC;
         } else {
             $fetchmode = MDB2_FETCHMODE_ASSOC;
@@ -179,8 +171,8 @@ class Structures_DataGrid_DataSource_DBTable
         $recordSet = array();
 
         // Fetch the Data
-        if ($numRows = $this->_result->numRows()) {
-            while ($record = $this->_result->fetchRow($fetchmode)) {
+        if ($numRows = $result->numRows()) {
+            while ($record = $result->fetchRow($fetchmode)) {
                 $recordSet[] = $record;
             }
         }
