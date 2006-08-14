@@ -84,8 +84,19 @@ class Structures_DataGrid_DataSource_DBTable
      * @access private
      */
     var $_sortSpec = array();
-    
+
     /**
+     * Total number of rows 
+     * 
+     * This property caches the result of count() to avoid running the same
+     * database query multiple times.
+     *
+     * @var int
+     * @access private
+     */
+     var $_rowNum = null;    
+
+   /**
      * Constructor
      *
      * @access public
@@ -190,8 +201,19 @@ class Structures_DataGrid_DataSource_DBTable
      */
     function count()
     {
-        return $this->_object->selectCount($this->_options['view'],
-                                           $this->_options['where']);
+        // do we already have the cached number of records? (if yes, return it)
+        if (!is_null($this->_rowNum)) {
+            return $this->_rowNum;
+        }
+        // try to fetch the number of records
+        $count = $this->_object->selectCount($this->_options['view'],
+                                             $this->_options['where']);
+        // if we've got a number of records, save it to avoid running the same
+        // query multiple times
+        if (!PEAR::isError($count)) {
+            $this->_rowNum = $count;
+        }
+        return $count;
     }
 
     /**

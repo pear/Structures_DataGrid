@@ -100,6 +100,17 @@ class Structures_DataGrid_DataSource_MDB2
     var $_sortSpec = array();
 
     /**
+     * Total number of rows 
+     * 
+     * This property caches the result of count() to avoid running the same
+     * database query multiple times.
+     *
+     * @var int
+     * @access private
+     */
+     var $_rowNum = null;    
+
+    /**
      * Constructor
      *
      * @access public
@@ -232,6 +243,11 @@ class Structures_DataGrid_DataSource_MDB2
     */
     function count()
     {
+        // do we already have the cached number of records? (if yes, return it)
+        if (!is_null($this->_rowNum)) {
+            return $this->_rowNum;
+        }
+        // try to fetch the number of records
         if (array_key_exists('count_query', $this->_options)) {
             // complex queries might require special queries to get the
             // right row count
@@ -257,6 +273,11 @@ class Structures_DataGrid_DataSource_MDB2
             $count = $this->_db->extended->getOne($query);
             // $count has an integer value with number of rows or is a
             // PEAR_Error instance on failure
+        }
+        // if we've got a number of records, save it to avoid running the same
+        // query multiple times
+        if (!PEAR::isError($count)) {
+            $this->_rowNum = $count;
         }
         return $count;
     }
