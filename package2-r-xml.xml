@@ -27,8 +27,8 @@ string.
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-06-19</date>
- <time>18:00:00</time>
+ <date>?</date>
+ <time>?</time>
  <version>
   <release>0.1.1</release>
   <api>0.1.1</api>
@@ -43,6 +43,9 @@ string.
 - fixed request #8007 'Options for customizing XML renderer'
   new options : fieldTag, fieldAttribute and labelAttribute
   thanks Markus Ernst (derernst at gmx dot ch)
+- fixed request #8427: the XML declaration now reflects the "encoding" option
+  thanks Andrew Coghlan (acoghlan at itsm dot net)
+  Warning: the XML declaration encoding wasn't set in previous versions.
 
  </notes>
  <contents>
