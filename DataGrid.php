@@ -1135,12 +1135,11 @@ class Structures_DataGrid
     {
         if (isset($this->_dataSource)) {
             // sometimes we have to fix the page number:
-            // if we have a page number greater than 1, we have a row limit and
-            // the real page count is lower than the given page number indicates,
-            // the page number will be set to 1
-            if (   $this->page > 1
-                && !is_null($this->rowLimit)
-                && $this->getPageCount() < $this->page
+            // if we have a row limit, a page number lower than 1, or greater
+            // than 1 and the real page count is lower than the given page
+            // number indicates, the page number will be set to 1
+            if (!is_null($this->rowLimit) && ($this->page < 1 ||
+                ($this->page > 1 && $this->getPageCount() < $this->page))
                ) {
                 $this->page = 1;
             }
