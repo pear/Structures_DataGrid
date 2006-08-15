@@ -75,7 +75,7 @@ This concept is based on the .NET Framework DataGrid control and works very well
  <dependencies>
   <required>
    <php>
-    <min>4.2</min>
+    <min>4.3</min>
    </php>
    <pearinstaller>
     <min>1.4.9</min>
