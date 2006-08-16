@@ -136,6 +136,13 @@ I propose to remove the $_columnObjects property, and put Column objects referen
 directly into $_columns
 
 --------------------------------------------------------------------------------
-TODO 13 - Add a FAQ to the documentation (wiesemann) - Priority: Medium
+TODO 13 - Add a FAQ to the documentation (wiesemann) - Priority: Medium - Done
 
 One FAQ would be: "How can I use multiple grids on one page?" (cp. bug #8392)
+
+--------------------------------------------------------------------------------
+TODO 14 - Repair handling of numbers in mkmanual.sh (?) - Priority: Medium
+
+The current version of mkmanual.sh breaks phpDoc comments like the one of
+getCurrentRecordNumberStart(). The '0' after 'or:' gets lost and is missing
+in the manual, therefore.
