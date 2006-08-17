@@ -448,7 +448,7 @@ class Structures_DataGrid
      *
      * You can call this method several times with different renderers.
      * 
-     * @param  int    $renderer Renderer type (optional)
+     * @param  int    $renderer Renderer type or instance (optional)
      * @param  array  $options  An associative array of the form:
      *                          array(optionName => optionValue, ...)
      * @access public
@@ -586,6 +586,7 @@ class Structures_DataGrid
      * @param  array    $options        Rendering options
      * @return mixed    Renderer instance or PEAR_Error
      * @access public
+     * @see Structures_DataGrid::attachRenderer
      */
     function &setRenderer($type, $options = array())
     {
