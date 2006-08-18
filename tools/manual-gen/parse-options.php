@@ -1,16 +1,24 @@
 <?php
 
-// run me from the command line (while being in tools/manual-gen), using:
-//   php parse-options.php
+// run me from the command line (while being in pear/Structures_DataGrid), using:
+//   php tools/manual-gen/parse-options.php
 
 error_reporting(E_ALL);
 
 require_once 'File/Util.php';
 
-define('PATH', '../../../');
+// TODO: this script should be called by mkmanual.sh
+// TODO: pass the peardoc path as a parameter to this script
+// TODO: we need different peardoc path definitions for Cygwin and PHP
+// TODO: remove this constant
+define('PEARDOC_PATH', 'c:/data/repository/peardoc');
+
+define('PATH', '../');
 define('TMP_PATH', File_Util::tmpDir() . '/sdgdoc/');
 if (!is_dir(TMP_PATH)) {
     mkdir(TMP_PATH, 0770, true);
+    mkdir(TMP_PATH . 'structures-datagrid-datasource/', 0770, true);
+    mkdir(TMP_PATH . 'structures-datagrid-renderer/', 0770, true);
 }
 
 $options = array();
@@ -23,6 +31,8 @@ foreach ($directories as $directory) {
         parseDirectory($options, $inheritance, $directory);
     }
 }
+
+$ids = array();
 
 // loop over the inheritance array to store the (own and inherited) options of
 // all drivers
@@ -47,8 +57,16 @@ foreach ($inheritance as $class => $extends) {
     // sort the options alphabetically
     ksort($driver_options);
     // save the options as an XML file
-    writeXMLFile($orig_class, $driver_options);
+    $id = writeXMLFile($orig_class, $driver_options);
+    $ids[] = $id;
 }
+
+// write all IDs into a temporary file (contents need to be manually copied!)
+$id_file = '';
+foreach ($ids as $id) {
+    $id_file .= '&' . $id . ";\n";
+}
+file_put_contents(TMP_PATH . 'ids.txt', $id_file);
 
 function parseDirectory(&$options, &$inheritance, $dir)
 {
@@ -201,30 +219,85 @@ function indentMultiLine($content, $indentStr, $indentNum)
 
 function writeXMLFile($driver, $options)
 {
-    $xml  = '<table>' . "\n";
-    $xml .= ' <title>Options for this driver</title>' . "\n";
-    $xml .= ' <tgroup cols="4">' . "\n";
-    $xml .= '  <thead>' . "\n";
-    $xml .= '   <row>' . "\n";
-    $xml .= '    <entry>Option</entry>' . "\n";
-    $xml .= '    <entry>Type</entry>' . "\n";
-    $xml .= '    <entry>Description</entry>' . "\n";
-    $xml .= '    <entry>Default Value</entry>' . "\n";
-    $xml .= '   </row>' . "\n";
-    $xml .= '  </thead>' . "\n";
-    $xml .= '  <tbody>' . "\n";
+    // prepare some variables for the XML contents
+    $type = 'structures-datagrid-' . ((strpos($driver, 'DataSource') !== false) ? 'datasource' : 'renderer');
+    $name = strtolower(substr($driver, strrpos($driver, '_') + 1));
+    $id = 'package.structures.structures-datagrid.' . $type . '.' . $name;
+
+    // prepare the XML file
+    $xml  = '<?xml version="1.0" encoding="iso-8859-1" ?>' . "\n";
+    $xml .= '<!-- $Revision$ -->' . "\n";
+    $xml .= '<refentry id="' . $id . '">' . "\n";
+    $xml .= ' <refnamediv>' . "\n";
+    $xml .= '  <refname>' . $driver . '</refname>' . "\n";
+    // TODO: extract a short description from the source code
+    $xml .= '  <refpurpose>[TODO]</refpurpose>' . "\n";
+    $xml .= ' </refnamediv>' . "\n";
+    // TODO: extract the 'GENERAL NOTES' section from the source code
+    // TODO: extract example code link from the source code
+    $xml .= ' <refsect1 id="' . $id . '.options">' . "\n";
+    $xml .= '  <title>Options</title>' . "\n";
+    $xml .= '  <para>' . "\n";
+    $xml .= '   This driver accepts the following options:' . "\n";
+    $xml .= '  </para>' . "\n";
+    $xml .= '  <table>' . "\n";
+    $xml .= '   <title>Options for this driver</title>' . "\n";
+    $xml .= '   <tgroup cols="4">' . "\n";
+    $xml .= '    <thead>' . "\n";
+    $xml .= '     <row>' . "\n";
+    $xml .= '      <entry>Option</entry>' . "\n";
+    $xml .= '      <entry>Type</entry>' . "\n";
+    $xml .= '      <entry>Description</entry>' . "\n";
+    $xml .= '      <entry>Default Value</entry>' . "\n";
+    $xml .= '     </row>' . "\n";
+    $xml .= '    </thead>' . "\n";
+    $xml .= '    <tbody>' . "\n";
     foreach ($options as $option => $details) {
-      $xml .= '   <row>' . "\n";
-      $xml .= '    <entry>' . $option . '</entry>' . "\n";
-      $xml .= '    <entry>' . $details['type'] . '</entry>' . "\n";
-      $xml .= indentMultiLine('<entry>' . $details['desc'] . '</entry>', ' ', 4) . "\n";
-      $xml .= '    <entry>' . (isset($details['default']) ? $details['default'] : '') . '</entry>' . "\n";
-      $xml .= '   </row>' . "\n";
+      $xml .= '     <row>' . "\n";
+      $xml .= '      <entry>' . $option . '</entry>' . "\n";
+      $xml .= '      <entry>' . $details['type'] . '</entry>' . "\n";
+      $xml .= indentMultiLine('<entry>' . $details['desc'] . '</entry>', ' ', 6) . "\n";
+      $xml .= '      <entry>' . (isset($details['default']) ? $details['default'] : '') . '</entry>' . "\n";
+      $xml .= '     </row>' . "\n";
     }
-    $xml .= '  </tbody>' . "\n";
-    $xml .= ' </tgroup>' . "\n";
-    $xml .= '</table>' . "\n";
-    file_put_contents(TMP_PATH . $driver . '.xml', $xml);
+    $xml .= '    </tbody>' . "\n";
+    $xml .= '   </tgroup>' . "\n";
+    $xml .= '  </table>' . "\n";
+    $xml .= ' </refsect1>' . "\n";
+    $xml .= '</refentry>' . "\n";
+    $xml .= '<!-- Keep this comment at the end of the file' . "\n";
+    $xml .= 'Local variables:' . "\n";
+    $xml .= 'mode: sgml' . "\n";
+    $xml .= 'sgml-omittag:t' . "\n";
+    $xml .= 'sgml-shorttag:t' . "\n";
+    $xml .= 'sgml-minimize-attributes:nil' . "\n";
+    $xml .= 'sgml-always-quote-attributes:t' . "\n";
+    $xml .= 'sgml-indent-step:1' . "\n";
+    $xml .= 'sgml-indent-data:t' . "\n";
+    $xml .= 'sgml-parent-document:nil' . "\n";
+    $xml .= 'sgml-default-dtd-file:"../../../../../manual.ced"' . "\n";
+    $xml .= 'sgml-exposed-tags:nil' . "\n";
+    $xml .= 'sgml-local-catalogs:nil' . "\n";
+    $xml .= 'sgml-local-ecat-files:nil' . "\n";
+    $xml .= 'End:' . "\n";
+    $xml .= 'vim600: syn=xml fen fdm=syntax fdl=2 si' . "\n";
+    $xml .= 'vim: et tw=78 syn=sgml' . "\n";
+    $xml .= 'vi: ts=1 sw=1' . "\n";
+    $xml .= '-->' . "\n";
+
+    // write the XML file
+    file_put_contents(TMP_PATH . $type . '/' . $name . '.xml', $xml);
+    
+    // move the XML file into peardoc directory
+    // TODO: this resets the CVS $Revision$ tag: every run of this script would
+    //       indicate a change of *all* generated XML files
+    //       solution: use 'patch' as in mkmanual.sh
+    unlink(PEARDOC_PATH . '/en/package/structures/structures-datagrid/' . $type . '/' . $name . '.xml');
+    rename(TMP_PATH . $type . '/' . $name . '.xml',
+           PEARDOC_PATH . '/en/package/structures/structures-datagrid/' . $type . '/' . $name . '.xml');
+
+    // return the generated id
+    return $id;
 }
 
 ?>
