@@ -448,7 +448,7 @@ class Structures_DataGrid
      *
      * You can call this method several times with different renderers.
      * 
-     * @param  int    $renderer Renderer type or instance (optional)
+     * @param  mixed  $renderer Renderer type or instance (optional)
      * @param  array  $options  An associative array of the form:
      *                          array(optionName => optionValue, ...)
      * @access public
