@@ -28,7 +28,7 @@ else
     TARGET_DIR=$1
 fi
 
-VERSION=0.2
+VERSION=0.3
 
 echo "Structures_DataGrid Manual Generator $VERSION"
 
@@ -61,6 +61,10 @@ echo "Done."
 
 echo
 
+echo "Parsing/Generating DataSource and Renderer files"
+php tools/manual-gen/parse-options.php $TARGET_DIR_PHPDOC
+echo "Done."
+
 # Cleaning "Warnings" and fixing require_once()
 # The sed command that removes examples line numbers might be dangerous
 echo "Removing Warnings and examples line numbers, fixing require_once() into:"
@@ -81,13 +85,13 @@ echo
 # Patching new/modified files
 cd $BUILD_DIR/structures/structures-datagrid
 echo "Patching new/modified file: "
-for f in structures-datagrid/*.xml structures-datagrid-column/*.xml; do
+for f in structures-datagrid/*.xml structures-datagrid-column/*.xml structures-datagrid-datasource/*.xml structures-datagrid-renderer/*.xml; do
     if ! diff -Nu -I '\$Revision.*\$' $TARGET_DIR/en/package/structures/structures-datagrid/$f \
         $f > $BUILD_DIR/diff
     then 
         patch $TARGET_DIR/en/package/structures/structures-datagrid/$f < $BUILD_DIR/diff
     fi            
-done       
+done
 
 echo
 echo Done. You can now regenerate the html manual.
