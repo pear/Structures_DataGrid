@@ -98,7 +98,8 @@ require_once 'Spreadsheet/Excel/Writer.php';
  * What this means is that if you want to pass a format to this driver you
  * have to "derive" the Format object out of the workbook used in the driver.
  * 
- * The easiest way to do this is: 
+ * The easiest way to do this is:
+ *
  * <code>
  * // Create a workbook
  * $workbook = new Spreadsheet_Excel_Writer();

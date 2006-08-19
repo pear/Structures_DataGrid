@@ -64,7 +64,7 @@ require_once 'Structures/DataGrid/Renderer.php';
  *
  * This driver assigns the following Smarty variables: 
  * - $columnSet:       array of columns specifications
- *                     structure : 
+ *                     structure: 
  *                          array ( 
  *                              0 => array (
  *                                  'name'       => field name,
@@ -85,7 +85,7 @@ require_once 'Structures/DataGrid/Renderer.php';
  * - $lastRecord:      last record number (starting from 1)
  * - $currentSort:     array with column names and the directions used for sorting
  * 
- * This driver also register a Smarty custom function named getPaging
+ * This driver also registers a Smarty custom function named getPaging
  * that can be called from Smarty templates with {getPaging} in order
  * to print paging links. This function accepts any of the Pager::factory()
  * options as parameters.

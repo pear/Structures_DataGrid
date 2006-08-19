@@ -33,10 +33,11 @@ require_once 'XML/RSS.php';
 /**
  * RSS data source driver
  *
+ * @version     $Revision$
  * @author      Andrew Nagy <asnagy@webitecture.org>
+ * @access      public
  * @package     Structures_DataGrid_DataSource_RSS
  * @category    Structures
- * @version     $Revision$
  */
 class Structures_DataGrid_DataSource_RSS extends
     Structures_DataGrid_DataSource_Array
