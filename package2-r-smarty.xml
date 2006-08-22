@@ -47,6 +47,8 @@ couple of variables to a Smarty instance.
 - Request #8341: it is now possible to access the Column attributes from
   a Smarty template
   (thanks to Michael Caplan,  michael at apison dot com)
+- Bug #8530: fixed an error in the generation of the sorting links
+  (thanks to Anton, hire at ukr dot net)
  </notes>
  <contents>
   <dir name="/">
