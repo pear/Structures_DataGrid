@@ -27,10 +27,10 @@ SQL query.
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-08-05</date>
- <time>11:00:00</time>
+ <date>2006-08-23</date>
+ <time>16:00:00</time>
  <version>
-  <release>0.1.2</release>
+  <release>0.1.3</release>
   <api>0.1.1</api>
  </version>
  <stability>
@@ -39,11 +39,8 @@ SQL query.
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-- added multiple fields sorting support (multiSort)
-- Bug #7870: this driver now takes an existing ORDER BY statement in the query
-  into account
-- in addition to 'GROUP BY', also 'DISTINCT' in queries needs special handling
-  for determing the number of rows
+- multiple record count queries are now avoided by using caching of the number
+  of records
  </notes>
  <contents>
   <dir name="/">

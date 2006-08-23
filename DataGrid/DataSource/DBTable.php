@@ -41,6 +41,8 @@ require_once 'Structures/DataGrid/DataSource.php';
  *                     option is required.
  * - where:  (string)  A where clause for the SQL query.
  *                     (default: null)
+ * - params: (array)   Placeholder parameters for prepare/execute
+ *                     (default: array())
  * 
  * GENERAL NOTES:
  *
@@ -96,7 +98,8 @@ class Structures_DataGrid_DataSource_DBTable
     function Structures_DataGrid_DataSource_DBTable()
     {
         parent::Structures_DataGrid_DataSource();
-        $this->_addDefaultOptions(array('where' => null));
+        $this->_addDefaultOptions(array('where' => null,
+                                        'params' => array()));
 
         // FIXME: For clarity, supported options should be declared with 
         // _addDefaultOptions()
@@ -109,12 +112,11 @@ class Structures_DataGrid_DataSource_DBTable
      *
      * @param   object DB_Table     $object     The object (subclass of
      *                                          DB_Table) to bind
-     * @param   mixed               $options    array('view' => 
-     *                                          [name of "view" key])
+     * @param   mixed               $options    Associative array of options.
      * @access  public
      * @return  mixed               True on success, PEAR_Error on failure
      */
-    function bind(&$object, $options=array())
+    function bind(&$object, $options = array())
     {
         if (is_object($object) && is_subclass_of($object, 'db_table')) {
             $this->_object =& $object;
@@ -128,8 +130,8 @@ class Structures_DataGrid_DataSource_DBTable
             $this->setOptions($options);
             return true;
         } else {
-            return PEAR::raiseError('Invalid "view" specified ' . 
-                '[must be a key in array of DB_Table subclass]');
+            return PEAR::raiseError('Invalid or no "view" specified ' . 
+                '[must be a key in $sql array of DB_Table subclass]');
         }
     }
 
@@ -141,7 +143,7 @@ class Structures_DataGrid_DataSource_DBTable
      * @access  public
      * @return  array               The 2D Array of the records
      */
-    function &fetch($offset=0, $limit=null)
+    function &fetch($offset = 0, $limit = null)
     {
         if (!empty($this->_sortSpec)) {
             foreach ($this->_sortSpec as $field => $direction) {
@@ -156,7 +158,8 @@ class Structures_DataGrid_DataSource_DBTable
                             $this->_options['view'],
                             $this->_options['where'], 
                             $sortString, 
-                            $offset, $limit);
+                            $offset, $limit,
+                            $this->_options['params']);
 
         if (PEAR::isError($result)) {
             return $result;
@@ -199,7 +202,9 @@ class Structures_DataGrid_DataSource_DBTable
         }
         // try to fetch the number of records
         $count = $this->_object->selectCount($this->_options['view'],
-                                             $this->_options['where']);
+                                             $this->_options['where'],
+                                             null, null, null,
+                                             $this->_options['params']);
         // if we've got a number of records, save it to avoid running the same
         // query multiple times
         if (!PEAR::isError($count)) {
