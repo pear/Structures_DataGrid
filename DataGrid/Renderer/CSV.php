@@ -38,6 +38,9 @@ require_once 'Structures/DataGrid/Renderer.php';
  *
  * - delimiter:  (string)  Field delimiter
  *                         (default: ',')
+ * - filename:   (string)  Filename of the generated CSV file; boolean false
+ *                         means that no filename will be sent
+ *                         (default: false)
  * - enclosure:  (string)  Field enclosure
  *                         (default: a double quotation mark: ")
  * - lineBreak:  (string)  The character(s) to use for line breaks
@@ -90,6 +93,7 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
         $this->_addDefaultOptions(
             array(
                 'delimiter' => ',',
+                'filename'  => false,
                 'enclosure' => '"',
                 'lineBreak' => "\n",
                 'useQuotes' => "auto"
@@ -199,6 +203,10 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
     function render()
     {
         header('Content-type: text/csv');
+        if ($this->_options['filename'] !== false) {
+            header('Content-disposition: attachment; filename=' .
+                   $this->_options['filename']);
+        }
         parent::render();
     }
 

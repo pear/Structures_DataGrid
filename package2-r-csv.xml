@@ -26,11 +26,11 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-07-20</date>
- <time>14:35:00</time>
+ <date>2006-09-17</date>
+ <time>21:30:00</time>
  <version>
-  <release>0.1.1</release>
-  <api>0.1.0</api>
+  <release>0.1.2</release>
+  <api>0.1.2</api>
  </version>
  <stability>
   <release>beta</release>
@@ -38,8 +38,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-- Bugfix: the delimiter is not append anymore to the last column (this delimiter
-wrongly indicated an additional column)
+- Request #8576: new option 'filename' that will be used as the name of the file
+  that is sent
+  (thanks to John Huddleston, huddlej at gmail dot com)
  </notes>
  <contents>
   <dir name="/">
