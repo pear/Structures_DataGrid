@@ -100,7 +100,7 @@ TODO 9 - Debugging (?) - Priority: Medium
 Add some debugging possibilities, e.g. similar to the way DBDO does it.
 
 --------------------------------------------------------------------------------
-TODO 10 - Remove constants (?) - Priority: High
+TODO 10 - Remove constants (wiesemann) - Priority: High - Done
 
 Remove the new constants for Renderers and DataSources (STRUCTURES_DATAGRID_*),
 use strings insteads. To be discussed: Renderer file for HTML_Table is named

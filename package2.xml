@@ -41,6 +41,11 @@ This concept is based on the .NET Framework DataGrid control and works very well
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
+- The usage of constants for selecting DataSource or Renderer driver is now
+  deprecated. Use the name of the driver instead (e.g. CSV, DB_Table, Smarty).
+  For some drivers there exist also more logical names like 'Excel' (instead of
+  'XLS'). Names like 'HTML_Table' (name of the PEAR package) and 'HTMLTable'
+  (name of the Structures_DataGrid driver) are both allowed.
 - Bug #8005: fill() did not pass options to the renderer
   (thanks to Daniel Rossi, pear at electroteque dot org)
 - use native http_build_query() if PHP 5 is installed

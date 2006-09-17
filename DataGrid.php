@@ -211,6 +211,21 @@ class Structures_DataGrid
         // FIXME: There might be other types of quickforms...
         'html_quickform' => DATAGRID_RENDER_SORTFORM 
     );
+    
+    /**
+     * A mapping between user expected driver names and their real filenames
+     * @var array
+     * @access private
+     */
+    var $_driverNameMap = array(
+        'DataSource' => array(
+            'DBDataObject' => 'DataObject'
+        ),
+        'Renderer' => array(
+            'ConsoleTable' => 'Console',
+            'Excel' => 'XLS'
+        )
+    );
 
     /**
      * Constructor
@@ -313,12 +328,12 @@ class Structures_DataGrid
     function &loadDriver($className)
     {
         if (!Structures_DataGrid::classExists($className)) {
-            $file_name = str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
-            if (!include_once($file_name)) {
-                if (!Structures_DataGrid::fileExists($file_name)) {
-                    $msg = "unable to find package '$className' file '$file_name'";
+            $fileName = str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
+            if (!include_once($fileName)) {
+                if (!Structures_DataGrid::fileExists($fileName)) {
+                    $msg = "unable to find package '$className' file '$fileName'";
                 } else {
-                    $msg = "unable to load driver class '$className' from file '$file_name'";
+                    $msg = "unable to load driver class '$className' from file '$fileName'";
                 }
                 $error = PEAR::raiseError($msg);
                 return $error;
@@ -364,7 +379,7 @@ class Structures_DataGrid
      *                              driver object or PEAR_Error on failure
      * @static
      */
-    function &dataSourceFactory($source, $options=array(), $type=null)
+    function &dataSourceFactory($source, $options = array(), $type = null)
     {
         if (is_null($type) &&
             !($type = Structures_DataGrid::_detectSourceType($source,
@@ -372,6 +387,11 @@ class Structures_DataGrid
             $error = PEAR::raiseError('Unable to determine the data source type. '.
                                       'You may want to explicitly specify it.');
             return $error;
+        }
+
+        $type = $this->_correctDriverName($type, 'DataSource');
+        if (PEAR::isError($type)) {
+            return $type;
         }
 
         $className = "Structures_DataGrid_DataSource_$type";
@@ -406,6 +426,11 @@ class Structures_DataGrid
      */
     function &rendererFactory($type, $options = array())
     {
+        $type = $this->_correctDriverName($type, 'Renderer');
+        if (PEAR::isError($type)) {
+            return $type;
+        }
+
         $className = "Structures_DataGrid_Renderer_$type";
 
         if (PEAR::isError($driver =& $this->loadDriver($className))) {
@@ -1344,6 +1369,35 @@ class Structures_DataGrid
         }
 
         return null;
+    }
+
+    /**
+     * Correct the (file)name of a driver
+     * 
+     * @param string    $name    The name of the driver
+     * @param string    $type    The type of the driver
+     * @return mixed             Either true or a PEAR_Error object
+     * @access private
+     */
+    function _correctDriverName($name, $type)
+    {
+        // replace underscores (e.g. HTML_Table driver has filename HTMLTable.php)
+        $name = str_replace('_', '', $name);
+
+        // does the file exist?
+        if ($this->fileExists("Structures/DataGrid/$type/$name.php")) {
+            return $name;
+        }
+
+        // check, whether a name mapping exists (e.g. from 'Excel' to 'XLS')
+        if (isset($this->_driverNameMap[$type][$name])) {
+            return $this->_driverNameMap[$type][$name];
+        }
+
+        // we could not find a valid driver name => return an error
+        $error = PEAR::raiseError("Unknown $type driver. Please specify an " .
+                                  'existing driver.');
+        return $error;
     }
 
     /**
