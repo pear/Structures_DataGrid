@@ -141,7 +141,8 @@ TODO 13 - Add a FAQ to the documentation (wiesemann) - Priority: Medium - Done
 One FAQ would be: "How can I use multiple grids on one page?" (cp. bug #8392)
 
 --------------------------------------------------------------------------------
-TODO 14 - Repair handling of numbers in mkmanual.sh (?) - Priority: Medium
+TODO 14 - Repair handling of numbers in mkmanual.sh (wiesemann)
+        - Priority: Medium - DONE
 
 The current version of mkmanual.sh breaks phpDoc comments like the one of
 getCurrentRecordNumberStart(). The '0' after 'or:' gets lost and is missing

@@ -75,7 +75,8 @@ do
     cat $f \
         | grep -v '^ *Warning' \
         | sed 's/require_once &apos;\/DataGrid/require_once \&apos;Structures\/DataGrid/' \
-        | sed 's/[0-9]\{1,2\} \{4,5\}//' \
+        | sed 's/<programlisting role="php-highlighted">1     /<programlisting role="php-highlighted">/' \
+        | sed 's/^[0-9]\{1,2\} \{4,5\}//' \
         > $BUILD_DIR/grep.tmp \
         && mv $BUILD_DIR/grep.tmp $f 
 done

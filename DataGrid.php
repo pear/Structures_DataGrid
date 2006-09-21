@@ -866,7 +866,7 @@ class Structures_DataGrid
     /**
      * Returns the number of the first record of the current page
      *
-     * @return int       the number of the first record currently shown, or : 0 
+     * @return int       the number of the first record currently shown, or: 0 
      *                   if there are no records, 1 if there is no row limit
      * @access public
      */

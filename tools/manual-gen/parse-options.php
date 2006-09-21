@@ -351,6 +351,7 @@ function getNotes($file, $optionsEndRow)
 
     // read the 'GENERAL NOTES'
     $notes = '';
+    $codeTagOpen = false;
     for ($i = $startRow + 2; $i < $endRow; $i++) {
         $row = rtrim(substr($file[$i], 3));
         if (strpos($row, '<code>') !== false) {
