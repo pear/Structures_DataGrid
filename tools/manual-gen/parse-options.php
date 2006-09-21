@@ -409,14 +409,14 @@ function writeXMLFile($driver, $descriptions, $options, $notes)
     $xml .= '<refentry id="' . $id . '">' . "\n";
     $xml .= ' <refnamediv>' . "\n";
     $xml .= '  <refname>' . $driver . '</refname>' . "\n";
-    $xml .= '  <refpurpose>' . $descriptions['short'] . '</refpurpose>' . "\n";
+    $xml .= '  <refpurpose>' . htmlentities($descriptions['short']) . '</refpurpose>' . "\n";
     $xml .= ' </refnamediv>' . "\n";
     // TODO: extract example code link from the source code
     if ($descriptions['long'] != '') {
         $xml .= ' <refsect1 id="' . $id . '.desc">' . "\n";
         $xml .= '  <title>Description</title>' . "\n";
         $xml .= '  <para>' . "\n";
-        $xml .= '   ' . $descriptions['long'] . "\n";
+        $xml .= '   ' . htmlentities($descriptions['long']) . "\n";
         $xml .= '  </para>' . "\n";
         $xml .= ' </refsect1>' . "\n";
     }
@@ -439,10 +439,10 @@ function writeXMLFile($driver, $descriptions, $options, $notes)
     $xml .= '    <tbody>' . "\n";
     foreach ($options as $option => $details) {
       $xml .= '     <row>' . "\n";
-      $xml .= '      <entry>' . $option . '</entry>' . "\n";
-      $xml .= '      <entry>' . $details['type'] . '</entry>' . "\n";
-      $xml .= indentMultiLine('<entry>' . $details['desc'] . '</entry>', ' ', 6) . "\n";
-      $xml .= '      <entry>' . (isset($details['default']) ? $details['default'] : '') . '</entry>' . "\n";
+      $xml .= '      <entry>' . htmlentities($option) . '</entry>' . "\n";
+      $xml .= '      <entry>' . htmlentities($details['type']) . '</entry>' . "\n";
+      $xml .= indentMultiLine('<entry>' . htmlentities($details['desc']) . '</entry>', ' ', 6) . "\n";
+      $xml .= '      <entry>' . (isset($details['default']) ? htmlentities($details['default']) : '') . '</entry>' . "\n";
       $xml .= '     </row>' . "\n";
     }
     $xml .= '    </tbody>' . "\n";
