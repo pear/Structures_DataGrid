@@ -219,7 +219,8 @@ class Structures_DataGrid
      */
     var $_driverNameMap = array(
         'DataSource' => array(
-            'DBDataObject' => 'DataObject'
+            'DBDataObject' => 'DataObject',
+            'XLS' => 'Excel'
         ),
         'Renderer' => array(
             'ConsoleTable' => 'Console',
