@@ -9,7 +9,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <description>
 This is a DataSource driver for Structures_DataGrid using Excel spreadsheets. It
 requires that the package Spreadsheet_Excel_Reader is installed (not available
-as a PEAR package, but via Sourceforge: TODO).
+as a PEAR package, but via Sourceforge: http://sourceforge.net/projects/phpexcelreader).
  </description>
  <lead>
   <name>Mark Wiesemann</name>
