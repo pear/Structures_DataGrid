@@ -56,7 +56,7 @@ require_once 'Spreadsheet/Excel/reader.php';
  * return PEAR::raiseError('The filename ' . $sFileName . ' is not readable');
  * </code>
  * This class is optimized for the changed code (but will work also with the
- * die() in the reader class, of course) and also then a reasonable error
+ * die() in the reader class, of course), and provides then a reasonable error
  * handling.
  * 
  * @version  $Revision$
