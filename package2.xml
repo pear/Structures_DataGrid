@@ -29,8 +29,8 @@ This concept is based on the .NET Framework DataGrid control and works very well
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>?</date>
- <time>?</time>
+ <date>2006-10-17</date>
+ <time>21:40:00</time>
  <version>
   <release>0.7.2</release>
   <api>0.7.2</api>
@@ -66,6 +66,7 @@ This concept is based on the .NET Framework DataGrid control and works very well
   high, it is now resetted to 1 ("too low" means: the given page number is lower
   than 1; "too high" means: the real page count is lower than the given page
   number)
+- fixed handling of column attributes for the Smarty renderer
  </notes>
  <contents>
   <dir name="/">
