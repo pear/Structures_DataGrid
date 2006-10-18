@@ -6,8 +6,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <name>Structures_DataGrid_Renderer_Smarty</name>
  <channel>pear.php.net</channel>
  <summary>Renderer driver using Smarty</summary>
- <description>This is a Renderer driver for Structures_DataGrid using Smarty. It adds a
-couple of variables to a Smarty instance.
+ <description>This is a Rendering driver for Structures_DataGrid using Smarty. 
+ It adds the necessary variables and functions to a Smarty instance, in order 
+ to build a full-featured DataGrid within a Smarty template.
  </description>
  <lead>
   <name>Andrew S. Nagy</name>
@@ -27,11 +28,11 @@ couple of variables to a Smarty instance.
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>?</date>
- <time>?</time>
+ <date>2006-10-18</date>
+ <time>15:52:00</time>
  <version>
   <release>0.1.1</release>
-  <api>0.1.0</api>
+  <api>0.1.1</api>
  </version>
  <stability>
   <release>beta</release>
