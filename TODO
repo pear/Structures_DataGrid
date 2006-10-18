@@ -147,3 +147,22 @@ TODO 14 - Repair handling of numbers in mkmanual.sh (wiesemann)
 The current version of mkmanual.sh breaks phpDoc comments like the one of
 getCurrentRecordNumberStart(). The '0' after 'or:' gets lost and is missing
 in the manual, therefore.
+
+--------------------------------------------------------------------------------
+TODO 15 - Custom DataObjects (olivierg) - Priority: Medium
+
+For a customer I've been asked to provide a faster replacement for DB_DataObject.
+My DataObject class has the same interface as DB_DataObject, however SDG won't bind
+it, even if I force the type in DataGrid::bind(). This is because
+SDG_DS_DataObject::bind() does an intrusive test to ensure that the source is a
+DB_DataObject.
+
+--------------------------------------------------------------------------------
+TODO 16 - Write mode 
+
+In order to eventually allow users to edit the data, the DataSource layer now 
+has new insert(), update() and delete() prototypes (see DataSource.php CVS 
+revision 1.24)
+
+The next step is to actually implement these methods in the DataSource drivers.
+
