@@ -85,6 +85,7 @@ class Structures_DataGrid_DataSource
 
         $this->_features = array(
                 'multiSort' => false, // Multiple field sorting
+                'writeMode' => false, // insert, update and delete records
         );
     }
 
@@ -190,6 +191,10 @@ class Structures_DataGrid_DataSource
      * When overloaded this method must return a 2D array of records 
      * on success or a PEAR_Error object on failure.
      *
+     * Driver that support the "writeMode" feature, must transparently
+     * add a field named "#KEY#" to each record, containing a unique
+     * record identifier, for use by update() and delete().
+     *
      * @abstract
      * @param   integer $offset     Limit offset (starting from 0)
      * @param   integer $len        Limit length
@@ -254,15 +259,81 @@ class Structures_DataGrid_DataSource
      * @abstract
      * @param   mixed $container The datasource container
      * @param   array $options   Binding options
-     * @return  object              PEAR_Error with message 
-     *                              "No data source driver loaded" 
+     * @return  object           PEAR_Error with message 
+     *                           "No data source driver loaded" 
      * @access  public                          
      */
     function bind($container, $options = array())
     {
         return PEAR::raiseError("No data source driver loaded");
     }
-  
+ 
+    /**
+     * Record insertion method prototype
+     *
+     * Drivers that support the "writeMode" feature must implement this method.
+     *
+     * When overloaded this method must return true on success or a PEAR_Error 
+     * object on failure.
+     *
+     * @abstract
+     * @param   array   $data   Associative array of the form: 
+     *                          array(field => value, ..)
+     * @return  object          PEAR_Error with message 
+     *                          "No data source driver loaded or write mode not 
+     *                          supported by the current driver"
+     * @access  public                          
+     */
+    function insert($data)
+    {
+        return PEAR::raiseError("No data source driver loaded or write mode not". 
+                                "supported by the current driver");
+    }
+
+    /**
+     * Record updating method prototype
+     *
+     * Drivers that support the "writeMode" feature must implement this method.
+     *
+     * When overloaded this method must return true on success or a PEAR_Error 
+     * object on failure.
+     *
+     * @abstract
+     * @param   string  $key    Unique record identifier (see fetch())
+     * @param   array   $data   Associative array of the form: 
+     *                          array(field => value, ..)
+     * @return  object          PEAR_Error with message 
+     *                          "No data source driver loaded or write mode 
+     *                          not supported by the current driver"
+     * @access  public                          
+     */
+    function update($key, $data)
+    {
+        return PEAR::raiseError("No data source driver loaded or write mode not". 
+                                "supported by the current driver");
+    }
+
+    /**
+     * Record deletion method prototype
+     *
+     * Drivers that support the "writeMode" feature must implement this method.
+     *
+     * When overloaded this method must return true on success or a PEAR_Error 
+     * object on failure.
+     *
+     * @abstract
+     * @param   string  $key    Unique record identifier (see fetch())
+     * @return  object          PEAR_Error with message 
+     *                          "No data source driver loaded or write mode 
+     *                          not supported by the current driver"
+     * @access  public                          
+     */
+    function delete($key)
+    {
+        return PEAR::raiseError("No data source driver loaded or write mode not". 
+                                "supported by the current driver");
+    }
+
     /**#@-*/
 
     // End DocBook template
