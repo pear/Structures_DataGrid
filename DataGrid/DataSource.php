@@ -45,6 +45,8 @@
  *                              when 'generate_columns' is true. 
  *                              Form: array(field => label, ...)
  *                              (default: array())
+ * - primary_key       (string) Name (or numerical index) of the field that 
+ *                              contains a unique record identifier
  *
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @author   Andrew Nagy <asnagy@webitecture.org>
@@ -81,7 +83,8 @@ class Structures_DataGrid_DataSource
     {
         $this->_options = array('generate_columns' => false,
                                 'labels'           => array(),
-                                'fields'           => array());
+                                'fields'           => array(),
+                                'primary_key'      => null);
 
         $this->_features = array(
                 'multiSort' => false, // Multiple field sorting
@@ -182,7 +185,7 @@ class Structures_DataGrid_DataSource
      * Structures_DataGrid class.
      *
      * It is an abstract method, part of the DataGrid Datasource driver 
-     * interface, and must overloaded by drivers.
+     * interface, and must/may be overloaded by drivers.
      */
    
     /**
@@ -190,10 +193,6 @@ class Structures_DataGrid_DataSource
      *
      * When overloaded this method must return a 2D array of records 
      * on success or a PEAR_Error object on failure.
-     *
-     * Driver that support the "writeMode" feature, must transparently
-     * add a field named "#KEY#" to each record, containing a unique
-     * record identifier, for use by update() and delete().
      *
      * @abstract
      * @param   integer $offset     Limit offset (starting from 0)
@@ -274,7 +273,7 @@ class Structures_DataGrid_DataSource
      * Drivers that support the "writeMode" feature must implement this method.
      *
      * When overloaded this method must return true on success or a PEAR_Error 
-     * object on failure.
+     * object on failure. 
      *
      * @abstract
      * @param   array   $data   Associative array of the form: 
@@ -291,6 +290,21 @@ class Structures_DataGrid_DataSource
     }
 
     /**
+     * Return the primary key field name or numerical index
+     *
+     * Drivers that support the "writeMode" feature should overload this method
+     * if the key can be detected. However, the detection must not override the
+     * "primary_key" option.
+     *
+     * @return  string      Field name or numerical index
+     * @access  protected
+     */
+    function getPrimaryKey()
+    {
+        return $this->_options['primary_key'];
+    }
+
+    /**
      * Record updating method prototype
      *
      * Drivers that support the "writeMode" feature must implement this method.
@@ -299,7 +313,7 @@ class Structures_DataGrid_DataSource
      * object on failure.
      *
      * @abstract
-     * @param   string  $key    Unique record identifier (see fetch())
+     * @param   string  $key    Unique record identifier
      * @param   array   $data   Associative array of the form: 
      *                          array(field => value, ..)
      * @return  object          PEAR_Error with message 
@@ -322,7 +336,7 @@ class Structures_DataGrid_DataSource
      * object on failure.
      *
      * @abstract
-     * @param   string  $key    Unique record identifier (see fetch())
+     * @param   string  $key    Unique record identifier
      * @return  object          PEAR_Error with message 
      *                          "No data source driver loaded or write mode 
      *                          not supported by the current driver"
