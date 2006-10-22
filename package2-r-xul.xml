@@ -27,10 +27,10 @@ string for a XUL listbox.
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-06-19</date>
- <time>18:00:00</time>
+ <date>2006-10-22</date>
+ <time>22:20:00</time>
  <version>
-  <release>0.1.0</release>
+  <release>0.1.1</release>
   <api>0.1.0</api>
  </version>
  <stability>
@@ -38,12 +38,10 @@ string for a XUL listbox.
   <api>beta</api>
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
- <notes>Changes since Structures_DataGrid 0.6.3:
-
-- Renderer driver unbundled from Structures_DataGrid core
-- BC break: only the XML string for a XUL listbox is generated (the old
-  renderer generated a complete XUL "page" which wasn't flexible enough
-  in most cases)
+ <notes>
+- Bug #9191: using $_SERVER['PHP_SELF'] is vulnerable for XSS attacks;
+special characters are now converted to HTML entities
+(thanks to Bertrand Mansion, golgote at mamasam dot com)
  </notes>
  <contents>
   <dir name="/">

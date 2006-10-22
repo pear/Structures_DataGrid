@@ -125,7 +125,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 'evenRowAttributes'   => array(),
                 'oddRowAttributes'    => array(),
                 'emptyRowAttributes'  => array(),
-                'selfPath'            => $_SERVER['PHP_SELF'],
+                'selfPath'            => htmlspecialchars($_SERVER['PHP_SELF']),
                 'sortIconASC'         => '',
                 'sortIconDESC'        => '',
                 'columnAttributes'    => array(),

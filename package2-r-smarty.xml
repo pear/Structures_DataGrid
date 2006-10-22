@@ -28,10 +28,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-10-18</date>
- <time>15:52:00</time>
+ <date>2006-10-22</date>
+ <time>22:20:00</time>
  <version>
-  <release>0.1.1</release>
+  <release>0.1.2</release>
   <api>0.1.1</api>
  </version>
  <stability>
@@ -40,16 +40,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-- Request #8233: added new variable 'currentSort' to the Smarty instance,
-  which is an array with the column names and the directions used for
-  sorting currently (in addition, $columnSet[col].name is now available,
-  containing the column name)
-  (thanks to Alex Kunin, alexkunin at gmail dot com)
-- Request #8341: it is now possible to access the Column attributes from
-  a Smarty template
-  (thanks to Michael Caplan,  michael at apison dot com)
-- Bug #8530: fixed an error in the generation of the sorting links
-  (thanks to Anton, hire at ukr dot net)
+- Bug #9191: using $_SERVER['PHP_SELF'] is vulnerable for XSS attacks;
+special characters are now converted to HTML entities
+(thanks to Bertrand Mansion, golgote at mamasam dot com)
  </notes>
  <contents>
   <dir name="/">

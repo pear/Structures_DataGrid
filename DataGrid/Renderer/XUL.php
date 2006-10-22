@@ -105,7 +105,7 @@ class Structures_DataGrid_Renderer_XUL extends Structures_DataGrid_Renderer
         parent::Structures_DataGrid_Renderer();
         $this->_addDefaultOptions(
             array(
-                'selfPath' => $_SERVER['PHP_SELF']
+                'selfPath' => htmlspecialchars($_SERVER['PHP_SELF'])
             )
         );
     }
