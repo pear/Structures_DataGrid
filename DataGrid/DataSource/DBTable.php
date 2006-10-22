@@ -29,6 +29,7 @@
  */
 
 require_once 'Structures/DataGrid/DataSource.php';
+require_once 'DB/Table/Manager.php';
 
 /**
  * PEAR::DB_Table Data Source Driver
@@ -52,6 +53,11 @@ require_once 'Structures/DataGrid/DataSource.php';
  * given via a view that needs to be named as '__count_' followed by the name
  * of the view that this counting view belongs to. (For example: if you have a
  * view named 'all', the counting view needs to be named as '__count_all'.)
+ * 
+ * To use update() and delete() methods, it is required that the indexes are
+ * properly defined in the $idx array in your DB_Table subclass. If you have,
+ * for example, created your database table yourself and did not setup the $idx
+ * array, you can use the 'primary_key' option to define the primary key field.
  *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@php.net>
@@ -88,7 +94,7 @@ class Structures_DataGrid_DataSource_DBTable
      * @var int
      * @access private
      */
-     var $_rowNum = null;    
+    var $_rowNum = null;    
 
    /**
      * Constructor
@@ -98,13 +104,11 @@ class Structures_DataGrid_DataSource_DBTable
     function Structures_DataGrid_DataSource_DBTable()
     {
         parent::Structures_DataGrid_DataSource();
-        $this->_addDefaultOptions(array('where' => null,
+        $this->_addDefaultOptions(array('view'   => null,
+                                        'where'  => null,
                                         'params' => array()));
-
-        // FIXME: For clarity, supported options should be declared with 
-        // _addDefaultOptions()
-
-        $this->_setFeatures(array('multiSort' => true));
+        $this->_setFeatures(array('multiSort' => true,
+                                  'writeMode' => true));
     }
   
     /**
@@ -230,6 +234,97 @@ class Structures_DataGrid_DataSource_DBTable
         } else {
             $this->_sortSpec[$sortSpec] = $sortDir;
         }
+    }
+
+    /**
+     * Return the primary key field name or numerical index
+     *
+     * @return  mixed    on success: Field name or numerical index
+     *                   on error: PEAR_Error with message 'No primary key found'
+     * @access  protected
+     */
+    function getPrimaryKey()
+    {
+        if (!is_null($this->_options['primary_key'])) {
+            return $this->_options['primary_key'];
+        }
+        // try to find a primary key or unique index (for a single field)
+        foreach ($this->_object->idx as $idxname => $val) {
+            list($type, $cols) = DB_Table_Manager::_getIndexTypeAndColumns($val,
+                                                                      $idxname);
+            if (($type == 'primary' || $type == 'unique')) {
+                if (   is_string($cols)
+                    || (is_array($cols) && count($cols) == 1)
+                   ) {
+                    return $cols;
+                }
+                // FIXME: add handling for keys consisting of multiple fields
+            }
+        }
+        return PEAR::raiseError('No primary key found');
+    }
+
+    /**
+     * Record insertion method
+     *
+     * @param   array   $data   Associative array of the form: 
+     *                          array(field => value, ...)
+     * @return  mixed           Boolean true on success, PEAR_Error otherwise
+     * @access  public                          
+     */
+    function insert($data)
+    {
+        $result = $this->_object->insert($data);
+        if (PEAR::isError($result)) {
+            return $result;
+        }
+        return true;
+    }
+
+    /**
+     * Record updating method prototype
+     *
+     * @param   string  $key    Unique record identifier
+     * @param   array   $data   Associative array of the form: 
+     *                          array(field => value, ...)
+     * @return  mixed           Boolean true on success, PEAR_Error otherwise
+     * @access  public                          
+     */
+    function update($key, $data)
+    {
+        $primary_key = $this->getPrimaryKey();
+        if (PEAR::isError($primary_key)) {
+            return $primary_key;
+        }
+        // FIXME: add handling for keys consisting of multiple fields
+        $where = $primary_key . '=' . $this->_object->quote($key);
+        $result = $this->_object->update($data, $where);
+        if (PEAR::isError($result)) {
+            return $result;
+        }
+        return true;
+    }
+
+    /**
+     * Record deletion method
+     *
+     * @param   string  $key    Unique record identifier
+     * @return  mixed           Boolean true on success, PEAR_Error otherwise
+     * @access  public                          
+     */
+    function delete($key)
+    {
+        $primary_key = $this->getPrimaryKey();
+        if (PEAR::isError($primary_key)) {
+            return $primary_key;
+        }
+        // FIXME: add handling for keys consisting of multiple fields
+        $where = $this->getPrimaryKey() . '=' . $this->_object->quote($key);
+        $result = $this->_object->delete($where);
+        if (PEAR::isError($result)) {
+            return $result;
+        }
+        return true;
     }
 
 }
