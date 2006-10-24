@@ -178,11 +178,12 @@ SDG_DS_DataObject::bind() does an intrusive test to ensure that the source is a
 DB_DataObject.
 
 --------------------------------------------------------------------------------
-TODO 16 - Write mode 
+TODO 16 - Write mode (olivierg) - Priority: Medium
 
 In order to eventually allow users to edit the data, the DataSource layer now 
 has new insert(), update() and delete() prototypes (see DataSource.php CVS 
 revision 1.24)
 
-The next step is to actually implement these methods in the DataSource drivers.
+The next step is to actually implement these methods in the DataSource drivers:
+- DB_Table : done
 
