@@ -45,8 +45,10 @@
  *                              when 'generate_columns' is true. 
  *                              Form: array(field => label, ...)
  *                              (default: array())
- * - primary_key       (string) Name (or numerical index) of the field that 
- *                              contains a unique record identifier
+ * - primary_key        (array) Name(s), or numerical index(es) of the 
+ *                              field(s) which contain a unique record 
+ *                              identifier (only use several fields in case
+ *                              of a multiple-fields primary key)
  *
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @author   Andrew Nagy <asnagy@webitecture.org>
@@ -290,13 +292,17 @@ class Structures_DataGrid_DataSource
     }
 
     /**
-     * Return the primary key field name or numerical index
+     * Return the primary key specification
+     *
+     * This method always return an array containing:
+     * - either one field name or index in case of a single-field key
+     * - or several field names or indexes in case of a multiple-fields key
      *
      * Drivers that support the "writeMode" feature should overload this method
      * if the key can be detected. However, the detection must not override the
      * "primary_key" option.
      *
-     * @return  string      Field name or numerical index
+     * @return  array       Field(s) name(s) or numerical index(es)
      * @access  protected
      */
     function getPrimaryKey()
@@ -313,7 +319,7 @@ class Structures_DataGrid_DataSource
      * object on failure.
      *
      * @abstract
-     * @param   string  $key    Unique record identifier
+     * @param   array   $key    Unique record identifier
      * @param   array   $data   Associative array of the form: 
      *                          array(field => value, ..)
      * @return  object          PEAR_Error with message 
@@ -336,7 +342,7 @@ class Structures_DataGrid_DataSource
      * object on failure.
      *
      * @abstract
-     * @param   string  $key    Unique record identifier
+     * @param   array   $key    Unique record identifier
      * @return  object          PEAR_Error with message 
      *                          "No data source driver loaded or write mode 
      *                          not supported by the current driver"
