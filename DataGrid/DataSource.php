@@ -45,7 +45,7 @@
  *                              when 'generate_columns' is true. 
  *                              Form: array(field => label, ...)
  *                              (default: array())
- * - primary_key        (array) Name(s), or numerical index(es) of the 
+ * - primary_key:       (array) Name(s), or numerical index(es) of the 
  *                              field(s) which contain a unique record 
  *                              identifier (only use several fields in case
  *                              of a multiple-fields primary key)
@@ -294,7 +294,7 @@ class Structures_DataGrid_DataSource
     /**
      * Return the primary key specification
      *
-     * This method always return an array containing:
+     * This method always returns an array containing:
      * - either one field name or index in case of a single-field key
      * - or several field names or indexes in case of a multiple-fields key
      *
