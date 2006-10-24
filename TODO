@@ -56,7 +56,11 @@ TODO 4 - Ensure protection against SQL injection (olivierg) - Priority: Medium
 
 - Are orderBy, direction and page HTTP arguments properly escaped before
 they are included in SQL queries ?
-  
+
+--> Answer: they are NOT (at least with DBDO). I just changed this for the 
+direction argument, but securing the orderBy value(s) is a bit more 
+challenging. The best way to fix this IMO is explained in TODO 2
+
 - Could we write security tests that try to perform SQL injection ?
   
 --------------------------------------------------------------------------------
@@ -116,7 +120,8 @@ a new method in the core class or by a new (rather trivial) array renderer.
 (Idea/request from Gregor Gramlich)
 
 --------------------------------------------------------------------------------
-TODO 12 - Let renderers access Column objects directly (olivierg) - Priority: High
+TODO 12 - Let renderers access Column objects directly (olivierg) 
+        - Priority: High - WON'T FIX
 
 When refactoring the rendering layer, I thought Column objects were like Records
 objects: a waste of memory. So i tried to minimize their use, thinking we could
@@ -134,6 +139,21 @@ people who are writing their own renderers.
 
 I propose to remove the $_columnObjects property, and put Column objects references
 directly into $_columns
+
+=> WON'T FIX, because :
+
+- It does work the way it is. It is not perfect and it will never be.  
+- I tried several times to "fix" this, and it is far from
+  trivial. Everytime it has raised several other quite complex issues.
+
+Conclusion: 
+With the current design a Rendering driver is not supposed to know
+anything about Column objects, and this strict separation seems to be
+useful as far as I can tell (separating layers usually helps when
+handling complexity). 
+
+However, on the user-side, there's no reason to minimize the use of
+Column objects. The Renderers just do not know anything about them directly.
 
 --------------------------------------------------------------------------------
 TODO 13 - Add a FAQ to the documentation (wiesemann) - Priority: Medium - Done
