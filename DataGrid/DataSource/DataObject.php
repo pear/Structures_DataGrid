@@ -299,11 +299,15 @@ class Structures_DataGrid_DataSource_DataObject
      */
     function sort($sortSpec, $sortDir = null)
     {
+        $db =& $this->_dataobject->getDatabaseConnection();
+
         if (is_array($sortSpec)) {
             foreach ($sortSpec as $field => $direction) {
+                $field = $db->quoteIdentifier($field);
                 $this->_dataobject->orderBy("$field $direction");
             }
         } else {
+            $sortSpec = $db->quoteIdentifier($sortSpec);
             if (is_null($sortDir)) {
                 $this->_dataobject->orderBy($sortSpec);
             } else {

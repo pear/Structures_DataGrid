@@ -1248,7 +1248,19 @@ class Structures_DataGrid
         }
         return $value;
     }
-    
+  
+    /**
+     * Secure the sort direction string
+     *
+     * @param   string  $str    Direction string
+     * @return  string          Either ASC or DESC
+     * @access  private
+     */
+    function _secureDirection($str)
+    {
+        return ($str == 'ASC' or $str == 'DESC') ? $str : 'ASC';
+    }
+
     /**
      * Parse HTTP Request parameters
      * 
@@ -1275,14 +1287,16 @@ class Structures_DataGrid
                 $this->sortSpec = array();
                 foreach ($orderBy as $index => $field) {
                     if (!empty($field)) {
-                        $this->sortSpec[$field] = $direction[$index];
+                        $this->sortSpec[$field] = 
+                            $this->_secureDirection($direction[$index]);
                     }
                 } 
             } else {
                 if (!($direction = $this->_getRequestArgument('direction'))) {
                     $direction = 'ASC';
                 }
-                $this->sortSpec = array($orderBy => $direction);
+                $this->sortSpec = 
+                    array($orderBy => $this->_secureDirection($direction));
             }
         }
     }     
