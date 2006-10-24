@@ -239,7 +239,7 @@ class Structures_DataGrid_DataSource_DBTable
     /**
      * Return the primary key field name or numerical index
      *
-     * @return  mixed    on success: Field name or numerical index
+     * @return  mixed    on success: Field name(s) of primary/unique fields
      *                   on error: PEAR_Error with message 'No primary key found'
      * @access  protected
      */
@@ -252,13 +252,8 @@ class Structures_DataGrid_DataSource_DBTable
         foreach ($this->_object->idx as $idxname => $val) {
             list($type, $cols) = DB_Table_Manager::_getIndexTypeAndColumns($val,
                                                                       $idxname);
-            if (($type == 'primary' || $type == 'unique')) {
-                if (   is_string($cols)
-                    || (is_array($cols) && count($cols) == 1)
-                   ) {
-                    return $cols;
-                }
-                // FIXME: add handling for keys consisting of multiple fields
+            if ($type == 'primary' || $type == 'unique') {
+                return (array)$cols;
             }
         }
         return PEAR::raiseError('No primary key found');
@@ -282,7 +277,7 @@ class Structures_DataGrid_DataSource_DBTable
     }
 
     /**
-     * Record updating method prototype
+     * Record updating method
      *
      * @param   string  $key    Unique record identifier
      * @param   array   $data   Associative array of the form: 
@@ -296,9 +291,12 @@ class Structures_DataGrid_DataSource_DBTable
         if (PEAR::isError($primary_key)) {
             return $primary_key;
         }
-        // FIXME: add handling for keys consisting of multiple fields
-        $where = $primary_key . '=' . $this->_object->quote($key);
-        $result = $this->_object->update($data, $where);
+        $where = array();
+        foreach ($primary_key as $single_key) {
+            $where[] = $single_key . '=' . $this->_object->quote($key[$single_key]);
+        }
+        $where_str = join(' AND ', $where);
+        $result = $this->_object->update($data, $where_str);
         if (PEAR::isError($result)) {
             return $result;
         }
@@ -318,9 +316,12 @@ class Structures_DataGrid_DataSource_DBTable
         if (PEAR::isError($primary_key)) {
             return $primary_key;
         }
-        // FIXME: add handling for keys consisting of multiple fields
-        $where = $this->getPrimaryKey() . '=' . $this->_object->quote($key);
-        $result = $this->_object->delete($where);
+        $where = array();
+        foreach ($primary_key as $single_key) {
+            $where[] = $single_key . '=' . $this->_object->quote($key[$single_key]);
+        }
+        $where_str = join(' AND ', $where);
+        $result = $this->_object->delete($where_str);
         if (PEAR::isError($result)) {
             return $result;
         }
