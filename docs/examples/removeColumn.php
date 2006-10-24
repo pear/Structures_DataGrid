@@ -11,7 +11,7 @@ $datagrid->bind("SELECT * FROM City ORDER BY Population", $bindOptions);
 $column =& $datagrid->getColumnByField('ID');
 
 // And we drop that column:
-$datagrid->dropColumn($column);
+$datagrid->removeColumn($column);
 
 // This will only render 4 fields: Name, CountryCode, District and Population:
 $datagrid->render();
