@@ -29,11 +29,11 @@ This concept is based on the .NET Framework DataGrid control and works very well
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-10-17</date>
- <time>21:40:00</time>
+ <date>?</date>
+ <time>?</time>
  <version>
-  <release>0.7.2</release>
-  <api>0.7.2</api>
+  <release>?</release>
+  <api>?</api>
  </version>
  <stability>
   <release>beta</release>
@@ -41,32 +41,7 @@ This concept is based on the .NET Framework DataGrid control and works very well
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-- The usage of constants for selecting DataSource or Renderer driver is now
-  deprecated. Use the name of the driver instead (e.g. CSV, DB_Table, Smarty).
-  For some drivers there exist also more logical names like 'Excel' (instead of
-  'XLS'). Names like 'HTML_Table' (name of the PEAR package) and 'HTMLTable'
-  (name of the Structures_DataGrid driver) are both allowed.
-- Bug #8005: fill() did not pass options to the renderer
-  (thanks to Daniel Rossi, pear at electroteque dot org)
-- use native http_build_query() if PHP 5 is installed
-- Request #8061:
-  added getDataSource(), made datasourceFactory() public 
-  added getter and setter methods for all column object attributes
-  fixed non-static call in dataSourceFactory()
-  (thanks to Markus Ernst, derernst at gmx dot ch)
-- Request #7969: added example to the fill() method 
-  (thanks to Benny Labach, bennythebee at gmail dot com)
-- Request #8089: fixed the DataSource class documentation
-  (thanks to Michel D'HOOGE, michel dot dhooge at gmail dot com)
-- Request #8320: new removeColumn() method
-  (thanks to Arcadius, arcadius at menelic dot com)
-- fixed calculation of the number of the last record
-- fixed internal usage of the page number that was either given via the second
-  constructor parameter or via the 'page' GET variable: if it is too low or too
-  high, it is now resetted to 1 ("too low" means: the given page number is lower
-  than 1; "too high" means: the real page count is lower than the given page
-  number)
-- fixed handling of column attributes for the Smarty renderer
+- secured the sort direction input string
  </notes>
  <contents>
   <dir name="/">
