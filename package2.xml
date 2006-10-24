@@ -42,6 +42,8 @@ This concept is based on the .NET Framework DataGrid control and works very well
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
 - secured the sort direction input string
+- new abstract writeMode DataSource interface, for future support of data
+  editing features
  </notes>
  <contents>
   <dir name="/">
