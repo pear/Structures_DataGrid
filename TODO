@@ -184,6 +184,30 @@ In order to eventually allow users to edit the data, the DataSource layer now
 has new insert(), update() and delete() prototypes (see DataSource.php CVS 
 revision 1.24)
 
-The next step is to actually implement these methods in the DataSource drivers:
-- DB_Table : done
+- design the abstract writeMode DataSource interface - Done
+- make DataSource drivers support writeMode
+    - Array:        Irrelevant (arrays are not persistent)
+    - CSV:          Todo
+    - DB:           Won't fix 
+    - DBQuery:      Won't fix
+    - DBTable:      Done
+    - DataObject:   Todo
+    - MDB2:         Todo
+    - RSS:          Todo
+    - XML:          Todo
+- test these drivers out of SDG
+- code GET/POST arguments parsing into DataGrid.php
+- create a new Renderer_HTMLEditForm driver
+- couple it all together (that's the funny part ;) 
+
+--------------------------------------------------------------------------------
+TODO 17 - HTMLDetailView Renderer (olivierg) - Priority: Medium
+
+In the .NET DataGrid/GridView, there's a thing called "DetailView". It
+is rather useful. It is primarily meant for displaying one record at a
+time with all details, while the grid has less details by definition.
+
+We need a such thing that's for sure. And it shouldn't be that hard to
+code. Additionally, it implies coding some routines to handle passing
+a unique record identifier, which we'll need for TODO 16.
 
