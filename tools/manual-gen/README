@@ -21,8 +21,6 @@ And then create a file named my-example.php in the docs/examples/ directory
 
 II - Generate the documentation
 
-Note: This has been tested on Linux with PhpDocumentor 1.3.0RC6
-
 1 - Change your current directory to the Structures_DataGrid root directory 
 (where you checked it out from CVS)
 
@@ -39,6 +37,8 @@ This will
 It will only modify the files in: 
 - en/package/structures/structures-datagrid/structures-datagrid/
 - en/package/structures/structures-datagrid/structures-datagrid-column/
+- en/package/structures/structures-datagrid/structures-datagrid-datasource/
+- en/package/structures/structures-datagrid/structures-datagrid-renderer/
 
 Modifying the Structures_DataGrid front page, constants, etc... is up to you.
 
@@ -59,10 +59,6 @@ MKMANUAL_TARGET_DIR environment variable:
 $ export MKMANUAL_TARGET_DIR=/path/to/your/peardoc/checkout
 
 3 - then rebuild the manual as usual
-
-Beware that the XML may be broken and you may not be able to build the manual, 
-if you have XML_Beautifier installed (observed with PhpDocumentor 1.3.0RC6
-and XML_Beautifier 1.1).
 
 III - Notes
 
@@ -88,5 +84,5 @@ III - Notes
     read at this moment are in a DocBook-based file located in
     tutorials/phpDocumentor/phpDocumentor.quickstart.pkg
 
-This can be achieved with something like :
+This can be achieved with something like:
     @tutorial phpDocumentor.howto.pkg#using.command-line.output 
