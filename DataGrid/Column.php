@@ -97,7 +97,7 @@ class Structures_DataGrid_Column
      * @param   string      $field          The name of the field for the column
      *                                      to be mapped to
      * @param   string      $orderBy        The field or expression to order the data by
-     * @param   string      $attributes     The HTML attributes for the TR tag
+     * @param   string      $attributes     The HTML attributes for the TD tag
      * @param   string      $autoFillValue  The value to use for the autoFill
      * @param   mixed       $formatter      Formatter callback. See setFormatter()
      * @param   array       $formatterArgs  Associative array of arguments 
