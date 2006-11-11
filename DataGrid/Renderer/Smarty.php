@@ -125,6 +125,16 @@ require_once 'Structures/DataGrid/Renderer.php';
  * </table>
  * </code>
  * 
+ * This template can be used with code similar to this prototype:
+ *
+ * <code>
+ * $smarty = new Smarty(...);
+ * $datagrid =& new Structures_DataGrid(...);
+ * $datagrid->bind(...);
+ * $datagrid->fill($smarty);
+ * $smarty->display(PATH TO YOUR TEMPLATE);
+ * </code>
+ * 
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
  * @author   Olivier Guilyardi <olivier@samalyse.com>
