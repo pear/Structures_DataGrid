@@ -363,7 +363,10 @@ function getNotes($file, $optionsEndRow)
         if (!$codeTagOpen && $row == '') {
             $notes .= "  </para>\n  <para>";
         }
-        $notes .= '   ' . $row . "\n";
+        if (!$codeTagOpen || strpos($row, '<code>') !== false) {
+            $notes .= '   ';
+        }
+        $notes .= $row . "\n";
     }
 
     $notes = htmlentities(trim($notes));
