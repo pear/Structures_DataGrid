@@ -90,6 +90,7 @@ class Structures_DataGrid_DataSource
 
         $this->_features = array(
                 'multiSort' => false, // Multiple field sorting
+                'streaming' => false, // fetch single records instead of all at once
                 'writeMode' => false, // insert, update and delete records
         );
     }

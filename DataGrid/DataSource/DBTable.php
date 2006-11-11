@@ -29,7 +29,6 @@
  */
 
 require_once 'Structures/DataGrid/DataSource.php';
-require_once 'DB/Table/Manager.php';
 
 /**
  * PEAR::DB_Table Data Source Driver
@@ -94,7 +93,15 @@ class Structures_DataGrid_DataSource_DBTable
      * @var int
      * @access private
      */
-    var $_rowNum = null;    
+    var $_rowNum = null;
+
+    /**
+     * Fetchmode for getting the rows from the result object
+     * 
+     * @var int
+     * @access private
+     */
+    var $_fetchMode = null;    
 
    /**
      * Constructor
@@ -108,6 +115,7 @@ class Structures_DataGrid_DataSource_DBTable
                                         'where'  => null,
                                         'params' => array()));
         $this->_setFeatures(array('multiSort' => true,
+                                  'streaming' => true,
                                   'writeMode' => true));
     }
   
@@ -144,10 +152,12 @@ class Structures_DataGrid_DataSource_DBTable
      *
      * @param   integer $offset     Offset (starting from 0)
      * @param   integer $limit      Limit
+     * @param   boolean $streaming  Whether the data should be streamed or not
      * @access  public
-     * @return  array               The 2D Array of the records
+     * @return  mixed               If streaming is enabled, the 2D array of the
+     *                              records, otherwise, the query result object
      */
-    function &fetch($offset = 0, $limit = null)
+    function &fetch($offset = 0, $limit = null, $streaming = false)
     {
         if (!empty($this->_sortSpec)) {
             foreach ($this->_sortSpec as $field => $direction) {
@@ -170,26 +180,45 @@ class Structures_DataGrid_DataSource_DBTable
         }
 
         if (is_a($result, 'db_result')) {
-            $fetchmode = DB_FETCHMODE_ASSOC;
+            $this->_fetchMode = DB_FETCHMODE_ASSOC;
         } else {
-            $fetchmode = MDB2_FETCHMODE_ASSOC;
+            $this->_fetchMode = MDB2_FETCHMODE_ASSOC;
+        }
+
+        // if the data should be streamed, return only the result object, but
+        // don't fetch the records
+        if ($streaming) {
+            return $result;
         }
 
         $recordSet = array();
 
         // Fetch the Data
         if ($numRows = $result->numRows()) {
-            while ($record = $result->fetchRow($fetchmode)) {
+            while ($record = $this->fetchRow($result)) {
                 $recordSet[] = $record;
             }
         }
 
-        // Determine fields to render
-        if (!$this->_options['fields'] && count($recordSet)) {
-            $this->setOptions(array('fields' => array_keys($recordSet[0])));
-        }                
-
         return $recordSet;
+    }
+    
+    function fetchRow(&$result)
+    {
+        // try to fetch a row from the result
+        $record = $result->fetchRow($this->_fetchMode);
+
+        // if there is no row, return 
+        if ($record === false) {
+            return false;
+        }
+
+        // if needed, determine the fields to render
+        if (!$this->_options['fields']) {
+            $this->setOptions(array('fields' => array_keys($record)));
+        }
+
+        return $record;
     }
 
     /**
@@ -248,6 +277,7 @@ class Structures_DataGrid_DataSource_DBTable
         if (!is_null($this->_options['primary_key'])) {
             return $this->_options['primary_key'];
         }
+        include_once 'DB/Table/Manager.php';
         // try to find a primary key or unique index (for a single field)
         foreach ($this->_object->idx as $idxname => $val) {
             list($type, $cols) = DB_Table_Manager::_getIndexTypeAndColumns($val,
