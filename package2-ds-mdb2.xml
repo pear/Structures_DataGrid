@@ -27,10 +27,10 @@ SQL query.
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-08-23</date>
- <time>16:00:00</time>
+ <date>?</date>
+ <time>?</time>
  <version>
-  <release>0.1.2</release>
+  <release>0.1.3</release>
   <api>0.1.1</api>
  </version>
  <stability>
@@ -39,8 +39,8 @@ SQL query.
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-- multiple record count queries are now avoided by using caching of the number
-  of records
+- Bug #9342: fix records count for UNION queries
+(thanks to HarrySchool, HarrySchool at netscape dot net)
  </notes>
  <contents>
   <dir name="/">
