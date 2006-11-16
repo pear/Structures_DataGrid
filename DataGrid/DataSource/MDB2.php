@@ -256,6 +256,7 @@ class Structures_DataGrid_DataSource_MDB2
             // PEAR_Error instance on failure
         }
         elseif (preg_match('#GROUP\s*BY#is', $this->_query) === 1 ||
+                preg_match('#\sUNION\s#is', $this->_query) === 1 ||
                 preg_match('#SELECT.*DISTINCT.*FROM#is', $this->_query) === 1
             ) {
             // GROUP BY and DISTINCT are special cases
