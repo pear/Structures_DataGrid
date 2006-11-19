@@ -183,6 +183,8 @@ class Structures_DataGrid_DataSource_DBTable
             }
         }
 
+        $result->free();
+
         // Determine fields to render
         if (!$this->_options['fields'] && count($recordSet)) {
             $this->setOptions(array('fields' => array_keys($recordSet[0])));

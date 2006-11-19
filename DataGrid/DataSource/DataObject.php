@@ -110,7 +110,7 @@ class Structures_DataGrid_DataSource_DataObject
      * @access  public
      * @return  mixed   True on success, PEAR_Error on failure
      */
-    function bind(&$dataobject, $options=array())
+    function bind(&$dataobject, $options = array())
     {
         if ($options) {
             $this->setOptions($options); 
@@ -179,7 +179,7 @@ class Structures_DataGrid_DataSource_DataObject
      * @access  public
      * @return  array   The 2D Array of the records
      */    
-    function &fetch($offset=0, $len=null)
+    function &fetch($offset = 0, $len = null)
     {
         // Check to see if Query has already been submitted
         if ($this->_dataobject->_DB_resultid != '') {
@@ -260,7 +260,9 @@ class Structures_DataGrid_DataSource_DataObject
                 $records[] = $rec;
             }
         }
-       
+
+        // TODO: (maybe) free the result object here
+
         return $records;
     }
 

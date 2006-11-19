@@ -183,7 +183,7 @@ class Structures_DataGrid_Renderer
      * @var int
      * @access protected
      */
-    var $_recordsNum;
+    var $_recordsNum = 0;
 
     /**
      * Total number of records as reported by the datasource
@@ -386,19 +386,17 @@ class Structures_DataGrid_Renderer
     }
 
     /**
-     * Provide columns and records data
+     * Provide columns
      * 
      * This method is supposed to be called ONLY by the code that loads the 
      * driver. In most cases, that'll be the Structures_DataGrid class.
      * 
      * @param array $columns Array of Structures_DataGrid_Column objects
-     * @param array $records 2D array of records values
      * @access public
      */
-    function setData(&$columns, $records)
+    function setColumns(&$columns)
     {
         $this->_columnObjects = &$columns;
-        $this->_records = $records;
     }
   
     /**
@@ -519,6 +517,29 @@ class Structures_DataGrid_Renderer
     }
 
     /**
+     * Stream a chunk of records
+     *
+     * @param  array    $records   2D array of records
+     * @param  integer  $startRow  Starting row number
+     * @param  boolean  $eof       Whether the current chunk is the last chunk
+     * @access  protected
+     * @return  void
+     */
+    function streamBody($records, $startRow, $eof = false)
+    {
+        $rowNum = count($records);
+        for ($row = 0; $row < $rowNum; $row++) {
+            $this->buildRow($row + $startRow, $records[$row]);
+        }
+
+        if ($eof && $this->_options['fillWithEmptyRows'] && !is_null($this->_pageLimit)) {
+            for ($row = $this->_recordsNum; $row < $this->_pageLimit; $row++) {
+                $this->buildEmptyRow($row);
+            }
+        }
+    }
+
+    /**
      * Build the body
      *
      * Drivers may overload() this method, if buildRow() and buildEmptyRow() 
@@ -530,9 +551,9 @@ class Structures_DataGrid_Renderer
     function buildBody()
     {
         for ($row = 0; $row < $this->_recordsNum; $row++) {
-            $this->buildRow($row,$this->_records[$row]);
+            $this->buildRow($row, $this->_records[$row]);
         }
-        
+
         if ($this->_options['fillWithEmptyRows'] && !is_null($this->_pageLimit)) {
             for ($row = $this->_recordsNum; $row < $this->_pageLimit; $row++) {
                 $this->buildEmptyRow($row);
@@ -553,7 +574,7 @@ class Structures_DataGrid_Renderer
      * @access protected
      * @abstract
      */
-    function buildRow($index,$data)
+    function buildRow($index, $data)
     {
     }
   
@@ -649,85 +670,103 @@ class Structures_DataGrid_Renderer
      * Drivers must not overload this method. Pre and post-build operations
      * can be performed in init() and finalize()
      * 
+     * @param  array    $chunk     2D array of records
+     * @param  integer  $startRow  Starting row number of current chunk
+     * @param  boolean  $eof       Whether the current chunk is the last chunk
      * @access public
      * @return void
      */
-    function build()
+    function build($chunk, $startRow, $eof = false)
     {
-        $this->_columns = array();
-        foreach ($this->_columnObjects as $index => $column)
-        {
-            if (!is_null($column->orderBy)) {
-                $field = $column->orderBy;
-                if (!in_array($field,$this->_sortableFields) and 
-                    !in_array($field, $this->_options['hideColumnLinks'])
-                   ) {
-                    $this->_sortableFields[] = $field;
+        // on first call of build(): initialize the columns and prepare the header
+        if (empty($this->_columns)) {
+            $this->_columns = array();
+            foreach ($this->_columnObjects as $index => $column) {
+                if (!is_null($column->orderBy)) {
+                    $field = $column->orderBy;
+                    if (!in_array($field,$this->_sortableFields) and 
+                        !in_array($field, $this->_options['hideColumnLinks'])
+                       ) {
+                        $this->_sortableFields[] = $field;
+                    }
+                } else if (!is_null($column->fieldName)) {
+                    $field = $column->fieldName;
+                } else {
+                    $field = $column->columnName;
                 }
-            } else if (!is_null($column->fieldName)) {
-                $field = $column->fieldName;
-            } else {
-                $field = $column->columnName;
-            }
 
-            $label = $column->columnName;
+                $label = $column->columnName;
 
-            if (isset($this->_options['defaultColumnValues'][$field])) {
-                $column->setAutoFillValue($this->_options['defaultColumnValues'][$field]);
-            } else if (!is_null($this->_options['defaultCellValue'])) {
-                $column->setAutoFillValue($this->_options['defaultCellValue']);
-            }
-
-            if (isset($column->attribs) &&
-                (is_a($this, 'Structures_DataGrid_Renderer_HTMLTable')) 
-                    || is_a($this, 'Structures_DataGrid_Renderer_Smarty'))
-            {
-                if (!array_key_exists($field, $this->_options['columnAttributes'])) {
-                    $this->_options['columnAttributes'][$field] = array();
+                if (isset($this->_options['defaultColumnValues'][$field])) {
+                    $column->setAutoFillValue($this->_options['defaultColumnValues'][$field]);
+                } else if (!is_null($this->_options['defaultCellValue'])) {
+                    $column->setAutoFillValue($this->_options['defaultCellValue']);
                 }
-                $this->_options['columnAttributes'][$field] =
-                    array_merge($this->_options['columnAttributes'][$field],
-                                $column->attribs);
+
+                if (isset($column->attribs) &&
+                    (is_a($this, 'Structures_DataGrid_Renderer_HTMLTable')) 
+                        || is_a($this, 'Structures_DataGrid_Renderer_Smarty'))
+                {
+                    if (!array_key_exists($field, $this->_options['columnAttributes'])) {
+                        $this->_options['columnAttributes'][$field] = array();
+                    }
+                    $this->_options['columnAttributes'][$field] =
+                        array_merge($this->_options['columnAttributes'][$field],
+                                    $column->attribs);
+                }
+
+                $this->_columns[$index] = compact('field','label');
             }
 
-            $this->_columns[$index] = compact('field','label');
+            $this->_columnsNum = count($this->_columns);
+
+            $this->init();
+
+            if ($this->_options['buildHeader']) {
+                $this->buildHeader($this->_columns);
+            }
         }
 
-        $this->_columnsNum = count($this->_columns);
-        $this->_recordsNum = count($this->_records);
-
-        $this->init();
-
-        if (is_null($this->_pageLimit)) {
-            $this->_pageLimit = $this->_recordsNum;
-        }
+        $chunkSize = count($chunk);
+        $this->_recordsNum += $chunkSize;
 
         $row = 0;
-        for ($rec = 0; $rec < $this->_recordsNum; $rec++) {
+        for ($rec = 0; $rec < $chunkSize; $rec++) {
             $content = array();
             $col = 0;
             foreach ($this->_columnObjects as $column) {
-                $content[] = $this->recordToCell($column, $this->_records[$rec],
-                                                 $row, $col);
+                $content[] = $this->recordToCell($column, $chunk[$rec],
+                                                 $row + $startRow, $col);
                 $col++;
             }
-            $this->_records[$rec] = $content;
+            $chunk[$rec] = $content;
             $row++;
         }
 
-        if ($this->_options['buildHeader']) {
-            $this->buildHeader($this->_columns);
+        if ($this->_isOverloaded('buildBody')) {  // FIXME: _isOverloaded returns the wrong result here
+            $this->_records = array_merge($this->_records, $chunk);
+        } else {
+            $this->streamBody($chunk, $startRow, $eof);
         }
 
-        $this->buildBody();
+        // if this is the last chunk, do some final operations
+        if ($eof) {
+            if (is_null($this->_pageLimit)) {
+                $this->_pageLimit = $this->_recordsNum;
+            }
 
-        if ($this->_options['buildFooter']) {
-            $this->buildFooter();
+            if ($this->_isOverloaded('buildBody')) {  // FIXME: _isOverloaded returns the wrong result here
+                $this->buildBody();
+            }
+
+            if ($this->_options['buildFooter']) {
+                $this->buildFooter();
+            }
+
+            $this->finalize();
+
+            $this->_isBuilt = true;
         }
-
-        $this->finalize();
-
-        $this->_isBuilt = true;
     }
 
     /**
@@ -742,7 +781,7 @@ class Structures_DataGrid_Renderer
     function getOutput()
     {
         if ($this->_isOverloaded('flatten')) {
-            $this->_isBuilt or $this->build();
+            $this->_isBuilt or $this->build($this->_records, 0, true);  // FIXME: are these params right for all cases?
             return $this->flatten();
         } else {
             return $this->_noSupport(__FUNCTION__);
@@ -760,7 +799,7 @@ class Structures_DataGrid_Renderer
     function render()
     {
         if ($this->_isOverloaded('flatten')) {
-            $this->_isBuilt or $this->build();
+            $this->_isBuilt or $this->build($this->_records, 0, true);  // FIXME: are these params right for all cases?
             echo $this->flatten();
         } else {
             $this->build();
@@ -880,7 +919,7 @@ class Structures_DataGrid_Renderer
      *             
      */
     function _buildSortingHttpQuery($field, $direction, $convertAmpersand = false, 
-                                   $extraParameters = array())
+                                    $extraParameters = array())
     {
         $prefix = $this->_requestPrefix;
 

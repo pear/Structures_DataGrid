@@ -229,6 +229,13 @@ class Structures_DataGrid
     );
 
     /**
+     * Number of records that should be buffered when streaming is enabled
+     * @var integer
+     * @access private
+     */
+    var $_bufferSize = null;
+
+   /**
      * Constructor
      *
      * Builds the DataGrid class. The Core functionality and Renderer are
@@ -272,7 +279,7 @@ class Structures_DataGrid
     }
 
     /**
-     * Method used for debuging purposes only.  Displays a dump of the DataGrid
+     * Method used for debugging purposes only.  Displays a dump of the DataGrid
      * object.
      *
      * @access  public
@@ -670,7 +677,9 @@ class Structures_DataGrid
      */
     function _setRendererCurrentSorting()
     {
-        if ($this->_dataSource->hasFeature('multiSort')) {
+        if (   isset($this->_dataSource)
+            && $this->_dataSource->hasFeature('multiSort')
+           ) {
             $this->_renderer->setCurrentSorting($this->sortSpec, true);
         } else {
             reset($this->sortSpec);
@@ -698,7 +707,7 @@ class Structures_DataGrid
             
             $this->_renderer =& $renderer;
             if (isset($this->_dataSource)) {
-                $this->_renderer->setData($this->columnSet, $this->recordSet);
+                $this->_renderer->setColumns($this->columnSet);
                 $this->_renderer->setLimit($this->page, $this->rowLimit, 
                                            $this->getRecordCount());
                 $this->_setRendererCurrentSorting();
@@ -785,7 +794,7 @@ class Structures_DataGrid
      */
     function _createDefaultColumns()
     {
-        if ((empty($this->columnSet)) && (!empty($this->recordSet))) {
+        if (empty($this->columnSet) && !empty($this->recordSet)) {
             $arrayKeys = array_keys($this->recordSet[0]);
             foreach ($arrayKeys as $key) {
                 $column = new Structures_DataGrid_Column($key, $key, $key);
@@ -947,15 +956,15 @@ class Structures_DataGrid
                                     " Structures_DataGrid_Column object");
         } else {
             switch ($position) {
-                case 'first'  :
+                case 'first':
                     array_unshift($this->columnSet, '');
                     $this->columnSet[0] =& $column;
                     break;
-                case 'last'   :    
+                case 'last':    
                     $this->columnSet[] =& $column;
                     break;
-                case 'after'  :
-                case 'before' :
+                case 'after':
+                case 'before':
                     $this->_createDefaultColumns();
                     // Has a relative column been specified ?
                     if (is_null($relativeTo)) {
@@ -1067,7 +1076,8 @@ class Structures_DataGrid
      */
     function bind($container, $options = array(), $type = null)
     {
-        $source =& Structures_DataGrid::dataSourceFactory($container, $options, $type);
+        $source =& Structures_DataGrid::dataSourceFactory($container, $options,
+                                                          $type);
         if (!PEAR::isError($source)) {
             return $this->bindDataSource($source);
         } else {
@@ -1086,21 +1096,6 @@ class Structures_DataGrid
     {
         if (is_subclass_of($source, 'structures_datagrid_datasource')) {
             $this->_dataSource =& $source;
-            if (PEAR::isError($result = $this->fetchDataSource())) {
-                unset($this->_dataSource);
-                return $result;
-            }
-            if ($columnSet = $this->_dataSource->getColumns()) {
-                $this->columnSet = array_merge($this->columnSet, $columnSet);
-            }
-            if (isset($this->_renderer)) {
-                $this->_renderer->setData($this->columnSet, $this->recordSet);
-                $this->_renderer->setLimit($this->page, $this->rowLimit, 
-                                          $this->getRecordCount());
-                if ($this->sortSpec) {
-                    $this->_setRendererCurrentSorting();
-                }
-            }
         } else {
             return PEAR::raiseError('Invalid data source type, ' . 
                                     'must be a valid data source driver class');
@@ -1131,41 +1126,54 @@ class Structures_DataGrid
     /**
      * Fetch data from the datasource 
      *
+     * @param  integer  $startRow  Start fetching from the specified row number
+     *                             (optional)
      * @return mixed Either true or a PEAR_Error object
      * @access private
      */
-    function fetchDataSource()
+    function fetchDataSource($startRow = null)
     {
         if (isset($this->_dataSource)) {
-            // sometimes we have to fix the page number:
-            // if we have a row limit, a page number lower than 1, or greater
-            // than 1 and the real page count is lower than the given page
-            // number indicates, the page number will be set to 1
-            if (!is_null($this->rowLimit) && ($this->page < 1 ||
-                ($this->page > 1 && $this->getPageCount() < $this->page))
-               ) {
-                $this->page = 1;
-            }
-
-            // Determine Page
-            $page = $this->page ? $this->page - 1 : 0;
-
             // Sort the data
             if (empty($this->sortSpec) and $this->defaultSortSpec) {
                 $this->sortSpec = $this->defaultSortSpec;
             }
-           
+
             $this->_sortDataSource();
 
-            // Fetch the Data
-            $recordSet = $this->_dataSource->fetch(
-                            ($page * $this->rowLimit),
-                            $this->rowLimit);
+            // is streaming enabled or not?
+            if (is_null($this->_bufferSize)) {
+                // sometimes we have to fix the page number:
+                // if we have a row limit, a page number lower than 1, or greater
+                // than 1 and the real page count is lower than the given page
+                // number indicates, the page number will be set to 1
+                if (!is_null($this->rowLimit) && ($this->page < 1 ||
+                    ($this->page > 1 && $this->getPageCount() < $this->page))
+                   ) {
+                    $this->page = 1;
+                }
+
+                // Determine page
+                $page = $this->page ? $this->page - 1 : 0;
+
+                // Fetch the data
+                $recordSet = $this->_dataSource->fetch(
+                                ($page * $this->rowLimit),
+                                $this->rowLimit);
+            } else {
+                $limit = $this->_bufferSize;
+                if (!is_null($this->rowLimit) && $limit > $this->rowLimit) {
+                    $limit = $this->rowLimit;
+                }
+
+                // Fetch the data
+                $recordSet = $this->_dataSource->fetch($startRow, $limit);
+            }
 
             if (PEAR::isError($recordSet)) {
                 return $recordSet;
             } else {
-                $this->recordSet = array_merge($this->recordSet, $recordSet);
+                $this->recordSet = $recordSet;
                 return true;
             }
         } else {
@@ -1423,13 +1431,76 @@ class Structures_DataGrid
      */
     function build()
     {
-        $this->_createDefaultColumns();
         if (isset($this->_dataSource)) {
             isset($this->_renderer) or $this->setRenderer(DATAGRID_RENDER_DEFAULT);
-            $this->_renderer->build();
+            // is streaming enabled or not?
+            if (is_null($this->_bufferSize)) {
+                if (PEAR::isError($result = $this->fetchDataSource())) {
+                    unset($this->_dataSource);
+                    return $result;
+                }
+                // TODO: these two methods are private and should maybe just be combined?
+                $this->_createDefaultColumns();
+                $this->_prepareColumnsAndRenderer();
+                $this->_renderer->build($this->recordSet, 0, true);
+            } else {
+                $recordCount = $this->_dataSource->count();
+                for ($row = ($this->page - 1) * $this->rowLimit;
+                     (   is_null($this->rowLimit)
+                      || $row < $this->page * $this->rowLimit
+                     )
+                     && $row < $recordCount;
+                     $row += $this->_bufferSize
+                    ) {
+                    if (PEAR::isError($result = $this->fetchDataSource($row))) {
+                        unset($this->_dataSource);
+                        return $result;
+                    }
+                    // prepare columns and renderer only on first iteration
+                    if (empty($this->_renderer->_columnObjects)) {
+                        // TODO: see TODO note above
+                        $this->_createDefaultColumns();
+                        $this->_prepareColumnsAndRenderer();
+                    }
+                    if (   (   is_null($this->rowLimit)
+                            || $row + $this->_bufferSize < $this->page * $this->rowLimit
+                           )
+                        && $row + $this->_bufferSize < $recordCount
+                       ) {
+                        $eof = false;
+                    } else {
+                        $eof = true;
+                    }
+                    $this->_renderer->build($this->recordSet,
+                                            $row - ($this->page - 1) * $this->rowLimit,
+                                            $eof);
+                }
+            }
             return true;
         } else {
-            return PEAR::raiseError("Cannot build the datagrid: no datasource driver loaded");
+            return PEAR::raiseError('Cannot build the datagrid: ' .
+                                    'no datasource driver loaded');
+        }
+    }
+    
+    /**
+     * Prepare columns and renderer for building
+     * 
+     * @return void
+     * @access private
+     */
+    function _prepareColumnsAndRenderer()
+    {
+        if ($columnSet = $this->_dataSource->getColumns()) {
+            $this->columnSet = array_merge($this->columnSet, $columnSet);
+        }
+        if (isset($this->_renderer)) {
+            $this->_renderer->setColumns($this->columnSet);
+            $this->_renderer->setLimit($this->page, $this->rowLimit, 
+                                       $this->getRecordCount());
+            if ($this->sortSpec) {
+                $this->_setRendererCurrentSorting();
+            }
         }
     }
 
@@ -1480,7 +1551,7 @@ class Structures_DataGrid
      * @param   mixed   $value      Option value
      * @access  public
      */
-    function setDataSourceOption($name,$value)
+    function setDataSourceOption($name, $value)
     {
         return $this->setDataSourceOptions(array($name => $value));
     }
@@ -1499,6 +1570,18 @@ class Structures_DataGrid
         } else {
             return PEAR::raiseError('Unable to set options; no datasource loaded.');
         }
+    }
+
+    /**
+     * Enable streaming support for reading from DataSources and writing with
+     * Renderers and set the buffer size (number of records)
+     *
+     * @param   integer  $bufferSize  Number of records that should be buffered
+     * @access  public
+     */
+    function enableStreaming($bufferSize = 500)
+    {
+        $this->_bufferSize = $bufferSize;
     }
 
 }

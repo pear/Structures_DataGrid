@@ -59,7 +59,7 @@ class Structures_DataGrid_DataSource_RSS extends
      * @param   array $options      Options as an associative array
      * @return  mixed               true on success, PEAR_Error on failure 
      */
-    function bind($file, $options=array())
+    function bind($file, $options = array())
     {
         if ($options) {
             $this->setOptions($options); 

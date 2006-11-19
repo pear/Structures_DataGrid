@@ -32,8 +32,8 @@ This concept is based on the .NET Framework DataGrid control and works very well
  <date>?</date>
  <time>?</time>
  <version>
-  <release>?</release>
-  <api>?</api>
+  <release>0.8.0</release>
+  <api>0.8.0</api>
  </version>
  <stability>
   <release>beta</release>
@@ -41,6 +41,7 @@ This concept is based on the .NET Framework DataGrid control and works very well
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
+- added streaming support [TODO: add more explaination here]
 - secured the sort direction input string
 - new abstract writeMode DataSource interface, for future support of data
   editing features

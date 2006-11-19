@@ -40,7 +40,8 @@ SQL query.
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
 - Bug #9342: fix records count for UNION queries
-(thanks to HarrySchool, HarrySchool at netscape dot net)
+  (thanks to HarrySchool, HarrySchool at netscape dot net)
+- small optimizations for streaming support
  </notes>
  <contents>
   <dir name="/">

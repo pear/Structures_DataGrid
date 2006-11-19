@@ -58,6 +58,8 @@ require_once 'XML/Unserializer.php';
 class Structures_DataGrid_DataSource_XML extends
     Structures_DataGrid_DataSource_Array
 {
+    // TODO: use XML_Indexing package for reading (=> streaming support)
+
     /**
      * Constructor
      * 
@@ -82,7 +84,7 @@ class Structures_DataGrid_DataSource_XML extends
      * @param   array   $options    Options as an associative array
      * @return  mixed               true on success, PEAR_Error on failure 
      */
-    function bind($xml, $options=array())
+    function bind($xml, $options = array())
     {
         if ($options) {
             $this->setOptions($options); 
@@ -124,9 +126,8 @@ class Structures_DataGrid_DataSource_XML extends
         $data = $unserializer->getUnserializedData();
 
         // Build a simple array:
-        list($junk,$data) = each($data);
-        foreach ($data as $index => $row)
-        {
+        list($junk, $data) = each($data);
+        foreach ($data as $index => $row) {
             if (!is_array($row) or !is_numeric($index)) {
                 return PEAR::raiseError('Unable to bind the xml data. '.
                                         'You may want to set the \'xpath\' option.');
@@ -149,11 +150,11 @@ class Structures_DataGrid_DataSource_XML extends
      * @param   string   $keyPrefix   Prepended to key, for recursive processing
      * @return  array    of form: array($field1 => $value1, $field2 => $value2, ...) 
      */
-    function _processRow($row, $keyPrefix='')
+    function _processRow($row, $keyPrefix = '')
     {
         $rowProcessed = array();
         foreach ($row as $item => $info) {
-            $itemKey = $keyPrefix.$item;
+            $itemKey = $keyPrefix . $item;
             switch (true) {
                 // Item has no attributes and unique tag name
                 case !is_array($info):

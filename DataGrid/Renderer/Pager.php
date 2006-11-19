@@ -213,7 +213,7 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
      * @return void
      * @access public
      */
-    function setupAs(&$renderer,$pagerOptions)
+    function setupAs(&$renderer, $pagerOptions)
     {
         $this->setLimit($renderer->_page, $renderer->_pageLimit, 
                         $renderer->_totalRecordsNum);
@@ -259,7 +259,7 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
      * @param   mixed   $value      Option value
      * @access  public
      */
-    function setOption($name,$value)
+    function setOption($name, $value)
     {
         // see notes in setOptions()
         if ($name == 'pagerOptions') {

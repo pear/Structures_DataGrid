@@ -166,7 +166,7 @@ class Structures_DataGrid_DataSource
         if ($this->_options['generate_columns'] 
             and $fieldList = $this->_options['fields']) {
                              
-            include_once('Structures/DataGrid/Column.php');
+            include_once 'Structures/DataGrid/Column.php';
             
             foreach ($fieldList as $field) {
                 $label = strtr($field, $this->_options['labels']);
@@ -204,7 +204,7 @@ class Structures_DataGrid_DataSource
      *                              "No data source driver loaded" 
      * @access  public                          
      */
-    function &fetch($offset=0, $len=null)
+    function &fetch($offset = 0, $len = null)
     {
         return PEAR::raiseError("No data source driver loaded");
     }

@@ -27,10 +27,10 @@ base package for some other DataSource drivers like CSV or XML.
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-06-19</date>
- <time>18:00:00</time>
+ <date>?</date>
+ <time>?</time>
  <version>
-  <release>0.1.0</release>
+  <release>0.1.1</release>
   <api>0.1.0</api>
  </version>
  <stability>
@@ -38,11 +38,10 @@ base package for some other DataSource drivers like CSV or XML.
   <api>beta</api>
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
- <notes>Changes since Structures_DataGrid 0.6.3:
-
-- DataSource driver unbundled from Structures_DataGrid core
-- bug #6582: the method sort() in Array DataSource driver can no longer
-  be called statically (this method should have been used only internally)
+ <notes>
+- performance optimization: when PHP >= 5.1.0 is installed, its native
+  array_intersect_key() function is now used instead of an emulation of this
+  function in PHP code
  </notes>
  <contents>
   <dir name="/">

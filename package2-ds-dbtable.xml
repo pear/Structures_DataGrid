@@ -14,11 +14,11 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-08-23</date>
- <time>16:00:00</time>
+ <date>?</date>
+ <time>?</time>
  <version>
-  <release>0.1.4</release>
-  <api>0.1.4</api>
+  <release>0.1.5</release>
+  <api>0.1.5</api>
  </version>
  <stability>
   <release>beta</release>
@@ -26,10 +26,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-- multiple record count queries are now avoided by using caching of the number
-  of records
-- Request #8512: added new option 'params' for placeholder parameters
-  (thanks to Ken, kenchou77 at gmail dot com)
+- added insert(), update() and delete() methods
+  (not support by Structures_DataGrid until now, but they can be used by direct
+  instantiation and usage of this driver)
+- small optimizations for streaming support
  </notes>
  <contents>
   <dir name="/">

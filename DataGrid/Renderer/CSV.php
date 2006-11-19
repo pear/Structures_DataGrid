@@ -41,11 +41,15 @@ require_once 'Structures/DataGrid/Renderer.php';
  * - filename:   (string)  Filename of the generated CSV file; boolean false
  *                         means that no filename will be sent
  *                         (default: false)
+ * - saveToFile: (boolean) Whether the output should be saved on the local
+ *                         filesystem. Please note that the 'filename' option
+ *                         must be given if this optio is set to true.
+ *                         (default: false)
  * - enclosure:  (string)  Field enclosure
  *                         (default: a double quotation mark: ")
  * - lineBreak:  (string)  The character(s) to use for line breaks
  *                         (default: '\n')
- * - useQuotes:  (mixed)   Whether or not to encapuslate the values with the 
+ * - useQuotes:  (mixed)   Whether or not to encapsulate the values with the 
  *                         enclosure value.
  *                         true: always, false: never, "auto": when needed
  *                         (default: "auto")
@@ -66,13 +70,6 @@ require_once 'Structures/DataGrid/Renderer.php';
  */
 class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
 {
-    // FIXME: It would be very interesting to implement some sort of CSV 
-    // streaming feature for large datasets. The datasource layer should
-    // read data chunk by chunk and this driver (and possibly others) could
-    // stream it directly to the browser.
-    // What implications on the renderer driver interface ? Is it ready for
-    // such streaming ? A new CSVStream driver ?
-    
     /**
      * CSV output
      * @var string
@@ -80,6 +77,13 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
      */
     var $_csv;
     
+    /**
+     * File pointer 
+     * @var resource
+     * @access private
+     */
+    var $_fp;
+
     /**
      * Constructor
      *
@@ -92,11 +96,12 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
         parent::Structures_DataGrid_Renderer();
         $this->_addDefaultOptions(
             array(
-                'delimiter' => ',',
-                'filename'  => false,
-                'enclosure' => '"',
-                'lineBreak' => "\n",
-                'useQuotes' => "auto"
+                'delimiter'  => ',',
+                'filename'   => false,
+                'saveToFile' => false,
+                'enclosure'  => '"',
+                'lineBreak'  => "\n",
+                'useQuotes'  => "auto"
             )
         );
     }
@@ -109,6 +114,11 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
     function init()
     {
         $this->_csv = '';
+        if ($this->_options['saveToFile'] === true) {
+            // TODO: check filename (must not be boolean false)
+            // TODO: filename should be writable or fopen() should be checked for errors
+            $this->_fp = fopen($this->_options['filename'], 'wb');
+        }
     }
 
     /**
@@ -157,7 +167,12 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
         foreach ($columns as $spec) {
             $data[] = $spec['label'];
         }
-        $this->_csv .= $this->_recordToCsv($data);
+        $csv = $this->_recordToCsv($data);
+        if ($this->_options['saveToFile'] === true) {
+            fwrite($this->_fp, $csv);
+        } else {
+            $this->_csv .= $csv;
+        }
     }
 
     /**
@@ -170,7 +185,12 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
      */
     function buildRow($index, $data)
     {
-        $this->_csv .= $this->_recordToCsv($data);
+        $csv = $this->_recordToCsv($data);
+        if ($this->_options['saveToFile'] === true) {
+            fwrite($this->_fp, $csv);
+        } else {
+            $this->_csv .= $csv;
+        }
     }
 
     /**
@@ -192,7 +212,12 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
      */
     function flatten()
     {
-        return $this->_csv;
+        if ($this->_options['saveToFile'] === true) {
+            fclose($this->_fp);
+            return '';
+        } else {
+            return $this->_csv;
+        }
     }
 
     /**
@@ -202,10 +227,12 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
      */
     function render()
     {
-        header('Content-type: text/csv');
-        if ($this->_options['filename'] !== false) {
-            header('Content-disposition: attachment; filename=' .
-                   $this->_options['filename']);
+        if ($this->_options['saveToFile'] === false) {
+            header('Content-type: text/csv');
+            if ($this->_options['filename'] !== false) {
+                header('Content-disposition: attachment; filename=' .
+                       $this->_options['filename']);
+            }
         }
         parent::render();
     }
@@ -220,7 +247,6 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
     function _recordToCsv($data)
     {
         // This method is loosely inspired from PHP_Compat's fputcsv()
-        // FIXME: what about concatenating directly into $this->_csv ?
         $str = '';
         foreach ($data as $cell) {
             $cell = str_replace(

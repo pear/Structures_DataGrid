@@ -405,7 +405,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      * @return void
      * @access protected
      */
-    function buildRow($index,$data)
+    function buildRow($index, $data)
     {
         $outputRow = $this->_bodyStartRow + $index;
         foreach ($data as $col => $value) {

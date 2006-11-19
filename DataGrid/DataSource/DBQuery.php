@@ -52,7 +52,7 @@ require_once 'Structures/DataGrid/DataSource.php';
  * 
  * If you use complex queries (e.g. with complex joins or with aliases),
  * $datagrid->getRecordCount() might return a wrong result. For the case of
- * GROUP BY or DISTINCT in your queries, this driver already has special
+ * GROUP BY, UNION, or DISTINCT in your queries, this driver already has special
  * handling. However, if you observe wrong record counts, you need to specify
  * a special query that returns only the number of records (e.g. 'SELECT COUNT(*)
  * FROM ...') as an additional option 'count_query' to the bind() call.
@@ -135,7 +135,7 @@ class Structures_DataGrid_DataSource_DBQuery
      * @access  public
      * @return  mixed                True on success, PEAR_Error on failure
      */
-    function bind($query, $options=array())
+    function bind($query, $options = array())
     {
         if ($options) {
             $this->setOptions($options); 
@@ -176,7 +176,7 @@ class Structures_DataGrid_DataSource_DBQuery
      * @return  mixed               The 2D Array of the records on success,
                                     PEAR_Error on failure
     */
-    function &fetch($offset=0, $limit=null)
+    function &fetch($offset = 0, $limit = null)
     {
         if (!empty($this->_sortSpec)) {
             foreach ($this->_sortSpec as $field => $direction) {
@@ -222,6 +222,8 @@ class Structures_DataGrid_DataSource_DBQuery
                 $recordSet[] = $record;
             }
         }
+
+        $result->free();
 
         // Determine fields to render
         if (!$this->_options['fields'] && count($recordSet)) {

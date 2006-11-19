@@ -278,11 +278,11 @@ class Structures_DataGrid_Column
     {
         $this->formatterArgs = $arguments;
         if (is_array($formatter)) {
-            $formatter[1] = $this->_parseCallbackString ($formatter[1], 
-                                                         $this->formatterArgs);
+            $formatter[1] = $this->_parseCallbackString($formatter[1], 
+                                                        $this->formatterArgs);
         } else {
-            $formatter = $this->_parseCallbackString ($formatter, 
-                                                      $this->formatterArgs);
+            $formatter = $this->_parseCallbackString($formatter, 
+                                                     $this->formatterArgs);
         }
         if (is_callable ($formatter)) {
             $this->formatter = $formatter;

@@ -77,6 +77,7 @@ class Structures_DataGrid_DataSource_CSV extends
         }
         
         if (strlen($csv) < 256 && @is_file($csv)) {
+            // TODO: do not read the whole file at once
             if (!$rowList = file($csv)) {
                 return PEAR::raiseError('Could not read file');
             }

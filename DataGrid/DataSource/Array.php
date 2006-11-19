@@ -67,7 +67,7 @@ class Structures_DataGrid_DataSource_Array
      * @access  public
      * @return  mixed           True on success, PEAR_Error on failure
      */    
-    function bind($ar, $options=array())
+    function bind($ar, $options = array())
     {
         if ($options) {
             $this->setOptions($options); 
@@ -100,7 +100,7 @@ class Structures_DataGrid_DataSource_Array
      * @access  public
      * @return  array       The 2D Array of the records
      */
-    function &fetch($offset=0, $len=null)
+    function &fetch($offset = 0, $len = null)
     {
         if ($this->_ar && !$this->_options['fields']) {
             $this->setOptions(array('fields' => array_keys($this->_ar[0])));
@@ -114,19 +114,21 @@ class Structures_DataGrid_DataSource_Array
         }
 
         // Filter out fields that are to not be rendered
-        //
-        // With the new array_intersect_key() the following would be:
-        // $records = array_intersect_key($slice, array_flip($fieldList));
-        // One line... And faster... But this function is cvs-only.
         $records = array();
-        foreach ($slice as $rec) {
-            $buf = array();
-            foreach ($rec as $key => $val) {
-                if (in_array($key, $this->_options['fields'])) {
-                    $buf[$key] = $val;
-                }
+        if (version_compare(PHP_VERSION, '5.1.0', '>=')) {
+            foreach ($slice as $rec) {
+                $records[] = array_intersect_key($rec, array_flip($this->_options['fields']));
             }
-            $records[] = $buf;
+        } else {
+            foreach ($slice as $rec) {
+                $buf = array();
+                foreach ($rec as $key => $val) {
+                    if (in_array($key, $this->_options['fields'])) {
+                        $buf[$key] = $val;
+                    }
+                }
+                $records[] = $buf;
+            }
         }
 
         return $records;

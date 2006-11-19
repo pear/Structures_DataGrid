@@ -72,7 +72,7 @@ class Structures_DataGrid_DataSource_DB
      * @access  public
      * @return  mixed               True on success, PEAR_Error on failure
      */
-    function bind(&$result, $options=array())
+    function bind(&$result, $options = array())
     {
         if ($options) {
             $this->setOptions($options); 
