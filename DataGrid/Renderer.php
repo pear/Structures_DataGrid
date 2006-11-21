@@ -280,6 +280,14 @@ class Structures_DataGrid_Renderer
     var $_options = array();
 
     /**
+     * Special driver features
+     *
+     * @var array
+     * @access protected
+     */
+    var $_features = array();
+
+    /**
      * Columns objects 
      * 
      * Beware: this is a private property, it is not meant to be accessed
@@ -335,6 +343,11 @@ class Structures_DataGrid_Renderer
             'hideColumnLinks'       => array(), 
 
         );
+
+        $this->_features = array(
+                'streaming' => false,
+        );
+
         if (function_exists('mb_internal_encoding')) {
             $encoding = mb_internal_encoding();
             if ($encoding != 'pass') {
@@ -359,6 +372,22 @@ class Structures_DataGrid_Renderer
     function _addDefaultOptions($options)
     {
         $this->_options = array_merge($this->_options, $options);
+    }
+
+    /**
+     * Add special driver features
+     *
+     * This method is meant to be called by drivers. It allows specifying 
+     * the special features that are supported by the current driver.
+     *
+     * @access protected
+     * @param array $features An associative array of the form:
+     *                        array(feature => true|false, ...)
+     * @return void
+     */
+    function _setFeatures($features)
+    {
+        $this->_features = array_merge($this->_features, $features);
     }
 
     /**
@@ -743,7 +772,7 @@ class Structures_DataGrid_Renderer
             $row++;
         }
 
-        if ($this->_isOverloaded('buildBody')) {  // FIXME: _isOverloaded returns the wrong result here
+        if (!$this->hasFeature('streaming')) {
             $this->_records = array_merge($this->_records, $chunk);
         } else {
             $this->streamBody($chunk, $startRow, $eof);
@@ -755,7 +784,7 @@ class Structures_DataGrid_Renderer
                 $this->_pageLimit = $this->_recordsNum;
             }
 
-            if ($this->_isOverloaded('buildBody')) {  // FIXME: _isOverloaded returns the wrong result here
+            if (!$this->hasFeature('streaming')) {
                 $this->buildBody();
             }
 
@@ -780,6 +809,7 @@ class Structures_DataGrid_Renderer
      */
     function getOutput()
     {
+        // FIXME: use hasFeature() instead of _isOverloaded()
         if ($this->_isOverloaded('flatten')) {
             $this->_isBuilt or $this->build($this->_records, 0, true);  // FIXME: are these params right for all cases?
             return $this->flatten();
@@ -798,6 +828,7 @@ class Structures_DataGrid_Renderer
      */
     function render()
     {
+        // FIXME: use hasFeature() instead of _isOverloaded()
         if ($this->_isOverloaded('flatten')) {
             $this->_isBuilt or $this->build($this->_records, 0, true);  // FIXME: are these params right for all cases?
             echo $this->flatten();
@@ -990,6 +1021,30 @@ class Structures_DataGrid_Renderer
                 return $this->_isOverloaded($method, $parent);
             }
         }
+    }
+
+
+    /**
+     * List special driver features
+     *
+     * @return array Of the form: array(feature => true|false, etc...)
+     * @access public
+     */
+    function getFeatures()
+    {
+        return $this->_features;
+    }
+   
+    /**
+     * Tell if the driver as a specific feature
+     *
+     * @param  string $name Feature name
+     * @return bool 
+     * @access public
+     */
+    function hasFeature($name)
+    {
+        return $this->_features[$name];
     }
 
 }

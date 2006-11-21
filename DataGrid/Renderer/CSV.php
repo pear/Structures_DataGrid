@@ -104,6 +104,7 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
                 'useQuotes'  => "auto"
             )
         );
+        $this->_setFeatures(array('streaming' => true));
     }
 
     /**
@@ -205,6 +206,19 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
     }        
 
     /**
+     * Finish building the datagrid.
+     *
+     * @access  protected
+     * @return  void
+     */
+    function finalize()
+    {
+        if ($this->_options['saveToFile'] === true) {
+            fclose($this->_fp);
+        }
+    }
+
+    /**
      * Retrieve output from the container object 
      *
      * @return string Output
@@ -212,12 +226,7 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
      */
     function flatten()
     {
-        if ($this->_options['saveToFile'] === true) {
-            fclose($this->_fp);
-            return '';
-        } else {
-            return $this->_csv;
-        }
+        return $this->_csv;
     }
 
     /**
