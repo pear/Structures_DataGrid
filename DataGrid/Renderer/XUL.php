@@ -63,7 +63,7 @@ require_once 'XML/Util.php';
  *        xmlns=\"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul\">\n";
  *        
  * // Instantiate your datagrid and setup its datasource, then call:
- * $datagrid->setRenderer(DATAGRID_RENDER_XUL);
+ * $datagrid->setRenderer('XUL');
  * $datagrid->render();
  * 
  * echo "</window>\n";
