@@ -35,35 +35,26 @@
  * SUPPORTED OPTIONS:
  *
  * - buildHeader:         (bool)   Whether to build the header.
- *                                 (default: true)
  * - buildFooter:         (bool)   Whether to build the footer.
- *                                 (default: true)
  * - fillWithEmptyRows:   (bool)   Ensures that all pages have the same number of 
  *                                 rows.
- *                                 (default: false) 
  * - numberAlign:         (bool)   Whether to right-align numeric values.
- *                                 (default: true)
  * - defaultCellValue:    (string) What value to put by default into empty cells.
- *                                 (default: null)
  * - defaultColumnValues: (array)  Per-column default cell value. This is an array
  *                                 of the form: array(fieldName => value, ...).
- *                                 (default: array())
  * - hideColumnLinks:     (array)  By default sorting links are enabled on all
  *                                 columns. With this option it is possible to
  *                                 disable sorting links on specific columns. This
  *                                 is an array of the form: array(fieldName, ...).
  *                                 This option only affects drivers that support
  *                                 sorting.
- *                                 (default: array())
  * - encoding:            (string) The content encoding. If the mbstring extension
  *                                 is present the default value is set from 
  *                                 mb_internal_encoding(), otherwise it is ISO-8859-1.
  * - extraVars:           (array)  Variables to be added to the generated HTTP
  *                                 queries.
- *                                 (default: array())
  * - excludeVars:         (array)  Variables to be removed from the generated
  *                                 HTTP queries.
- *                                 (default: array())
  * 
  * --- DRIVER INTERFACE ---
  *

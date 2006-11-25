@@ -36,15 +36,12 @@
  *
  * - generate_columns:  (bool)  Generate Structures_DataGrid_Column objects 
  *                              with labels. See the 'labels' option.
- *                              (default: false)
  * - fields:            (array) Which data fields to fetch from the datasource.
  *                              An empty array means: all fields.
  *                              Form: array(field1, field2, ...)
- *                              (default: array())
  * - labels:            (array) Data field to column label mapping. Only used 
  *                              when 'generate_columns' is true. 
  *                              Form: array(field => label, ...)
- *                              (default: array())
  * - primary_key:       (array) Name(s), or numerical index(es) of the 
  *                              field(s) which contain a unique record 
  *                              identifier (only use several fields in case

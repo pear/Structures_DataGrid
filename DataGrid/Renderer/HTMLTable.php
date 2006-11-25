@@ -41,33 +41,24 @@ require_once 'HTML/Table.php';
  *
  * - evenRowAttributes:   (array)  An associative array containing each attribute
  *                                 of the even rows.
- *                                 (default: array())
  * - oddRowAttributes:    (array)  An associative array containing each attribute
  *                                 of the odd rows.
- *                                 (default: array())
  * - emptyRowAttributes:  (array)  An associative array containing the attributes
  *                                 for empty rows.
- *                                 (default: array())
  * - selfPath:            (string) The complete path for sorting and paging links.
  *                                 (default: $_SERVER['PHP_SELF'])
  * - sortIconASC:         (string) The icon to define that sorting is currently
  *                                 ascending. Can be text or HTML to define an image.
- *                                 (default: '')
  * - sortIconDESC:        (string) The icon to define that sorting is currently
  *                                 descending. Can be text or HTML to define an image.
- *                                 (default: '')
  * - headerAttributes:    (array)  Attributes for the header row. This is an array
  *                                 of the form: array(attribute => value, ...)
- *                                 (default: array())
  * - columnAttributes:    (array)  Column cells attributes. This is an array of
  *                                 the form:
  *                                 array(fieldName => array(attribute => value, ...) ...)
- *                                 (default: array())
  * - convertEntities:     (bool)   Whether or not to convert html entities.
  *                                 This calls htmlspecialchars(). 
- *                                 (default: true)
  * - sortingResetsPaging: (bool)   Whether sorting HTTP queries reset paging.  
- *                                 (default: true)
  *                  
  * SUPPORTED OPERATION MODES:
  *

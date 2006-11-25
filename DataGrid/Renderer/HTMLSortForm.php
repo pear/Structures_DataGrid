@@ -43,23 +43,15 @@ require_once 'HTML/QuickForm.php';
  * - sortFieldsNum:     (int)       How many fields the user will be able to sort by.
  *                                  This has no effect if the backend does not 
  *                                  support sorting by multiple fields.
- *                                  (default: 3)
  * - directionStyle:    (string)    Whether to render the direction form 
- *                                  elements as "select" or "radio" elements
- *                                  (default: "select")
+ *                                  elements as 'select' or 'radio' elements
  * - textChoose:        (string)    What to display in the select box when no 
  *                                  field is selected (first option)
- *                                  (default: "Choose...")
  * - textAscending:     (string)    Label for the ASC direction
- *                                  (default: "Ascending")
  * - textDescending:    (string)    Label for the DESC direction
- *                                  (default: "Descending")
  * - textSortBy:        (string)    Label for the first field
- *                                  (default: "Sort by:")
  * - textThenBy:        (string)    Label for the second and following fields
- *                                  (default: "Then by:")
  * - textSubmit:        (string)    Label for the submit button
- *                                  (default: "Submit")
  *                  
  * SUPPORTED OPERATION MODES:
  *

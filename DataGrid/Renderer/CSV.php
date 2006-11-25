@@ -37,22 +37,16 @@ require_once 'Structures/DataGrid/Renderer.php';
  * SUPPORTED OPTIONS:
  *
  * - delimiter:  (string)  Field delimiter
- *                         (default: ',')
  * - filename:   (string)  Filename of the generated CSV file; boolean false
  *                         means that no filename will be sent
- *                         (default: false)
  * - saveToFile: (boolean) Whether the output should be saved on the local
  *                         filesystem. Please note that the 'filename' option
  *                         must be given if this optio is set to true.
- *                         (default: false)
  * - enclosure:  (string)  Field enclosure
- *                         (default: a double quotation mark: ")
  * - lineBreak:  (string)  The character(s) to use for line breaks
- *                         (default: '\n')
  * - useQuotes:  (mixed)   Whether or not to encapsulate the values with the 
  *                         enclosure value.
- *                         true: always, false: never, "auto": when needed
- *                         (default: "auto")
+ *                         true: always, false: never, 'auto': when needed
  *                       
  * SUPPORTED OPERATION MODES:
  *

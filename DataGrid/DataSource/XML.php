@@ -40,15 +40,12 @@ require_once 'XML/Unserializer.php';
  * SUPPORTED OPTIONS:
  * 
  * - xpath:           (string)  XPath to a subset of the XML data.
- *                              (default: '')
  * - fieldAttribute:  (string)  Which attribute of the XML source should be used
  *                              as column field name (only used if the XML source
  *                              has attributes).
- *                              (default: null)
  * - labelAttribute:  (string)  Which attribute of the XML source should be used
  *                              as column label (only used if 'generate_columns'
  *                              is true and the XML source has attributes).
- *                              (default: null)
  *
  * @package Structures_DataGrid_DataSource_XML
  * @author Olivier Guilyardi <olivier@samalyse.com>

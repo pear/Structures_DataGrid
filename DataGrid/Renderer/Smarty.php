@@ -39,14 +39,11 @@ require_once 'Structures/DataGrid/Renderer.php';
  * - selfPath:            (string) The complete path for sorting and paging links.
  *                                 (default: $_SERVER['PHP_SELF'])
  * - sortingResetsPaging: (bool)   Whether sorting HTTP queries reset paging.  
- *                                 (default: true)
  * - convertEntities:     (bool)   Whether or not to convert html entities.
  *                                 This calls htmlspecialchars(). 
- *                                 (default: true)
  * - columnAttributes:    (array)  Column cells attributes. This is an array of
  *                                 the form:
  *                                 array(fieldName => array(attribute => value, ...) ...)
- *                                 (default: array())
  * 
  * SUPPORTED OPERATION MODES:
  *

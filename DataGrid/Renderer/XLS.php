@@ -37,36 +37,27 @@ require_once 'Spreadsheet/Excel/Writer.php';
  *
  * SUPPORTED OPTIONS:
  *
- * - headerFormat:  (mixed)  The format for header cells (either 0 or a
- *                           Spreadsheet_Excel_Writer_Format object)
+ * - headerFormat:  (mixed)  The format for header cells (either 0 [= "no format"]
+ *                           or a Spreadsheet_Excel_Writer_Format object)
  *                           Please see the NOTE ABOUT FORMATTING below.
- *                           (default: 0 [= "no format"])
- * - bodyFormat:    (mixed)  The format for body cells (either 0 or a
- *                           Spreadsheet_Excel_Writer_Format object)
+ * - bodyFormat:    (mixed)  The format for body cells (either 0 [= "no format"]
+ *                           or a Spreadsheet_Excel_Writer_Format object)
  *                           Please see the NOTE ABOUT FORMATTING below.
- *                           (default: 0 [= "no format"])
  * - filename:      (string) The filename of the spreadsheet
- *                           (default: 'spreadsheet.xls')
  * - sendToBrowser: (bool)   Should the spreadsheet be send to the browser?
  *                           (true = send to browser, false = write to a file)
- *                           (default: true)
  * - worksheet:     (object) Optional reference to a
  *                           Spreadsheet_Excel_Writer_Worksheet object. You 
  *                           can leave this to null except if your workbook 
  *                           contains several worksheets and you want to fill
  *                           a specific one.
- *                           (default: null)
  * - startCol:      (int)    The Worksheet column number to start rendering at
- *                           (default: 0)
  * - startRow:      (int)    The Worksheet row number to start rendering at
- *                           (default: 0)
  * - border:        (int)    Border drawn around the whole datagrid: 
  *                           0 => none, 1 => thin, 2 => thick 
- *                           (default: 0) 
  *                           (NOT IMPLEMENTED YET)
  * - headerBorder:  (int)    Border between the header and body:
  *                           0 => none, 1 => thin, 2 => thick 
- *                           (default: 0)
  *                           (NOT IMPLEMENTED YET)
  *
  * SUPPORTED OPERATION MODES:

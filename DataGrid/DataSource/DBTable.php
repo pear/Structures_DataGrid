@@ -40,9 +40,7 @@ require_once 'Structures/DataGrid/DataSource.php';
  * - view:   (string)  The view from $sql array in your DB_Table object. This
  *                     option is required.
  * - where:  (string)  A where clause for the SQL query.
- *                     (default: null)
  * - params: (array)   Placeholder parameters for prepare/execute
- *                     (default: array())
  * 
  * GENERAL NOTES:
  *

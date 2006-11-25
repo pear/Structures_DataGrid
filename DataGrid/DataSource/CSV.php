@@ -40,9 +40,7 @@ require_once 'Structures/DataGrid/DataSource/Array.php';
  * SUPPORTED OPTIONS:
  *
  * - delimiter:  (string)  Field delimiter
- *                         (default: ',')
  * - header:     (bool)    Whether the CSV file (or string) contains a header row
- *                         (default: false)
  * 
  * @version  $Revision$
  * @author   Andrew Nagy <asnagy@webitecture.org>

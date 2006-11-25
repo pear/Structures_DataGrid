@@ -43,13 +43,11 @@ require_once 'Structures/DataGrid/DataSource.php';
  *                               contain the same kind of information as the
  *                               'labels' option. If the 'labels' option is set,
  *                               this one will not be used.
- *                               (default: 'fb_fieldsLabels')
  * - fields_property:  (string)  The name of a property that you can set within
  *                               your DataObject. This property is expected to
  *                               contain the same kind of information as the
  *                               'fields' option. If the 'fields' option is set,
  *                               this one will not be used.
- *                               (default: 'fb_fieldsToRender')
  * 
  * @version  $Revision$
  * @author   Olivier Guilyardi <olivier@samalyse.com>

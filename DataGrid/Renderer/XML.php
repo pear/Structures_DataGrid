@@ -43,22 +43,16 @@ require_once 'XML/Util.php';
  *                           need to further customize the XML declaration 
  *                           (version, etc..), then please set "useXMLDecl" to
  *                           false, and add your own declaration string.
- *                           (default: true)
  * - outerTag:      (string) The name of the tag for the datagrid, without 
  *                           brackets
- *                           (default: 'DataGrid')
  * - rowTag:        (string) The name of the tag for each row, without brackets
- *                           (default: 'Row')
  * - fieldTag:      (string) The name of the tag for each field inside a row, 
  *                           without brackets. The special value '{field}' is 
  *                           replaced by the field name.
- *                           (default: '{field}')
  * - fieldAttribute:(string) The name of the attribute for the field name.
  *                           null stands for no attribute 
- *                           (default: null)
  * - labelAttribute:(string) The name of the attribute for the column label.
  *                           null stands for no attribute 
- *                           (default: null)
  *
  * SUPPORTED OPERATION MODES:
  *

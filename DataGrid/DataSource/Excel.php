@@ -40,7 +40,6 @@ require_once 'Spreadsheet/Excel/reader.php';
  * SUPPORTED OPTIONS:
  *
  * - header:     (bool)    Whether the Excel file contains a header row
- *                         (default: false)
  * 
  * GENERAL NOTES:
  *
