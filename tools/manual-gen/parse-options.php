@@ -422,7 +422,6 @@ function getNotes($file, $optionsEndRow)
     }
 
     // read the 'GENERAL NOTES'
-    var_dump($startRow);
     $notes = '';
     $codeTagOpen = false;
     for ($i = $startRow + 2; $i < $endRow; $i++) {
