@@ -22,6 +22,7 @@ if (!is_dir(TMP_PATH . 'structures-datagrid-renderer/')) {
 }
 
 $descriptions = array();
+$modes = array();
 $options = array();
 $notes = array();
 $inheritance = array();
@@ -30,7 +31,7 @@ $inheritance = array();
 $directories = scandir(PATH);
 foreach ($directories as $directory) {
     if (substr($directory, 0, 19) == 'Structures_DataGrid') {
-        parseDirectory($descriptions, $options, $notes, $inheritance, $directory);
+        parseDirectory($descriptions, $modes, $options, $notes, $inheritance, $directory);
     }
 }
 
@@ -59,7 +60,7 @@ foreach ($inheritance as $class => $extends) {
     // sort the options alphabetically
     ksort($driver_options);
     // save the options as an XML file
-    $id = writeXMLFile($orig_class, $descriptions[$orig_class], $driver_options, $notes[$orig_class]);
+    $id = writeXMLFile($orig_class, $descriptions[$orig_class], $modes[$orig_class], $driver_options, $notes[$orig_class]);
     $ids[] = $id;
 }
 
@@ -70,7 +71,7 @@ foreach ($ids as $id) {
 }
 file_put_contents(TMP_PATH . 'ids.txt', $id_file);
 
-function parseDirectory(&$descriptions, &$options, &$notes, &$inheritance, $dir)
+function parseDirectory(&$descriptions, &$modes, &$options, &$notes, &$inheritance, $dir)
 {
     $entries = scandir(PATH . $dir);
     foreach ($entries as $entry) {
@@ -79,17 +80,17 @@ function parseDirectory(&$descriptions, &$options, &$notes, &$inheritance, $dir)
         if (!in_array($entry, array('.', '..', 'CVS', 'docs', 'tools'))) {
             // step recursive into subdirectories
             if (is_dir(PATH . $dir . '/' . $entry)) {
-                parseDirectory($descriptions, $options, $notes, $inheritance, $dir . '/' . $entry);
+                parseDirectory($descriptions, $modes, $options, $notes, $inheritance, $dir . '/' . $entry);
             }
             // parse the file if the extension is .php
             if (substr($entry, -4) == '.php') {
-                parseFile($descriptions, $options, $notes, $inheritance, $dir . '/' . $entry);
+                parseFile($descriptions, $modes, $options, $notes, $inheritance, $dir . '/' . $entry);
             }
         }
     }
 }
 
-function parseFile(&$descriptions, &$options, &$notes, &$inheritance, $filename)
+function parseFile(&$descriptions, &$modes, &$options, &$notes, &$inheritance, $filename)
 {
     echo 'Parsing ' . $filename . ' ... ';
 
@@ -107,6 +108,9 @@ function parseFile(&$descriptions, &$options, &$notes, &$inheritance, $filename)
 
     // get the descriptions
     $descriptions[$class] = getDescriptions($file, $descriptionsEndRow);
+    
+    // get the support modes
+    $modes[$class] = getSupportedModes($class, $filename);
 
     // get the options
     $options[$class] = getOptions($class, $filename, $file, $descriptionsEndRow, $optionsEndRow);
@@ -116,6 +120,44 @@ function parseFile(&$descriptions, &$options, &$notes, &$inheritance, $filename)
 
     // we're done with this file
     echo "DONE\n";
+}
+
+function getSupportedModes($class, $filename)
+{
+    if (strpos($class, 'DataSource') !== false) {
+        // get supported modes for a DataSource driver
+        $modeTranslation = array('multiSort' => 'Multiple field sorting',
+                                 'writeMode' => 'Insert, update and delete records'
+                                );
+        require_once str_replace('_', '/', $class) . '.php';
+        $driver =& new $class;
+        $features = $driver->getFeatures();
+        $modes = array();
+        foreach ($features as $feature => $support) {
+            $modes[$modeTranslation[$feature]] = (($support) ? 'yes' : 'no');
+        }
+        return $modes;
+    } else {
+        // get supported modes for a renderer driver
+        $availableModes = array('Container Support',
+                                'Output Buffering',
+                                'Direct Rendering',
+                                'Streaming'
+                               );
+        $file = file_get_contents(PATH . $filename);
+        if (strpos($file, 'SUPPORTED OPERATION MODES:') === false) {
+            // file is not a renderer driver => don't search for modes
+            return array();
+        }
+        foreach ($availableModes as $mode) {
+            $res = preg_match('# * - ' . $mode . ': {1,10}([a-z, ]+)#i', $file, $matches);
+            if ($res !== 1) {
+                die('REGEXP DID NOT MATCH FOR MODE "' . $mode . '" in file "' . $filename . '"');
+            }
+            $modes[$mode] = $matches[1];
+        }
+        return $modes;
+    }
 }
 
 function getDescriptionsStartRow($file)
@@ -274,9 +316,7 @@ function _getOptions($class, $filename, $file, $startRow, $endRow)
 {
     $currOption = '';
     $options = array();
-    if (!class_exists($class)) {
-        require_once PATH . $filename;
-    }
+    require_once str_replace('_', '/', $class) . '.php';
     $driver =& new $class;
     for ($i = $startRow + 2; $i < $endRow; $i++) {
 
@@ -293,8 +333,12 @@ function _getOptions($class, $filename, $file, $startRow, $endRow)
                 die('OPTION NOT DECLARED: ' . $currOption);
             }
             $default = $driver->_options[$currOption];
-            if (is_array($default) && count($default) === 0) {
-                $default = 'array()';
+            if (is_array($default)) {
+                if (count($default) === 0) {
+                    $default = 'array()';
+                } else {  // ignore it
+                    $default = '';
+                }
             } elseif (is_string($default)) {
                 if ($default == "\n") {
                     $default = '\n';
@@ -424,7 +468,7 @@ function indentMultiLine($content, $indentStr, $indentNum)
     return $prefix . trim(str_replace("\n", "\n$prefix$indentStr", $content));
 }
 
-function writeXMLFile($driver, $descriptions, $options, $notes)
+function writeXMLFile($driver, $descriptions, $modes, $options, $notes)
 {
     // prepare some variables for the XML contents
     $type = 'structures-datagrid-' . ((strpos($driver, 'DataSource') !== false) ? 'datasource' : 'renderer');
@@ -448,6 +492,31 @@ function writeXMLFile($driver, $descriptions, $options, $notes)
         $xml .= '  </para>' . "\n";
         $xml .= ' </refsect1>' . "\n";
     }
+    $xml .= ' <refsect1 id="' . $id . '.modes">' . "\n";
+    $xml .= '  <title>Supported operations modes:</title>' . "\n";
+    $xml .= '  <para>' . "\n";
+    $xml .= '   This driver supports the following operation modes:' . "\n";
+    $xml .= '  </para>' . "\n";
+    $xml .= '  <table>' . "\n";
+    $xml .= '   <title>Supported operations modes of this driver</title>' . "\n";
+    $xml .= '   <tgroup cols="2">' . "\n";
+    $xml .= '    <thead>' . "\n";
+    $xml .= '     <row>' . "\n";
+    $xml .= '      <entry>Mode</entry>' . "\n";
+    $xml .= '      <entry>Supported?</entry>' . "\n";
+    $xml .= '     </row>' . "\n";
+    $xml .= '    </thead>' . "\n";
+    $xml .= '    <tbody>' . "\n";
+    foreach ($modes as $mode => $support) {
+      $xml .= '     <row>' . "\n";
+      $xml .= '      <entry>' . htmlentities($mode) . '</entry>' . "\n";
+      $xml .= '      <entry>' . htmlentities($support) . '</entry>' . "\n";
+      $xml .= '     </row>' . "\n";
+    }
+    $xml .= '    </tbody>' . "\n";
+    $xml .= '   </tgroup>' . "\n";
+    $xml .= '  </table>' . "\n";
+    $xml .= ' </refsect1>' . "\n";
     $xml .= ' <refsect1 id="' . $id . '.options">' . "\n";
     $xml .= '  <title>Options</title>' . "\n";
     $xml .= '  <para>' . "\n";
