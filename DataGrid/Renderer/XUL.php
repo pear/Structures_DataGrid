@@ -35,11 +35,18 @@ require_once 'XML/Util.php';
 /**
  * XUL Rendering Driver
  *
+ * SUPPORTED OPTIONS:
+ *
+ * - selfPath:      (string) The complete path for sorting and paging links
+ *                           (default: $_SERVER['PHP_SELF'])
+ *
  * SUPPORTED OPERATION MODES:
  *
  * - Container Support: no
  * - Output Buffering:  yes
  * - Direct Rendering:  no
+ * 
+ * GENERAL NOTES:
  * 
  * This renderer class will render a XUL listbox.
  * For additional information on the XUL Listbox, refer to this url:
@@ -48,8 +55,6 @@ require_once 'XML/Util.php';
  * You have to setup your XUL document, just as you would with an HTML
  * document. This driver will only generated the <listbox> element and
  * content.
- * 
- * GENERAL NOTES:
  * 
  * Basic example: 
  * <code>
@@ -70,11 +75,6 @@ require_once 'XML/Util.php';
  * ?> 
  * </code>
  * 
- * SUPPORTED OPTIONS:
- *
- * - selfPath:      (string) The complete path for sorting and paging links
- *                           (default: $_SERVER['PHP_SELF'])
- *
  * @version     $Revision$
  * @author      Andrew S. Nagy <asnagy@webitecture.org>
  * @author      Olivier Guilyardi <olivier@samalyse.com>
