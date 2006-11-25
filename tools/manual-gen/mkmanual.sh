@@ -28,7 +28,7 @@ else
     TARGET_DIR=$1
 fi
 
-VERSION=0.3
+VERSION=0.4
 
 echo "Structures_DataGrid Manual Generator $VERSION"
 

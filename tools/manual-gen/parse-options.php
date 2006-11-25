@@ -109,7 +109,7 @@ function parseFile(&$descriptions, &$options, &$notes, &$inheritance, $filename)
     $descriptions[$class] = getDescriptions($file, $descriptionsEndRow);
 
     // get the options
-    $options[$class] = getOptions($file, $descriptionsEndRow, $optionsEndRow);
+    $options[$class] = getOptions($class, $filename, $file, $descriptionsEndRow, $optionsEndRow);
 
     // get the 'GENERAL NOTES'
     $notes[$class] = getNotes($file, $optionsEndRow);
@@ -244,7 +244,7 @@ function getOptionsEndRow($file, $startRow)
     return $endRow;
 }
 
-function getOptions($file, $descriptionsEndRow, &$optionsEndRow)
+function getOptions($class, $filename, $file, $descriptionsEndRow, &$optionsEndRow)
 {
     // search for the row after that the options are documented
     $startRow = getOptionsStartRow($file, $descriptionsEndRow);
@@ -267,13 +267,17 @@ function getOptions($file, $descriptionsEndRow, &$optionsEndRow)
     $optionsEndRow = $endRow;
 
     // collect the options
-    return _getOptions($file, $startRow, $endRow);
+    return _getOptions($class, $filename, $file, $startRow, $endRow);
 }
 
-function _getOptions($file, $startRow, $endRow)
+function _getOptions($class, $filename, $file, $startRow, $endRow)
 {
     $currOption = '';
     $options = array();
+    if (!class_exists($class)) {
+        require_once PATH . $filename;
+    }
+    $driver =& new $class;
     for ($i = $startRow + 2; $i < $endRow; $i++) {
 
         // do we have a new option?
@@ -285,8 +289,27 @@ function _getOptions($file, $startRow, $endRow)
                 die('REGEXP DID NOT MATCH IN LINE ' . $i);
             }
             $currOption = $matches[1];
+            if (!array_key_exists($currOption, $driver->_options)) {
+                die('OPTION NOT DECLARED: ' . $currOption);
+            }
+            $default = $driver->_options[$currOption];
+            if (is_array($default) && count($default) === 0) {
+                $default = 'array()';
+            } elseif (is_string($default)) {
+                if ($default == "\n") {
+                    $default = '\n';
+                }
+                $default = "'" . $default . "'";
+            } elseif (is_null($default)) {
+                $default = 'null';
+            } elseif ($default === true) {
+                $default = 'true';
+            } elseif ($default === false) {
+                $default = 'false';
+            }
             $options[$currOption] = array('type' => $matches[2],
-                                          'desc' => trim($matches[3])
+                                          'desc' => trim($matches[3]),
+                                          'default' => $default
                                          );
             continue;
         }
@@ -294,7 +317,8 @@ function _getOptions($file, $startRow, $endRow)
         // no, we'll stick with the last option
         $text = trim(substr($file[$i], 2));
         
-        // but maybe we have also found the default value
+        // but maybe we have also found a given default value
+        // (in this case the default value from the class will be overridden)
         if (preg_match('#\(default: (.*)\)#', $text, $matches)) {
             $options[$currOption]['default'] = $matches[1];
             continue;
