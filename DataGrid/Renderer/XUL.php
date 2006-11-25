@@ -45,6 +45,7 @@ require_once 'XML/Util.php';
  * - Container Support: no
  * - Output Buffering:  yes
  * - Direct Rendering:  no
+ * - Streaming:         no
  * 
  * GENERAL NOTES:
  * 

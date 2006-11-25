@@ -65,6 +65,7 @@ require_once 'Spreadsheet/Excel/Writer.php';
  * - Container Support: yes
  * - Output Buffering:  no
  * - Direct Rendering:  not really, see below
+ * - Streaming:         no
  * 
  * GENERAL NOTES:
  *

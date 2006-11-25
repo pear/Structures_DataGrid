@@ -50,6 +50,7 @@ require_once 'Structures/DataGrid/Renderer.php';
  * - Container Support: yes
  * - Output Buffering:  no
  * - Direct Rendering:  no
+ * - Streaming:         no
  *
  * GENERAL NOTES:
  *

@@ -63,6 +63,7 @@ require_once 'Pager/Pager.php';
  * - Container Support: yes
  * - Output Buffering:  yes
  * - Direct Rendering:  no
+ * - Streaming:         no
  *
  * @version  $Revision$
  * @author   Olivier Guilyardi <olivier@samalyse.com>

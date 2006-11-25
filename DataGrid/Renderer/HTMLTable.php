@@ -65,6 +65,7 @@ require_once 'HTML/Table.php';
  * - Container Support: yes
  * - Output Buffering:  yes
  * - Direct Rendering:  no
+ * - Streaming:         no
  *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>

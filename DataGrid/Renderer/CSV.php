@@ -53,6 +53,7 @@ require_once 'Structures/DataGrid/Renderer.php';
  * - Container Support: no
  * - Output Buffering:  yes
  * - Direct Rendering:  no
+ * - Streaming:         yes
  *                       
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>

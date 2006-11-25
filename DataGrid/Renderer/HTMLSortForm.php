@@ -58,6 +58,7 @@ require_once 'HTML/QuickForm.php';
  * - Container Support: yes
  * - Output Buffering:  yes
  * - Direct Rendering:  no
+ * - Streaming:         no
  *
  * @version  $Revision$
  * @author   Olivier Guilyardi <olivier@samalyse.com>
