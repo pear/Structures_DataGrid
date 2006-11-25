@@ -498,7 +498,7 @@ function writeXMLFile($driver, $descriptions, $modes, $options, $notes)
         $xml .= ' </refsect1>' . "\n";
     }
     $xml .= ' <refsect1 id="' . $id . '.modes">' . "\n";
-    $xml .= '  <title>Supported operations modes:</title>' . "\n";
+    $xml .= '  <title>Supported operations modes</title>' . "\n";
     $xml .= '  <para>' . "\n";
     $xml .= '   This driver supports the following operation modes:' . "\n";
     $xml .= '  </para>' . "\n";
