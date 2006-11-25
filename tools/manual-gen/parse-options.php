@@ -21,6 +21,12 @@ if (!is_dir(TMP_PATH . 'structures-datagrid-renderer/')) {
     mkdir(TMP_PATH . 'structures-datagrid-renderer/', 0770, true);
 }
 
+$availableRendererModes = array('Container Support',
+                                'Output Buffering',
+                                'Direct Rendering',
+                                'Streaming'
+                               );
+
 $descriptions = array();
 $modes = array();
 $options = array();
@@ -139,17 +145,13 @@ function getSupportedModes($class, $filename)
         return $modes;
     } else {
         // get supported modes for a renderer driver
-        $availableModes = array('Container Support',
-                                'Output Buffering',
-                                'Direct Rendering',
-                                'Streaming'
-                               );
+        global $availableRendererModes;
         $file = file_get_contents(PATH . $filename);
         if (strpos($file, 'SUPPORTED OPERATION MODES:') === false) {
             // file is not a renderer driver => don't search for modes
             return array();
         }
-        foreach ($availableModes as $mode) {
+        foreach ($availableRendererModes as $mode) {
             $res = preg_match('# * - ' . $mode . ': {1,10}([a-z, ]+)#i', $file, $matches);
             if ($res !== 1) {
                 die('REGEXP DID NOT MATCH FOR MODE "' . $mode . '" in file "' . $filename . '"');
@@ -382,8 +384,10 @@ function getNotesStartRow($file, $optionsEndRow)
         return $optionsEndRow + 1;
     }
     // for Renderer drivers this is the expected place
-    if (strpos($file[$optionsEndRow + 7], ' * GENERAL NOTES:') !== false) {
-        return $optionsEndRow + 7;
+    global $availableRendererModes;
+    $numberOfModes = count($availableRendererModes);
+    if (strpos($file[$optionsEndRow + $numberOfModes + 4], ' * GENERAL NOTES:') !== false) {
+        return $optionsEndRow + $numberOfModes + 4;
     }
     return false;
 }
@@ -418,6 +422,7 @@ function getNotes($file, $optionsEndRow)
     }
 
     // read the 'GENERAL NOTES'
+    var_dump($startRow);
     $notes = '';
     $codeTagOpen = false;
     for ($i = $startRow + 2; $i < $endRow; $i++) {
