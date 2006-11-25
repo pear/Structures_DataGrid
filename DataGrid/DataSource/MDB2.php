@@ -118,10 +118,8 @@ class Structures_DataGrid_DataSource_MDB2
     function Structures_DataGrid_DataSource_MDB2()
     {
         parent::Structures_DataGrid_DataSource();
-
-        // FIXME: For clarity, supported options should be declared with 
-        // _addDefaultOptions()
-        
+        $this->_addDefaultOptions(array('dbc' => null,
+                                        'dsn' => null));
         $this->_setFeatures(array('multiSort' => true));
     }
   

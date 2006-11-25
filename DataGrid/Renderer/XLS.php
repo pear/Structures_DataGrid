@@ -166,6 +166,8 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
                 'worksheet'     => null,
                 'startCol'      => 0,
                 'startRow'      => 0,
+                'border'        => 0,
+                'headerBorder'  => 0
             )
         );
     }
