@@ -99,7 +99,12 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
                 'useQuotes'  => "auto"
             )
         );
-        $this->_setFeatures(array('streaming' => true));
+        $this->_setFeatures(
+            array(
+                'streaming' => true, 
+                'outputBuffering' => true,
+            )
+        );
     }
 
     /**

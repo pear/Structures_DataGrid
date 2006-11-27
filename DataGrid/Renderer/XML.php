@@ -99,6 +99,11 @@ class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer
                 'labelAttribute'    => null,
             )
         );
+        $this->_setFeatures(
+            array(
+                'outputBuffering' => true,
+            )
+        );
     }
 
     /**

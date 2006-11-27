@@ -336,7 +336,8 @@ class Structures_DataGrid_Renderer
         );
 
         $this->_features = array(
-                'streaming' => false,
+                'streaming' => false, 
+                'outputBuffering' => false, 
         );
 
         if (function_exists('mb_internal_encoding')) {
@@ -667,6 +668,7 @@ class Structures_DataGrid_Renderer
      */
     function flatten()
     {
+        return $this->_noSupport(__FUNCTION__);
     }
 
     /**
@@ -800,9 +802,7 @@ class Structures_DataGrid_Renderer
      */
     function getOutput()
     {
-        // FIXME: use hasFeature() instead of _isOverloaded()
-        if ($this->_isOverloaded('flatten')) {
-            $this->_isBuilt or $this->build($this->_records, 0, true);  // FIXME: are these params right for all cases?
+        if ($this->hasFeature('outputBuffering')) {
             return $this->flatten();
         } else {
             return $this->_noSupport(__FUNCTION__);
@@ -816,12 +816,11 @@ class Structures_DataGrid_Renderer
      * writing to the standard output (like calling header(), etc...).
      * 
      * @access  public
+     * @return  void
      */
     function render()
     {
-        // FIXME: use hasFeature() instead of _isOverloaded()
-        if ($this->_isOverloaded('flatten')) {
-            $this->_isBuilt or $this->build($this->_records, 0, true);  // FIXME: are these params right for all cases?
+        if ($this->hasFeature('outputBuffering')) {
             echo $this->flatten();
         } else {
             $this->build();
@@ -982,38 +981,6 @@ class Structures_DataGrid_Renderer
 
         return $query;
     }
-   
-    /**
-     * Detect whether a method is overloaded in a child class
-     * 
-     * This method is able to detect if a given method is implemented in the 
-     * driver (child class) even if it is declared in the root class.
-     *
-     * @param $method Method name
-     * @param $class  The class to scan (Internal use) 
-     * @return bool
-     * @access protected
-     */
-    function _isOverloaded($method, $class = null)
-    {
-        if (is_null($class)) {
-            $class = get_class($this);
-        }
-       
-        $parent = get_parent_class($class);
-        
-        if (!$parent) {
-            return false;
-        } else {
-            $methods = get_class_methods($class);
-            if (in_array($method, $methods)) {
-                return true;
-            } else {
-                return $this->_isOverloaded($method, $parent);
-            }
-        }
-    }
-
 
     /**
      * List special driver features

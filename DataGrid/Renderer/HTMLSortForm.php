@@ -105,6 +105,11 @@ class Structures_DataGrid_Renderer_HTMLSortForm
                 'textSubmit'        => 'Submit',
             )
         );
+        $this->_setFeatures(
+            array(
+                'outputBuffering' => true,
+            )
+        );
     }
 
     /**

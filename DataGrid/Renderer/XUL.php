@@ -109,6 +109,11 @@ class Structures_DataGrid_Renderer_XUL extends Structures_DataGrid_Renderer
                 'selfPath' => htmlspecialchars($_SERVER['PHP_SELF'])
             )
         );
+        $this->_setFeatures(
+            array(
+                'outputBuffering' => true,
+            )
+        );
     }
 
     /**

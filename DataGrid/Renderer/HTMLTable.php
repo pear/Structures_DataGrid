@@ -126,6 +126,11 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 'sortingResetsPaging' => true,
             )
         );
+        $this->_setFeatures(
+            array(
+                'outputBuffering' => true,
+            )
+        );
     }
 
     /**
@@ -530,6 +535,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
         // Load and get output from the Pager rendering driver
         $driver =& Structures_DataGrid::loadDriver('Structures_DataGrid_Renderer_Pager');
         $driver->setupAs($this, $options);
+        $driver->build(array(), 0, true);
         return $driver->getOutput();
     }
 

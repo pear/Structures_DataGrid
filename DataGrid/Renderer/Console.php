@@ -71,6 +71,12 @@ class Structures_DataGrid_Renderer_Console extends Structures_DataGrid_Renderer
     function Structures_DataGrid_Renderer_Console()
     {
         parent::Structures_DataGrid_Renderer();
+
+        $this->_setFeatures(
+            array(
+                'outputBuffering' => true,
+            )
+        );
     }
 
     /**

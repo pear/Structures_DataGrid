@@ -109,6 +109,11 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
                 ),
             )
         );
+        $this->_setFeatures(
+            array(
+                'outputBuffering' => true,
+            )
+        );
     }
     
     /**
