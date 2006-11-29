@@ -1439,8 +1439,6 @@ class Structures_DataGrid
                     unset($this->_dataSource);
                     return $result;
                 }
-                // TODO: these two methods are private and should maybe just be combined?
-                $this->_createDefaultColumns();
                 $this->_prepareColumnsAndRenderer();
                 $this->_renderer->build($this->recordSet, 0, true);
             } else {
@@ -1457,9 +1455,8 @@ class Structures_DataGrid
                         return $result;
                     }
                     // prepare columns and renderer only on first iteration
-                    if (empty($this->_renderer->_columnObjects)) {
-                        // TODO: see TODO note above
-                        $this->_createDefaultColumns();
+                    // FIXME: _columnObjects is private:
+                    if (empty($this->_renderer->_columnObjects)) { 
                         $this->_prepareColumnsAndRenderer();
                     }
                     if (   (   is_null($this->rowLimit)
@@ -1493,6 +1490,9 @@ class Structures_DataGrid
     {
         if ($columnSet = $this->_dataSource->getColumns()) {
             $this->columnSet = array_merge($this->columnSet, $columnSet);
+        }
+        if (empty($this->columnSet)) {
+            $this->_createDefaultColumns();
         }
         if (isset($this->_renderer)) {
             $this->_renderer->setColumns($this->columnSet);
