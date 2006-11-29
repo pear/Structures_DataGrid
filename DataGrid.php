@@ -1491,9 +1491,9 @@ class Structures_DataGrid
         if ($columnSet = $this->_dataSource->getColumns()) {
             $this->columnSet = array_merge($this->columnSet, $columnSet);
         }
-        if (empty($this->columnSet)) {
-            $this->_createDefaultColumns();
-        }
+
+        $this->_createDefaultColumns();
+
         if (isset($this->_renderer)) {
             $this->_renderer->setColumns($this->columnSet);
             $this->_renderer->setLimit($this->page, $this->rowLimit, 
