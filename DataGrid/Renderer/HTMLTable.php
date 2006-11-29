@@ -404,6 +404,10 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      */
     function buildRow($index, $data)
     {
+        //FIXME: with one column, $data should contain one element, but it
+        //contains much more. Don't know where this bug comes from.
+        //It causes a broken table when there is only one column
+
         $outputRow = $this->_bodyStartRow + $index;
         foreach ($data as $col => $value) {
             $field = $this->_columns[$col]['field'];
