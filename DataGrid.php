@@ -1029,6 +1029,8 @@ class Structures_DataGrid
      */
     function &getColumnByField($fieldName)
     {
+        // FIXME: this method is broken, when called after bind() and before
+        // rendering (which is the most usual).
         $this->_createDefaultColumns();
         foreach ($this->columnSet as $key => $column) {
             if ($column->fieldName === $fieldName) {
