@@ -28,10 +28,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-10-22</date>
- <time>22:20:00</time>
+ <date>?</date>
+ <time>?</time>
  <version>
-  <release>0.1.2</release>
+  <release>0.1.3</release>
   <api>0.1.1</api>
  </version>
  <stability>
@@ -40,9 +40,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-- Bug #9191: using $_SERVER['PHP_SELF'] is vulnerable for XSS attacks;
-special characters are now converted to HTML entities
-(thanks to Bertrand Mansion, golgote at mamasam dot com)
+Bug #9493: the selfPath option was not correctly propagated to the pager
+(thanks to pecus, pecus at pecus dot it)
  </notes>
  <contents>
   <dir name="/">
