@@ -329,7 +329,16 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
     {
         // Load and get output from the Pager rendering driver
         $driver =& Structures_DataGrid::loadDriver('Structures_DataGrid_Renderer_Pager');
+
+        // Propagate the selfPath option. Do not override user params
+        if (!isset($params['path']) && !isset($params['filename'])) {
+            $params['path'] = dirname($this->_options['selfPath']);
+            $params['fileName'] = basename($this->_options['selfPath']);
+            $params['fixFileName'] = false;
+        }
+
         $driver->setupAs($this, $params);
+        $driver->build(array(), 0);
         return $driver->getOutput();
     }
 
