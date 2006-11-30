@@ -535,6 +535,12 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
             }
         }
        
+        // Propagate the selfPath option. Do not override user params
+        if (!isset($options['path']) && !isset($options['filename'])) {
+            $options['path'] = dirname($this->_options['selfPath']);
+            $options['fileName'] = basename($this->_options['selfPath']);
+            $options['fixFileName'] = false;
+        }
     
         // Load and get output from the Pager rendering driver
         $driver =& Structures_DataGrid::loadDriver('Structures_DataGrid_Renderer_Pager');
