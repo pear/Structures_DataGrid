@@ -37,7 +37,7 @@ require_once 'XML/Util.php';
  *
  * SUPPORTED OPTIONS:
  *
- * - selfPath:      (string) The complete path for sorting and paging links
+ * - selfPath:      (string) The complete path for sorting links
  *                           (default: $_SERVER['PHP_SELF'])
  *
  * SUPPORTED OPERATION MODES:
