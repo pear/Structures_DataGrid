@@ -45,6 +45,7 @@ This concept is based on the .NET Framework DataGrid control and works very well
 - secured the sort direction input string
 - new abstract writeMode DataSource interface, for future support of data
   editing features
+- bug #9566: new Structures_DataGrid::getColumns() method  
  </notes>
  <contents>
   <dir name="/">
