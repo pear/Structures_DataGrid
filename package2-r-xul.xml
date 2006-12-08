@@ -39,9 +39,6 @@ string for a XUL listbox.
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-- Bug #9191: using $_SERVER['PHP_SELF'] is vulnerable for XSS attacks;
-  special characters are now converted to HTML entities
-  (thanks to Bertrand Mansion, golgote at mamasam dot com)
 - Bug #9548: added support for per-column default sort directions
   (thanks to Anton, hire at ukr dot net)
  </notes>
