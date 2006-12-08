@@ -53,9 +53,6 @@ require_once 'HTML/Table.php';
  *                                 descending. Can be text or HTML to define an image.
  * - headerAttributes:    (array)  Attributes for the header row. This is an array
  *                                 of the form: array(attribute => value, ...)
- * - columnAttributes:    (array)  Column cells attributes. This is an array of
- *                                 the form:
- *                                 array(fieldName => array(attribute => value, ...) ...)
  * - convertEntities:     (bool)   Whether or not to convert html entities.
  *                                 This calls htmlspecialchars(). 
  * - sortingResetsPaging: (bool)   Whether sorting HTTP queries reset paging.  
@@ -120,7 +117,6 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 'selfPath'            => htmlspecialchars($_SERVER['PHP_SELF']),
                 'sortIconASC'         => '',
                 'sortIconDESC'        => '',
-                'columnAttributes'    => array(),
                 'headerAttributes'    => array(),
                 'convertEntities'     => true,
                 'sortingResetsPaging' => true,

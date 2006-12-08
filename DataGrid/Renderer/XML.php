@@ -159,9 +159,9 @@ class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer
     {
         $this->_xml .= "  <{$this->_options['rowTag']}>\n";
         foreach ($data as $col => $value) {
-            $field = ($this->_options['fieldTag'] == '{field}') 
-                   ? $this->_columns[$col]['field']
-                   : $this->_options['fieldTag'];
+            $field = $this->_columns[$col]['field'];
+            $tag = ($this->_options['fieldTag'] == '{field}') 
+                   ? $field : $this->_options['fieldTag'];
 
             $attributes = array();
             if (!is_null($this->_options['fieldAttribute'])) {
@@ -173,7 +173,13 @@ class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer
                     = $this->_columns[$col]['label'];
             }
 
-            $this->_xml .= '    ' . XML_Util::createTag($field, $attributes, $value) . "\n";
+            if (isset($this->_options['columnAttributes'][$field])) {
+                $attributes = array_merge (
+                                $this->_options['columnAttributes'][$field], 
+                                $attributes);
+            }
+
+            $this->_xml .= '    ' . XML_Util::createTag($tag, $attributes, $value) . "\n";
         }
         $this->_xml .= "  </{$this->_options['rowTag']}>\n";
     }

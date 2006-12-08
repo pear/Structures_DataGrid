@@ -7,7 +7,8 @@ Remarks about this file :
 - each entry should be separated by a "-" line
 - each entry should have a title formatted as :
   TODO <number> - <summary> (<pear user name>) - Priority: High|Medium|Low
-- once an entry is fixed, I recommend not to remove it. Mark it as "Done" instead.
+- once an entry is fixed, I recommend not to remove it. Mark it as "Done" instead
+  and move it to the "Done Items Archive" (at the bottom of this file).
 
 --------------------------------------------------------------------------------
 TODO 1 - SQL sort expression support (olivierg) - Priority: Medium
@@ -44,12 +45,6 @@ Should produce links like :
 
 And when generating SQL, this "bar" value should be mapped to the 
 orderBy value : IF(LOCATE('foo',bar),1,0)
- 
---------------------------------------------------------------------------------
-TODO 3 - XML attributes set from the Column object (olivierg) - Priority: Medium
-
-The HTML driver renders the Column::atribs, but attributes are also
-valid with XML, and should also be rendered by the XML renderer.
  
 --------------------------------------------------------------------------------
 TODO 4 - Ensure protection against SQL injection (olivierg) - Priority: Medium
@@ -104,15 +99,6 @@ TODO 9 - Debugging (?) - Priority: Medium
 Add some debugging possibilities, e.g. similar to the way DBDO does it.
 
 --------------------------------------------------------------------------------
-TODO 10 - Remove constants (wiesemann) - Priority: High - Done
-
-Remove the new constants for Renderers and DataSources (STRUCTURES_DATAGRID_*),
-use strings insteads. To be discussed: Renderer file for HTML_Table is named
-HTMLTable.php, 'HTML_Table' as parameter for render()/fill() would be more
-precise and consistent. Similar for DataObject.php (=> DB_DataObject),
-DBTable.php (=> DB_Table), Console.php (=> Console_Table) and others.
-
---------------------------------------------------------------------------------
 TODO 11 - Allow access to the record set (?) - Priority: Medium
 
 Users should be able to access the record set. This can be achieved either by
@@ -156,19 +142,6 @@ However, on the user-side, there's no reason to minimize the use of
 Column objects. The Renderers just do not know anything about them directly.
 
 --------------------------------------------------------------------------------
-TODO 13 - Add a FAQ to the documentation (wiesemann) - Priority: Medium - Done
-
-One FAQ would be: "How can I use multiple grids on one page?" (cp. bug #8392)
-
---------------------------------------------------------------------------------
-TODO 14 - Repair handling of numbers in mkmanual.sh (wiesemann)
-        - Priority: Medium - DONE
-
-The current version of mkmanual.sh breaks phpDoc comments like the one of
-getCurrentRecordNumberStart(). The '0' after 'or:' gets lost and is missing
-in the manual, therefore.
-
---------------------------------------------------------------------------------
 TODO 15 - Custom DataObjects (olivierg) - Priority: Medium
 
 For a customer I've been asked to provide a faster replacement for DB_DataObject.
@@ -210,4 +183,36 @@ time with all details, while the grid has less details by definition.
 We need a such thing that's for sure. And it shouldn't be that hard to
 code. Additionally, it implies coding some routines to handle passing
 a unique record identifier, which we'll need for TODO 16.
+
+
+
+####################### Done Items Archive #########################
+
+--------------------------------------------------------------------------------
+TODO 3 - XML attributes set from the Column object (olivierg) - Priority: Medium - Done
+
+The HTML driver renders the Column::atribs, but attributes are also
+valid with XML, and should also be rendered by the XML renderer.
+ 
+--------------------------------------------------------------------------------
+TODO 10 - Remove constants (wiesemann) - Priority: High - Done
+
+Remove the new constants for Renderers and DataSources (STRUCTURES_DATAGRID_*),
+use strings insteads. To be discussed: Renderer file for HTML_Table is named
+HTMLTable.php, 'HTML_Table' as parameter for render()/fill() would be more
+precise and consistent. Similar for DataObject.php (=> DB_DataObject),
+DBTable.php (=> DB_Table), Console.php (=> Console_Table) and others.
+
+--------------------------------------------------------------------------------
+TODO 13 - Add a FAQ to the documentation (wiesemann) - Priority: Medium - Done
+
+One FAQ would be: "How can I use multiple grids on one page?" (cp. bug #8392)
+
+--------------------------------------------------------------------------------
+TODO 14 - Repair handling of numbers in mkmanual.sh (wiesemann)
+        - Priority: Medium - DONE
+
+The current version of mkmanual.sh breaks phpDoc comments like the one of
+getCurrentRecordNumberStart(). The '0' after 'or:' gets lost and is missing
+in the manual, therefore.
 

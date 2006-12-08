@@ -55,6 +55,11 @@
  *                                 queries.
  * - excludeVars:         (array)  Variables to be removed from the generated
  *                                 HTTP queries.
+ * - columnAttributes:    (array)  Column cells attributes. This is an array of
+ *                                 the form:
+ *                                 array(fieldName => array(attribute => value, ...) ...)
+ *                                 This option is only used by XML/HTML based 
+ *                                 drivers.
  * 
  * --- DRIVER INTERFACE ---
  *
@@ -335,6 +340,7 @@ class Structures_DataGrid_Renderer
             'numberAlign'           => true,
             'extraVars'             => array(),
             'excludeVars'           => array(),
+            'columnAttributes'    => array(),
 
             /* Options that must not be accessed by drivers */
             'buildHeader'           => true, 
@@ -735,9 +741,7 @@ class Structures_DataGrid_Renderer
                     $column->setAutoFillValue($this->_options['defaultCellValue']);
                 }
 
-                if (isset($column->attribs) &&
-                    (is_a($this, 'Structures_DataGrid_Renderer_HTMLTable')) 
-                        || is_a($this, 'Structures_DataGrid_Renderer_Smarty'))
+                if (isset($column->attribs))
                 {
                     if (!array_key_exists($field, $this->_options['columnAttributes'])) {
                         $this->_options['columnAttributes'][$field] = array();

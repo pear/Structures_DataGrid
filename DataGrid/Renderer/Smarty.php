@@ -41,9 +41,6 @@ require_once 'Structures/DataGrid/Renderer.php';
  * - sortingResetsPaging: (bool)   Whether sorting HTTP queries reset paging.  
  * - convertEntities:     (bool)   Whether or not to convert html entities.
  *                                 This calls htmlspecialchars(). 
- * - columnAttributes:    (array)  Column cells attributes. This is an array of
- *                                 the form:
- *                                 array(fieldName => array(attribute => value, ...) ...)
  * 
  * SUPPORTED OPERATION MODES:
  *
@@ -161,7 +158,6 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
                 'selfPath'            => htmlspecialchars($_SERVER['PHP_SELF']),
                 'convertEntities'     => true,
                 'sortingResetsPaging' => true,
-                'columnAttributes'    => array(),
             )
         );
     }
