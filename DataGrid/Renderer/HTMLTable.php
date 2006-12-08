@@ -365,7 +365,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                     }
                 } else {
                     $icon = '';
-                    $direction = 'ASC';
+                    $direction = $this->_defaultDirections[$field];
                 }
 
                 // Build HTTP query

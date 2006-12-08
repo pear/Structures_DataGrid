@@ -40,8 +40,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
-Bug #9493: the selfPath option was not correctly propagated to the pager
+- Bug #9493: the selfPath option was not correctly propagated to the pager
 (thanks to pecus, pecus at pecus dot it)
+- Bug #9548: added support for per-column default sort directions
+  (thanks to Anton, hire at ukr dot net)
  </notes>
  <contents>
   <dir name="/">

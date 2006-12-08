@@ -58,9 +58,17 @@ class Structures_DataGrid_Column
 
     /**
      * The field name to order by. Optional
-     * @var array
+     * @var string
      */
     var $orderBy;
+
+    /**
+     * The default direction to order this column by
+     * 
+     * @var array
+     * @access private
+     */
+    var $defaultDirection = 'ASC';
 
     /**
      * The attributes to use for the cell. Optional
@@ -205,6 +213,28 @@ class Structures_DataGrid_Column
     function setOrderBy($str)
     {
         $this->orderBy = $str;
+    }
+
+    /**
+     * Return the default direction to order this column by
+     *
+     * @return  string  "ASC" or "DESC"
+     * @access  public
+     */
+    function getDefaultDirection($str)
+    {
+        return $this->defaultDirection;
+    }
+
+    /**
+     * Set the default direction to order this column by
+     *
+     * @param   string      $str    "ASC" or "DESC"
+     * @access  public
+     */
+    function setDefaultDirection($str)
+    {
+        $this->defaultDirection = $str;
     }
 
     /**

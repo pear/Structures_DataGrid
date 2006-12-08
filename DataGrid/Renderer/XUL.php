@@ -158,9 +158,9 @@ class Structures_DataGrid_Renderer_XUL extends Structures_DataGrid_Renderer
                         $dirCur = 'descending';
                     }
                 } else {
-                    // No current sort on this column. Next click will ascend. We
-                    // show no arrow.
-                    $dirArg = 'ASC';
+                    // No current sort on this column. Next click will sort by 
+                    // the default direction. We show no arrow.
+                    $dirArg = $this->_defaultDirections[$field];
                     $dirCur = 'natural';
                 }
 

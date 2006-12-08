@@ -257,7 +257,17 @@ class Structures_DataGrid_Renderer
      * @access protected
      */
     var $_sortableFields = array();
-    
+
+    /**
+     * The default directions to sort by 
+     *
+     * Drivers can read the content of this property but must not change it.
+     * 
+     * @var array Structure: array(field => ASC|DESC, ...)
+     * @access protected
+     */
+    var $_defaultDirections = array();
+
     /**
      * Common and driver-specific options
      * 
@@ -737,6 +747,8 @@ class Structures_DataGrid_Renderer
                                     $column->attribs);
                 }
 
+                $this->_defaultDirections[$field] = $column->defaultDirection;
+
                 $this->_columns[$index] = compact('field','label');
             }
 
@@ -931,7 +943,7 @@ class Structures_DataGrid_Renderer
      * to XML/HTML entities according to the "encoding" option.
      *
      * @param $field            Sort field name
-     * @param $direciton        Sort direction
+     * @param $direction        Sort direction
      * @param $convertAmpersand Whether to convert ampersands to XML/HTML 
      *                          compliant entities
      * @param $extraParameters  Optional extra HTTP parameters
@@ -963,7 +975,7 @@ class Structures_DataGrid_Renderer
         // Build list of GET variables
         $get = array();
         $get[$prefix . 'orderBy'] = $field;
-        $get[$prefix . 'direction'] = $direction;
+        $get[$prefix . 'direction'] = $direction; 
         foreach ($extraParameters as $var => $value) {
             $get[$prefix . $var] = $value;
         }

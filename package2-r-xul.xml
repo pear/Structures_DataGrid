@@ -27,10 +27,10 @@ string for a XUL listbox.
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-10-22</date>
- <time>22:20:00</time>
+ <date>?</date>
+ <time>?</time>
  <version>
-  <release>0.1.1</release>
+  <release>0.1.2</release>
   <api>0.1.0</api>
  </version>
  <stability>
@@ -40,8 +40,10 @@ string for a XUL listbox.
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
 - Bug #9191: using $_SERVER['PHP_SELF'] is vulnerable for XSS attacks;
-special characters are now converted to HTML entities
-(thanks to Bertrand Mansion, golgote at mamasam dot com)
+  special characters are now converted to HTML entities
+  (thanks to Bertrand Mansion, golgote at mamasam dot com)
+- Bug #9548: added support for per-column default sort directions
+  (thanks to Anton, hire at ukr dot net)
  </notes>
  <contents>
   <dir name="/">

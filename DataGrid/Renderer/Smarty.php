@@ -246,7 +246,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
                         $direction = 'ASC';
                     }
                 } else {
-                    $direction = 'ASC';
+                    $direction = $this->_defaultDirections[$spec['field']];
                 }
                 $extra = array('page' => $this->_options['sortingResetsPaging'] 
                                          ? 1 : $this->_page);

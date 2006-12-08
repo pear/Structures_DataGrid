@@ -1123,6 +1123,10 @@ class Structures_DataGrid
     {
         if (is_subclass_of($source, 'structures_datagrid_datasource')) {
             $this->_dataSource =& $source;
+            $this->fetchDataSource();
+            if ($columnSet = $this->_dataSource->getColumns()) {
+                $this->columnSet = array_merge($this->columnSet, $columnSet);
+            }
         } else {
             return PEAR::raiseError('Invalid data source type, ' . 
                                     'must be a valid data source driver class');
@@ -1462,30 +1466,30 @@ class Structures_DataGrid
             isset($this->_renderer) or $this->setRenderer(DATAGRID_RENDER_DEFAULT);
             // is streaming enabled or not?
             if (is_null($this->_bufferSize)) {
-                if (PEAR::isError($result = $this->fetchDataSource())) {
-                    unset($this->_dataSource);
-                    return $result;
-                }
                 $this->_prepareColumnsAndRenderer();
                 $this->_renderer->build($this->recordSet, 0, true);
             } else {
                 $recordCount = $this->_dataSource->count();
-                for ($row = ($this->page - 1) * $this->rowLimit;
+                for ($row = ($this->page - 1) * $this->rowLimit, $inital = true;
                      (   is_null($this->rowLimit)
                       || $row < $this->page * $this->rowLimit
                      )
                      && $row < $recordCount;
-                     $row += $this->_bufferSize
+                     $row += $this->_bufferSize, $initial = false
                     ) {
-                    if (PEAR::isError($result = $this->fetchDataSource($row))) {
-                        unset($this->_dataSource);
-                        return $result;
-                    }
-                    // prepare columns and renderer only on first iteration
-                    // FIXME: _columnObjects is private:
-                    if (empty($this->_renderer->_columnObjects)) { 
+
+                    if ($initial) { 
+                        // prepare columns and renderer only on first iteration
                         $this->_prepareColumnsAndRenderer();
+                    } else {
+                        // we don't fetch on the first iteration because a chunk
+                        // of data has already been fetched by bindDataSource()
+                        if (PEAR::isError($result = $this->fetchDataSource($row))) {
+                            unset($this->_dataSource);
+                            return $result;
+                        }
                     }
+
                     if (   (   is_null($this->rowLimit)
                             || $row + $this->_bufferSize < $this->page * $this->rowLimit
                            )
@@ -1515,10 +1519,6 @@ class Structures_DataGrid
      */
     function _prepareColumnsAndRenderer()
     {
-        if ($columnSet = $this->_dataSource->getColumns()) {
-            $this->columnSet = array_merge($this->columnSet, $columnSet);
-        }
-
         $this->_createDefaultColumns();
 
         if (isset($this->_renderer)) {
