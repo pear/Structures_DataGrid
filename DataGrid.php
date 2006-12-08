@@ -1000,6 +1000,31 @@ class Structures_DataGrid
     }
 
     /**
+     * Return the current columns
+     *
+     * @return  array   Structures_DataGrid_Column objects (references to). 
+     *                  This is a numerically indexed array (starting from 0). 
+     * @access  public
+     */
+    function getColumns()
+    {
+        // FIXME: this method is broken, when called after bind() and before
+        // rendering (which is the most usual). as getColumnByField()
+        $this->_createDefaultColumns();
+
+        // Cloning the column set to prevent users from playing with our
+        // internal $columnSet property.
+        $columnSetClone = array();
+
+        $ii = $this->getColumnCount();
+        for ($i = 0; $i < $ii; $i++) {
+            $columnSetClone[$i] =& $this->columnSet[$i];
+        }
+
+        return $columnSetClone;
+    }
+
+    /**
      * Find a column by name (label) 
      *
      * @access  public
