@@ -1470,7 +1470,7 @@ class Structures_DataGrid
                 $this->_renderer->build($this->recordSet, 0, true);
             } else {
                 $recordCount = $this->_dataSource->count();
-                for ($row = ($this->page - 1) * $this->rowLimit, $inital = true;
+                for ($row = ($this->page - 1) * $this->rowLimit, $initial = true;
                      (   is_null($this->rowLimit)
                       || $row < $this->page * $this->rowLimit
                      )
