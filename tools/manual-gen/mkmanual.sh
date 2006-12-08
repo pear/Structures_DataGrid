@@ -28,9 +28,10 @@ else
     TARGET_DIR=$1
 fi
 
-VERSION=0.5
+VERSION=0.6
 
 echo "Structures_DataGrid Manual Generator $VERSION"
+echo 'CVS id: $Id: mkmanual.sh,v 1.14 2006-12-08 18:25:08 olivierg Exp $'
 
 if [ "$TARGET_DIR" == "" ] 
 then
@@ -85,13 +86,28 @@ echo
 
 # Patching new/modified files
 cd $BUILD_DIR/structures/structures-datagrid
-echo "Patching new/modified file: "
-for f in structures-datagrid/*.xml structures-datagrid-column/*.xml structures-datagrid-datasource/*.xml structures-datagrid-renderer/*.xml; do
-    if ! diff -Nu -I '\$Revision.*\$' $TARGET_DIR/en/package/structures/structures-datagrid/$f \
-        $f > $BUILD_DIR/diff
-    then 
-        patch $TARGET_DIR/en/package/structures/structures-datagrid/$f < $BUILD_DIR/diff
-    fi            
+for dir in \
+    structures-datagrid \
+    structures-datagrid-column \
+    structures-datagrid-datasource \
+    structures-datagrid-renderer
+do
+    if ! [ -d "$dir" ]
+    then
+        echo "Directory $dir - SKIPPING (no such directory)"
+        continue
+    fi
+
+    echo "Directory $dir - Patching new/modified file: "
+    for f in $dir/*.xml
+    do
+        if ! diff -Nu -I '\$Revision.*\$' \
+            $TARGET_DIR/en/package/structures/structures-datagrid/$f \
+            $f > $BUILD_DIR/diff
+        then 
+            patch $TARGET_DIR/en/package/structures/structures-datagrid/$f < $BUILD_DIR/diff
+        fi            
+    done
 done
 
 echo
