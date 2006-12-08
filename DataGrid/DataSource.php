@@ -22,7 +22,7 @@
  * +----------------------------------------------------------------------+
  * </pre>
  *
- * CSV file id: $Id$
+ * CVS file id: $Id$
  * 
  * @version  $Revision$
  * @package  Structures_DataGrid
