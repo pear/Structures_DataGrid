@@ -77,12 +77,6 @@ if ($renderer->hasFeature('renderContent')) {fetch the rows}
 >>>
 
 --------------------------------------------------------------------------------
-TODO 6 - Predefined column formatters (olivierg) - Priority: Medium
-
-There are common formatting needs such as date, numbers. These could be achieved
-with predefined column formatters.
-
---------------------------------------------------------------------------------
 TODO 7 - Using Datasources out of SDG (olivierg) - Priority: Medium
 
 Document how to use the DataSource layer out of SDG, as an abstract way to fetch
@@ -104,42 +98,6 @@ TODO 11 - Allow access to the record set (?) - Priority: Medium
 Users should be able to access the record set. This can be achieved either by
 a new method in the core class or by a new (rather trivial) array renderer.
 (Idea/request from Gregor Gramlich)
-
---------------------------------------------------------------------------------
-TODO 12 - Let renderers access Column objects directly (olivierg) 
-        - Priority: High - WON'T FIX
-
-When refactoring the rendering layer, I thought Column objects were like Records
-objects: a waste of memory. So i tried to minimize their use, thinking we could
-suppress them in the future. That's mainly why I chose to make renderers completely
-ignore the existence of these Column objects.
-
-But I now realize they're very useful, and the $_columns property is now what wastes
-memory by duplicating all of the informations contained in $_columnObjects.
-
-Additionally, such options as columnAttributes are redundant with the informations
-contained in Column objects, etc...
-
-We should change this ASAP, so that it does not cause too many BC breaks for
-people who are writing their own renderers.
-
-I propose to remove the $_columnObjects property, and put Column objects references
-directly into $_columns
-
-=> WON'T FIX, because :
-
-- It does work the way it is. It is not perfect and it will never be.  
-- I tried several times to "fix" this, and it is far from
-  trivial. Everytime it has raised several other quite complex issues.
-
-Conclusion: 
-With the current design a Rendering driver is not supposed to know
-anything about Column objects, and this strict separation seems to be
-useful as far as I can tell (separating layers usually helps when
-handling complexity). 
-
-However, on the user-side, there's no reason to minimize the use of
-Column objects. The Renderers just do not know anything about them directly.
 
 --------------------------------------------------------------------------------
 TODO 15 - Custom DataObjects (olivierg) - Priority: Medium
@@ -184,7 +142,15 @@ We need a such thing that's for sure. And it shouldn't be that hard to
 code. Additionally, it implies coding some routines to handle passing
 a unique record identifier, which we'll need for TODO 16.
 
+--------------------------------------------------------------------------------
+TODO 18 - Easy HTML link maker (olivierg) - Priority: Medium
 
+I wrote the prototype of SDG_Column::makeHtmlLink() but it still needs to be 
+implemented. It's a rather straight-forward idea :
+
+$column->makeHtmlLink("Edit", "product_id", "edit.php");
+
+More in makeHtmlLink()'s docblock
 
 ####################### Done Items Archive #########################
 
@@ -193,6 +159,13 @@ TODO 3 - XML attributes set from the Column object (olivierg) - Priority: Medium
 
 The HTML driver renders the Column::atribs, but attributes are also
 valid with XML, and should also be rendered by the XML renderer.
+
+--------------------------------------------------------------------------------
+TODO 6 - Predefined column formatters (olivierg) - Priority: Medium - Done
+
+There are common formatting needs such as date, numbers. These could be achieved
+with predefined column formatters.
+
  
 --------------------------------------------------------------------------------
 TODO 10 - Remove constants (wiesemann) - Priority: High - Done
@@ -202,6 +175,42 @@ use strings insteads. To be discussed: Renderer file for HTML_Table is named
 HTMLTable.php, 'HTML_Table' as parameter for render()/fill() would be more
 precise and consistent. Similar for DataObject.php (=> DB_DataObject),
 DBTable.php (=> DB_Table), Console.php (=> Console_Table) and others.
+
+--------------------------------------------------------------------------------
+TODO 12 - Let renderers access Column objects directly (olivierg) 
+        - Priority: High - WON'T FIX
+
+When refactoring the rendering layer, I thought Column objects were like Records
+objects: a waste of memory. So i tried to minimize their use, thinking we could
+suppress them in the future. That's mainly why I chose to make renderers completely
+ignore the existence of these Column objects.
+
+But I now realize they're very useful, and the $_columns property is now what wastes
+memory by duplicating all of the informations contained in $_columnObjects.
+
+Additionally, such options as columnAttributes are redundant with the informations
+contained in Column objects, etc...
+
+We should change this ASAP, so that it does not cause too many BC breaks for
+people who are writing their own renderers.
+
+I propose to remove the $_columnObjects property, and put Column objects references
+directly into $_columns
+
+=> WON'T FIX, because :
+
+- It does work the way it is. It is not perfect and it will never be.  
+- I tried several times to "fix" this, and it is far from
+  trivial. Everytime it has raised several other quite complex issues.
+
+Conclusion: 
+With the current design a Rendering driver is not supposed to know
+anything about Column objects, and this strict separation seems to be
+useful as far as I can tell (separating layers usually helps when
+handling complexity). 
+
+However, on the user-side, there's no reason to minimize the use of
+Column objects. The Renderers just do not know anything about them directly.
 
 --------------------------------------------------------------------------------
 TODO 13 - Add a FAQ to the documentation (wiesemann) - Priority: Medium - Done
@@ -215,4 +224,3 @@ TODO 14 - Repair handling of numbers in mkmanual.sh (wiesemann)
 The current version of mkmanual.sh breaks phpDoc comments like the one of
 getCurrentRecordNumberStart(). The '0' after 'or:' gets lost and is missing
 in the manual, therefore.
-

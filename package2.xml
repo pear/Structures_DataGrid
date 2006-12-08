@@ -45,6 +45,7 @@ This concept is based on the .NET Framework DataGrid control and works very well
 - secured the sort direction input string
 - new abstract writeMode DataSource interface, for future support of data
   editing features
+- new SDG_Column::format() method providing auto-formatters for dates and number
 - bug #9566: new Structures_DataGrid::getColumns() method for fetching all
   of the columns currently loaded in the datagrid
   (thanks to Daniel Garcia, daniel at assertio dot es)

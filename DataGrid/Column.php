@@ -292,7 +292,7 @@ class Structures_DataGrid_Column
     }
 
     /**
-     * Set Formatter
+     * Set Formatter Callback
      *
      * Define a formatting callback function with optional arguments for 
      * this column.
@@ -318,6 +318,90 @@ class Structures_DataGrid_Column
             $this->formatter = $formatter;
         } else {
             return PEAR::raiseError('Column formatter is not a valid callback');
+        }
+    }
+
+    /**
+     * Choose a format preset
+     *
+     * This method allows to associate an "automatic" predefined formatter
+     * to the column, for common needs as formatting dates, numbers, ...
+     *
+     * The currently supported predefined formatters are :
+     * - dateFromTimestamp: format a UNIX timestamp according to the 
+     *   date()-like format string passed as second argument 
+     * - dateFromMysql : format a MySQL DATE, DATETIME, or TIMESTAMP MySQL 
+     *   according to the date() like format string passed as second argument
+     * - number: format a number, according to the same optional 2nd, 3rd and 
+     *   4th arguments that the number_format() PHP function accepts.
+     *
+     * @example format.php         Common formats
+     * @param   mixed  $type,...   Predefined formatter name, followed by
+     *                             formatter-specific parameters
+     * @return  void
+     * @access  public
+     */
+    function format($type)
+    {
+        $params = func_get_args();
+        $this->setFormatter(array(get_class($this), '_autoFormatter'), $params);
+    }
+
+    /**
+     * Format this column as HTML links
+     *
+     * @param   string  $label  Link label (ex: "Edit", "View", etc...)
+     * @param   mixed   $key    Names of the field (or array of field names) 
+     *                          which values must be passed as GET arguments
+     * @param   string  $url    HREF attribute value
+     * @param   array   $extraVars Extra GET arguments
+     * @return  void
+     * @access  public
+     */
+    function makeHtmlLink($label, $key, $url, $extraVars = array())
+    {
+        //FIXME: this function is not implemented
+    }
+
+    /**
+     * Automatic formatter(s)
+     * 
+     * @param   array   $data   Datagrid and record data
+     * @param   data    $params Formatter-specific parameters
+     * @access  private
+     * @static
+     */
+    function _autoFormatter($data, $params)
+    {
+        $value = $data['record'][$data['fieldName']];
+        $type = $params[0];
+        
+        switch ($type) {
+            case 'dateFromTimestamp' :
+                $format = $params[1];
+                return date($format, $value);
+            case 'dateFromMysql' :
+                $format = $params[1];
+                if (ereg('^([0-9]+)-([0-9]+)-([0-9]+) *([0-9]+):([0-9]+):([0-9]+)$', 
+                            $value, $r)) {
+                    $time = mktime ($r[4], $r[5], $r[6], $r[2], $r[3], $r[1]);
+                    return date($format, $time);
+                } elseif (ereg('^([0-9]+)-([0-9]+)-([0-9]+)$', $value, $r)){
+                    $time = mktime (0, 0, 0, $r[2], $r[3], $r[1]);
+                    return date($format, $time);
+                }
+            case 'number' :
+                if (count($params) == 4) {
+                    return number_format($value, $params[1], 
+                                         $params[2], $params[3]);
+                } else if (count($params) == 3) {
+                    return new PEAR_Error("Wrong parameter count ".
+                                          "for the 'number' format");
+                } else if (count($params) == 2) {
+                    return number_format($value, $params[1]);
+                } else if (count($params) == 1) {
+                    return number_format($value);
+                }
         }
     }
 
