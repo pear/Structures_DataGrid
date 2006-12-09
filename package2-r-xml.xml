@@ -39,6 +39,10 @@ string.
  </stability>
  <license uri="http://www.php.net/license">PHP License</license>
  <notes>
+- the generated XML can now be stored into a file on the local filesystem
+  by setting the new option 'saveToFile' to boolean true
+- for both writing to the filesystem and sending to the browser, a filename
+  can be specified by setting the new 'filename' option
 - added support for custom XML attributes
  </notes>
  <contents>

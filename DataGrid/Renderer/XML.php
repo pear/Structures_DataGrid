@@ -53,13 +53,18 @@ require_once 'XML/Util.php';
  *                           null stands for no attribute 
  * - labelAttribute:(string) The name of the attribute for the column label.
  *                           null stands for no attribute 
+ * - filename:      (string) Filename of the generated XML file; boolean false
+ *                           means that no filename will be sent
+ * - saveToFile:   (boolean) Whether the output should be saved on the local
+ *                           filesystem. Please note that the 'filename' option
+ *                           must be given if this optio is set to true.
  *
  * SUPPORTED OPERATION MODES:
  *
  * - Container Support: no
  * - Output Buffering:  yes
- * - Direct Rendering:  no
- * - Streaming:         no
+ * - Direct Rendering:  yes
+ * - Streaming:         yes
  *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
@@ -97,10 +102,13 @@ class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer
                 'fieldTag'          => '{field}',
                 'fieldAttribute'    => null,
                 'labelAttribute'    => null,
+                'filename'          => false,
+                'saveToFile'        => false,
             )
         );
         $this->_setFeatures(
             array(
+                'streaming' => true, 
                 'outputBuffering' => true,
             )
         );
@@ -114,6 +122,36 @@ class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer
     function init()
     {
         $this->_xml = '';
+        if ($this->_options['saveToFile'] === true) {
+            if ($this->_options['filename'] === false) {
+                return PEAR::raiseError('No filename specified via "filename" ' .
+                                        'option.');
+            }
+            $this->_fp = fopen($this->_options['filename'], 'wb');
+            if ($this->_fp === false) {
+                return PEAR::raiseError('Could not open file "' .
+                                        $this->_options['filename'] . '" ' .
+                                        'for writing.');
+            }
+        }
+
+        $xml = '';
+        if ($this->_options['useXMLDecl']) {
+            $xml .= XML_Util::getXMLDeclaration('1.0',
+                    $this->_options['encoding']) . "\n";
+        }
+        $xml .= "<{$this->_options['outerTag']}>\n";
+        if ($this->_options['saveToFile'] === true) {
+            $res = fwrite($this->_fp, $xml);
+            if ($res === false) {
+                return PEAR::raiseError('Could not write into file "' .
+                                        $this->_options['filename'] . '".');
+            }
+        } elseif ($this->_streamingEnabled) {
+            echo $xml;
+        } else {
+            $this->_xml .= $xml;
+        }
     }
 
     /**
@@ -128,26 +166,6 @@ class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer
     }
 
     /**
-     * Handles building the body of the DataGrid
-     *
-     * @access  protected
-     * @return  void
-     */
-    function buildBody()
-    {
-        if ($this->_options['useXMLDecl']) {
-            $this->_xml .= XML_Util::getXMLDeclaration("1.0", 
-                                $this->_options['encoding']) . "\n";
-        }
-
-        $this->_xml .= "<{$this->_options['outerTag']}>\n";
-        for ($row = 0; $row < $this->_recordsNum; $row++) {
-            $this->buildRow($row, $this->_records[$row]);
-        }
-        $this->_xml .= "</{$this->_options['outerTag']}>\n";
-    }
-
-    /**
      * Build a body row
      *
      * @param   int   $index Row index (zero-based)
@@ -157,7 +175,7 @@ class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer
      */
     function buildRow($index, $data)
     {
-        $this->_xml .= "  <{$this->_options['rowTag']}>\n";
+        $xml = "  <{$this->_options['rowTag']}>\n";
         foreach ($data as $col => $value) {
             $field = $this->_columns[$col]['field'];
             $tag = ($this->_options['fieldTag'] == '{field}') 
@@ -179,9 +197,20 @@ class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer
                                 $attributes);
             }
 
-            $this->_xml .= '    ' . XML_Util::createTag($tag, $attributes, $value) . "\n";
+            $xml .= '    ' . XML_Util::createTag($tag, $attributes, $value) . "\n";
         }
-        $this->_xml .= "  </{$this->_options['rowTag']}>\n";
+        $xml .= "  </{$this->_options['rowTag']}>\n";
+        if ($this->_options['saveToFile'] === true) {
+            $res = fwrite($this->_fp, $xml);
+            if ($res === false) {
+                return PEAR::raiseError('Could not write into file "' .
+                                        $this->_options['filename'] . '".');
+            }
+        } elseif ($this->_streamingEnabled) {
+            echo $xml;
+        } else {
+            $this->_xml .= $xml;
+        }
     }
 
     /**
@@ -195,6 +224,32 @@ class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer
         return $this->_xml;
     }
 
+    /**
+     * Finish building the datagrid.
+     *
+     * @access  protected
+     * @return  void
+     */
+    function finalize()
+    {
+        $xml = "</{$this->_options['outerTag']}>\n";
+        if ($this->_options['saveToFile'] === true) {
+            $res = fwrite($this->_fp, $xml);
+            if ($res === false) {
+                return PEAR::raiseError('Could not write into file "' .
+                                        $this->_options['filename'] . '".');
+            }
+            $res = fclose($this->_fp);
+            if ($res === false) {
+                return PEAR::raiseError('Could not close file "' .
+                                        $this->_options['filename'] . '".');
+            }
+        } elseif ($this->_streamingEnabled) {
+            echo $xml;
+        } else {
+            $this->_xml .= $xml;
+        }
+    }
 
     /**
      * Render to the standard output
@@ -203,7 +258,13 @@ class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer
      */
     function render()
     {
-        header('Content-type: text/xml');
+        if ($this->_options['saveToFile'] === false) {
+            header('Content-type: text/xml');
+            if ($this->_options['filename'] !== false) {
+                header('Content-disposition: attachment; filename=' .
+                       $this->_options['filename']);
+            }
+        }
         parent::render();
     }
 }
