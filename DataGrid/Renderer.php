@@ -321,6 +321,14 @@ class Structures_DataGrid_Renderer
      * @see Structures_DataGrid_Renderer::_buildSortingHttpQuery()
      */
     var $_sortingHttpQueryCommon = null;
+
+    /**
+     * Whether streaming is enabled or not
+     * 
+     * @var bool
+     * @access private
+     */
+    var $_streamingEnabled = false;
     
     /**
      * Instantiate the driver and set default options and features
@@ -340,7 +348,7 @@ class Structures_DataGrid_Renderer
             'numberAlign'           => true,
             'extraVars'             => array(),
             'excludeVars'           => array(),
-            'columnAttributes'    => array(),
+            'columnAttributes'      => array(),
 
             /* Options that must not be accessed by drivers */
             'buildHeader'           => true, 
@@ -484,6 +492,19 @@ class Structures_DataGrid_Renderer
         if ($this->_lastRecord > $totalRowNum) {
             $this->_lastRecord  = $totalRowNum;
         }
+    }
+
+    /**
+     * Tell the renderer whether streaming is enabled or not
+     * 
+     * This method is supposed to be called ONLY by the code that loads the 
+     * driver. In most cases, that'll be the Structures_DataGrid class.
+     * 
+     * @param int $status Whether streaming is enabled or not
+     * @access public
+     */
+    function setStreaming($status) {
+        $this->_streamingEnabled = (boolean)$status;
     }
 
     /**
@@ -818,6 +839,11 @@ class Structures_DataGrid_Renderer
      */
     function getOutput()
     {
+        if ($this->_streamingEnabled) {
+            return PEAR::raiseError('getOutput() cannot be used together with ' .
+                                    'streaming.');
+        }
+
         if ($this->hasFeature('outputBuffering')) {
             return $this->flatten();
         } else {
@@ -979,7 +1005,7 @@ class Structures_DataGrid_Renderer
         // Build list of GET variables
         $get = array();
         $get[$prefix . 'orderBy'] = $field;
-        $get[$prefix . 'direction'] = $direction; 
+        $get[$prefix . 'direction'] = $direction;
         foreach ($extraParameters as $var => $value) {
             $get[$prefix . $var] = $value;
         }

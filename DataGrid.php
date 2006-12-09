@@ -521,6 +521,11 @@ class Structures_DataGrid
      */
     function getOutput($type = null, $options = array())
     {
+        if (!is_null($this->_bufferSize)) {
+            return PEAR::raiseError('getOutput() cannot be used together with ' .
+                                    'streaming.');
+        }
+
         if (!is_null($type)) {
             $this->_saveRenderer();
             
@@ -1008,16 +1013,14 @@ class Structures_DataGrid
      */
     function getColumns()
     {
-        // FIXME: this method is broken, when called after bind() and before
-        // rendering (which is the most usual). as getColumnByField()
         $this->_createDefaultColumns();
 
         // Cloning the column set to prevent users from playing with our
         // internal $columnSet property.
         $columnSetClone = array();
 
-        $ii = $this->getColumnCount();
-        for ($i = 0; $i < $ii; $i++) {
+        $columnCount = $this->getColumnCount();
+        for ($i = 0; $i < $columnCount; $i++) {
             $columnSetClone[$i] =& $this->columnSet[$i];
         }
 
@@ -1054,8 +1057,6 @@ class Structures_DataGrid
      */
     function &getColumnByField($fieldName)
     {
-        // FIXME: this method is broken, when called after bind() and before
-        // rendering (which is the most usual).
         $this->_createDefaultColumns();
         foreach ($this->columnSet as $key => $column) {
             if ($column->fieldName === $fieldName) {
@@ -1077,10 +1078,10 @@ class Structures_DataGrid
      */
     function removeColumn(&$column)
     {
-        $ii = count($this->columnSet);
-        for ($i = 0; $i < $ii; $i++) {
+        $columnCount = count($this->columnSet);
+        for ($i = 0; $i < $columnCount; $i++) {
             if ($this->columnSet[$i] == $column) {
-                for ($i++; $i < $ii; $i++) {
+                for ($i++; $i < $columnCount; $i++) {
                     $this->columnSet[$i - 1] =& $this->columnSet[$i];
                 }
                 array_pop($this->columnSet);
@@ -1522,6 +1523,7 @@ class Structures_DataGrid
         $this->_createDefaultColumns();
 
         if (isset($this->_renderer)) {
+            $this->_renderer->setStreaming(!is_null($this->_bufferSize));
             $this->_renderer->setColumns($this->columnSet);
             $this->_renderer->setLimit($this->page, $this->rowLimit, 
                                        $this->getRecordCount());
