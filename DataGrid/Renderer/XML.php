@@ -57,7 +57,7 @@ require_once 'XML/Util.php';
  *                           means that no filename will be sent
  * - saveToFile:   (boolean) Whether the output should be saved on the local
  *                           filesystem. Please note that the 'filename' option
- *                           must be given if this optio is set to true.
+ *                           must be given if this option is set to true.
  *
  * SUPPORTED OPERATION MODES:
  *

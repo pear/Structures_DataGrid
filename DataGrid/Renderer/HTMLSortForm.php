@@ -52,7 +52,8 @@ require_once 'HTML/QuickForm.php';
  * - textSortBy:        (string)    Label for the first field
  * - textThenBy:        (string)    Label for the second and following fields
  * - textSubmit:        (string)    Label for the submit button
- *                  
+ * - columnAttributes:  (-)         IGNORED
+ *
  * SUPPORTED OPERATION MODES:
  *
  * - Container Support: yes

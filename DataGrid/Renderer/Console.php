@@ -37,6 +37,10 @@ require_once 'Console/Table.php';
  *
  * This renderer generates nicely formatted and padded ASCII tables.
  * 
+ * SUPPORTED OPTIONS:
+ *
+ * - columnAttributes: (-) IGNORED
+ * 
  * SUPPORTED OPERATION MODES:
  *
  * - Container Support: yes

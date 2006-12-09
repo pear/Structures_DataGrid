@@ -41,7 +41,7 @@ require_once 'Structures/DataGrid/Renderer.php';
  * - sortingResetsPaging: (bool)   Whether sorting HTTP queries reset paging.  
  * - convertEntities:     (bool)   Whether or not to convert html entities.
  *                                 This calls htmlspecialchars(). 
- * 
+ *
  * SUPPORTED OPERATION MODES:
  *
  * - Container Support: yes

@@ -39,6 +39,7 @@ require_once 'XML/Util.php';
  *
  * - selfPath:      (string) The complete path for sorting links
  *                           (default: $_SERVER['PHP_SELF'])
+ * - columnAttributes:   (-) IGNORED
  *
  * SUPPORTED OPERATION MODES:
  *

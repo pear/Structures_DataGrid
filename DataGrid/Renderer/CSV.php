@@ -41,13 +41,14 @@ require_once 'Structures/DataGrid/Renderer.php';
  *                         means that no filename will be sent
  * - saveToFile: (boolean) Whether the output should be saved on the local
  *                         filesystem. Please note that the 'filename' option
- *                         must be given if this optio is set to true.
+ *                         must be given if this option is set to true.
  * - enclosure:  (string)  Field enclosure
  * - lineBreak:  (string)  The character(s) to use for line breaks
  * - useQuotes:  (mixed)   Whether or not to encapsulate the values with the 
  *                         enclosure value.
  *                         true: always, false: never, 'auto': when needed
- *                       
+ * - columnAttributes: (-) IGNORED
+ *           
  * SUPPORTED OPERATION MODES:
  *
  * - Container Support: no

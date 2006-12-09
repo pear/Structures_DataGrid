@@ -25,7 +25,7 @@ The generation scripts have the following requirements:
 - PHP 5
 - PhpDocumentor 1.3.1
 - XML_Beautifier 1.1
-- a fresh version Structures_DataGrid and all its subpackages somewhere
+- a fresh version of Structures_DataGrid and all its subpackages somewhere
   on the harddisk where the files are reachable via the include_path
   (including subpackage files that are not in pear/Structures_DataGrid,
   e.g. files in pear/Structures_DataGrid_Renderer_Example)
@@ -73,6 +73,9 @@ $ export MKMANUAL_TARGET_DIR=/path/to/your/peardoc/checkout
 
 (4) New methods and new drivers need to be manually added into
 en/package/structures/structures-datagrid.xml
+
+(5) Options can be ignored in subclassed by specifying them like this:
+ * - optionName: (-) IGNORED
 
 3 - then rebuild the manual as usual
 

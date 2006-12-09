@@ -28,10 +28,10 @@ else
     TARGET_DIR=$1
 fi
 
-VERSION=0.6
+VERSION=0.7
 
 echo "Structures_DataGrid Manual Generator $VERSION"
-echo 'CVS id: $Id: mkmanual.sh,v 1.14 2006-12-08 18:25:08 olivierg Exp $'
+echo 'CVS id: $Id: mkmanual.sh,v 1.15 2006-12-09 17:45:42 wiesemann Exp $'
 
 if [ "$TARGET_DIR" == "" ] 
 then

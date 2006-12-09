@@ -324,7 +324,7 @@ function _getOptions($class, $filename, $file, $startRow, $endRow)
 
         // do we have a new option?
         if (substr($file[$i], 3, 1) == '-') {
-            $res = preg_match('#- ([a-z_]+):\s*\(([a-z]+)\)\s+(.*)#i', $file[$i], $matches);
+            $res = preg_match('#- ([a-z_]+):\s*\(([a-z-]+)\)\s+(.*)#i', $file[$i], $matches);
             // check whether the regular expression matched
             // (if not: die, this should not happen)
             if ($res !== 1) {
@@ -539,6 +539,9 @@ function writeXMLFile($driver, $descriptions, $modes, $options, $notes)
     $xml .= '    </thead>' . "\n";
     $xml .= '    <tbody>' . "\n";
     foreach ($options as $option => $details) {
+      if ($details['desc'] == 'IGNORED') {
+          continue;
+      }
       $xml .= '     <row>' . "\n";
       $xml .= '      <entry>' . htmlentities($option) . '</entry>' . "\n";
       $xml .= '      <entry>' . htmlentities($details['type']) . '</entry>' . "\n";

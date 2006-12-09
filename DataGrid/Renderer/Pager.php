@@ -57,7 +57,8 @@ require_once 'Pager/Pager.php';
  *                          reported by the DataGrid and DataSource. You may 
  *                          overload these values here if you know what your 
  *                          are doing.
- *                          
+ * - columnAttributes:  (-) IGNORED
+ *
  * SUPPORTED OPERATION MODES:
  *
  * - Container Support: yes
