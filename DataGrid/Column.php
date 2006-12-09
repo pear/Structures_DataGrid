@@ -104,8 +104,10 @@ class Structures_DataGrid_Column
      * @param   string      $label          The label of the column to be printed
      * @param   string      $field          The name of the field for the column
      *                                      to be mapped to
-     * @param   string      $orderBy        The field or expression to order the data by
-     * @param   string      $attributes     The HTML attributes for the TD tag
+     * @param   string      $orderBy        The field or expression to order the
+     *                                      data by
+     * @param   array       $attributes     The attributes for the XML or HTML
+     *                                      TD tag; form: array(name => value, ...)
      * @param   string      $autoFillValue  The value to use for the autoFill
      * @param   mixed       $formatter      Formatter callback. See setFormatter()
      * @param   array       $formatterArgs  Associative array of arguments 
@@ -243,7 +245,7 @@ class Structures_DataGrid_Column
      * Return the attributes applied to all cells in this column.
      * This only makes sense for HTML or XML rendering
      *
-     * @return  array   Attributes ; form: array(name => value, ...)
+     * @return  array   Attributes; form: array(name => value, ...)
      * @access  public
      */
     function getAttributes()

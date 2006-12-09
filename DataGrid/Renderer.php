@@ -762,8 +762,7 @@ class Structures_DataGrid_Renderer
                     $column->setAutoFillValue($this->_options['defaultCellValue']);
                 }
 
-                if (isset($column->attribs))
-                {
+                if (is_array($column->attribs)) {
                     if (!array_key_exists($field, $this->_options['columnAttributes'])) {
                         $this->_options['columnAttributes'][$field] = array();
                     }
