@@ -52,7 +52,7 @@ require_once 'Structures/DataGrid/Renderer.php';
  *
  * - Container Support: no
  * - Output Buffering:  yes
- * - Direct Rendering:  no
+ * - Direct Rendering:  yes
  * - Streaming:         yes
  *                       
  * @version  $Revision$
@@ -116,9 +116,16 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
     {
         $this->_csv = '';
         if ($this->_options['saveToFile'] === true) {
-            // TODO: check filename (must not be boolean false)
-            // TODO: filename should be writable or fopen() should be checked for errors
+            if ($this->_options['filename'] === false) {
+                return PEAR::raiseError('No filename specified via "filename" ' .
+                                        'option.');
+            }
             $this->_fp = fopen($this->_options['filename'], 'wb');
+            if ($this->_fp === false) {
+                return PEAR::raiseError('Could not open file "' .
+                                        $this->_options['filename'] . '" ' .
+                                        'for writing.');
+            }
         }
     }
 
@@ -170,7 +177,13 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
         }
         $csv = $this->_recordToCsv($data);
         if ($this->_options['saveToFile'] === true) {
-            fwrite($this->_fp, $csv);
+            $res = fwrite($this->_fp, $csv);
+            if ($res === false) {
+                return PEAR::raiseError('Could not write into file "' .
+                                        $this->_options['filename'] . '".');
+            }
+        } elseif ($this->_streamingEnabled) {
+            echo $csv;
         } else {
             $this->_csv .= $csv;
         }
@@ -188,7 +201,13 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
     {
         $csv = $this->_recordToCsv($data);
         if ($this->_options['saveToFile'] === true) {
-            fwrite($this->_fp, $csv);
+            $res = fwrite($this->_fp, $csv);
+            if ($res === false) {
+                return PEAR::raiseError('Could not write into file "' .
+                                        $this->_options['filename'] . '".');
+            }
+        } elseif ($this->_streamingEnabled) {
+            echo $csv;
         } else {
             $this->_csv .= $csv;
         }
@@ -214,7 +233,11 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
     function finalize()
     {
         if ($this->_options['saveToFile'] === true) {
-            fclose($this->_fp);
+            $res = fclose($this->_fp);
+            if ($res === false) {
+                return PEAR::raiseError('Could not close file "' .
+                                        $this->_options['filename'] . '".');
+            }
         }
     }
 
