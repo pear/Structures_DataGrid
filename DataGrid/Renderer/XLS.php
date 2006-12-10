@@ -59,6 +59,7 @@ require_once 'Spreadsheet/Excel/Writer.php';
  * - headerBorder:  (int)    Border between the header and body:
  *                           0 => none, 1 => thin, 2 => thick 
  *                           (NOT IMPLEMENTED YET)
+ * - columnAttributes: (-)   IGNORED
  *
  * SUPPORTED OPERATION MODES:
  *
