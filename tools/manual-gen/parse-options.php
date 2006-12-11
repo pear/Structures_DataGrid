@@ -5,7 +5,7 @@
 error_reporting(E_ALL);
 
 if ($argc != 2) {
-    die('Missing parameter: temporary target dir');
+    die('Missing parameter: temporary target dir' . "\n");
 }
 
 define('PATH', '../');
@@ -154,7 +154,7 @@ function getSupportedModes($class, $filename)
         foreach ($availableRendererModes as $mode) {
             $res = preg_match('# * - ' . $mode . ': {1,10}([a-z, ]+)#i', $file, $matches);
             if ($res !== 1) {
-                die('REGEXP DID NOT MATCH FOR MODE "' . $mode . '" in file "' . $filename . '"');
+                die('REGEXP DID NOT MATCH FOR MODE "' . $mode . '" in file "' . $filename . '"' . "\n");
             }
             $modes[$mode] = $matches[1];
         }
@@ -305,7 +305,7 @@ function getOptions($class, $filename, $file, $descriptionsEndRow, &$optionsEndR
     // the driver has no options
     // (this should not happen => die)
     if ($endRow === false) {
-        die('END OF OPTION BLOCK NOT FOUND');
+        die('END OF OPTION BLOCK NOT FOUND' . "\n");
     }
 
     $optionsEndRow = $endRow;
@@ -328,11 +328,11 @@ function _getOptions($class, $filename, $file, $startRow, $endRow)
             // check whether the regular expression matched
             // (if not: die, this should not happen)
             if ($res !== 1) {
-                die('REGEXP DID NOT MATCH IN LINE ' . $i);
+                die('REGEXP DID NOT MATCH IN LINE ' . $i . "\n");
             }
             $currOption = $matches[1];
             if (!array_key_exists($currOption, $driver->_options)) {
-                die('OPTION NOT DECLARED: ' . $currOption);
+                die('OPTION NOT DECLARED: ' . $currOption . "\n");
             }
             $default = $driver->_options[$currOption];
             if (is_array($default)) {
@@ -460,7 +460,7 @@ function getClassName($file)
         }
         return array($class, $extends);
     }
-    die('CLASS NAME NOT FOUND');
+    die('CLASS NAME NOT FOUND' . "\n");
 }
 
 function indentMultiLine($content, $indentStr, $indentNum)
