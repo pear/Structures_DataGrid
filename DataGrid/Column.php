@@ -379,20 +379,22 @@ class Structures_DataGrid_Column
         $type = $params[0];
         
         switch ($type) {
-            case 'dateFromTimestamp' :
+            case 'dateFromTimestamp':
                 $format = $params[1];
                 return date($format, $value);
-            case 'dateFromMysql' :
+            case 'dateFromMysql':
                 $format = $params[1];
-                if (ereg('^([0-9]+)-([0-9]+)-([0-9]+) *([0-9]+):([0-9]+):([0-9]+)$', 
+                if (preg_match('/^([0-9]+)-([0-9]+)-([0-9]+) *([0-9]+):([0-9]+):([0-9]+)$/', 
                             $value, $r)) {
-                    $time = mktime ($r[4], $r[5], $r[6], $r[2], $r[3], $r[1]);
+                    $time = mktime($r[4], $r[5], $r[6], $r[2], $r[3], $r[1]);
                     return date($format, $time);
-                } elseif (ereg('^([0-9]+)-([0-9]+)-([0-9]+)$', $value, $r)){
+                } elseif (preg_match('/^([0-9]+)-([0-9]+)-([0-9]+)$/', $value, $r)){
                     $time = mktime (0, 0, 0, $r[2], $r[3], $r[1]);
                     return date($format, $time);
+                } else {
+                    return "Unrecognized date format";
                 }
-            case 'number' :
+            case 'number':
                 if (count($params) == 4) {
                     return number_format($value, $params[1], 
                                          $params[2], $params[3]);
@@ -401,7 +403,7 @@ class Structures_DataGrid_Column
                                           "for the 'number' format");
                 } else if (count($params) == 2) {
                     return number_format($value, $params[1]);
-                } else if (count($params) == 1) {
+                } else {
                     return number_format($value);
                 }
         }
