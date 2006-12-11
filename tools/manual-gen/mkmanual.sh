@@ -1,18 +1,41 @@
 #!/bin/bash
 
+# Looking for PHP5
+if [ "$MKMANUAL_PHPBIN" != "" ]
+then 
+    PHPBIN=$MKMANUAL_PHPBIN
+else    
+    if php -v | grep '^PHP 5' > /dev/null
+    then
+        PHPBIN=php
+    elif php5 -v | grep '^PHP 5' > /dev/null
+    then
+        PHPBIN=php5
+    else 
+        echo "Could not find PHP5. Please set the MKMANUAL_PHPBIN environment variable"
+        exit 1
+    fi
+fi
+
 # how phpDoc needs to be calld
 if [ "$MKMANUAL_PHPDOC" != "" ]
 then 
     PHPDOC=$MKMANUAL_PHPDOC
-else    
-    PHPDOC=phpdoc
+else   
+    PHPDOC=$(which phpdoc)
+    if [ "$PHPDOC" == "" ]
+    then
+        echo "Could not find phpdoc. Please set the MKMANUAL_PHPDOC environment variable"
+        exit 1
+    fi
 fi
 
 # temporal build dir
 if [ "$MKMANUAL_BUILD_DIR" != "" ]
 then 
     BUILD_DIR=$MKMANUAL_BUILD_DIR
-else    
+else 
+    
     BUILD_DIR=/tmp/sdgdoc
 fi
 
@@ -31,7 +54,7 @@ fi
 VERSION=0.7
 
 echo "Structures_DataGrid Manual Generator $VERSION"
-echo 'CVS id: $Id: mkmanual.sh,v 1.15 2006-12-09 17:45:42 wiesemann Exp $'
+echo 'CVS id: $Id: mkmanual.sh,v 1.16 2006-12-11 14:03:36 olivierg Exp $'
 
 if [ "$TARGET_DIR" == "" ] 
 then
@@ -50,20 +73,20 @@ echo
 
 # Building doc
 printf "Running PhpDocumentor... Logging output into $BUILD_DIR/phpdoc.log"
-$PHPDOC  -dn Structures_DataGrid \
-         -dc Structures \
-         -f "DataGrid.php,DataGrid/Column.php" \
-         -t $TARGET_DIR_PHPDOC \
-         -o "XML:DocBook/peardoc2:default" \
-         -ed docs/examples \
-         > $BUILD_DIR/phpdoc.log 2>&1 
+$PHPBIN $PHPDOC  -dn Structures_DataGrid \
+                 -dc Structures \
+                 -f "DataGrid.php,DataGrid/Column.php" \
+                 -t $TARGET_DIR_PHPDOC \
+                 -o "XML:DocBook/peardoc2:default" \
+                 -ed docs/examples \
+                 > $BUILD_DIR/phpdoc.log 2>&1 
 
 echo "Done."
 
 echo
 
 echo "Parsing/Generating DataSource and Renderer files"
-php tools/manual-gen/parse-options.php $TARGET_DIR_PHPDOC
+$PHPBIN tools/manual-gen/parse-options.php $TARGET_DIR_PHPDOC
 echo "Done."
 
 # Cleaning "Warnings" and fixing require_once()
@@ -95,6 +118,10 @@ do
     if ! [ -d "$dir" ]
     then
         echo "Directory $dir - SKIPPING (no such directory)"
+        continue
+    elif [ "$(ls $dir)" == "" ]
+    then
+        echo "Directory $dir - SKIPPING (empty directory)"
         continue
     fi
 
