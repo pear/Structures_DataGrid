@@ -389,7 +389,7 @@ class Structures_DataGrid_Column
                     $time = mktime($r[4], $r[5], $r[6], $r[2], $r[3], $r[1]);
                     return date($format, $time);
                 } elseif (preg_match('/^([0-9]+)-([0-9]+)-([0-9]+)$/', $value, $r)){
-                    $time = mktime (0, 0, 0, $r[2], $r[3], $r[1]);
+                    $time = mktime(0, 0, 0, $r[2], $r[3], $r[1]);
                     return date($format, $time);
                 } else {
                     return "Unrecognized date format";
