@@ -22,7 +22,7 @@ And then create a file named my-example.php in the docs/examples/ directory
 II - Generate the documentation
 
 The generation scripts have the following requirements:
-- PHP 5
+- PHP >= 5.2.0
 - PhpDocumentor 1.3.1
 - XML_Beautifier 1.1
 - a fresh version of Structures_DataGrid and all its subpackages somewhere
