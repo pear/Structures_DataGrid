@@ -54,7 +54,7 @@ fi
 VERSION=0.7
 
 echo "Structures_DataGrid Manual Generator $VERSION"
-echo 'CVS id: $Id: mkmanual.sh,v 1.16 2006-12-11 14:03:36 olivierg Exp $'
+echo 'CVS id: $Id: mkmanual.sh,v 1.17 2006-12-12 15:31:15 olivierg Exp $'
 
 if [ "$TARGET_DIR" == "" ] 
 then
@@ -86,7 +86,13 @@ echo "Done."
 echo
 
 echo "Parsing/Generating DataSource and Renderer files"
-$PHPBIN tools/manual-gen/parse-options.php $TARGET_DIR_PHPDOC
+
+if [ "$MKMANUAL_INCPATH" != "" ]
+then
+    incpath="-d include_path=$MKMANUAL_INCPATH"
+fi
+
+$PHPBIN $incpath tools/manual-gen/parse-options.php $TARGET_DIR_PHPDOC
 echo "Done."
 
 # Cleaning "Warnings" and fixing require_once()
