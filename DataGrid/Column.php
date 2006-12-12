@@ -396,16 +396,16 @@ class Structures_DataGrid_Column
                     return "Unrecognized date format";
                 }
             case 'number':
-                if (count($params) == 4) {
-                    return number_format($value, $params[1], 
-                                         $params[2], $params[3]);
-                } else if (count($params) == 3) {
-                    return new PEAR_Error("Wrong parameter count ".
-                                          "for the 'number' format");
-                } else if (count($params) == 2) {
-                    return number_format($value, $params[1]);
-                } else {
-                    return number_format($value);
+                switch (count($params)) {
+                    case 4: 
+                        return number_format($value, $params[1], 
+                                             $params[2], $params[3]);
+                    case 3: 
+                        return "Wrong parameter count for the 'number' format";
+                    case 2: 
+                        return number_format($value, $params[1]);
+                    default:
+                        return number_format($value);
                 }
             case 'printf':
                 return sprintf($params[1], $value);
