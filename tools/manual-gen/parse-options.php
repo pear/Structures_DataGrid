@@ -54,7 +54,7 @@ foreach ($inheritance as $class => $extends) {
     }
     // save the class name
     $orig_class = $class;
-    // sum up the optionx for the current driver; driver's own options override
+    // sum up the options for the current driver; driver's own options override
     // general options from extended classes
     $driver_options = $options[$class];
     $extends_rel = $inheritance[$class];

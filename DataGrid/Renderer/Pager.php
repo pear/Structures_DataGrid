@@ -55,7 +55,7 @@ require_once 'Pager/Pager.php';
  *                          The totalItems, perPage, urlVar, and currentPage 
  *                          options are set accordingly to the data statistics
  *                          reported by the DataGrid and DataSource. You may 
- *                          overload these values here if you know what your 
+ *                          overload these values here if you know what you 
  *                          are doing.
  * - columnAttributes:  (-) IGNORED
  *
