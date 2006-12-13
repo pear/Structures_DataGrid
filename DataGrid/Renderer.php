@@ -778,7 +778,10 @@ class Structures_DataGrid_Renderer
 
             $this->_columnsNum = count($this->_columns);
 
-            $this->init();
+            $result = $this->init();
+            if (PEAR::isError($result)) {
+                return $result;
+            }
 
             if ($this->_options['buildHeader']) {
                 $this->buildHeader($this->_columns);
@@ -857,14 +860,17 @@ class Structures_DataGrid_Renderer
      * writing to the standard output (like calling header(), etc...).
      * 
      * @access  public
-     * @return  void
+     * @return  void or object PEAR_Error
      */
     function render()
     {
         if ($this->hasFeature('outputBuffering')) {
             echo $this->flatten();
         } else {
-            $this->build();
+            $result = $this->build();
+            if (PEAR::isError($result)) {
+                return $result;
+            }
         }
     }
 

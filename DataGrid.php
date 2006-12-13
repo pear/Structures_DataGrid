@@ -488,9 +488,14 @@ class Structures_DataGrid
             $this->_renderer->setOptions($options);
         }
 
-        $this->_renderer->isBuilt() || $this->build();
-        $result = $this->_renderer->render();
+        if (!$this->_renderer->isBuilt()) {
+            $result = $this->build();
+            if (PEAR::isError($result)) {
+                return $result;
+            }
+        }
 
+        $result = $this->_renderer->render();
         if (PEAR::isError($result)) {
             if ($result->getCode() == DATAGRID_ERROR_UNSUPPORTED) {
                 $type = is_null($this->_rendererType) 
@@ -542,10 +547,14 @@ class Structures_DataGrid
             $this->_renderer->setOptions($options);
         }
         
-        $this->_renderer->isBuilt() || $this->build();
+        if (!$this->_renderer->isBuilt()) {
+            $result = $this->build();
+            if (PEAR::isError($result)) {
+                return $result;
+            }
+        }
         
         $output = $this->_renderer->getOutput();
-        
         if (PEAR::isError($output) && $output->getCode() == DATAGRID_ERROR_UNSUPPORTED) {
             $type = is_null($this->_rendererType) 
                     ? get_class($this->_renderer)
@@ -781,7 +790,12 @@ class Structures_DataGrid
             }
         }
 
-        $this->_renderer->isBuilt() || $this->build();
+        if (!$this->_renderer->isBuilt()) {
+            $result = $this->build();
+            if (PEAR::isError($result)) {
+                return $result;
+            }
+        }
 
         $this->_restoreRenderer();
         return true;
@@ -1468,7 +1482,10 @@ class Structures_DataGrid
             // is streaming enabled or not?
             if (is_null($this->_bufferSize)) {
                 $this->_prepareColumnsAndRenderer();
-                $this->_renderer->build($this->recordSet, 0, true);
+                $result = $this->_renderer->build($this->recordSet, 0, true);
+                if (PEAR::isError($result)) {
+                    return $result;
+                }
             } else {
                 $recordCount = $this->_dataSource->count();
                 for ($row = ($this->page - 1) * $this->rowLimit, $initial = true;
@@ -1500,9 +1517,12 @@ class Structures_DataGrid
                     } else {
                         $eof = true;
                     }
-                    $this->_renderer->build($this->recordSet,
-                                            $row - ($this->page - 1) * $this->rowLimit,
-                                            $eof);
+                    $startRow = $row - ($this->page - 1) * $this->rowLimit;
+                    $result = $this->_renderer->build($this->recordSet,
+                                                      $startRow, $eof);
+                    if (PEAR::isError($result)) {
+                        return $result;
+                    }
                 }
             }
             return true;
