@@ -1,6 +1,6 @@
 <?php
 /**
- * Multiple fields sorting form rendering driver
+ * Record editing form rendering driver
  * 
  * <pre>
  * +----------------------------------------------------------------------+
@@ -25,7 +25,7 @@
  * CSV file id: $Id$
  * 
  * @version  $Revision$
- * @package  Structures_DataGrid_Renderer_HTMLSortForm
+ * @package  Structures_DataGrid_Renderer_HTMLEditForm
  * @category Structures
  */
 
@@ -127,7 +127,7 @@ class Structures_DataGrid_Renderer_HTMLEditForm
         if (!isset($this->_form)) {
             // Try to give the form a unique name using $_requestPrefix
             $this->_form =& new HTML_QuickForm(
-                    "{$this->_requestPrefix}DataGridSortForm", 'get');
+                    "{$this->_requestPrefix}DataGridEditForm", 'get');
             $this->_isUserContainer = false;
         } else {
             $this->_isUserContainer = true;
