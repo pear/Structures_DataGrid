@@ -34,18 +34,22 @@
  * 
  * SUPPORTED OPTIONS:
  *
- * - generate_columns:  (bool)  Generate Structures_DataGrid_Column objects 
- *                              with labels. See the 'labels' option.
  * - fields:            (array) Which data fields to fetch from the datasource.
  *                              An empty array means: all fields.
  *                              Form: array(field1, field2, ...)
- * - labels:            (array) Data field to column label mapping. Only used 
- *                              when 'generate_columns' is true. 
- *                              Form: array(field => label, ...)
+ *                              use Structures_DataGrid::generateColumns() instead
  * - primary_key:       (array) Name(s), or numerical index(es) of the 
  *                              field(s) which contain a unique record 
  *                              identifier (only use several fields in case
  *                              of a multiple-fields primary key)
+ * - generate_columns:  (bool)  Generate Structures_DataGrid_Column objects 
+ *                              with labels. See the 'labels' option.
+ *                              DEPRECATED: 
+ *                              use Structures_DataGrid::generateColumns() instead
+ * - labels:            (array) Data field to column label mapping. Only used 
+ *                              when 'generate_columns' is true. 
+ *                              Form: array(field => label, ...)
+ *                              DEPRECATED: 
  *
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @author   Andrew Nagy <asnagy@webitecture.org>
@@ -155,6 +159,7 @@ class Structures_DataGrid_DataSource
      * 
      * @access public
      * @return array Array of Column objects. Empty array if irrelevant.
+     * @deprecated This method relates to the deprecated "generate_columns" option.
      */
     function getColumns()
     {

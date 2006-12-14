@@ -813,13 +813,8 @@ class Structures_DataGrid
      */
     function _createDefaultColumns()
     {
-        if (empty($this->columnSet) && !empty($this->recordSet)) {
-            $arrayKeys = array_keys($this->recordSet[0]);
-            foreach ($arrayKeys as $key) {
-                $column = new Structures_DataGrid_Column($key, $key, $key);
-                $this->addColumn($column);
-                unset($column);
-            }
+        if (empty($this->columnSet)) {
+            $this->generateColumns();
         }
     }
 
@@ -1633,6 +1628,38 @@ class Structures_DataGrid
         $this->_bufferSize = $bufferSize;
     }
 
+    /**
+     * Generate columns from a fields list
+     *
+     * This is a shortcut for adding simple columns easily, instead of creating
+     * them manually and calling addColumn() for each.
+     *
+     * The generated columns are appended to the current column set.
+     *
+     * @param   array   $fields Fields and labels.
+     *                          Array of the form: array(field => label, ...)
+     *                          The default is an empty array, which means: 
+     *                          all fields fetched from the datasource
+     *
+     * @return  void
+     * @access  public
+     */
+    function generateColumns($fields = array())
+    {
+        if (empty($fields)) {
+            if (!empty($this->recordSet)) {
+                foreach ($this->recordSet[0] as $key => $data) {
+                    $fields[$key] = $key;
+                }
+            }
+        }
+
+        foreach ($fields as $field => $label) {
+            $column = new Structures_DataGrid_Column($label, $field, $field);
+            $this->addColumn($column);
+            unset($column);
+        }
+    }
 }
 
 /* vim: set expandtab tabstop=4 shiftwidth=4: */
