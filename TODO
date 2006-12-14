@@ -142,16 +142,6 @@ We need a such thing that's for sure. And it shouldn't be that hard to
 code. Additionally, it implies coding some routines to handle passing
 a unique record identifier, which we'll need for TODO 16.
 
---------------------------------------------------------------------------------
-TODO 18 - Easy HTML link maker (olivierg) - Priority: Medium
-
-I wrote the prototype of SDG_Column::makeHtmlLink() but it still needs to be 
-implemented. It's a rather straight-forward idea :
-
-$column->makeHtmlLink("Edit", "product_id", "edit.php");
-
-More in makeHtmlLink()'s docblock
-
 ####################### Done Items Archive #########################
 
 --------------------------------------------------------------------------------
@@ -224,3 +214,17 @@ TODO 14 - Repair handling of numbers in mkmanual.sh (wiesemann)
 The current version of mkmanual.sh breaks phpDoc comments like the one of
 getCurrentRecordNumberStart(). The '0' after 'or:' gets lost and is missing
 in the manual, therefore.
+
+--------------------------------------------------------------------------------
+TODO 18 - Easy HTML link maker (olivierg) - Priority: Medium - WON'T FIX
+
+I wrote the prototype of SDG_Column::makeHtmlLink() but it still needs to be 
+implemented. It's a rather straight-forward idea :
+
+$column->makeHtmlLink("Edit", "product_id", "edit.php");
+
+More in makeHtmlLink()'s docblock
+
+WON'T FIX: the new Column::format() method is flexible enough to replace 
+makeHtmlLink()
+

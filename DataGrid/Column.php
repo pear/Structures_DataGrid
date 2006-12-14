@@ -336,7 +336,9 @@ class Structures_DataGrid_Column
      *   according to the date() like format string passed as second argument
      * - number: format a number, according to the same optional 2nd, 3rd and 
      *   4th arguments that the number_format() PHP function accepts.
-     * - printf: format using the printf expression passed as 2nd argument
+     * - printf: format using the printf expression passed as 2nd argument.
+     * - printfURL: url-encode and format using the printf expression passed 
+     *   as 2nd argument
      *
      * @example format.php         Common formats
      * @param   mixed  $type,...   Predefined formatter name, followed by
@@ -348,22 +350,6 @@ class Structures_DataGrid_Column
     {
         $params = func_get_args();
         $this->setFormatter(array(get_class($this), '_autoFormatter'), $params);
-    }
-
-    /**
-     * Format this column as HTML links
-     *
-     * @param   string  $label  Link label (ex: "Edit", "View", etc...)
-     * @param   mixed   $key    Names of the field (or array of field names) 
-     *                          which values must be passed as GET arguments
-     * @param   string  $url    HREF attribute value
-     * @param   array   $extraVars Extra GET arguments
-     * @return  void
-     * @access  public
-     */
-    function makeHtmlLink($label, $key, $url, $extraVars = array())
-    {
-        //FIXME: this function is not implemented
     }
 
     /**
@@ -407,6 +393,8 @@ class Structures_DataGrid_Column
                     default:
                         return number_format($value);
                 }
+            case 'printfURL':
+                $value = urlencode($value);
             case 'printf':
                 return sprintf($params[1], $value);
         }
