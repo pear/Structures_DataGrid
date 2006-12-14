@@ -568,7 +568,7 @@ class Structures_DataGrid_Renderer
      *                         convenient reference to the $_columns protected
      *                         property)
      * @access  protected
-     * @return  void
+     * @return  void or PEAR_Error
      */
     function buildHeader(&$columns) 
     {
@@ -581,18 +581,24 @@ class Structures_DataGrid_Renderer
      * @param  integer  $startRow  Starting row number
      * @param  boolean  $eof       Whether the current chunk is the last chunk
      * @access  protected
-     * @return  void
+     * @return  void or PEAR_Error
      */
     function streamBody($records, $startRow, $eof = false)
     {
         $rowNum = count($records);
         for ($row = 0; $row < $rowNum; $row++) {
-            $this->buildRow($row + $startRow, $records[$row]);
+            $result = $this->buildRow($row + $startRow, $records[$row]);
+            if (PEAR::isError($result)) {
+                return $result;
+            }
         }
 
         if ($eof && $this->_options['fillWithEmptyRows'] && !is_null($this->_pageLimit)) {
             for ($row = $this->_recordsNum; $row < $this->_pageLimit; $row++) {
-                $this->buildEmptyRow($row);
+                $result = $this->buildEmptyRow($row);
+                if (PEAR::isError($result)) {
+                    return $result;
+                }
             }
         }
     }
@@ -604,17 +610,23 @@ class Structures_DataGrid_Renderer
      * are not flexible enough.
      *
      * @access  protected
-     * @return  void
+     * @return  void or PEAR_Error
      */
     function buildBody()
     {
         for ($row = 0; $row < $this->_recordsNum; $row++) {
-            $this->buildRow($row, $this->_records[$row]);
+            $result = $this->buildRow($row, $this->_records[$row]);
+            if (PEAR::isError($result)) {
+                return $result;
+            }
         }
 
         if ($this->_options['fillWithEmptyRows'] && !is_null($this->_pageLimit)) {
             for ($row = $this->_recordsNum; $row < $this->_pageLimit; $row++) {
-                $this->buildEmptyRow($row);
+                $result = $this->buildEmptyRow($row);
+                if (PEAR::isError($result)) {
+                    return $result;
+                }
             }
         }
     }
@@ -628,7 +640,7 @@ class Structures_DataGrid_Renderer
      * @param int   $index Row index (zero-based)
      * @param array $data  Record data. 
      *                     Structure: array(0 => <value0>, 1 => <value1>, ...)
-     * @return void
+     * @return void or PEAR_Error
      * @access protected
      * @abstract
      */
@@ -646,7 +658,7 @@ class Structures_DataGrid_Renderer
      * enabled.
      * 
      * @param int   $index Row index (zero-based)
-     * @return void
+     * @return void or PEAR_Error
      * @access protected
      * @abstract
      */
@@ -661,7 +673,7 @@ class Structures_DataGrid_Renderer
      *
      * @abstract
      * @access  protected
-     * @return  void
+     * @return  void or PEAR_Error
      */
     function buildFooter() 
     {
@@ -675,7 +687,7 @@ class Structures_DataGrid_Renderer
      *
      * @abstract
      * @access  protected
-     * @return  void
+     * @return  void or PEAR_Error
      */
     function finalize()
     {
@@ -784,7 +796,10 @@ class Structures_DataGrid_Renderer
             }
 
             if ($this->_options['buildHeader']) {
-                $this->buildHeader($this->_columns);
+                $result = $this->buildHeader($this->_columns);
+                if (PEAR::isError($result)) {
+                    return $result;
+                }
             }
         }
 
@@ -807,24 +822,39 @@ class Structures_DataGrid_Renderer
         if (!$this->hasFeature('streaming')) {
             $this->_records = array_merge($this->_records, $chunk);
         } else {
-            $this->streamBody($chunk, $startRow, $eof);
+            $result = $this->streamBody($chunk, $startRow, $eof);
+            if (PEAR::isError($result)) {
+                return $result;
+            }
         }
 
         // if this is the last chunk, do some final operations
         if ($eof) {
             if (is_null($this->_pageLimit)) {
-                $this->_pageLimit = $this->_recordsNum;
+                $result = $this->_pageLimit = $this->_recordsNum;
+                if (PEAR::isError($result)) {
+                    return $result;
+                }
             }
 
             if (!$this->hasFeature('streaming')) {
-                $this->buildBody();
+                $result = $this->buildBody();
+                if (PEAR::isError($result)) {
+                    return $result;
+                }
             }
 
             if ($this->_options['buildFooter']) {
-                $this->buildFooter();
+                $result = $this->buildFooter();
+                if (PEAR::isError($result)) {
+                    return $result;
+                }
             }
 
-            $this->finalize();
+            $result = $this->finalize();
+            if (PEAR::isError($result)) {
+                return $result;
+            }
 
             $this->_isBuilt = true;
         }

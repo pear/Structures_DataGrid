@@ -37,7 +37,6 @@
  * - fields:            (array) Which data fields to fetch from the datasource.
  *                              An empty array means: all fields.
  *                              Form: array(field1, field2, ...)
- *                              use Structures_DataGrid::generateColumns() instead
  * - primary_key:       (array) Name(s), or numerical index(es) of the 
  *                              field(s) which contain a unique record 
  *                              identifier (only use several fields in case
@@ -50,6 +49,7 @@
  *                              when 'generate_columns' is true. 
  *                              Form: array(field => label, ...)
  *                              DEPRECATED: 
+ *                              use Structures_DataGrid::generateColumns() instead
  *
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @author   Andrew Nagy <asnagy@webitecture.org>
