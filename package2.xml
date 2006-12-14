@@ -52,6 +52,8 @@ This concept is based on the .NET Framework DataGrid control and works very well
 - bug #9548: new SDG_Column::set|getDefaultDirection() methods for 
   handling per-column default sorting directions
   (thanks to Anton, hire at ukr dot net)
+- bug #7710: new generateColumns() method. The DataSource options 
+  "generate_columns"  and "labels" are now deprecated.
  </notes>
  <contents>
   <dir name="/">
