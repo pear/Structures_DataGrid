@@ -371,8 +371,8 @@ class Structures_DataGrid_Column
                 return date($format, $value);
             case 'dateFromMysql':
                 $format = $params[1];
-                if (preg_match('/^([0-9]+)-([0-9]+)-([0-9]+) *([0-9]+):([0-9]+):([0-9]+)$/', 
-                            $value, $r)) {
+                if (preg_match('/^([0-9]+)-([0-9]+)-([0-9]+) '.
+                               '*([0-9]+):([0-9]+):([0-9]+)$/', $value, $r)) {
                     $time = mktime($r[4], $r[5], $r[6], $r[2], $r[3], $r[1]);
                     return date($format, $time);
                 } elseif (preg_match('/^([0-9]+)-([0-9]+)-([0-9]+)$/', $value, $r)){
