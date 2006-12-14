@@ -897,7 +897,7 @@ class Structures_DataGrid_Renderer
         if ($this->hasFeature('outputBuffering')) {
             echo $this->flatten();
         } else {
-            $result = $this->build(); // lacks 1st and 2nd args to build()
+            $result = $this->build(); // FIXME:lacks 1st and 2nd args to build()
             if (PEAR::isError($result)) {
                 return $result;
             }

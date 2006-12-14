@@ -130,7 +130,6 @@ class Structures_DataGrid_Renderer_HTMLEditForm
                     "{$this->_requestPrefix}DataGridSortForm", 'get');
             $this->_isUserContainer = false;
         } else {
-            // FIXME: Isn't it a bit risky to set this flag here, because this method could be called more than once?
             $this->_isUserContainer = true;
         }
     }
@@ -154,6 +153,8 @@ class Structures_DataGrid_Renderer_HTMLEditForm
         
         $this->_form->setDefaults($defaults);
 
+        // Only add a submit button and extraVars if the QF container wasn't
+        // provided by the user
         if (!$this->_isUserContainer) {
             $this->_form->addElement('submit', null, $this->_options['textSubmit']);
             foreach($this->_options['extraVars'] as $var => $value) {
