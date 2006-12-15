@@ -31,13 +31,14 @@ $descriptions = array();
 $modes = array();
 $options = array();
 $notes = array();
+$examples = array();
 $inheritance = array();
 
 // parse all directories whose names begin with 'Structures_DataGrid'
 $directories = scandir(PATH);
 foreach ($directories as $directory) {
     if (substr($directory, 0, 19) == 'Structures_DataGrid') {
-        parseDirectory($descriptions, $modes, $options, $notes, $inheritance, $directory);
+        parseDirectory($descriptions, $modes, $options, $notes, $examples, $inheritance, $directory);
     }
 }
 
@@ -66,7 +67,7 @@ foreach ($inheritance as $class => $extends) {
     // sort the options alphabetically
     ksort($driver_options);
     // save the options as an XML file
-    $id = writeXMLFile($orig_class, $descriptions[$orig_class], $modes[$orig_class], $driver_options, $notes[$orig_class]);
+    $id = writeXMLFile($orig_class, $descriptions[$orig_class], $modes[$orig_class], $driver_options, $notes[$orig_class], $examples[$orig_class]);
     $ids[] = $id;
 }
 
@@ -77,7 +78,7 @@ foreach ($ids as $id) {
 }
 file_put_contents(TMP_PATH . 'ids.txt', $id_file);
 
-function parseDirectory(&$descriptions, &$modes, &$options, &$notes, &$inheritance, $dir)
+function parseDirectory(&$descriptions, &$modes, &$options, &$notes, &$examples, &$inheritance, $dir)
 {
     $entries = scandir(PATH . $dir);
     foreach ($entries as $entry) {
@@ -86,17 +87,17 @@ function parseDirectory(&$descriptions, &$modes, &$options, &$notes, &$inheritan
         if (!in_array($entry, array('.', '..', 'CVS', 'docs', 'tools'))) {
             // step recursive into subdirectories
             if (is_dir(PATH . $dir . '/' . $entry)) {
-                parseDirectory($descriptions, $modes, $options, $notes, $inheritance, $dir . '/' . $entry);
+                parseDirectory($descriptions, $modes, $options, $notes, $examples, $inheritance, $dir . '/' . $entry);
             }
             // parse the file if the extension is .php
             if (substr($entry, -4) == '.php') {
-                parseFile($descriptions, $modes, $options, $notes, $inheritance, $dir . '/' . $entry);
+                parseFile($descriptions, $modes, $options, $notes, $examples, $inheritance, $dir . '/' . $entry);
             }
         }
     }
 }
 
-function parseFile(&$descriptions, &$modes, &$options, &$notes, &$inheritance, $filename)
+function parseFile(&$descriptions, &$modes, &$options, &$notes, &$examples, &$inheritance, $filename)
 {
     echo 'Parsing ' . $filename . ' ... ';
 
@@ -123,6 +124,9 @@ function parseFile(&$descriptions, &$modes, &$options, &$notes, &$inheritance, $
 
     // get the 'GENERAL NOTES'
     $notes[$class] = getNotes($file, $optionsEndRow);
+    
+    // get the examples
+    $examples[$class] = getExamples($class, $filename);
 
     // we're done with this file
     echo "DONE\n";
@@ -160,6 +164,31 @@ function getSupportedModes($class, $filename)
         }
         return $modes;
     }
+}
+
+function getExamples($class, $filename)
+{
+    $examples = array();
+
+    // ignore non-driver files
+    if (   strpos($class, '_DataSource_') === false
+        && strpos($class, '_Renderer_') === false
+       ) {
+        return $examples;
+    }
+
+    $file = file_get_contents(PATH . $filename);
+    $res = preg_match_all('# * @example ([a-z-\.]+) +([a-z ]+)#i', $file,
+                          $matches, PREG_SET_ORDER);
+    if (count($matches) > 0) {
+        foreach ($matches as $match) {
+            $examples[] = array('desc' => $match[2],
+                                'code' => file_get_contents('docs/examples/' . $match[1])
+                               );
+        }
+    }
+
+    return $examples;
 }
 
 function getDescriptionsStartRow($file)
@@ -472,7 +501,7 @@ function indentMultiLine($content, $indentStr, $indentNum)
     return $prefix . trim(str_replace("\n", "\n$prefix$indentStr", $content));
 }
 
-function writeXMLFile($driver, $descriptions, $modes, $options, $notes)
+function writeXMLFile($driver, $descriptions, $modes, $options, $notes, $examples)
 {
     // prepare some variables for the XML contents
     $type = 'structures-datagrid-' . ((strpos($driver, 'DataSource') !== false) ? 'datasource' : 'renderer');
@@ -559,6 +588,21 @@ function writeXMLFile($driver, $descriptions, $modes, $options, $notes)
         $xml .= '  <para>' . "\n";
         $xml .= '   ' . $notes . "\n";
         $xml .= '  </para>' . "\n";
+        $xml .= ' </refsect1>' . "\n";
+    }
+    if (count($examples) > 0) {
+        $xml .= ' <refsect1 id="' . $id . '.examples">' . "\n";
+        $xml .= '  <title>Examples</title>' . "\n";
+        foreach ($examples as $example) {
+            $xml .= '  <example>' . "\n";
+            $xml .= '   <title>' . $example['desc'] . '</title>' . "\n";
+            $xml .= '   <programlisting role="php">' . "\n";
+            $xml .= '<![CDATA[' . "\n";
+            $xml .= $example['code'] . "\n";
+            $xml .= ']]>' . "\n";
+            $xml .= '   </programlisting>' . "\n";
+            $xml .= '  </example>' . "\n";
+        }
         $xml .= ' </refsect1>' . "\n";
     }
     $xml .= '</refentry>' . "\n";
