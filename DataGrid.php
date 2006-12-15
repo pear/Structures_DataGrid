@@ -208,8 +208,6 @@ class Structures_DataGrid
         'spreadsheet_excel_writer_workbook' => DATAGRID_RENDER_XLS,
         'console_table' => DATAGRID_RENDER_CONSOLE,
         'pager_common' => DATAGRID_RENDER_PAGER,
-        // FIXME: There might be other types of quickforms...
-        'html_quickform' => DATAGRID_RENDER_SORTFORM 
     );
     
     /**
@@ -446,7 +444,7 @@ class Structures_DataGrid
         }        
 
         if ($options) {
-            $driver->setOptions($options);
+            $driver->setOptions((array)$options);
         }
 
         return $driver;
@@ -485,7 +483,7 @@ class Structures_DataGrid
         }
 
         if ($options) {
-            $this->_renderer->setOptions($options);
+            $this->_renderer->setOptions((array)$options);
         }
 
         if (!$this->_renderer->isBuilt()) {
@@ -544,7 +542,7 @@ class Structures_DataGrid
         }
         
         if ($options) {
-            $this->_renderer->setOptions($options);
+            $this->_renderer->setOptions((array)$options);
         }
         
         if (!$this->_renderer->isBuilt()) {
@@ -775,7 +773,7 @@ class Structures_DataGrid
                 return $test;
             }
         } else {
-            $this->_renderer->setOptions($options);
+            $this->_renderer->setOptions((array)$options);
         }
 
         $test = $this->_renderer->setContainer($container);
@@ -1585,7 +1583,7 @@ class Structures_DataGrid
     function setRendererOptions($options)
     {
         isset($this->_renderer) or $this->setRenderer(DATAGRID_RENDER_DEFAULT);
-        $this->_renderer->setOptions($options);
+        $this->_renderer->setOptions((array)$options);
     }
 
     /**
@@ -1610,7 +1608,7 @@ class Structures_DataGrid
     function setDataSourceOptions($options)
     {
         if (isset($this->_dataSource)) {
-            $this->_dataSource->setOptions($options);
+            $this->_dataSource->setOptions((array)$options);
         } else {
             return PEAR::raiseError('Unable to set options; no datasource loaded.');
         }
