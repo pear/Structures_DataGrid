@@ -54,7 +54,7 @@ fi
 VERSION=0.8
 
 echo "Structures_DataGrid Manual Generator $VERSION"
-echo 'CVS id: $Id: mkmanual.sh,v 1.18 2006-12-15 14:16:01 wiesemann Exp $'
+echo 'CVS id: $Id: mkmanual.sh,v 1.19 2006-12-15 14:35:38 wiesemann Exp $'
 
 if [ "$TARGET_DIR" == "" ] 
 then
@@ -73,7 +73,7 @@ echo
 
 # Building doc
 printf "Running PhpDocumentor... Logging output into $BUILD_DIR/phpdoc.log"
-$PHPDOC  -dn Structures_DataGrid \
+$PHPBIN $PHPDOC  -dn Structures_DataGrid \
                  -dc Structures \
                  -f "DataGrid.php,DataGrid/Column.php" \
                  -t $TARGET_DIR_PHPDOC \
