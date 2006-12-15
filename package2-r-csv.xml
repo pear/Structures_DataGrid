@@ -36,10 +36,11 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <release>beta</release>
   <api>beta</api>
  </stability>
- <license uri="http://www.php.net/license">PHP License</license>
+ <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
 - the generated CSV dataset can now be stored into a file on the local filesystem
   by setting the new option 'saveToFile' to boolean true
+- this package is now licensed under the New BSD license
  </notes>
  <contents>
   <dir name="/">

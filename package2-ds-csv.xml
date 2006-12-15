@@ -26,24 +26,19 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-07-25</date>
- <time>14:30:00</time>
+ <date>?</date>
+ <time>?</time>
  <version>
-  <release>0.1.3</release>
+  <release>0.1.4</release>
   <api>0.1.1</api>
  </version>
  <stability>
   <release>beta</release>
   <api>beta</api>
  </stability>
- <license uri="http://www.php.net/license">PHP License</license>
+ <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- Bug #8271: fixed a possible PHP error message in bind() that could occur for
-  CSV strings longer than 255 characters
-  (thanks to Gregor Gramlich, gramlich at eosc dot de)
-- Request #8272: added code for the case that a CSV file has actually more
-  columns than the contents of the first row indicates
-  (thanks to Gregor Gramlich, gramlich at eosc dot de)
+- this package is now licensed under the New BSD license
  </notes>
  <contents>
   <dir name="/">

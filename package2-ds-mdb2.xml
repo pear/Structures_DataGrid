@@ -37,11 +37,12 @@ SQL query.
   <release>beta</release>
   <api>beta</api>
  </stability>
- <license uri="http://www.php.net/license">PHP License</license>
+ <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
 - Bug #9342: fix records count for UNION queries
   (thanks to HarrySchool, HarrySchool at netscape dot net)
 - small optimizations for streaming support
+- this package is now licensed under the New BSD license
  </notes>
  <contents>
   <dir name="/">

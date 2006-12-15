@@ -24,12 +24,13 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <release>beta</release>
   <api>beta</api>
  </stability>
- <license uri="http://www.php.net/license">PHP License</license>
+ <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
 - added insert(), update() and delete() methods
   (not support by Structures_DataGrid until now, but they can be used by direct
   instantiation and usage of this driver)
 - small optimizations for streaming support
+- this package is now licensed under the New BSD license
  </notes>
  <contents>
   <dir name="/">

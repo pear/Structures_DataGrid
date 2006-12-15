@@ -37,13 +37,14 @@ string.
   <release>beta</release>
   <api>beta</api>
  </stability>
- <license uri="http://www.php.net/license">PHP License</license>
+ <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
 - the generated XML can now be stored into a file on the local filesystem
   by setting the new option 'saveToFile' to boolean true
 - for both writing to the filesystem and sending to the browser, a filename
   can be specified by setting the new 'filename' option
 - added support for custom XML attributes
+- this package is now licensed under the New BSD license
  </notes>
  <contents>
   <dir name="/">

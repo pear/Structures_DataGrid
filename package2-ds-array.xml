@@ -37,11 +37,12 @@ base package for some other DataSource drivers like CSV or XML.
   <release>beta</release>
   <api>beta</api>
  </stability>
- <license uri="http://www.php.net/license">PHP License</license>
+ <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
 - performance optimization: when PHP >= 5.1.0 is installed, its native
   array_intersect_key() function is now used instead of an emulation of this
   function in PHP code
+- this package is now licensed under the New BSD license
  </notes>
  <contents>
   <dir name="/">

@@ -26,20 +26,19 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-06-19</date>
- <time>18:00:00</time>
+ <date>?</date>
+ <time>?</time>
  <version>
-  <release>0.1.0</release>
+  <release>0.1.1</release>
   <api>0.1.0</api>
  </version>
  <stability>
   <release>beta</release>
   <api>beta</api>
  </stability>
- <license uri="http://www.php.net/license">PHP License</license>
- <notes>Changes since Structures_DataGrid 0.6.3:
-
-This is a new Renderer driver for Structures_DataGrid.
+ <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
+ <notes>
+- this package is now licensed under the New BSD license
  </notes>
  <contents>
   <dir name="/">

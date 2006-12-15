@@ -37,10 +37,11 @@ string for a XUL listbox.
   <release>beta</release>
   <api>beta</api>
  </stability>
- <license uri="http://www.php.net/license">PHP License</license>
+ <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
 - Bug #9548: added support for per-column default sort directions
   (thanks to Anton, hire at ukr dot net)
+- this package is now licensed under the New BSD license
  </notes>
  <contents>
   <dir name="/">

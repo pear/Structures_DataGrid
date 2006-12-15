@@ -23,17 +23,18 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <date>?</date>
  <time>?</time>
  <version>
-  <release>?</release>
-  <api>?</api>
+  <release>0.1.1</release>
+  <api>0.1.0</api>
  </version>
  <stability>
   <release>beta</release>
   <api>beta</api>
  </stability>
- <license uri="http://www.php.net/license">PHP License</license>
+ <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
 - Bug #9147: quote field names for sorting
   (thanks to Chris van de Wouw, chrisje at home dot nl)
+- this package is now licensed under the New BSD license
  </notes>
  <contents>
   <dir name="/">

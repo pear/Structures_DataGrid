@@ -39,7 +39,7 @@ This concept is based on the .NET Framework DataGrid control and works very well
   <release>beta</release>
   <api>beta</api>
  </stability>
- <license uri="http://www.php.net/license">PHP License</license>
+ <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
 - added streaming support [TODO: add more explaination here]
 - secured the sort direction input string
@@ -55,6 +55,7 @@ This concept is based on the .NET Framework DataGrid control and works very well
   (thanks to Anton, hire at ukr dot net)
 - bug #7710: new generateColumns() method. The DataSource options 
   "generate_columns"  and "labels" are now deprecated.
+- this package is now licensed under the New BSD license
  </notes>
  <contents>
   <dir name="/">
