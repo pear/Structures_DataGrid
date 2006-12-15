@@ -47,6 +47,8 @@ require_once 'HTML/QuickForm.php';
  * - Direct Rendering:  no
  * - Streaming:         no
  *
+ * @example htmleditform-basic.php      Basic usage
+ * @example htmleditform-tableless.php  Usage with tableless renderer and DHTMLRules
  * @version  $Revision$
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @access   public
@@ -157,7 +159,7 @@ class Structures_DataGrid_Renderer_HTMLEditForm
         // provided by the user
         if (!$this->_isUserContainer) {
             $this->_form->addElement('submit', null, $this->_options['textSubmit']);
-            foreach($this->_options['extraVars'] as $var => $value) {
+            foreach ($this->_options['extraVars'] as $var => $value) {
                 $this->_form->addElement('hidden', $var, $value);
             }
         }
