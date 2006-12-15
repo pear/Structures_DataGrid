@@ -340,6 +340,8 @@ class Structures_DataGrid_Column
     /**
      * Choose a format preset
      *
+     * EXPERIMENTAL: the behaviour of this method may change in future releases.
+     *
      * This method allows to associate an "automatic" predefined formatter
      * to the column, for common needs as formatting dates, numbers, ...
      *
@@ -411,6 +413,9 @@ class Structures_DataGrid_Column
                 $value = urlencode($value);
             case 'printf':
                 return sprintf($params[1], $value);
+            case 'template':
+                $pairs = array();
+                foreach ($data
         }
     }
 
