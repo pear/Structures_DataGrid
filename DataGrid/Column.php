@@ -413,9 +413,6 @@ class Structures_DataGrid_Column
                 $value = urlencode($value);
             case 'printf':
                 return sprintf($params[1], $value);
-            case 'template':
-                $pairs = array();
-                foreach ($data
         }
     }
 
