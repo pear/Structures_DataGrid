@@ -10,7 +10,7 @@ $form->addElement('text', 'my_search', 'Search for:');
 
 // Let the datagrid add sort fields, radio style
 $options = array('directionStyle' => 'radio');
-$datagrid->fill($form, $options);
+$datagrid->fill($form, $options, 'HTMLSortForm');
 
 // You must add a submit button. fill() never does this
 $form->addElement('submit', null, 'Submit');
