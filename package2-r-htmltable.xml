@@ -72,7 +72,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
    <package>
     <name>HTML_Table</name>
     <channel>pear.php.net</channel>
-    <min>1.6.1</min>
+    <min>1.7.5</min>
    </package>
   </required>
  </dependencies>
