@@ -41,7 +41,10 @@ This concept is based on the .NET Framework DataGrid control and works very well
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- added streaming support [TODO: add more explaination here]
+- added streaming support for outputting large datasets that can exceed PHP's
+  memory limit; streaming is currently supported by many DataSource drivers and
+  the CSV and XML renderers; more details about this new feature can be found
+  in the manual
 - secured the sort direction input string
 - new abstract writeMode DataSource interface, for future support of data
   editing features
@@ -54,7 +57,12 @@ This concept is based on the .NET Framework DataGrid control and works very well
   handling per-column default sorting directions
   (thanks to Anton, hire at ukr dot net)
 - bug #7710: new generateColumns() method. The DataSource options 
-  "generate_columns"  and "labels" are now deprecated.
+  "generate_columns" and "labels" are now deprecated.
+- BC break: renderer auto-detection for HTML_QuickForm objects was removed
+  because there will be more renderers that accept HTML_QuickForm objects in
+  the future
+  (to make your code work again, you just need to specify 'HTMLSortForm' as the
+  renderer on render(), getOutput(), fill() etc. calls)
 - this package is now licensed under the New BSD license
  </notes>
  <contents>
