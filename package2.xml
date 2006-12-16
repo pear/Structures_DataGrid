@@ -29,8 +29,8 @@ This concept is based on the .NET Framework DataGrid control and works very well
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>?</date>
- <time>?</time>
+ <date>2006-12-16</date>
+ <time>17:00:00</time>
  <version>
   <release>0.8.0</release>
   <api>0.8.0</api>
