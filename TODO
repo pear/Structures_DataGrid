@@ -126,10 +126,14 @@ revision 1.24)
     - MDB2:         Todo
     - RSS:          Todo
     - XML:          Todo
+- implement DataSource::filter() to be able to retrieve a specific row
+  by its primary key (see TODO 19)
 - test these drivers out of SDG
 - code GET/POST arguments parsing into DataGrid.php
 - create a new Renderer_HTMLEditForm driver
 - couple it all together (that's the funny part ;) 
+
+Also see the TODO 20 for a way to couple an HTMLTable with an HTMLEditForm.
 
 --------------------------------------------------------------------------------
 TODO 17 - HTMLDetailView Renderer (olivierg) - Priority: Medium
@@ -141,6 +145,35 @@ time with all details, while the grid has less details by definition.
 We need a such thing that's for sure. And it shouldn't be that hard to
 code. Additionally, it implies coding some routines to handle passing
 a unique record identifier, which we'll need for TODO 16.
+
+--------------------------------------------------------------------------------
+TODO 19 - DataSource::filter() (olivierg) - Priority: Medium
+
+Implement the filter(array(field => value, ...)) method in some DataSource drivers
+to filter the data by one or more fields values.
+
+Ex : 
+filter(array('f1' => 'foo', 'f2' => 'bar' )
+	=> SELECT ... WHERE f1 = 'foo' AND f2 = 'bar' ...
+
+--------------------------------------------------------------------------------
+TODO 20 - Column::link() (olivierg) - Priority: Medium
+
+The Link method would help linking two datagrid instances, as in:
+http://www.samalyse.com/code/pear/linked_grids
+
+Calling (pseudo-code):
+$column = new Column();
+$datagrid1->addColumn($column);
+$column->link($datagrid2, array('f1', 'f2'))
+
+should format the column to contain links like: ?f1=<value>&f2=<value>
+(where values would differ from row to row, like with normal formatters)
+
+The $datagrid2 instance could be rendererd as an HTMLTable or anything else, 
+including an HTMLEditForm.
+
+This is related to TODO 19 and 20
 
 ####################### Done Items Archive #########################
 
