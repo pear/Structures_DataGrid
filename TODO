@@ -173,7 +173,7 @@ should format the column to contain links like: ?f1=<value>&f2=<value>
 The $datagrid2 instance could be rendererd as an HTMLTable or anything else, 
 including an HTMLEditForm.
 
-This is related to TODO 19 and 20
+This is related to TODO 16 and 19
 
 ####################### Done Items Archive #########################
 
