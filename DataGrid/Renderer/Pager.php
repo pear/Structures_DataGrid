@@ -60,7 +60,8 @@ require_once 'Pager/Pager.php';
  *
  * - pagerOptions: (array)  Options passed to Pager::factory().
  *                          Basic defaults are: mode: Sliding, delta: 5, 
- *                          separator: "|", prevImg: "<<", nextImg: ">>".
+ *                          separator: "|", prevImg: "&lt;&lt;" (<<),
+ *                          nextImg: "&gt;&gt;" (>>).
  *                          The extraVars and excludeVars options are 
  *                          populated according to the Renderer common 
  *                          extraVars and excludeVars options. You may also
@@ -113,8 +114,8 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
                     'mode'        => 'Sliding',
                     'delta'       => 5,
                     'separator'   => '|',
-                    'prevImg'     => '<<',
-                    'nextImg'     => '>>',
+                    'prevImg'     => '&lt;&lt;',
+                    'nextImg'     => '&gt;&gt;',
                     'totalItems'  => null, // dynamic; see init()
                     'perPage'     => null, // dynamic; see init()
                     'urlVar'      => null, // dynamic; see init()
