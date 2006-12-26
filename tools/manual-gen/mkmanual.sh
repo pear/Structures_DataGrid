@@ -51,10 +51,10 @@ else
     TARGET_DIR=$1
 fi
 
-VERSION=0.8
+VERSION=0.9
 
 echo "Structures_DataGrid Manual Generator $VERSION"
-echo 'CVS id: $Id: mkmanual.sh,v 1.19 2006-12-15 14:35:38 wiesemann Exp $'
+echo 'CVS id: $Id: mkmanual.sh,v 1.20 2006-12-26 10:00:22 wiesemann Exp $'
 
 if [ "$TARGET_DIR" == "" ] 
 then
@@ -83,6 +83,11 @@ $PHPBIN $PHPDOC  -dn Structures_DataGrid \
 
 echo "Done."
 
+echo
+
+echo "Adding XML declaration and revision tag to generated files"
+$PHPBIN tools/manual-gen/add-revision-tags.php $TARGET_DIR_PHPDOC
+echo "Done."
 echo
 
 echo "Parsing/Generating DataSource and Renderer files"
