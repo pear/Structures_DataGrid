@@ -6,7 +6,7 @@
  *
  * LICENSE:
  * 
- * Copyright (c) 1997-2006, Andrew Nagy <asnagy@webitecture.org>,
+ * Copyright (c) 1997-2007, Andrew Nagy <asnagy@webitecture.org>,
  *                          Olivier Guilyardi <olivier@samalyse.com>,
  *                          Mark Wiesemann <wiesemann@php.net>
  * All rights reserved.

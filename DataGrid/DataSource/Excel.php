@@ -6,7 +6,7 @@
  *
  * LICENSE:
  * 
- * Copyright (c) 1997-2006, Andrew Nagy <asnagy@webitecture.org>,
+ * Copyright (c) 1997-2007, Andrew Nagy <asnagy@webitecture.org>,
  *                          Olivier Guilyardi <olivier@samalyse.com>,
  *                          Mark Wiesemann <wiesemann@php.net>
  * All rights reserved.
@@ -35,7 +35,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * Excel file id: $Id$
+ * CSV file id: $Id$
  * 
  * @version  $Revision$
  * @package  Structures_DataGrid_DataSource_Excel
