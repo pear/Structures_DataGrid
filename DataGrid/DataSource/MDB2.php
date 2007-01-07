@@ -161,7 +161,7 @@ class Structures_DataGrid_DataSource_MDB2
             if (array_key_exists('db_options', $options)) {
                 $dbOptions = $options['db_options'];
             }
-            $this->_db =& MDB2::factory($this->_options['dsn'], $dbOptions);
+            $this->_db =& MDB2::connect($this->_options['dsn'], $dbOptions);
             if (PEAR::isError($this->_db)) {
                 return PEAR::raiseError('Could not create connection: ' .
                                         $this->_db->getMessage() . ', ' .
