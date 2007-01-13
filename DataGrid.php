@@ -1145,7 +1145,10 @@ class Structures_DataGrid
     {
         if (is_subclass_of($source, 'structures_datagrid_datasource')) {
             $this->_dataSource =& $source;
-            $this->fetchDataSource();
+            $result = $this->fetchDataSource();
+            if (PEAR::isError($result)) {
+                return $result;
+            }
             if ($columnSet = $this->_dataSource->getColumns()) {
                 $this->columnSet = array_merge($this->columnSet, $columnSet);
             }
