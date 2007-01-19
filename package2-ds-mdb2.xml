@@ -27,10 +27,10 @@ SQL query.
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2007-01-07</date>
- <time>14:15:00</time>
+ <date>2007-01-19</date>
+ <time>11:30:00</time>
  <version>
-  <release>0.1.4</release>
+  <release>0.1.5</release>
   <api>0.1.1</api>
  </version>
  <stability>
@@ -39,9 +39,8 @@ SQL query.
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- Bug #9759: fixed error handling for the case of non-existing database name in
-  the 'dsn' option
-  (thanks to Dmitriy, dscherbina at ukr dot net)
+- Bug #9871: regex fix for correctly removing the LIMIT statement 
+  (thanks Michael Mauch, michael dot mauch at gmx dot de)
  </notes>
  <contents>
   <dir name="/">
