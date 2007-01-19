@@ -175,6 +175,17 @@ including an HTMLEditForm.
 
 This is related to TODO 16 and 19
 
+--------------------------------------------------------------------------------
+TODO 21 - new SQLQuery DataSource driver (wiesemann) - Priority: Medium
+
+The current DBQuery and MDB2 DataSource drivers should be merged into a
+new SQLQuery DataSource driver. The old drivers should then be marked
+as deprecated.
+
+The new driver could also support PDO and/or the PEARified Doctrine
+package.
+
+
 ####################### Done Items Archive #########################
 
 --------------------------------------------------------------------------------
