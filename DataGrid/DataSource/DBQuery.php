@@ -202,7 +202,7 @@ class Structures_DataGrid_DataSource_DBQuery
         $query = $this->_query;
 
         // drop LIMIT statement
-        $query = preg_replace('#LIMIT\s.*$#isD', '', $query);
+        $query = preg_replace('#\sLIMIT\s.*$#isD', ' ', $query);
 
         // if we have a sort string, we need to add it to the query string
         if ($sortString != '') {
