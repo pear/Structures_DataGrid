@@ -284,7 +284,8 @@ class Structures_DataGrid_DataSource_MDB2
             // don't query the whole table, just get the number of rows
             $query = preg_replace('#SELECT\s.*\sFROM#is',
                                   'SELECT COUNT(*) FROM',
-                                  $this->_query);
+                                  $this->_query,
+                                  1);
             $count = $this->_db->extended->getOne($query);
             // $count has an integer value with number of rows or is a
             // PEAR_Error instance on failure
