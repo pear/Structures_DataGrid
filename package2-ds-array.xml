@@ -27,10 +27,10 @@ base package for some other DataSource drivers like CSV or XML.
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-12-16</date>
- <time>17:00:00</time>
+ <date>2007-01-24</date>
+ <time>20:55:00</time>
  <version>
-  <release>0.1.1</release>
+  <release>0.1.2</release>
   <api>0.1.0</api>
  </version>
  <stability>
@@ -39,10 +39,8 @@ base package for some other DataSource drivers like CSV or XML.
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- performance optimization: when PHP >= 5.1.0 is installed, its native
-  array_intersect_key() function is now used instead of an emulation of this
-  function in PHP code
-- this package is now licensed under the New BSD license
+- Bug #9914: removed the (wrong) assumption that always an array index 0 exists
+  (thanks to Rob, rjbarbour at gmail dot com)
  </notes>
  <contents>
   <dir name="/">

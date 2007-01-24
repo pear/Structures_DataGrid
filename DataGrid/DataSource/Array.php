@@ -117,7 +117,8 @@ class Structures_DataGrid_DataSource_Array
     function &fetch($offset = 0, $len = null)
     {
         if ($this->_ar && !$this->_options['fields']) {
-            $this->setOptions(array('fields' => array_keys($this->_ar[0])));
+            $firstElement = array_slice($this->_ar, 0, 1);
+            $this->setOptions(array('fields' => array_keys($firstElement[0])));
         }
 
         // slicing
