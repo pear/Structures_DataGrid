@@ -279,7 +279,7 @@ class Structures_DataGrid_DataSource_DBQuery
             $count = $result->numRows();
         } else {
             // don't query the whole table, just get the number of rows
-            $query = preg_replace('#SELECT\s.*\sFROM#is',
+            $query = preg_replace('#SELECT\s.*?\sFROM#is',
                                   'SELECT COUNT(*) FROM',
                                   $this->_query,
                                   1);
