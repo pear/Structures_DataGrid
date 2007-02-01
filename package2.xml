@@ -29,10 +29,10 @@ This concept is based on the .NET Framework DataGrid control and works very well
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2007-01-15</date>
- <time>16:25:00</time>
+ <date>2007-02-??</date>
+ <time>??</time>
  <version>
-  <release>0.8.1</release>
+  <release>0.8.2</release>
   <api>0.8.0</api>
  </version>
  <stability>
@@ -41,7 +41,9 @@ This concept is based on the .NET Framework DataGrid control and works very well
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- Fix for bug #9820: when the DataSource fetching failed, the error got lost
+- Bug #9992: sorting the first column failed for array based DataSource drivers
+  in the case of missing or numeric column names
+  (thanks to Michael Mauch, michael dot mauch at gmx dot de)
  </notes>
  <contents>
   <dir name="/">

@@ -1345,7 +1345,7 @@ class Structures_DataGrid
             }
         } 
 
-        if ($orderBy = $this->_getRequestArgument('orderBy')) {
+        if (($orderBy = $this->_getRequestArgument('orderBy')) !== null) {
             if (is_array($orderBy)) {
                 $direction = $this->_getRequestArgument('direction');
                 $this->sortSpec = array();
