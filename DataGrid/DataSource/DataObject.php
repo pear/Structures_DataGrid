@@ -229,24 +229,25 @@ class Structures_DataGrid_DataSource_DataObject
             if ($this->_options['formbuilder_integration']) {
                 require_once('DB/DataObject/FormBuilder.php');
                 $links = $this->_dataobject->links();
-            }            
+            }           
+            $initial = true;
             while ($this->_dataobject->fetch()) {
                 // Determine Fields
-                if (!$this->_options['fields']) {
-                    if ($this->_options['use_private_vars']) {
-                        $this->_options['fields'] =
-                            array_keys(get_object_vars($this->_dataobject));
-                    } else {
-                        $this->_options['fields'] =
-                            array_keys($this->_dataobject->toArray());
+                if ($initial) {
+                    if (!$this->_options['fields']) {
+                        if ($this->_options['use_private_vars']) {
+                            $this->_options['fields'] =
+                                array_keys(get_object_vars($this->_dataobject));
+                        } else {
+                            $this->_options['fields'] =
+                                array_keys($this->_dataobject->toArray());
+                        }
                     }
-                    //$this->_options['fields'] =
-                    //    array_filter(array_keys(get_object_vars($this->_dataobject)), array(&$this, '_fieldsFilter'));
+                    $initial = false;
                 }
-                $fieldList = $this->_options['fields'];
                 // Build DataSet
                 $rec = array();
-                foreach ($fieldList as $fName) {
+                foreach ($this->_options['fields'] as $fName) {
                     $getMethod = 'get' . ucfirst($fName);
                     if (method_exists($this->_dataobject, $getMethod)) {
                         //$rec[$fName] = $this->_dataobject->$getMethod(&$this);
