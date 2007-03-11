@@ -58,6 +58,9 @@ require_once 'Structures/DataGrid/DataSource.php';
  * - dsn:         (string) A PEAR::MDB2 dsn string. The MDB2 connection will be
  *                         established by this driver. Either this or the 'dbc'
  *                         option is required.
+ * - count_query: (string) Query that calculates the number of rows. See below
+ *                         for more information about when such a count query
+ *                         is needed.
  * 
  * GENERAL NOTES:
  *
@@ -66,12 +69,13 @@ require_once 'Structures/DataGrid/DataSource.php';
  * 
  * If you use complex queries (e.g. with complex joins or with aliases),
  * $datagrid->getRecordCount() might return a wrong result. For the case of
- * GROUP BY, UNION, or DISTINCT in your queries, this driver already has special
- * handling. However, if you observe wrong record counts, you need to specify
- * a special query that returns only the number of records (e.g. 'SELECT COUNT(*)
- * FROM ...') as an additional option 'count_query' to the bind() call.
+ * GROUP BY, UNION, or DISTINCT in your queries, and for the case of subqueries,
+ * this driver already has special handling. However, if you observe wrong
+ * record counts, you need to specify a special query that returns only the
+ * number of records (e.g. 'SELECT COUNT(*) FROM ...') as an additional option
+ * 'count_query' to the bind() call.
  * 
- * You can specify a ORDER BY statement in your query. Please be aware that this
+ * You can specify an ORDER BY statement in your query. Please be aware that this
  * sorting statement is then used in *every* query before the sorting options
  * that come from a renderer (e.g. by clicking on the column header when using
  * the HTML_Table renderer which is sent in the HTTP request).
@@ -270,10 +274,11 @@ class Structures_DataGrid_DataSource_MDB2
             // PEAR_Error instance on failure
         }
         elseif (preg_match('#GROUP\s*BY#is', $this->_query) === 1 ||
+                preg_match('#SELECT.*SELECT#is', $this->_query) === 1 ||
                 preg_match('#\sUNION\s#is', $this->_query) === 1 ||
                 preg_match('#SELECT.*DISTINCT.*FROM#is', $this->_query) === 1
             ) {
-            // GROUP BY and DISTINCT are special cases
+            // GROUP BY, DISTINCT, UNION and subqueries are special cases
             // ==> use the normal query and then numRows()
             $result = $this->_db->query($this->_query);
             if (PEAR::isError($result)) {
@@ -282,10 +287,9 @@ class Structures_DataGrid_DataSource_MDB2
             $count = $result->numRows();
         } else {
             // don't query the whole table, just get the number of rows
-            $query = preg_replace('#SELECT\s.*?\sFROM#is',
+            $query = preg_replace('#SELECT\s.*\sFROM#is',
                                   'SELECT COUNT(*) FROM',
-                                  $this->_query,
-                                  1);
+                                  $this->_query);
             $count = $this->_db->extended->getOne($query);
             // $count has an integer value with number of rows or is a
             // PEAR_Error instance on failure
