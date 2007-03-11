@@ -60,6 +60,9 @@ require_once 'Spreadsheet/Excel/Writer.php';
  * - filename:      (string) The filename of the spreadsheet
  * - sendToBrowser: (bool)   Should the spreadsheet be send to the browser?
  *                           (true = send to browser, false = write to a file)
+ * - tempDir:       (string) A temporary directory to be used by
+ *                           Spreadsheet_Excel_Writer (cp. "General Notes"
+ *                           section).
  * - worksheet:     (object) Optional reference to a
  *                           Spreadsheet_Excel_Writer_Worksheet object. You 
  *                           can leave this to null except if your workbook 
@@ -91,6 +94,10 @@ require_once 'Spreadsheet/Excel/Writer.php';
  *
  * This driver has container support. You can use Structures_DataGrid::fill()
  * with it; that's even recommended.
+ * 
+ * If PHP's safe_mode is enabled, Spreadsheet_Excel_Writer sometimes fails to
+ * generate the Excel file. You can avoid this problem by setting the 'tempDir'
+ * option to a (temporary) directory that is writable by PHP.
  * 
  * NOTE ABOUT FORMATTING:
  * 
@@ -170,6 +177,7 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
                 'bodyFormat'    => 0,
                 'filename'      => 'spreadsheet.xls',
                 'sendToBrowser' => true,
+                'tempDir'       => null,
                 'worksheet'     => null,
                 'startCol'      => 0,
                 'startRow'      => 0,
@@ -217,6 +225,9 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
                 $this->_workbook->send($this->_options['filename']);
             } else {
                 $this->_workbook = new Spreadsheet_Excel_Writer($this->_options['filename']);
+            }
+            if ($this->_options['tempDir']) {
+                $this->_workbook->setTempDir($this->_options['tempDir']);
             }
             $this->_workbook->setVersion(8);
         }
