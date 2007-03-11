@@ -29,8 +29,8 @@ This concept is based on the .NET Framework DataGrid control and works very well
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2007-02-??</date>
- <time>??</time>
+ <date>2007-03-11</date>
+ <time>15:20:00</time>
  <version>
   <release>0.8.2</release>
   <api>0.8.0</api>
@@ -44,6 +44,9 @@ This concept is based on the .NET Framework DataGrid control and works very well
 - Bug #9992: sorting the first column failed for array based DataSource drivers
   in the case of missing or numeric column names
   (thanks to Michael Mauch, michael dot mauch at gmx dot de)
+- Bug #10213: static calls to dataSourceFactory() and rendererFactory() resulted
+  in a fatal PHP error
+  (thanks to Markus Ernst, derernst at gmx dot ch)
  </notes>
  <contents>
   <dir name="/">

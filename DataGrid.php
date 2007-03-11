@@ -223,22 +223,6 @@ class Structures_DataGrid
         'console_table' => DATAGRID_RENDER_CONSOLE,
         'pager_common' => DATAGRID_RENDER_PAGER,
     );
-    
-    /**
-     * A mapping between user expected driver names and their real filenames
-     * @var array
-     * @access private
-     */
-    var $_driverNameMap = array(
-        'DataSource' => array(
-            'DBDataObject' => 'DataObject',
-            'XLS' => 'Excel'
-        ),
-        'Renderer' => array(
-            'ConsoleTable' => 'Console',
-            'Excel' => 'XLS'
-        )
-    );
 
     /**
      * Number of records that should be buffered when streaming is enabled
@@ -409,7 +393,7 @@ class Structures_DataGrid
             return $error;
         }
 
-        $type = $this->_correctDriverName($type, 'DataSource');
+        $type = Structures_DataGrid::_correctDriverName($type, 'DataSource');
         if (PEAR::isError($type)) {
             return $type;
         }
@@ -446,14 +430,14 @@ class Structures_DataGrid
      */
     function &rendererFactory($type, $options = array())
     {
-        $type = $this->_correctDriverName($type, 'Renderer');
+        $type = Structures_DataGrid::_correctDriverName($type, 'Renderer');
         if (PEAR::isError($type)) {
             return $type;
         }
 
         $className = "Structures_DataGrid_Renderer_$type";
 
-        if (PEAR::isError($driver =& $this->loadDriver($className))) {
+        if (PEAR::isError($driver =& Structures_DataGrid::loadDriver($className))) {
             return $driver;
         }        
 
@@ -1460,17 +1444,28 @@ class Structures_DataGrid
      */
     function _correctDriverName($name, $type)
     {
+        $driverNameMap = array(
+            'DataSource' => array(
+                'DBDataObject' => 'DataObject',
+                'XLS' => 'Excel'
+            ),
+            'Renderer' => array(
+                'ConsoleTable' => 'Console',
+                'Excel' => 'XLS'
+            )
+        );
+
         // replace underscores (e.g. HTML_Table driver has filename HTMLTable.php)
         $name = str_replace('_', '', $name);
 
         // does the file exist?
-        if ($this->fileExists("Structures/DataGrid/$type/$name.php")) {
+        if (Structures_DataGrid::fileExists("Structures/DataGrid/$type/$name.php")) {
             return $name;
         }
 
         // check, whether a name mapping exists (e.g. from 'Excel' to 'XLS')
-        if (isset($this->_driverNameMap[$type][$name])) {
-            return $this->_driverNameMap[$type][$name];
+        if (isset($driverNameMap[$type][$name])) {
+            return $driverNameMap[$type][$name];
         }
 
         // we could not find a valid driver name => return an error
