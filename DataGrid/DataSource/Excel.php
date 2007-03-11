@@ -57,6 +57,10 @@ require_once 'Spreadsheet/Excel/reader.php';
  * 
  * GENERAL NOTES:
  *
+ * Spreadsheet_Excel_Reader ("PHP-ExcelReader") is not available as a PEAR
+ * package. It is available on SourceForge.net:
+ * http://sourceforge.net/projects/phpexcelreader/
+ * 
  * This class expects the file reader.php in the directory Spreadsheet/Excel/.
  * 
  * Please note that the current version (2i) of Spreadsheet_Excel_Reader contains
