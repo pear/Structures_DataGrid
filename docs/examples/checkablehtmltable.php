@@ -23,7 +23,7 @@ if (PEAR::isError($dg)) {
 $error = $dg->bind('SELECT * FROM news',
                    array('dsn' => 'mysql://user:password@server/database'));
 if (PEAR::isError($error)) {
-   die($dg->getMessage() . '<br />' . $dg->getDebugInfo());
+   die($error->getMessage() . '<br />' . $error->getDebugInfo());
 }
 
 // the renderer adds an auto-generated column for the checkbox by default;
@@ -40,19 +40,22 @@ $rendererOptions = array('form'         => $form,
                          'primaryKey'   => 'id'
                         );
 
-$error = $dg->getOutput('CheckableHTMLTable', $rendererOptions);
-if (PEAR::isError($error)) {
-   die($dg->getMessage() . '<br />' . $dg->getDebugInfo());
+// use a template string for the form
+$tpl = '';
+
+// generate the HTML table and add it to the template string
+$tpl .= $dg->getOutput('CheckableHTMLTable', $rendererOptions);
+if (PEAR::isError($tpl)) {
+   die($tpl->getMessage() . '<br />' . $tpl->getDebugInfo());
 }
 
-// use a template string for the form
-$tpl = $error;
-
-// add the HTML code of the action selectbox and the submit button to the template string
+// add the HTML code of the action selectbox and the submit button to the
+// template string
 $tpl .= $renderer->elementToHtml('action');
 $tpl .= $renderer->elementToHtml('submit');
 
-// we're now ready to output the form (toHtml() adds the <form> / </form> pair to the template)
+// we're now ready to output the form (toHtml() adds the <form> / </form>
+// pair to the template)
 echo $renderer->toHtml($tpl);
 
 // if the form was submitted and the data is valid, show the submitted data
