@@ -137,7 +137,8 @@ class Structures_DataGrid_DataSource_MDB2
     {
         parent::Structures_DataGrid_DataSource();
         $this->_addDefaultOptions(array('dbc' => null,
-                                        'dsn' => null));
+                                        'dsn' => null,
+                                        'count_query' => ''));
         $this->_setFeatures(array('multiSort' => true));
     }
   
@@ -266,7 +267,7 @@ class Structures_DataGrid_DataSource_MDB2
             return $this->_rowNum;
         }
         // try to fetch the number of records
-        if (array_key_exists('count_query', $this->_options)) {
+        if ($this->_options['count_query'] != '') {
             // complex queries might require special queries to get the
             // right row count
             $count = $this->_db->extended->getOne($this->_options['count_query']);
