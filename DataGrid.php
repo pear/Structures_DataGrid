@@ -924,7 +924,7 @@ class Structures_DataGrid
      * If you need to change the request variables, you can define a prefix.
      * This is extra useful when using multiple datagrids.
      * 
-     * This methods needs to be called before bind().
+     * This methods need to be called before bind().
      *
      * @access  public
      * @param   string $prefix      The prefix to use on request variables;
@@ -1259,7 +1259,7 @@ class Structures_DataGrid
      * This is especially useful if you want the data to already be
      * sorted when a user first see the datagrid.
      * 
-     * This methods needs to be called before bind().
+     * This method needs to be called before bind().
      *
      * @param array $sortSpec   Sorting specification
      *                          Structure: array(fieldName => direction, ...)
