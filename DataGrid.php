@@ -1087,7 +1087,7 @@ class Structures_DataGrid
     {
         $columnCount = count($this->columnSet);
         for ($i = 0; $i < $columnCount; $i++) {
-            if ($this->columnSet[$i] == $column) {
+            if ($this->columnSet[$i]->id == $column->id) {
                 for ($i++; $i < $columnCount; $i++) {
                     $this->columnSet[$i - 1] =& $this->columnSet[$i];
                 }

@@ -59,6 +59,12 @@
 class Structures_DataGrid_Column
 {
     /**
+     * The unique id of the column
+     * @var string
+     */
+    var $id;
+
+    /**
      * The name (label) of the column
      * @var string
      */
@@ -140,6 +146,7 @@ class Structures_DataGrid_Column
                                         $formatter = null,
                                         $formatterArgs = array())
     {
+        $this->id = uniqid('_');
         $this->columnName = $label;
         $this->fieldName = $field;
         $this->orderBy = $orderBy;
