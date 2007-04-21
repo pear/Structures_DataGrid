@@ -56,6 +56,9 @@ require_once 'Structures/DataGrid/Renderer.php';
  * - saveToFile: (boolean) Whether the output should be saved on the local
  *                         filesystem. Please note that the 'filename' option
  *                         must be given if this option is set to true.
+ * - writeMode:  (string)  The mode that is used in the internal fopen() calls.
+ *                         Useful e.g. when you want to append to existing file.
+ *                         C.p. the fopen() documentation for the allowed modes.
  * - enclosure:  (string)  Field enclosure
  * - lineBreak:  (string)  The character(s) to use for line breaks
  * - useQuotes:  (mixed)   Whether or not to encapsulate the values with the 
@@ -109,6 +112,7 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
                 'delimiter'  => ',',
                 'filename'   => false,
                 'saveToFile' => false,
+                'writeMode'  => 'wb',
                 'enclosure'  => '"',
                 'lineBreak'  => "\n",
                 'useQuotes'  => "auto"
@@ -135,7 +139,8 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
                 return PEAR::raiseError('No filename specified via "filename" ' .
                                         'option.');
             }
-            $this->_fp = fopen($this->_options['filename'], 'wb');
+            $this->_fp = fopen($this->_options['filename'],
+                               $this->_options['writeMode']);
             if ($this->_fp === false) {
                 return PEAR::raiseError('Could not open file "' .
                                         $this->_options['filename'] . '" ' .

@@ -72,6 +72,9 @@ require_once 'XML/Util.php';
  * - saveToFile:   (boolean) Whether the output should be saved on the local
  *                           filesystem. Please note that the 'filename' option
  *                           must be given if this option is set to true.
+ * - writeMode:     (string) The mode that is used in the internal fopen() calls.
+ *                           Useful e.g. when you want to append to existing file.
+ *                           C.p. the fopen() documentation for the allowed modes.
  *
  * SUPPORTED OPERATION MODES:
  *
@@ -118,6 +121,7 @@ class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer
                 'labelAttribute'    => null,
                 'filename'          => false,
                 'saveToFile'        => false,
+                'writeMode'         => 'wb',
             )
         );
         $this->_setFeatures(
@@ -141,7 +145,8 @@ class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer
                 return PEAR::raiseError('No filename specified via "filename" ' .
                                         'option.');
             }
-            $this->_fp = fopen($this->_options['filename'], 'wb');
+            $this->_fp = fopen($this->_options['filename'],
+                               $this->_options['writeMode']);
             if ($this->_fp === false) {
                 return PEAR::raiseError('Could not open file "' .
                                         $this->_options['filename'] . '" ' .
