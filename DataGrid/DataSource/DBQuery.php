@@ -191,7 +191,7 @@ class Structures_DataGrid_DataSource_DBQuery
      * @param   integer $limit      Limit
      * @access  public
      * @return  mixed               The 2D Array of the records on success,
-                                    PEAR_Error on failure
+     *                              PEAR_Error on failure
     */
     function &fetch($offset = 0, $limit = null)
     {
@@ -213,7 +213,7 @@ class Structures_DataGrid_DataSource_DBQuery
         if ($sortString != '') {
             // if there is an existing ORDER BY statement, we can just add the
             // sort string
-            $result = preg_match('#ORDER\s*BY#is', $query);
+            $result = preg_match('#ORDER\s+BY#is', $query);
             if ($result === 1) {
                 $query .= ', ' . $sortString;
             } else {  // otherwise we need to specify 'ORDER BY'
@@ -271,10 +271,10 @@ class Structures_DataGrid_DataSource_DBQuery
             // $count has an integer value with number of rows or is a
             // PEAR_Error instance on failure
         }
-        elseif (preg_match('#GROUP\s*BY#is', $this->_query) === 1 ||
-                preg_match('#SELECT.*SELECT#is', $this->_query) === 1 ||
+        elseif (preg_match('#GROUP\s+BY#is', $this->_query) === 1 ||
+                preg_match('#SELECT.+SELECT#is', $this->_query) === 1 ||
                 preg_match('#\sUNION\s#is', $this->_query) === 1 ||
-                preg_match('#SELECT.*DISTINCT.*FROM#is', $this->_query) === 1
+                preg_match('#SELECT.+DISTINCT.+FROM#is', $this->_query) === 1
             ) {
             // GROUP BY, DISTINCT, UNION and subqueries are special cases
             // ==> use the normal query and then numRows()
@@ -285,7 +285,7 @@ class Structures_DataGrid_DataSource_DBQuery
             $count = $result->numRows();
         } else {
             // don't query the whole table, just get the number of rows
-            $query = preg_replace('#SELECT\s.*\sFROM#is',
+            $query = preg_replace('#SELECT\s.+\sFROM#is',
                                   'SELECT COUNT(*) FROM',
                                   $this->_query);
             $count = $this->_db->getOne($query);

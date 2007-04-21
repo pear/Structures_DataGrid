@@ -27,10 +27,10 @@ SQL query.
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2007-03-11</date>
- <time>15:30:00</time>
+ <date>2007-04-21</date>
+ <time>15:40:00</time>
  <version>
-  <release>0.1.8</release>
+  <release>0.1.9</release>
   <api>0.1.1</api>
  </version>
  <stability>
@@ -39,14 +39,8 @@ SQL query.
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- The solution for bug #9913 in release 0.1.7 introduced problems with the row
-  count when some kinds of subqueries were used.
-  The new solution for the bug is: If the driver detects a subquery (indicated
-  by two occurences of "SELECT" in the query), it will not modify the query,
-  but will run the query and determine the number of rows then. It is
-  recommended to specify a special row count query for complex
-  queries via the 'count_query' option.
-  (thanks to Tom Atkinson and Harry School)
+- Bug #10789: fixed regular expressions for row counting queries
+  (thanks to Ben Baumer)
  </notes>
  <contents>
   <dir name="/">
