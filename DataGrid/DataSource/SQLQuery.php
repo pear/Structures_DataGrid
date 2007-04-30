@@ -276,6 +276,8 @@ class Structures_DataGrid_DataSource_SQLQuery
             }
         }
 
+        $recordSet = array();
+
         switch ($this->_options['backend']) {
             case 'DB':
                 if (is_null($limit)) {
@@ -286,6 +288,15 @@ class Structures_DataGrid_DataSource_SQLQuery
                 if (PEAR::isError($result)) {
                     return $result;
                 }
+
+                if ($numRows = $result->numRows()) {
+                    while ($result->fetchInto($record, DB_FETCHMODE_ASSOC)) {
+                        $recordSet[] = $record;
+                    }
+                }
+
+                $result->free();
+
                 break;
             case 'MDB2':
                 if (is_null($limit)) {
@@ -297,13 +308,23 @@ class Structures_DataGrid_DataSource_SQLQuery
                 if (PEAR::isError($result)) {
                     return $result;
                 }
+
+                if ($numRows = $result->numRows()) {
+                    while ($record = $result->fetchRow(MDB2_FETCHMODE_ASSOC)) {
+                        $recordSet[] = $record;
+                    }
+                }
+
+                $result->free();
+
                 break;
             case 'PDO':
                 if (!is_null($limit)) {
                     $query .= ' LIMIT ' . $offset . ', ' . $limit;
                 }
                 if (($result = $this->_db->query($query)) !== false) {
-                    $result = $result->fetchAll(PDO::FETCH_ASSOC);
+                    $recordSet = $result->fetchAll(PDO::FETCH_ASSOC);
+
                 } else {
                     $error = $this->_db->errorInfo();
                     return PEAR::raiseError('PDO error: ' .
@@ -312,15 +333,6 @@ class Structures_DataGrid_DataSource_SQLQuery
                 break;
             default:
                 return PEAR::raiseError('Invalid value for "backend" option.');
-        }
-
-        $recordSet = array();
-
-        // Fetch the data
-        if (!empty($result)) {
-            foreach ($result as $row) {
-                $recordSet[] = $row;
-            }
         }
 
         // Determine fields to render
