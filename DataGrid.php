@@ -1397,7 +1397,21 @@ class Structures_DataGrid
             // DBQuery / MDB2
             case is_string($source) &&
                 preg_match('#SELECT\s.+\sFROM#is', $source) === 1:
-                return 'SQLQuery';
+                if (version_compare(phpversion(), '5.0.0', '<')) {  // PHP 4
+                    if (   array_key_exists('dbc', $options)
+                        && is_subclass_of($options['dbc'], 'db_common')
+                       ) {
+                        return 'DBQuery';
+                    }
+                    return 'MDB2';
+                } else {  // PHP 5
+                    if (    array_key_exists('dsn', $options)
+                        && !array_key_exists('backend', $options)
+                       ) {  // detect MDB2 driver for BC reasons here
+                        return 'MDB2';
+                    }
+                    return 'SQLQuery';
+                }
                 break;
 
             // DB_Table
