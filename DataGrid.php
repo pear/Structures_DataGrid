@@ -1124,7 +1124,7 @@ class Structures_DataGrid
      * Bind an already instantiated DataSource driver
      *
      * @access  public
-     * @param   mixed   $source     The data source driver object
+     * @param   mixed   &$source    The data source driver object
      * @return  mixed               True if successful, otherwise PEAR_Error
      */
     function bindDataSource(&$source)
