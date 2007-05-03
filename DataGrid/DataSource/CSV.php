@@ -162,7 +162,7 @@ class Structures_DataGrid_DataSource_CSV extends
     function _parseRow($row)
     {
         $delimiter = $this->_options['delimiter'];
-        if (in_array($delim, array(',', '|'))) {
+        if (in_array($delimiter, array(',', '|'))) {
             $delimiter = '\\' . $delimiter;
         }
         $regexp = "/{$delimiter}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))/";
