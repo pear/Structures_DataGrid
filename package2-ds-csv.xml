@@ -26,10 +26,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-12-16</date>
- <time>17:00:00</time>
+ <date>2007-05-??</date>
+ <time>??</time>
  <version>
-  <release>0.1.4</release>
+  <release>0.1.5</release>
   <api>0.1.1</api>
  </version>
  <stability>
@@ -38,7 +38,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- this package is now licensed under the New BSD license
+- Bug #10911: CSV parser failed on fields contained the delimiter character
+  (thanks to Dave Greco)
  </notes>
  <contents>
   <dir name="/">
@@ -52,10 +53,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <dependencies>
   <required>
    <php>
-    <min>4.2</min>
+    <min>4.3</min>
    </php>
    <pearinstaller>
-    <min>1.4.9</min>
+    <min>1.5.0</min>
    </pearinstaller>
    <package>
     <name>Structures_DataGrid</name>

@@ -100,7 +100,7 @@ class Structures_DataGrid_DataSource_CSV extends
         // if the options say that there is a header row, use the contents of it
         // as the column names
         if ($this->_options['header']) {
-            $keys = explode($this->_options['delimiter'], rtrim($rowList[0]));
+            $keys = $this->_parseRow($rowList[0]);
             unset($rowList[0]);
         } else {
             $keys = null;
@@ -116,12 +116,12 @@ class Structures_DataGrid_DataSource_CSV extends
             $row = rtrim($row); // to remove DOSish \r
             if (!empty($row)) {
                 if (empty($keys)) {
-                    $rowArray = explode($this->_options['delimiter'], $row);
+                    $rowArray = $this->_parseRow($row);
                     $this->_ar[] = $rowArray;
                     $maxkeys = max($maxkeys, count($rowArray));
                 } else {
                     $rowAssoc = array();
-                    $rowArray = explode($this->_options['delimiter'], $row);
+                    $rowArray = $this->_parseRow($row);
                     foreach ($rowArray as $index => $val) {
                         if (!empty($keys[$index])) {
                             $rowAssoc[$keys[$index]] = $val;
@@ -151,6 +151,25 @@ class Structures_DataGrid_DataSource_CSV extends
 
         return true;
     }
+
+    /**
+     * Parse a row that contains CSV data
+     *
+     * @param   string   $row   A string that contains CSV data
+     * @access  public
+     * @return  array           The splitted CSV data as an array
+     */    
+    function _parseRow($row)
+    {
+        $delimiter = $this->_options['delimiter'];
+        if (in_array($delim, array(',', '|'))) {
+            $delimiter = '\\' . $delimiter;
+        }
+        $regexp = "/{$delimiter}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))/";
+        $results = preg_split($regexp, $row);
+        return preg_replace('/^"(.*)"$/', '$1', $results);
+    }
+
 }
 
 /* vim: set expandtab tabstop=4 shiftwidth=4: */
