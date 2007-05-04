@@ -26,10 +26,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2007-05-??</date>
- <time>??</time>
+ <date>2007-05-04</date>
+ <time>22:20:00</time>
  <version>
-  <release>0.1.5</release>
+  <release>0.1.6</release>
   <api>0.1.1</api>
  </version>
  <stability>
@@ -46,8 +46,11 @@ http://pear.php.net/dtd/package-2.0.xsd">
    <dir name="DataGrid">
     <dir name="DataSource">
      <file baseinstalldir="Structures" name="CSV.php" role="php" />
-    </dir> <!-- //DataGrid/DataSource -->
-   </dir> <!-- //DataGrid -->
+    </dir> <!-- /DataGrid/DataSource -->
+   </dir> <!-- /DataGrid -->
+   <dir name="tests">
+    <file baseinstalldir="Structures" name="bug10911.phpt" role="test" />
+   </dir> <!-- /tests -->
   </dir> <!-- / -->
  </contents>
  <dependencies>
