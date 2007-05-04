@@ -161,37 +161,13 @@ class Structures_DataGrid_DataSource_CSV extends
      */    
     function _parseRow($row)
     {
-        $retval = $matches = array();
-
-        $separator = $this->_options['delimiter'];
-        $_separator = preg_quote($separator, '/');
-        $expr = "/{$_separator}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))/";
-        $matches = preg_split($expr, $row);
-
-        foreach ( $matches as $str ) {
-            $len = strlen($str);
-
-            if ($len > 1 && $str{0} == '"' && $str{$len - 1} == '"' ) {
-                $str = trim($str);
-                $str = substr($str, 1, $len-2);
-            }
-          
-            if ( strstr($str, '"') ) {
-                $str = trim($str);
-                $len = strlen($str);            
-                if ($len > 1 && $str{0} == '"' && $str{$len - 1} == '"' )
-                     $str = substr($str, 1, $len-2);
-            }
-          
-            if ( $str{0} == '"' && strstr(substr(trim($str),0,-2), '"') ) {
-                $str = str_replace('\"', '', $str);
-                $str = str_replace('"', '', $str);
-            }
-              
-            $retval[] = $str;
+        $delimiter = $this->_options['delimiter'];
+        if (in_array($delimiter, array(',', '|'))) {
+            $delimiter = '\\' . $delimiter;
         }
-
-        return $retval;
+        $regexp = "/{$delimiter}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))/";
+        $results = preg_split($regexp, $row);
+        return preg_replace('/^"(.*)"$/', '$1', $results);
     }
 
 }
