@@ -2,38 +2,38 @@
 various Structures_DataGrid_DataSource_CSV functionality tests
 --FILE--
 <?php
-	$list = array(
-		'aaa,bbb',
-		'aaa,"bbb"',
-		'"aaa","bbb"',
-		'aaa,bbb',
-		'"aaa",bbb',
-		'"aaa",   "bbb"',
-		',',
-		'aaa,',
-		',"aaa"',
-		'"",""',
-		'"\\"","aaa"',
-		'"""""",',
+    $list = array(
+        'aaa,bbb',
+        'aaa,"bbb"',
+        '"aaa","bbb"',
+        'aaa,bbb',
+        '"aaa",bbb',
+        '"aaa",   "bbb"',
+        ',',
+        'aaa,',
+        ',"aaa"',
+        '"",""',
+        '"\\"","aaa"',
+        '"""""",',
 #       '""""",aaa',
 #       '"\\""",aaa',
 #       'aaa,"\\"bbb,ccc',
-		'aaa,bbb   ',
-		'aaa,"bbb   "',
-		'aaa"aaa","bbb"bbb',
-		'aaa"aaa""",bbb',
-		'aaa"\\"a","bbb"'
-	);
+        'aaa,bbb   ',
+        'aaa,"bbb   "',
+        'aaa"aaa","bbb"bbb',
+        'aaa"aaa""",bbb',
+        'aaa"\\"a","bbb"'
+    );
 
     require_once "Structures/DataGrid/DataSource/CSV.php";
 
-	foreach ($list as $v) {
+    foreach ($list as $v) {
         $datasource = new Structures_DataGrid_DataSource_CSV();
         $datasource->bind($v);
         $data = $datasource->fetch();
         $row = @$data[0];
         var_dump($row);
-	}
+    }
 ?>
 --EXPECT--
 array(2) {
