@@ -15,9 +15,9 @@ various Structures_DataGrid_DataSource_CSV functionality tests
         '"",""',
         '"\\"","aaa"',
         '"""""",',
-#       '""""",aaa',
-#       '"\\""",aaa',
-#       'aaa,"\\"bbb,ccc',
+        '""""",aaa',
+        '"\\""",aaa',
+        'aaa,"\\"bbb,ccc',
         'aaa,bbb   ',
         'aaa,"bbb   "',
         'aaa"aaa","bbb"bbb',
@@ -29,7 +29,7 @@ various Structures_DataGrid_DataSource_CSV functionality tests
 
     foreach ($list as $v) {
         $datasource = new Structures_DataGrid_DataSource_CSV();
-        $datasource->bind($v);
+        $datasource->bind($v . "\n");
         $data = $datasource->fetch();
         $row = @$data[0];
         var_dump($row);
