@@ -54,6 +54,7 @@ require_once 'Structures/DataGrid/DataSource/Array.php';
  * SUPPORTED OPTIONS:
  *
  * - delimiter:  (string)  Field delimiter
+ * - enclosure:  (string)  Field enclosure
  * - header:     (bool)    Whether the CSV file (or string) contains a header row
  * 
  * @version  $Revision$
@@ -71,6 +72,7 @@ class Structures_DataGrid_DataSource_CSV extends
     {
         parent::Structures_DataGrid_DataSource_Array();
         $this->_addDefaultOptions(array('delimiter' => ',',
+                                        'enclosure' => '"',
                                         'header'    => false));
     }
 
@@ -90,18 +92,32 @@ class Structures_DataGrid_DataSource_CSV extends
         
         if (strlen($csv) < 256 && @is_file($csv)) {
             // TODO: do not read the whole file at once
-            if (!$rowList = file($csv)) {
+            $fp = fopen($csv, 'r');
+            if (!$fp) {
                 return PEAR::raiseError('Could not read file');
             }
+            $length = filesize($csv);
         } else {
-            $rowList = explode("\n", $csv);
+            include_once 'Structures/DataGrid/DataSource/CSV/Stream.php';
+            if (!stream_wrapper_register('csvstream',
+                                         'Structures_DataGrid_DataSource_CSV_Stream')
+               ) {
+                return PEAR::raiseError('Could not register stream wrapper');
+            }
+            $fp = fopen('csvstream://', 'r+');
+            if (!$fp) {
+                return PEAR::raiseError('Could not read from stream');
+            }
+            fwrite($fp, $csv);
+            rewind($fp);
+            $length = strlen($csv);
         }
 
         // if the options say that there is a header row, use the contents of it
         // as the column names
         if ($this->_options['header']) {
-            $keys = $this->_parseRow($rowList[0]);
-            unset($rowList[0]);
+            $keys = fgetcsv($fp, $length, $this->_options['delimiter'],
+                            $this->_options['enclosure']);
         } else {
             $keys = null;
         }
@@ -112,34 +128,30 @@ class Structures_DataGrid_DataSource_CSV extends
         // helper variable for the case that we have a file without a header row
         $maxkeys = 0;
 
-        foreach ($rowList as $row) {
-            $row = rtrim($row); // to remove DOSish \r
-            if (!empty($row)) {
-                if (empty($keys)) {
-                    $rowArray = $this->_parseRow($row);
-                    $this->_ar[] = $rowArray;
-                    $maxkeys = max($maxkeys, count($rowArray));
-                } else {
-                    $rowAssoc = array();
-                    $rowArray = $this->_parseRow($row);
-                    foreach ($rowArray as $index => $val) {
-                        if (!empty($keys[$index])) {
-                            $rowAssoc[$keys[$index]] = $val;
-                        } else {
-                            // there are more fields than we have column names
-                            // from the header of the CSV file => we need to use
-                            // the numeric index.
-                            if (!in_array($index, $fields, true)) {
-                                $fields[] = $index;
-                            }
-                            $rowAssoc[$index] = $val;
+        while ($row = fgetcsv($fp, $length, $this->_options['delimiter'],
+                              $this->_options['enclosure'])) {
+            if (empty($keys)) {
+                $this->_ar[] = $row;
+                $maxkeys = max($maxkeys, count($row));
+            } else {
+                $rowAssoc = array();
+                foreach ($row as $index => $val) {
+                    if (!empty($keys[$index])) {
+                        $rowAssoc[$keys[$index]] = $val;
+                    } else {
+                        // there are more fields than we have column names
+                        // from the header of the CSV file => we need to use
+                        // the numeric index.
+                        if (!in_array($index, $fields, true)) {
+                            $fields[] = $index;
                         }
+                        $rowAssoc[$index] = $val;
                     }
-                    $this->_ar[] = $rowAssoc;
                 }
+                $this->_ar[] = $rowAssoc;
             }
         }
-        
+
         // set field names if they were not set as an option
         if (!$this->_options['fields']) {
             if (empty($keys)) {
@@ -150,24 +162,6 @@ class Structures_DataGrid_DataSource_CSV extends
         }
 
         return true;
-    }
-
-    /**
-     * Parse a row that contains CSV data
-     *
-     * @param   string   $row   A string that contains CSV data
-     * @access  public
-     * @return  array           The splitted CSV data as an array
-     */    
-    function _parseRow($row)
-    {
-        $delimiter = $this->_options['delimiter'];
-        if (in_array($delimiter, array(',', '|'))) {
-            $delimiter = '\\' . $delimiter;
-        }
-        $regexp = "/{$delimiter}(?=(?:[^\"]*\"[^\"]*\")*(?![^\"]*\"))/";
-        $results = preg_split($regexp, $row);
-        return preg_replace('/^"(.*)"$/', '$1', $results);
     }
 
 }
