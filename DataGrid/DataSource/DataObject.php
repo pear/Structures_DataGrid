@@ -69,7 +69,6 @@ require_once 'Structures/DataGrid/DataSource.php';
  *                               might be heavy.
  *                               If false: perform a smart count query with 
  *                               DB_DataObject::count().
- *                               (default: false)
  * 
  * @version  $Revision$
  * @author   Olivier Guilyardi <olivier@samalyse.com>
@@ -204,7 +203,6 @@ class Structures_DataGrid_DataSource_DataObject
     {
         // Check to see if Query has already been submitted
         if ($this->_dataobject->getDatabaseResult()) {
-            echo "OOOOOOOOOOOO";
             $this->_rowNum = $this->_dataobject->N;
         } else {
             // Caching the number of rows
