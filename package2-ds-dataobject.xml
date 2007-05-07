@@ -9,22 +9,22 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <description>This is a DataSource driver for Structures_DataGrid using PEAR::DB_DataObject.
  </description>
  <lead>
-  <name>Andrew S. Nagy</name>
-  <user>asnagy</user>
-  <email>asnagy@webitecture.org</email>
-  <active>no</active>
- </lead>
- <lead>
   <name>Olivier Guilyardi</name>
   <user>olivierg</user>
   <email>olivier@samalyse.com</email>
   <active>yes</active>
  </lead>
- <date>?</date>
- <time>?</time>
+ <lead>
+  <name>Andrew S. Nagy</name>
+  <user>asnagy</user>
+  <email>asnagy@webitecture.org</email>
+  <active>no</active>
+ </lead>
+ <date>2007-05-07</date>
+ <time>22:30:00</time>
  <version>
   <release>0.1.2</release>
-  <api>0.1.0</api>
+  <api>0.1.1</api>
  </version>
  <stability>
   <release>beta</release>
@@ -34,10 +34,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <notes>
 - Bug #8106: optimized data fetching loop
   (thanks to Michel D'HOOGE, michel dot dhooge at gmail dot com)
-- Bug #10778: added the "raw_count" option for counting grouped records
-  (thanks to Alex Desktop, alexor_patator at yahoo dot fr)
 - Bug #10137: fix "assign by reference" warning
   (thanks to Sascha Grossenbacher, berdir at php dot net) 
+- Bug #10778: added the "raw_count" option for counting grouped records
+  (thanks to Alex Desktop, alexor_patator at yahoo dot fr)
  </notes>
  <contents>
   <dir name="/">
