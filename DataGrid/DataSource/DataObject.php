@@ -337,7 +337,7 @@ class Structures_DataGrid_DataSource_DataObject
      */
     function sort($sortSpec, $sortDir = null)
     {
-        $db =& $this->_dataobject->getDatabaseConnection();
+        $db = $this->_dataobject->getDatabaseConnection();
 
         if (is_array($sortSpec)) {
             foreach ($sortSpec as $field => $direction) {
