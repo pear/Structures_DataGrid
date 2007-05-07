@@ -34,6 +34,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <notes>
 - Bug #8106: optimized data fetching loop
   (thanks to Michel D'HOOGE, michel dot dhooge at gmail dot com)
+- Bug #10778: added the "raw_count" option for counting grouped records
+  (thanks to Alex Desktop, alexor_patator at yahoo dot fr)
  </notes>
  <contents>
   <dir name="/">

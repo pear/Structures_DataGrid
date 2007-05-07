@@ -63,6 +63,13 @@ require_once 'Structures/DataGrid/DataSource.php';
  *                               contain the same kind of information as the
  *                               'fields' option. If the 'fields' option is set,
  *                               this one will not be used.
+ * - raw_count:        (bool)    If true: query all the records in order to
+ *                               count them. This is needed when records are 
+ *                               grouped (GROUP BY, DISTINCT, etc..), but
+ *                               might be heavy.
+ *                               If false: perform a smart count query with 
+ *                               DB_DataObject::count().
+ *                               (default: false)
  * 
  * @version  $Revision$
  * @author   Olivier Guilyardi <olivier@samalyse.com>
@@ -108,7 +115,8 @@ class Structures_DataGrid_DataSource_DataObject
                     'labels_property' => 'fb_fieldLabels',
                     'fields_property' => 'fb_fieldsToRender',
                     'sort_property' => 'fb_linkOrderFields',
-                    'formbuilder_integration' => false));
+                    'formbuilder_integration' => false,
+                    'raw_count' => false));
        
         $this->_setFeatures(array('multiSort' => true));
     }
@@ -195,7 +203,8 @@ class Structures_DataGrid_DataSource_DataObject
     function &fetch($offset = 0, $len = null)
     {
         // Check to see if Query has already been submitted
-        if ($this->_dataobject->_DB_resultid != '') {
+        if ($this->_dataobject->getDatabaseResult()) {
+            echo "OOOOOOOOOOOO";
             $this->_rowNum = $this->_dataobject->N;
         } else {
             // Caching the number of rows
@@ -294,10 +303,21 @@ class Structures_DataGrid_DataSource_DataObject
             if ($this->_dataobject->N) {
                 $this->_rowNum = $this->_dataobject->N;
             } else {
-                $test = $this->_dataobject->count();
-                if ($test === false) {
-                    return PEAR::raiseError('Can\'t count the number of rows');
+                if ($this->_options['raw_count']) {
+                    $clone = clone($this->_dataobject);
+                    $clone->orderBy(); // Clear unneeded ordering
+                    $test = $clone->find();
+                    if (!is_numeric($test)) {
+                        return PEAR::raiseError('Can\'t count the number of rows');
+                    }
+                    $clone->free();
+                } else {
+                    $test = $this->_dataobject->count();
+                    if ($test === false) {
+                        return PEAR::raiseError('Can\'t count the number of rows');
+                    }
                 }
+
                 $this->_rowNum = $test;
             }
         }
@@ -350,6 +370,34 @@ class Structures_DataGrid_DataSource_DataObject
         
     }
 
+}
+
+/*
+ * clone() replacement, (partly) by Aidan Lister <aidan@php.net>
+ * borrowed from PHP_Compat 1.5.0
+ */
+if ((version_compare(phpversion(), '5.0') === -1) && !function_exists('clone')) {
+    // Needs to be wrapped in eval as clone is a keyword in PHP5
+    eval('
+        function clone($object)
+        {
+            // Sanity check
+            if (!is_object($object)) {
+                user_error(\'clone() __clone method called on non-object\', E_USER_WARNING);
+                return;
+            }
+    
+            // Use serialize/unserialize trick to deep copy the object
+            $object = unserialize(serialize($object));
+
+            // If there is a __clone method call it on the "new" class
+            if (method_exists($object, \'__clone\')) {
+                $object->__clone();
+            }
+            
+            return $object;
+        }
+    ');
 }
 
 /* vim: set expandtab tabstop=4 shiftwidth=4: */
