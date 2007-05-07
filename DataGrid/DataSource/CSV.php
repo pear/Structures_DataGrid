@@ -99,10 +99,11 @@ class Structures_DataGrid_DataSource_CSV extends
             $length = filesize($csv);
         } else {
             include_once 'Structures/DataGrid/DataSource/CSV/Stream.php';
-            if (!stream_wrapper_register('csvstream',
-                                         'Structures_DataGrid_DataSource_CSV_Stream')
-               ) {
-                return PEAR::raiseError('Could not register stream wrapper');
+            if (!in_array('csvstream', stream_get_wrappers())) {
+                if (!stream_wrapper_register('csvstream',
+                        'Structures_DataGrid_DataSource_CSV_Stream')) {
+                    return PEAR::raiseError('Could not register stream wrapper');
+                }
             }
             $fp = fopen('csvstream://', 'r+');
             if (!$fp) {
