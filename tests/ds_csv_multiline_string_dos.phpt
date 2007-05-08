@@ -1,5 +1,5 @@
 --TEST--
-various Structures_DataGrid_DataSource_CSV functionality tests
+Structures_DataGrid_DataSource_CSV: multi-line (DOS) string parsing test 
 --FILE--
 <?php
     $list = array(
@@ -27,11 +27,12 @@ various Structures_DataGrid_DataSource_CSV functionality tests
 
     require_once "Structures/DataGrid/DataSource/CSV.php";
 
-    foreach ($list as $v) {
-        $datasource = new Structures_DataGrid_DataSource_CSV();
-        $datasource->bind($v . "\n");
-        $data = $datasource->fetch();
-        $row = @$data[0];
+    $csv = join("\r\n", $list);
+    $datasource = new Structures_DataGrid_DataSource_CSV();
+    $datasource->bind($csv . "\n");
+    $data = $datasource->fetch();
+
+    foreach ($data as $row) {
         var_dump($row);
     }
 ?>

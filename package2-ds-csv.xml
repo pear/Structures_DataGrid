@@ -54,7 +54,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
     </dir> <!-- /DataGrid/DataSource -->
    </dir> <!-- /DataGrid -->
    <dir name="tests">
-    <file baseinstalldir="Structures" name="bug10911.phpt" role="test" />
+    <file baseinstalldir="Structures" name="ds_csv_strings.phpt" role="test" />
+    <file baseinstalldir="Structures" name="ds_csv_multiline_string.phpt" role="test" />
+    <file baseinstalldir="Structures" name="ds_csv_multiline_string_dos.phpt" role="test" />
+    <file baseinstalldir="Structures" name="ds_csv_file.phpt" role="test" />
    </dir> <!-- /tests -->
   </dir> <!-- / -->
  </contents>
