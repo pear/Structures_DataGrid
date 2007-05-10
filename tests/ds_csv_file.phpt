@@ -28,19 +28,15 @@ Structures_DataGrid_DataSource_CSV: file parsing test
     require_once "Structures/DataGrid/DataSource/CSV.php";
 
     $filename = str_replace('.php', '.csv', __FILE__);
-    $fp = fopen($filename, 'w');
     foreach ($list as $line) {
+        $fp = fopen($filename, 'wt');
         fwrite($fp, "$line\n");
+        fclose($fp);
+        $datasource = new Structures_DataGrid_DataSource_CSV();
+        $datasource->bind($filename);
+        $data = $datasource->fetch();
+        var_dump($data[0]);
     }
-    fclose($fp);
-    $datasource = new Structures_DataGrid_DataSource_CSV();
-    $datasource->bind($filename);
-    $data = $datasource->fetch();
-
-    foreach ($data as $row) {
-        var_dump($row);
-    }
-
 ?>
 --EXPECT--
 array(2) {
