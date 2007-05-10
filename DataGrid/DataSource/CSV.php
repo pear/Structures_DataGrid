@@ -96,6 +96,7 @@ class Structures_DataGrid_DataSource_CSV extends
             if (!$fp) {
                 return PEAR::raiseError('Could not read file');
             }
+            clearstatcache();
             $length = filesize($csv);
         } else {
             if (!class_exists('Structures_DataGrid_DataSource_CSV_Stream')) {
