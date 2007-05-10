@@ -92,7 +92,7 @@ class Structures_DataGrid_DataSource_CSV extends
         
         if (strlen($csv) < 256 && @is_file($csv)) {
             // TODO: do not read the whole file at once
-            $fp = fopen($csv, 'r');
+            $fp = fopen($csv, 'rb');
             if (!$fp) {
                 return PEAR::raiseError('Could not read file');
             }

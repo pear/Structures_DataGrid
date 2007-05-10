@@ -29,7 +29,7 @@ Structures_DataGrid_DataSource_CSV: file parsing test
 
     $filename = str_replace('.php', '.csv', __FILE__);
     foreach ($list as $line) {
-        $fp = fopen($filename, 'wt');
+        $fp = fopen($filename, 'wb');
         fwrite($fp, "$line\n");
         fclose($fp);
         $datasource = new Structures_DataGrid_DataSource_CSV();
