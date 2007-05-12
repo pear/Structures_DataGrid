@@ -58,20 +58,58 @@
  */
 class Structures_DataGrid_DataSource_CSV_Stream
 {
+    /**
+     * The current position in the stream
+     *
+     * @var integer
+     * @access private
+     */
     var $position;
+
+    /**
+     * A string holding the stream data
+     *
+     * @var string
+     * @access private
+     */
     var $varname;
+
+    /**
+     * This method is called immediately after the stream object is created.
+     *
+     * @param string    $path           Path (not used)
+     * @param string    $mode           Mode (fopen(), not used)
+     * @param integer   $options        Options (not used)
+     * @param string    $opened_path    The opened path (not used)
+     * @return boolean                  true on success, false on error
+     */
     function stream_open($path, $mode, $options, &$opened_path)
     {
         $this->varname = '';
         $this->position = 0;
         return true;
     }
+
+    /**
+     * This method is called in response to fread() and fgets() calls on the
+     * stream. 
+     *
+     * @param integer   $count          The number of bytes that should be read
+     * @return string                   The data that was read
+     */
     function stream_read($count)
     {
         $ret = substr($this->varname, $this->position, $count);
         $this->position += strlen($ret);
         return $ret;
     }
+
+    /**
+     * This method is called in response to fwrite() calls on the stream. 
+     *
+     * @param integer   $data           The data string that should be stored
+     * @return string                   The number of bytes that was written
+     */
     function stream_write($data)
     {
         $left = substr($this->varname, 0, $this->position);
@@ -80,14 +118,39 @@ class Structures_DataGrid_DataSource_CSV_Stream
         $this->position += strlen($data);
         return strlen($data);
     }
+
+    /**
+     * This method is called in response to feof() calls on the stream.
+     *
+     * @return boolean                  Whether the read/write position is at
+     *                                  the end of the stream 
+     */
     function stream_eof()
     {
         return $this->position >= strlen($this->varname);
     }
+
+    /**
+     * This method is called in response to ftell() calls on the stream.
+     *
+     * @return integer                  The current read/write position of the
+     *                                  stream
+     */
     function stream_tell()
     {
         return $this->position;
     }
+
+    /**
+     * This method is called in response to fseek() calls on the stream.
+     *
+     * @param integer $offset           Offset of the new position, added to the
+     *                                  $whence position
+     * @param integer $whence           Start position; one of: SEEK_SET,
+     *                                  SEEK_CUR, SEEK_END
+     * @return boolean                  true if position was changed, false if
+     *                                  position could not be changed
+     */
     function stream_seek($offset, $whence)
     {
         switch ($whence) {
