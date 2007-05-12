@@ -99,14 +99,14 @@ class Structures_DataGrid_DataSource_CSV extends
             clearstatcache();
             $length = filesize($csv);
         } else {
-            if (!class_exists('Structures_DataGrid_DataSource_CSV_Stream')) {
-                include_once 'Structures/DataGrid/DataSource/CSV/Stream.php';
-                if (!stream_wrapper_register('csvstream',
-                        'Structures_DataGrid_DataSource_CSV_Stream')) {
+            if (!Structures_DataGrid_DataSource_CSV_Memory::initialize(true)) {
+                if (!stream_wrapper_register('structuresDatagridDatasourceCsvMemory',
+                        'Structures_DataGrid_DataSource_CSV_Memory')) {
                     return PEAR::raiseError('Could not register stream wrapper');
                 }
+                Structures_DataGrid_DataSource_CSV_Memory::initialize();
             }
-            $fp = fopen('csvstream://', 'r+');
+            $fp = fopen('structuresDatagridDatasourceCsvMemory://', 'r+');
             if (!$fp) {
                 return PEAR::raiseError('Could not read from stream');
             }
@@ -166,6 +166,161 @@ class Structures_DataGrid_DataSource_CSV extends
         return true;
     }
 
+}
+
+/**
+ * Stream wrapper for CSV DataSource driver
+ *
+ * This class is a stream wrapper for CSV data.
+ *
+ * @version  $Revision$
+ * @author   Mark Wiesemann <wiesemann@php.net>
+ * @access   public
+ * @package  Structures_DataGrid_DataSource_CSV
+ * @category Structures
+ */
+class Structures_DataGrid_DataSource_CSV_Memory
+{
+    /**
+     * The current position in the stream
+     *
+     * @var integer
+     * @access private
+     */
+    var $_position;
+
+    /**
+     * A string holding the stream data
+     *
+     * @var string
+     * @access private
+     */
+    var $_varname;
+
+    /**
+     * This method is called immediately after the stream object is created.
+     *
+     * @param string    $path           Path (not used)
+     * @param string    $mode           Mode (fopen(), not used)
+     * @param integer   $options        Options (not used)
+     * @param string    $opened_path    The opened path (not used)
+     * @return boolean                  true on success, false on error
+     */
+    function stream_open($path, $mode, $options, &$opened_path)
+    {
+        $this->_varname = '';
+        $this->_position = 0;
+        return true;
+    }
+
+    /**
+     * This method is called in response to fread() and fgets() calls on the
+     * stream. 
+     *
+     * @param integer   $count          The number of bytes that should be read
+     * @return string                   The data that was read
+     */
+    function stream_read($count)
+    {
+        $ret = substr($this->_varname, $this->_position, $count);
+        $this->_position += strlen($ret);
+        return $ret;
+    }
+
+    /**
+     * This method is called in response to fwrite() calls on the stream. 
+     *
+     * @param integer   $data           The data string that should be stored
+     * @return string                   The number of bytes that was written
+     */
+    function stream_write($data)
+    {
+        $left = substr($this->_varname, 0, $this->_position);
+        $right = substr($this->_varname, $this->_position + strlen($data));
+        $this->_varname = $left . $data . $right;
+        $this->_position += strlen($data);
+        return strlen($data);
+    }
+
+    /**
+     * This method is called in response to feof() calls on the stream.
+     *
+     * @return boolean                  Whether the read/write position is at
+     *                                  the end of the stream 
+     */
+    function stream_eof()
+    {
+        return $this->_position >= strlen($this->_varname);
+    }
+
+    /**
+     * This method is called in response to ftell() calls on the stream.
+     *
+     * @return integer                  The current read/write position of the
+     *                                  stream
+     */
+    function stream_tell()
+    {
+        return $this->_position;
+    }
+
+    /**
+     * This method is called in response to fseek() calls on the stream.
+     *
+     * @param integer $offset           Offset of the new position, added to the
+     *                                  $whence position
+     * @param integer $whence           Start position; one of: SEEK_SET,
+     *                                  SEEK_CUR, SEEK_END
+     * @return boolean                  true if position was changed, false if
+     *                                  position could not be changed
+     */
+    function stream_seek($offset, $whence)
+    {
+        switch ($whence) {
+            case SEEK_SET:
+                if ($offset < strlen($this->_varname) && $offset >= 0) {
+                     $this->_position = $offset;
+                     return true;
+                } else {
+                     return false;
+                }
+                break;
+            case SEEK_CUR:
+                if ($offset >= 0) {
+                     $this->_position += $offset;
+                     return true;
+                } else {
+                     return false;
+                }
+                break;
+            case SEEK_END:
+                if (strlen($this->_varname) + $offset >= 0) {
+                     $this->_position = strlen($this->_varname) + $offset;
+                     return true;
+                } else {
+                     return false;
+                }
+                break;
+            default:
+                return false;
+        }
+    }
+
+    /**
+     * PHP 4 workaround to indicate whether the class was already initialized
+     * or not.
+     *
+     * @param boolean $checkOnly        Whether the status should only be
+     *                                  checked.
+     * @return mixed                    void or boolean
+     */
+    function initialize($checkOnly = false) {
+        static $initialized = false;
+        if ($checkOnly) {
+            return $initialized;
+        }
+        $initialized = true;
+    } 
 }
 
 /* vim: set expandtab tabstop=4 shiftwidth=4: */
