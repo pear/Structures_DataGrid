@@ -100,7 +100,8 @@ class Structures_DataGrid_DataSource_CSV extends
             $length = filesize($csv);
         } else {
             if (!Structures_DataGrid_DataSource_CSV_Memory::initialize(true)) {
-                if (!stream_wrapper_register('structures-datagrid-datasource-csv-memory',
+                if (!stream_wrapper_register(
+                        'structures-datagrid-datasource-csv-memory',
                         'Structures_DataGrid_DataSource_CSV_Memory')) {
                     return PEAR::raiseError('Could not register stream wrapper');
                 }
