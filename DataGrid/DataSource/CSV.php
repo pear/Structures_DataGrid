@@ -100,13 +100,13 @@ class Structures_DataGrid_DataSource_CSV extends
             $length = filesize($csv);
         } else {
             if (!Structures_DataGrid_DataSource_CSV_Memory::initialize(true)) {
-                if (!stream_wrapper_register('structuresDatagridDatasourceCsvMemory',
+                if (!stream_wrapper_register('structures-datagrid-datasource-csv-memory',
                         'Structures_DataGrid_DataSource_CSV_Memory')) {
                     return PEAR::raiseError('Could not register stream wrapper');
                 }
                 Structures_DataGrid_DataSource_CSV_Memory::initialize();
             }
-            $fp = fopen('structuresDatagridDatasourceCsvMemory://', 'r+');
+            $fp = fopen('structures-datagrid-datasource-csv-memory://', 'r+');
             if (!$fp) {
                 return PEAR::raiseError('Could not read from stream');
             }
