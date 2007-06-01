@@ -14,10 +14,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-12-16</date>
- <time>17:00:00</time>
+ <date>2007-06-01</date>
+ <time>18:00:00</time>
  <version>
-  <release>0.1.5</release>
+  <release>0.1.6</release>
   <api>0.1.5</api>
  </version>
  <stability>
@@ -26,11 +26,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- added insert(), update() and delete() methods
-  (not support by Structures_DataGrid until now, but they can be used by direct
-  instantiation and usage of this driver)
-- small optimizations for streaming support
-- this package is now licensed under the New BSD license
+- Security fix: users could manipulate the generated sorting queries
+  (thanks to Sascha Grossenbacher)
  </notes>
  <contents>
   <dir name="/">

@@ -197,7 +197,7 @@ class Structures_DataGrid_DataSource_DBQuery
     {
         if (!empty($this->_sortSpec)) {
             foreach ($this->_sortSpec as $field => $direction) {
-                $sortArray[] = "$field $direction";
+                $sortArray[] = $this->_db->quoteIdentifier($field) . ' ' . $direction;
             }
             $sortString = join(', ', $sortArray);
         } else {

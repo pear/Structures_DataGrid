@@ -27,10 +27,10 @@ SQL query.
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2007-04-21</date>
- <time>15:40:00</time>
+ <date>2007-06-01</date>
+ <time>18:00:00</time>
  <version>
-  <release>0.1.9</release>
+  <release>0.1.10</release>
   <api>0.1.1</api>
  </version>
  <stability>
@@ -39,8 +39,8 @@ SQL query.
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- Bug #10789: fixed regular expressions for row counting queries
-  (thanks to Ben Baumer)
+- Security fix: users could manipulate the generated sorting queries
+  (thanks to Sascha Grossenbacher)
  </notes>
  <contents>
   <dir name="/">
