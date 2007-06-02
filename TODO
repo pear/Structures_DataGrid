@@ -24,11 +24,14 @@ if Column::orderBy is an SQL expression then it does not make sense for
 this expression to make the trip to and back from the browser. Let's
 the take the following example :
 
-$column->setOrderBy("IF(LOCATE('foo',bar),1,0)");
+$column->setOrderBy("REPLACE(title, '\"', '')");
+
+A such expression allows to sort titles properly, whether they start by 
+a double-quote or not (I already needed this is in a real-world case).
 
 With the current implementation, this expression is likely to
 be printed directly into the html links, with something like :
-<a href="...?orderBy=IF%28LOCATE%28foo%2Cbar%29%2C1%2C0%29">
+<a href="...?orderBy=REPLACE%28title%2C+%27%22%27%2C+%27%27%29">
 
 It might work, but it raises a security issue, because we can't properly
 escape that string before including it into our SQL query.  In this
@@ -38,14 +41,14 @@ required to also have something set with setField()
 Example : 
 $column->setLabel("The Bar");
 $column->setField("bar");
-$column->setOrderBy("IF(LOCATE('foo',bar),1,0)");
+$column->setOrderBy("REPLACE(title, '\"', '')");
 
 Should produce links like : 
 <a href="...?orderBy=bar">
 
 And when generating SQL, this "bar" value should be mapped to the 
-orderBy value : IF(LOCATE('foo',bar),1,0)
- 
+orderBy value : SELECT ... ORDER BY REPLACE(title, '\"', '')
+
 --------------------------------------------------------------------------------
 TODO 4 - Ensure protection against SQL injection (olivierg) - Priority: Medium
 
