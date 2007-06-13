@@ -20,11 +20,11 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>asnagy@webitecture.org</email>
   <active>no</active>
  </lead>
- <date>2007-05-07</date>
- <time>22:30:00</time>
+ <date>?</date>
+ <time>?</time>
  <version>
-  <release>0.1.2</release>
-  <api>0.1.1</api>
+  <release>0.1.3</release>
+  <api>0.1.2</api>
  </version>
  <stability>
   <release>beta</release>
@@ -32,12 +32,13 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- Bug #8106: optimized data fetching loop
-  (thanks to Michel D'HOOGE, michel dot dhooge at gmail dot com)
-- Bug #10137: fix "assign by reference" warning
-  (thanks to Sascha Grossenbacher, berdir at php dot net) 
-- Bug #10778: added the "raw_count" option for counting grouped records
-  (thanks to Alex Desktop, alexor_patator at yahoo dot fr)
+- Bug #7753: better and more explicit support for fetching links, with new 
+  link_level and link_property options
+- New fields_order_property option
+- Deprecating the formbuilder_integration option, keeping BC. Same behaviour 
+  can be achieved with link_level and fields_order_property
+- Removing dependency on DB_DataObject_FormBuilder  
+- Fix reference assignment warnings under PHP 4.4
  </notes>
  <contents>
   <dir name="/">
@@ -54,26 +55,19 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <min>4.2</min>
    </php>
    <pearinstaller>
-    <min>1.4.9</min>
+    <min>1.6.0</min>
    </pearinstaller>
    <package>
     <name>Structures_DataGrid</name>
     <channel>pear.php.net</channel>
-    <min>0.7.0</min>
+    <min>0.8.3</min>
    </package>
    <package>
     <name>DB_DataObject</name>
     <channel>pear.php.net</channel>
-    <min>1.8.4</min>
+    <min>1.8.5</min>
    </package>
   </required>
-  <optional>
-   <package>
-    <name>DB_DataObject_FormBuilder</name>
-    <channel>pear.php.net</channel>
-    <min>1.0.0RC4</min>
-   </package>
-   </optional>
  </dependencies>
  <phprelease />
 </package>

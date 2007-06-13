@@ -54,15 +54,48 @@ require_once 'Structures/DataGrid/DataSource.php';
  * SUPPORTED OPTIONS:
  *
  * - labels_property:  (string)  The name of a property that you can set within
- *                               your DataObject. This property is expected to
- *                               contain the same kind of information as the
- *                               'labels' option. If the 'labels' option is set,
- *                               this one will not be used.
+ *                               your DataObject. This property should contain 
+ *                               the same kind of information as the 'labels' 
+ *                               option. If the 'labels' option is set, this 
+ *                               one will not be used.
+ *                               (default: "fb_fieldLabels")
  * - fields_property:  (string)  The name of a property that you can set within
  *                               your DataObject. This property is expected to
  *                               contain the same kind of information as the
  *                               'fields' option. If the 'fields' option is set,
  *                               this one will not be used.
+ *                               (default: "fb_fieldsToRender")
+ * - fields_order_property (string) The name of a property that you can set 
+ *                               within your DataObject. It will be used to 
+ *                               set the order in which fields are displayed, 
+ *                               as long as you're not configuring this by 
+ *                               adding/generating columns. Also requires the
+ *                               fields_property to be set. 
+ *                               (default: null)
+ * - sort_property:  (string)    The name of a property that you can set within
+ *                               your DataObject. This property should contain 
+ *                               an array of the form:
+ *                               array("field1", "field1 DESC", ...)
+ *                               If the data is already being sorted then this
+ *                               this property's content will be appended 
+ *                               to the current ordering.
+ *                               (default: "fb_linkOrderFields")
+ * - link_level:     (int)       The maximum link display level. If equal to 0
+ *                               the links will not be followed.
+ *                               (default: 0)
+ * - link_property:  (string)    The name of a property you can set within a 
+ *                               linked DataObject. This property should 
+ *                               contain a array of field names that will
+ *                               be used to display a string out of this 
+ *                               linked DataObject.
+ *                               Has no effect when link_level is 0.
+ *                               (default: "fb_linkDisplayFields")
+ * - formbuilder_integration (bool) DEPRECATED: use link_level and 
+ *                               fields_order_property instead.
+ *                               For BC, Setting this to true is equivalent to 
+ *                               setting link_level to 3 and 
+ *                               fields_order_property to 'fb_preDefOrder'.
+ *                               (default: false)
  * - raw_count:        (bool)    If true: query all the records in order to
  *                               count them. This is needed when records are 
  *                               grouped (GROUP BY, DISTINCT, etc..), but
@@ -113,7 +146,10 @@ class Structures_DataGrid_DataSource_DataObject
                     'use_private_vars' => false,
                     'labels_property' => 'fb_fieldLabels',
                     'fields_property' => 'fb_fieldsToRender',
+                    'fields_order_property' => null,
                     'sort_property' => 'fb_linkOrderFields',
+                    'link_property' => 'fb_linkDisplayFields',
+                    'link_level' => 0,
                     'formbuilder_integration' => false,
                     'raw_count' => false));
        
@@ -143,13 +179,20 @@ class Structures_DataGrid_DataSource_DataObject
             
             // Merging the fields and fields_property options
             if (!$this->_options['fields']) {
-                if ($fieldsVar = $this->_options['fields_property']
-                    and isset($this->_dataobject->$fieldsVar)) {
+                if (($fieldsVar = $this->_options['fields_property'])
+                    && isset($this->_dataobject->$fieldsVar)) {
                     $mergeOptions['fields'] = $this->_dataobject->$fieldsVar;
-                    if ($this->_options['formbuilder_integration']) {
-                        if (isset($this->_dataobject->fb_preDefOrder)) {
+
+                    $fieldsOrderProperty = $this->_options['fields_order_property'];
+                    if (is_null($fieldsOrderProperty) 
+                            && $this->_options['formbuilder_integration']) {
+                        $fieldsOrderProperty = 'fb_preDefOrder';
+                    } 
+
+                    if (!is_null($fieldsOrderProperty)) {
+                        if (isset($this->_dataobject->$fieldsOrderProperty)) {
                             $ordered = array();
-                            foreach ($this->_dataobject->fb_preDefOrder as
+                            foreach ($this->_dataobject->$fieldsOrderProperty as
                                      $orderField) {
                                 if (in_array($orderField,
                                              $mergeOptions['fields'])) {
@@ -173,9 +216,9 @@ class Structures_DataGrid_DataSource_DataObject
             }
 
             // Merging the labels and labels_property options
-            if (!$this->_options['labels'] 
-                and $labelsVar = $this->_options['labels_property']
-                and isset($this->_dataobject->$labelsVar)) {
+            if ((!$this->_options['labels']) 
+                && ($labelsVar = $this->_options['labels_property'])
+                && isset($this->_dataobject->$labelsVar)) {
                 
                 $mergeOptions['labels'] = $this->_dataobject->$labelsVar;
 
@@ -232,11 +275,12 @@ class Structures_DataGrid_DataSource_DataObject
         
         // Retrieving data
         $records = array();
+        $linkLevel = $this->_options['link_level'];
+        if (($linkLevel == 0) && $this->_options['formbuilder_integration']) {
+            $linkLevel = 3;
+        }
         if ($this->_rowNum) {
-            if ($this->_options['formbuilder_integration']) {
-                require_once('DB/DataObject/FormBuilder.php');
-                $links = $this->_dataobject->links();
-            }           
+            $links = $this->_dataobject->links();
             $initial = true;
             while ($this->_dataobject->fetch()) {
                 // Determine Fields
@@ -268,14 +312,14 @@ class Structures_DataGrid_DataSource_DataObject
                     }
                 }
                 
-                // Get Linked FormBuilder Fields
-                if ($this->_options['formbuilder_integration']) {
+                // Get Linked Fields
+                if ($linkLevel > 0) {
                     foreach (array_keys($rec) as $field) {
                         if (isset($links[$field]) &&
                             isset($this->_dataobject->$field) &&
-                            $linkedDo =& $this->_dataobject->getLink($field) &&
+                            ($linkedDo = $this->_dataobject->getLink($field)) &&
                             !PEAR::isError($linkedDo)) {
-                            $rec[$field] = DB_DataObject_FormBuilder::getDataObjectString($linkedDo);
+                            $rec[$field] =$this->_getDataObjectString($linkedDo, $linkLevel);
                         }
                     }
                 }
@@ -287,6 +331,55 @@ class Structures_DataGrid_DataSource_DataObject
         // TODO: (maybe) free the result object here
 
         return $records;
+    }
+
+    /**
+     * Represent a DataObject as a string, following links
+     *
+     * This method is a modified version of 
+     * DB_DataObject_FormBuilder::getDataObjectString()
+     *
+     * @author Justin Patrin <papercrane@reversefold.com>
+     * @author Olivier Guilyardi <olivier@samalyse.com>
+     * @param DB_DataObject $do         The dataobject to get the display value
+     *                                  for
+     * @param int           $linkLevel  Maximum link level to follow
+     * @param int           $level      The current recursion level. For 
+     *                                  internal use only.
+     * @return string                   String representing this dataobject
+     * @access public
+     */
+    function _getDataObjectString(&$do, $linkLevel = 1, $level = 1) {
+        if (!is_array($links = $do->links())) {
+            $links = array();
+        }
+
+        $linkProperty = $this->_options['link_property'];
+        if (isset($do->$linkProperty)) {
+            $displayFields = $do->$linkProperty;
+        } else {
+            $displayFields = array_keys($do->table());
+        }
+
+        $ret = '';
+        $first = true;
+        foreach ($displayFields as $field) {
+            if ($first) {
+                $first = false;
+            } else {
+                $ret .= ', ';
+            }
+            if (isset($do->$field)) {
+                if ($linkLevel > $level && isset($links[$field])) {
+                    if ($subDo = $do->getLink($field)) {
+                        $ret .= '('.$this->_getDataObjectString($subDo, $linkLevel, $level + 1).')';
+                        continue;
+                    }
+                }
+                $ret .= $do->$field;
+            }
+        }
+        return $ret;
     }
 
     /**
