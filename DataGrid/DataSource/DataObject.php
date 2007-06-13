@@ -106,7 +106,9 @@ require_once 'Structures/DataGrid/DataSource.php';
  *                               might be heavy.
  *                               If false: perform a smart count query with 
  *                               DB_DataObject::count().
- * 
+ *
+ * @example bind-dataobject.php  Bind a DB_DataObject to Structures_DataGrid
+ *
  * @version  $Revision$
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @author   Andrew Nagy <asnagy@webitecture.org>
