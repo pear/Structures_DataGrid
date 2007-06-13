@@ -53,12 +53,12 @@ require_once 'Structures/DataGrid/DataSource.php';
  *
  * SUPPORTED OPTIONS:
  *
- * - labels_property:  (string)  The name of a property that you can set within
+ * - labels_property:   (string) The name of a property that you can set within
  *                               your DataObject. This property should contain 
  *                               the same kind of information as the 'labels' 
  *                               option. If the 'labels' option is set, this 
  *                               one will not be used.
- * - fields_property:  (string)  The name of a property that you can set within
+ * - fields_property:   (string) The name of a property that you can set within
  *                               your DataObject. This property is expected to
  *                               contain the same kind of information as the
  *                               'fields' option. If the 'fields' option is set,
@@ -69,27 +69,38 @@ require_once 'Structures/DataGrid/DataSource.php';
  *                               as long as you're not configuring this by 
  *                               adding/generating columns. Also requires the
  *                               fields_property to be set. 
- * - sort_property:  (string)    The name of a property that you can set within
+ * - sort_property:     (string) The name of a property that you can set within
  *                               your DataObject. This property should contain 
  *                               an array of the form:
  *                               array("field1", "field1 DESC", ...)
  *                               If the data is already being sorted then this
  *                               this property's content will be appended 
  *                               to the current ordering.
- * - link_level:     (int)       The maximum link display level. If equal to 0
+ * - link_level:        (int)    The maximum link display level. If equal to 0
  *                               the links will not be followed.
- * - link_property:  (string)    The name of a property you can set within a 
+ * - link_property:     (string) The name of a property you can set within a 
  *                               linked DataObject. This property should 
  *                               contain a array of field names that will
  *                               be used to display a string out of this 
  *                               linked DataObject.
  *                               Has no effect when link_level is 0.
+ * - link_keep_value:   (bool)   Set this to true when you want to keep the
+ *                               original values (usually foreign keys) of  
+ *                               fields which are being replaced by their linked
+ *                               values. The record will then contain additional
+ *                               keys with "__orig" prepended. This option only
+ *                               makes sense with link_level higher than 0.
+ *                               Example: if the country_code original value
+ *                               is 'FR' and this is replaced by "France" from
+ *                               the linked country table, then setting 
+ *                               link_keep_value to true will keep the "FR" 
+ *                               value in country_code__orig.
  * - formbuilder_integration: (bool) DEPRECATED: use link_level and 
  *                               fields_order_property instead.
  *                               For BC, Setting this to true is equivalent to 
  *                               setting link_level to 3 and 
  *                               fields_order_property to 'fb_preDefOrder'.
- * - raw_count:        (bool)    If true: query all the records in order to
+ * - raw_count:         (bool)   If true: query all the records in order to
  *                               count them. This is needed when records are 
  *                               grouped (GROUP BY, DISTINCT, etc..), but
  *                               might be heavy.
@@ -143,6 +154,7 @@ class Structures_DataGrid_DataSource_DataObject
                     'sort_property' => 'fb_linkOrderFields',
                     'link_property' => 'fb_linkDisplayFields',
                     'link_level' => 0,
+                    'link_keep_value' => false,
                     'formbuilder_integration' => false,
                     'raw_count' => false));
        
@@ -312,6 +324,9 @@ class Structures_DataGrid_DataSource_DataObject
                             isset($this->_dataobject->$field) &&
                             ($linkedDo = $this->_dataobject->getLink($field)) &&
                             !PEAR::isError($linkedDo)) {
+                            if ($this->_options['link_keep_value']) {
+                                $rec["{$field}__orig"] = $rec[$field];
+                            }
                             $rec[$field] =$this->_getDataObjectString($linkedDo, $linkLevel);
                         }
                     }

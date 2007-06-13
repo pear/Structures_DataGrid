@@ -39,6 +39,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
   can be achieved with link_level and fields_order_property
 - Removing dependency on DB_DataObject_FormBuilder  
 - Fix reference assignment warnings under PHP 4.4
+- Request #10625: new link_keep_value option
  </notes>
  <contents>
   <dir name="/">
