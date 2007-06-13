@@ -555,8 +555,9 @@ function writeXMLFile($driver, $descriptions, $modes, $options, $notes, $example
         $xml .= ' <refsect1 id="' . $id . '.release">' . "\n";
         $xml .= '  <title>Availability</title>' . "\n";
         $xml .= '  <para>' . "\n";
-        $xml .= "   This driver has not yet been officially released.\n";
-        $xml .= "   It is <emphasis>only available from CVS</emphasis>.\n";
+        $xml .= "  This driver is <emphasis>experimental</emphasis>\n";
+        $xml .= "  and has not been officially released yet.\n";
+        $xml .= "  It is <emphasis>only available from CVS</emphasis>.\n";
         $xml .= '  </para>' . "\n";
         $xml .= ' </refsect1>' . "\n";
     }
