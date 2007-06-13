@@ -5,7 +5,7 @@
 error_reporting(E_ALL);
 
 if ($argc != 2) {
-    die('Missing parameter: temporary target dir' . "\n");
+    die('FATAL: Missing parameter: temporary target dir' . "\n");
 }
 
 define('PATH', '../');
@@ -87,7 +87,13 @@ function parseDirectory(&$descriptions, &$modes, &$options, &$notes, &$examples,
         if (!in_array($entry, array('.', '..', 'CVS', 'docs', 'tools'))) {
             // step recursive into subdirectories
             if (is_dir(PATH . $dir . '/' . $entry)) {
-                parseDirectory($descriptions, $modes, $options, $notes, $examples, $inheritance, $dir . '/' . $entry);
+                $current = realpath(PATH . $dir);
+                $next = realpath(PATH . $dir . '/' . $entry);
+                if (strstr($current, $next)) {
+                    echo "Detected infinite loop. SKIPPING: " . PATH . $dir . '/' . $entry . "\n";
+                } else {
+                    parseDirectory($descriptions, $modes, $options, $notes, $examples, $inheritance, $dir . '/' . $entry);
+                }
             }
             // parse the file if the extension is .php
             if (substr($entry, -4) == '.php') {
@@ -108,7 +114,12 @@ function parseFile(&$descriptions, &$modes, &$options, &$notes, &$examples, &$in
     $file = file(PATH . $filename);
 
     // get the class name and the name of the extended class
-    list($class, $extends) = getClassName($file);
+    $classSpec = getClassName($file);
+    if (!$classSpec) {
+        echo "SKIPPING\n";
+        return;
+    }
+    list($class, $extends) = $classSpec;
 
     // save the inheritance relation
     $inheritance[$class] = $extends;
@@ -158,7 +169,7 @@ function getSupportedModes($class, $filename)
         foreach ($availableRendererModes as $mode) {
             $res = preg_match('# * - ' . $mode . ': {1,10}([a-z, ]+)#i', $file, $matches);
             if ($res !== 1) {
-                die('REGEXP DID NOT MATCH FOR MODE "' . $mode . '" in file "' . $filename . '"' . "\n");
+                die('FATAL: REGEXP DID NOT MATCH FOR MODE "' . $mode . '" in file "' . $filename . '"' . "\n");
             }
             $modes[$mode] = $matches[1];
         }
@@ -334,7 +345,7 @@ function getOptions($class, $filename, $file, $descriptionsEndRow, &$optionsEndR
     // the driver has no options
     // (this should not happen => die)
     if ($endRow === false) {
-        die('END OF OPTION BLOCK NOT FOUND' . "\n");
+        die('FATAL: END OF OPTION BLOCK NOT FOUND' . "\n");
     }
 
     $optionsEndRow = $endRow;
@@ -357,11 +368,11 @@ function _getOptions($class, $filename, $file, $startRow, $endRow)
             // check whether the regular expression matched
             // (if not: die, this should not happen)
             if ($res !== 1) {
-                die('REGEXP DID NOT MATCH IN LINE ' . $i . "\n");
+                die('FATAL: REGEXP DID NOT MATCH IN LINE ' . $i . "\n");
             }
             $currOption = $matches[1];
             if (!array_key_exists($currOption, $driver->_options)) {
-                die('OPTION NOT DECLARED: ' . $currOption . "\n");
+                die('FATAL: OPTION NOT DECLARED: ' . $currOption . "\n");
             }
             $default = $driver->_options[$currOption];
             if (is_array($default)) {
@@ -489,7 +500,8 @@ function getClassName($file)
         }
         return array($class, $extends);
     }
-    die('CLASS NAME NOT FOUND' . "\n");
+    echo 'CLASS NAME NOT FOUND' . "\n";
+    return array();
 }
 
 function indentMultiLine($content, $indentStr, $indentNum)
