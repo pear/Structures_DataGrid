@@ -35,7 +35,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * CSV file id: $Id$
+ * CVS file id: $Id$
  * 
  * @version  $Revision$
  * @package  Structures_DataGrid_Renderer_Smarty
