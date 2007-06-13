@@ -58,20 +58,17 @@ require_once 'Structures/DataGrid/DataSource.php';
  *                               the same kind of information as the 'labels' 
  *                               option. If the 'labels' option is set, this 
  *                               one will not be used.
- *                               (default: "fb_fieldLabels")
  * - fields_property:  (string)  The name of a property that you can set within
  *                               your DataObject. This property is expected to
  *                               contain the same kind of information as the
  *                               'fields' option. If the 'fields' option is set,
  *                               this one will not be used.
- *                               (default: "fb_fieldsToRender")
- * - fields_order_property (string) The name of a property that you can set 
+ * - fields_order_property: (string) The name of a property that you can set 
  *                               within your DataObject. It will be used to 
  *                               set the order in which fields are displayed, 
  *                               as long as you're not configuring this by 
  *                               adding/generating columns. Also requires the
  *                               fields_property to be set. 
- *                               (default: null)
  * - sort_property:  (string)    The name of a property that you can set within
  *                               your DataObject. This property should contain 
  *                               an array of the form:
@@ -79,23 +76,19 @@ require_once 'Structures/DataGrid/DataSource.php';
  *                               If the data is already being sorted then this
  *                               this property's content will be appended 
  *                               to the current ordering.
- *                               (default: "fb_linkOrderFields")
  * - link_level:     (int)       The maximum link display level. If equal to 0
  *                               the links will not be followed.
- *                               (default: 0)
  * - link_property:  (string)    The name of a property you can set within a 
  *                               linked DataObject. This property should 
  *                               contain a array of field names that will
  *                               be used to display a string out of this 
  *                               linked DataObject.
  *                               Has no effect when link_level is 0.
- *                               (default: "fb_linkDisplayFields")
- * - formbuilder_integration (bool) DEPRECATED: use link_level and 
+ * - formbuilder_integration: (bool) DEPRECATED: use link_level and 
  *                               fields_order_property instead.
  *                               For BC, Setting this to true is equivalent to 
  *                               setting link_level to 3 and 
  *                               fields_order_property to 'fb_preDefOrder'.
- *                               (default: false)
  * - raw_count:        (bool)    If true: query all the records in order to
  *                               count them. This is needed when records are 
  *                               grouped (GROUP BY, DISTINCT, etc..), but
