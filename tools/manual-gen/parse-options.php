@@ -33,12 +33,13 @@ $options = array();
 $notes = array();
 $examples = array();
 $inheritance = array();
+$releases = array();
 
 // parse all directories whose names begin with 'Structures_DataGrid'
 $directories = scandir(PATH);
 foreach ($directories as $directory) {
     if (substr($directory, 0, 19) == 'Structures_DataGrid') {
-        parseDirectory($descriptions, $modes, $options, $notes, $examples, $inheritance, $directory);
+        parseDirectory($descriptions, $modes, $options, $notes, $examples, $inheritance, $releases, $directory);
     }
 }
 
@@ -67,7 +68,8 @@ foreach ($inheritance as $class => $extends) {
     // sort the options alphabetically
     ksort($driver_options);
     // save the options as an XML file
-    $id = writeXMLFile($orig_class, $descriptions[$orig_class], $modes[$orig_class], $driver_options, $notes[$orig_class], $examples[$orig_class]);
+    $id = writeXMLFile($orig_class, $descriptions[$orig_class], $modes[$orig_class], $driver_options, $notes[$orig_class], 
+                       $examples[$orig_class], $releases[$orig_class]);
     $ids[] = $id;
 }
 
@@ -78,7 +80,7 @@ foreach ($ids as $id) {
 }
 file_put_contents(TMP_PATH . 'ids.txt', $id_file);
 
-function parseDirectory(&$descriptions, &$modes, &$options, &$notes, &$examples, &$inheritance, $dir)
+function parseDirectory(&$descriptions, &$modes, &$options, &$notes, &$examples, &$inheritance, &$releases, $dir)
 {
     $entries = scandir(PATH . $dir);
     foreach ($entries as $entry) {
@@ -92,18 +94,18 @@ function parseDirectory(&$descriptions, &$modes, &$options, &$notes, &$examples,
                 if (strstr($current, $next)) {
                     echo "Detected infinite loop. SKIPPING: " . PATH . $dir . '/' . $entry . "\n";
                 } else {
-                    parseDirectory($descriptions, $modes, $options, $notes, $examples, $inheritance, $dir . '/' . $entry);
+                    parseDirectory($descriptions, $modes, $options, $notes, $examples, $inheritance, $releases, $dir . '/' . $entry);
                 }
             }
             // parse the file if the extension is .php
             if (substr($entry, -4) == '.php') {
-                parseFile($descriptions, $modes, $options, $notes, $examples, $inheritance, $dir . '/' . $entry);
+                parseFile($descriptions, $modes, $options, $notes, $examples, $inheritance, $releases, $dir . '/' . $entry);
             }
         }
     }
 }
 
-function parseFile(&$descriptions, &$modes, &$options, &$notes, &$examples, &$inheritance, $filename)
+function parseFile(&$descriptions, &$modes, &$options, &$notes, &$examples, &$inheritance, &$releases, $filename)
 {
     echo 'Parsing ' . $filename . ' ... ';
 
@@ -138,6 +140,9 @@ function parseFile(&$descriptions, &$modes, &$options, &$notes, &$examples, &$in
     
     // get the examples
     $examples[$class] = getExamples($class, $filename);
+
+    // get the release info
+    $releases[$class] = getRelease(PATH . $filename);
 
     // we're done with this file
     echo "DONE\n";
@@ -504,6 +509,24 @@ function getClassName($file)
     return array();
 }
 
+function getRelease($filename)
+{
+    exec("cvs log $filename", $log, $exitValue);
+    if ($exitValue != 0) {
+        echo "Unable to retrieve the release status for $filename\n";
+        return '';
+    }
+
+    $released = false;
+    foreach ($log as $line) {
+        if (strstr($line, 'RELEASE')) {
+            $released = true;
+            break;
+        }
+    }
+    return $released ? '' : 'CVS';
+}
+
 function indentMultiLine($content, $indentStr, $indentNum)
 {
     $prefix = str_repeat($indentStr, $indentNum);
@@ -513,7 +536,7 @@ function indentMultiLine($content, $indentStr, $indentNum)
     return $prefix . trim(str_replace("\n", "\n$prefix$indentStr", $content));
 }
 
-function writeXMLFile($driver, $descriptions, $modes, $options, $notes, $examples)
+function writeXMLFile($driver, $descriptions, $modes, $options, $notes, $examples, $release)
 {
     // prepare some variables for the XML contents
     $type = 'structures-datagrid-' . ((strpos($driver, 'DataSource') !== false) ? 'datasource' : 'renderer');
@@ -528,6 +551,15 @@ function writeXMLFile($driver, $descriptions, $modes, $options, $notes, $example
     $xml .= '  <refname>' . $driver . '</refname>' . "\n";
     $xml .= '  <refpurpose>' . htmlentities($descriptions['short']) . '</refpurpose>' . "\n";
     $xml .= ' </refnamediv>' . "\n";
+    if ($release == 'CVS') {
+        $xml .= ' <refsect1 id="' . $id . '.release">' . "\n";
+        $xml .= '  <title>Availability</title>' . "\n";
+        $xml .= '  <para>' . "\n";
+        $xml .= "   This driver has not yet been officially released.\n";
+        $xml .= "   It is <emphasis>only available from CVS</emphasis>.\n";
+        $xml .= '  </para>' . "\n";
+        $xml .= ' </refsect1>' . "\n";
+    }
     // TODO: extract example code link from the source code
     if ($descriptions['long'] != '') {
         $xml .= ' <refsect1 id="' . $id . '.desc">' . "\n";
