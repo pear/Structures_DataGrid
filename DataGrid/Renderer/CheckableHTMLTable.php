@@ -69,8 +69,6 @@ require_once 'Structures/DataGrid/Renderer/HTMLTable.php';
  *
  * GENERAL NOTES:
  *
- * This driver is experimental and only available via CVS.
- * 
  * This driver puts a checkbox for each row of the table into the first column.
  * By default, a new column with the value of the 'inputName' option is added
  * for the checkboxes. If you want to customize this column, you can add a
