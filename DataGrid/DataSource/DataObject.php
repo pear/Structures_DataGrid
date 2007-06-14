@@ -93,7 +93,7 @@ require_once 'Structures/DataGrid/DataSource.php';
  *                               Example: if the country_code original value
  *                               is 'FR' and this is replaced by "France" from
  *                               the linked country table, then setting 
- *                               link_keep_value to true will keep the "FR" 
+ *                               link_keep_key to true will keep the "FR" 
  *                               value in country_code__key.
  * - formbuilder_integration: (bool) DEPRECATED: use link_level and 
  *                               fields_order_property instead.
@@ -156,7 +156,7 @@ class Structures_DataGrid_DataSource_DataObject
                     'sort_property' => 'fb_linkOrderFields',
                     'link_property' => 'fb_linkDisplayFields',
                     'link_level' => 0,
-                    'link_keep_value' => false,
+                    'link_keep_key' => false,
                     'formbuilder_integration' => false,
                     'raw_count' => false));
        
@@ -326,7 +326,7 @@ class Structures_DataGrid_DataSource_DataObject
                             isset($this->_dataobject->$field) &&
                             ($linkedDo = $this->_dataobject->getLink($field)) &&
                             !PEAR::isError($linkedDo)) {
-                            if ($this->_options['link_keep_value']) {
+                            if ($this->_options['link_keep_key']) {
                                 $rec["{$field}__key"] = $rec[$field];
                             }
                             $rec[$field] =$this->_getDataObjectString($linkedDo, $linkLevel);
@@ -425,7 +425,25 @@ class Structures_DataGrid_DataSource_DataObject
 
         return $this->_rowNum;
     }
-    
+
+    /**
+     * Converts a link key field name to its original name if needed
+     *
+     * @access protected
+     * @param   string  $field  Field name
+     * @return  string          Field name with "__key" suffix removed, if needed
+     */
+    function _convertLinkKey($field) 
+    {
+        if (($this->_options['link_level'] 
+                    || $this->_options['formbuilder_integration'])
+                && $this->_options['link_keep_key']
+                && (substr($field, -5, 5) == '__key')) {
+            $field = substr($field, 0, -5);
+        }
+        return $field;
+    }
+
     /**
      * Sorts the dataobject.  This MUST be called before fetch.
      * 
@@ -442,10 +460,12 @@ class Structures_DataGrid_DataSource_DataObject
 
         if (is_array($sortSpec)) {
             foreach ($sortSpec as $field => $direction) {
+                $field = $this->_convertLinkKey($field);
                 $field = $db->quoteIdentifier($field);
                 $this->_dataobject->orderBy("$field $direction");
             }
         } else {
+            $sortSpec = $this->_convertLinkKey($sortSpec);
             $sortSpec = $db->quoteIdentifier($sortSpec);
             if (is_null($sortDir)) {
                 $this->_dataobject->orderBy($sortSpec);
