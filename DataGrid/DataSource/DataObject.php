@@ -84,17 +84,17 @@ require_once 'Structures/DataGrid/DataSource.php';
  *                               be used to display a string out of this 
  *                               linked DataObject.
  *                               Has no effect when link_level is 0.
- * - link_keep_value:   (bool)   Set this to true when you want to keep the
+ * - link_keep_key:     (bool)   Set this to true when you want to keep the
  *                               original values (usually foreign keys) of  
  *                               fields which are being replaced by their linked
  *                               values. The record will then contain additional
- *                               keys with "__orig" prepended. This option only
+ *                               keys with "__key" prepended. This option only
  *                               makes sense with link_level higher than 0.
  *                               Example: if the country_code original value
  *                               is 'FR' and this is replaced by "France" from
  *                               the linked country table, then setting 
  *                               link_keep_value to true will keep the "FR" 
- *                               value in country_code__orig.
+ *                               value in country_code__key.
  * - formbuilder_integration: (bool) DEPRECATED: use link_level and 
  *                               fields_order_property instead.
  *                               For BC, Setting this to true is equivalent to 
@@ -327,7 +327,7 @@ class Structures_DataGrid_DataSource_DataObject
                             ($linkedDo = $this->_dataobject->getLink($field)) &&
                             !PEAR::isError($linkedDo)) {
                             if ($this->_options['link_keep_value']) {
-                                $rec["{$field}__orig"] = $rec[$field];
+                                $rec["{$field}__key"] = $rec[$field];
                             }
                             $rec[$field] =$this->_getDataObjectString($linkedDo, $linkLevel);
                         }

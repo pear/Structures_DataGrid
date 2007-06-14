@@ -20,8 +20,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>asnagy@webitecture.org</email>
   <active>no</active>
  </lead>
- <date>?</date>
- <time>?</time>
+ <date>2007-06-14</date>
+ <time>18:36:00</time>
  <version>
   <release>0.1.3</release>
   <api>0.1.2</api>
@@ -32,14 +32,15 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- Bug #7753: better and more explicit support for fetching links, with new 
+- Request #7753: better and more explicit support for fetching links, with new 
   link_level and link_property options
+- Request #10625: new link_keep_key option
 - New fields_order_property option
-- Deprecating the formbuilder_integration option, keeping BC. Same behaviour 
+- Deprecated the formbuilder_integration option, keeping BC. Same behaviour 
   can be achieved with link_level and fields_order_property
-- Removing dependency on DB_DataObject_FormBuilder  
-- Fix reference assignment warnings under PHP 4.4
-- Request #10625: new link_keep_value option
+- Fixed reference assignment warnings under PHP 4.4
+- Removed dependency on DB_DataObject_FormBuilder
+- Updated other dependencies
  </notes>
  <contents>
   <dir name="/">
