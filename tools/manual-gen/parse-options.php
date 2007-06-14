@@ -194,7 +194,7 @@ function getExamples($class, $filename)
     }
 
     $file = file_get_contents(PATH . $filename);
-    $res = preg_match_all('# * @example ([a-z-\.]+) +([a-z_ ]+)#i', $file,
+    $res = preg_match_all('# * @example +([a-z-\.]+) +([a-z_ ]+)#i', $file,
                           $matches, PREG_SET_ORDER);
     if (count($matches) > 0) {
         foreach ($matches as $match) {
