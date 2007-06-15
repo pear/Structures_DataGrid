@@ -227,8 +227,7 @@ class Structures_DataGrid_Column
     /**
      * Set the field name or the expression to order the data by
      *
-     * Set the name of the field to order the data by. With SQL based
-     * datasources, this may be an SQL expression (function, etc..). 
+     * Set the name of the field to order the data by.  
      *
      * @param   string      $str  field name or expression 
      * @access  public
