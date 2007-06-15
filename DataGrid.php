@@ -1324,6 +1324,11 @@ class Structures_DataGrid
      */
     function _parseHttpRequest()
     {
+        //FIXME: with two grids on the same page, one grid with an empty prefix
+        //and the other with a non-empty prefix, the first interfers with the 
+        //second, because _parseHttpRequest() is called from the constructor
+        //before setRequestPrefix(). 
+        
         if (!$this->_forcePage) {
             if (!($this->page = $this->_getRequestArgument('page'))) {
                 $this->page = 1;

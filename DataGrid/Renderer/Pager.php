@@ -87,6 +87,7 @@ require_once 'Pager/Pager.php';
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
  * @access   public
  * @package  Structures_DataGrid_Renderer_Pager
+*  @see      Pager::factory()
  * @category Structures
  */
 class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer

@@ -55,7 +55,7 @@ require_once 'Structures/DataGrid/Renderer.php';
  * - sortingResetsPaging: (bool)   Whether sorting HTTP queries reset paging.  
  * - convertEntities:     (bool)   Whether or not to convert html entities.
  *                                 This calls htmlspecialchars(). 
- * - varPrefix            (string) Prefix for smarty variables and functions 
+ * - varPrefix:           (string) Prefix for smarty variables and functions 
  *                                 assigned by this driver. Can be used in 
  *                                 conjunction with 
  *                                 Structure_DataGrid::setRequestPrefix() for
@@ -64,17 +64,19 @@ require_once 'Structures/DataGrid/Renderer.php';
  * SUPPORTED OPERATION MODES:
  *
  * - Container Support: yes
- * - Output Buffering:  no
+ * - Output Buffering:  yes
  * - Direct Rendering:  no
  * - Streaming:         no
  *
  * GENERAL NOTES:
  *
- * This driver does not support the render() method, it only is able to "fill"
- * a Smarty object, by calling Smarty::assign() and Smarty::register_function().
- *
- * It's up to you to called Smarty::display() after the Smarty object has been
- * filled.
+ * This driver does not support the render() method, it is only able to:
+ * Either fill() a Smarty object by assigning variables and registering 
+ * the {getPaging} smarty function. It's up to you to call Smarty::display() 
+ * after the Smarty object has been filled.
+ * Or return all variables as a PHP array from getOutput(), for maximum 
+ * flexibility, so that you can assign them the way you like into yout Smarty
+ * instance.
  *
  * This driver assigns the following Smarty variables: 
  * <code>
@@ -99,12 +101,17 @@ require_once 'Structures/DataGrid/Renderer.php';
  * - $firstRecord:     first record number (starting from 1)
  * - $lastRecord:      last record number (starting from 1)
  * - $currentSort:     array with column names and the directions used for sorting
+ * - $datagrid:        a reference that you can pass to {getPaging}
  * </code>
  * 
  * This driver also registers a Smarty custom function named getPaging
  * that can be called from Smarty templates with {getPaging} in order
- * to print paging links. This function accepts any of the Pager::factory()
- * options as parameters.
+ * to print paging links. This function accepts the same parameters as the
+ * pagerOptions option of Structures_DataGrid_Renderer_Pager.
+ *
+ * {getPaging} also accepts an optional "datagrid" parameter 
+ * which you can pass the $datagrid variable, to display paging for an
+ * arbitrary datagrid (useful with multiple dynamic datagrids on a single page).
  *
  * Template example, featuring sorting and paging:
  * 
@@ -156,15 +163,22 @@ require_once 'Structures/DataGrid/Renderer.php';
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @access   public
  * @package  Structures_DataGrid_Renderer_Smarty
+ * @see      Structures_DataGrid_Renderer_Pager
  * @category Structures
  */
 class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
 {
     /**
-     * Smarty container
-     * @var object $_smarty;
+     * Variables that get assigned into the Smarty container
+     * @var array Associative array with smarty var names as keys
      */
-    var $_smarty;
+    var $_data;
+    
+    /**
+     * Smarty container
+     * @var object Smarty object
+     */
+    var $_smarty = null;
     
     /**
      * Constructor
@@ -182,6 +196,12 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
                 'varPrefix'           => '',
             )
         );
+
+        $this->_setFeatures(
+            array(
+                'outputBuffering' => true,
+            )
+        );
     }
 
     /**
@@ -195,46 +215,6 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
         $this->_smarty =& $smarty;
         return true;
     }
-    
-    /**
-     * Return the currently used Smarty object
-     *
-     * @return object Smarty or PEAR_Error object
-     */
-    function &getContainer()
-    {
-        if (!isset($this->_smarty)) {
-            $id = __CLASS__ . '::' . __FUNCTION__;
-            return PEAR::raiseError("$id: no Smarty container loaded");
-        }
-        return $this->_smarty;
-    }
-    
-    /**
-     * Initialize the Smarty container
-     * 
-     * @access protected
-     */
-    function init()
-    {
-        if (!isset($this->_smarty)) {
-            $id = __CLASS__ . '::' . __FUNCTION__;
-            return PEAR::raiseError("$id: no Smarty container loaded");
-        }
-        $p = $this->_options['varPrefix'];
-        $this->_smarty->assign("{$p}currentPage", $this->_page);
-        $this->_smarty->assign("{$p}recordLimit", $this->_pageLimit);
-        $this->_smarty->assign("{$p}columnsNum", $this->_columnsNum);
-        $this->_smarty->assign("{$p}recordsNum", $this->_recordsNum);
-        $this->_smarty->assign("{$p}totalRecordsNum", $this->_totalRecordsNum);
-        $this->_smarty->assign("{$p}pagesNum", $this->_pagesNum);
-        $this->_smarty->assign("{$p}firstRecord", $this->_firstRecord);
-        $this->_smarty->assign("{$p}lastRecord", $this->_lastRecord);
-        $this->_smarty->assign("{$p}currentSort", $this->_currentSort);
-
-        $this->_smarty->register_function("{$p}getPaging",
-                                          array(&$this, '_smartyGetPaging'));
-    }
 
     /**
      * Attach a Smarty instance
@@ -247,8 +227,46 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
     {
         return $this->setContainer($smarty);
     }
+    
+    /**
+     * Return the currently used Smarty object
+     *
+     * @return object Smarty or PEAR_Error object
+     */
+    function &getContainer()
+    {
+        return $this->_smarty;
+    }
+    
+    /**
+     * Initialize the Smarty container
+     * 
+     * @access protected
+     */
+    function init()
+    {
+        $p = $this->_options['varPrefix'];
+        $this->_data = array(
+            "{$p}currentPage"       => $this->_page,
+            "{$p}recordLimit"       => $this->_pageLimit,
+            "{$p}columnsNum"        => $this->_columnsNum,
+            "{$p}recordsNum"        => $this->_recordsNum,
+            "{$p}totalRecordsNum"   => $this->_totalRecordsNum,
+            "{$p}pagesNum"          => $this->_pagesNum,
+            "{$p}firstRecord"       => $this->_firstRecord,
+            "{$p}lastRecord"        => $this->_lastRecord,
+            "{$p}currentSort"       => $this->_currentSort,
+        );                
 
+    }
 
+    /**
+     * Build the header 
+     *
+     * @param   array $columns Columns' fields names and labels  
+     * @access  protected
+     * @return  void
+     */
     function buildHeader(&$columns)
     {
         $prepared = array();
@@ -290,8 +308,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
             }
         }
 
-        $this->_smarty->assign($this->_options['varPrefix'] . 'columnSet', 
-                               $prepared);
+        $this->_data[$this->_options['varPrefix'] . 'columnSet'] = $prepared;
     }
     
     /**
@@ -302,22 +319,44 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
      */
     function buildBody()
     {
-        $this->_smarty->assign($this->_options['varPrefix'] . 'recordSet', 
-                               $this->_records);
+        $this->_data[$this->_options['varPrefix'] . 'recordSet'] 
+            = $this->_records;
     }
 
     /**
-     * Gets the Smarty object
+     * Assign the computed variables to the Smarty container, if any
      *
-     * @deprecated Use getContainer() instead 
-     * @access  public
-     * @return  object Smarty container (reference)
+     * @access protected
+     * @return void
      */
-    function &getSmarty()
+    function finalize()
     {
-        return $this->getContainer();
+        $p = $this->_options['varPrefix'];
+
+        if ($this->_smarty) {
+            foreach ($this->_data as $key => $val) {
+                $this->_smarty->assign($key, $val);
+            }
+
+            $this->_smarty->assign_by_ref("{$p}datagrid", $this);
+
+            $this->_smarty->register_function("{$p}getPaging",
+                array(&$this, '_smartyGetPaging'));
+        } else {
+            $this->_data["{$p}datagrid"] =& $this;
+        }
     }
 
+    /**
+     * Return the computed variables
+     *
+     * @access protected
+     * @return array Array with smarty variable names as keys
+     */
+    function flatten()
+    {
+        return $this->_data;
+    }
 
     /**
      * Discard the unsupported render() method
@@ -358,7 +397,15 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
             $params['fixFileName'] = false;
         }
 
-        $driver->setupAs($this, $params);
+        // Use a different renderer if provided
+        if (isset($params['datagrid'])) {
+            $renderer =& $params['datagrid'];
+            unset($params['datagrid']);
+        } else {
+            $renderer =& $this; 
+        }
+
+        $driver->setupAs($renderer, $params);
         $driver->build(array(), 0);
         return $driver->getOutput();
     }
