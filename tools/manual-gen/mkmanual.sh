@@ -54,7 +54,7 @@ fi
 VERSION=0.9
 
 echo "Structures_DataGrid Manual Generator $VERSION"
-echo 'CVS id: $Id: mkmanual.sh,v 1.21 2007-06-13 18:36:11 olivierg Exp $'
+echo 'CVS id: $Id: mkmanual.sh,v 1.22 2007-06-15 10:49:59 olivierg Exp $'
 
 if [ "$TARGET_DIR" == "" ] 
 then
@@ -97,7 +97,9 @@ then
     incpath="$(echo '<?php echo get_include_path(); ?>' | $PHPBIN)"
     for f in ../Structures_DataGrid*
     do
-      tmpdir="$BUILD_DIR/incpath/$(basename $(tempfile))"
+      tmpfile=$(tempfile)
+      rm $tmpfile
+      tmpdir="$BUILD_DIR/incpath/$(basename $tmpfile)"
       mkdir -p $tmpdir
       ln -s "$(pwd)/$f" "$tmpdir/Structures"
       incpath="$tmpdir:$incpath"
