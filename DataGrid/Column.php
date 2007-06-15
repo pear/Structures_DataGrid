@@ -229,7 +229,7 @@ class Structures_DataGrid_Column
      *
      * Set the name of the field to order the data by.  
      *
-     * @param   string      $str  field name or expression 
+     * @param   string      $str  field name 
      * @access  public
      */
     function setOrderBy($str)
