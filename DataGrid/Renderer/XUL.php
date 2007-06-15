@@ -72,26 +72,8 @@ require_once 'XML/Util.php';
  * document. This driver will only generated the <listbox> element and
  * content.
  * 
- * Basic example: 
- * <code>
- * <?php 
- * header('Content-type: application/vnd.mozilla.xul+xml'); 
- * 
- * echo "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n";
- * echo "<?xml-stylesheet href=\"myStyle.css\" type=\"text/css\"?>\n";
- * 
- * echo "<window title=\"MyDataGrid\" 
- *        xmlns=\"http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul\">\n";
- *        
- * // Instantiate your datagrid and setup its datasource, then call:
- * $datagrid->setRenderer('XUL');
- * $datagrid->render();
- * 
- * echo "</window>\n";
- * ?> 
- * </code>
- * 
  * @version     $Revision$
+ * @example     xul.php Using the XUL renderer
  * @author      Andrew S. Nagy <asnagy@webitecture.org>
  * @author      Olivier Guilyardi <olivier@samalyse.com>
  * @author      Mark Wiesemann <wiesemann@php.net>
