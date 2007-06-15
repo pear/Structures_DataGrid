@@ -70,12 +70,17 @@ require_once 'Structures/DataGrid/Renderer.php';
  *
  * GENERAL NOTES:
  *
+ * To use this driver you need the Smarty template engine from 
+ * http://smarty.php.net
+ *
  * This driver does not support the render() method, it is only able to:
+ *
  * Either fill() a Smarty object by assigning variables and registering 
  * the {getPaging} smarty function. It's up to you to call Smarty::display() 
  * after the Smarty object has been filled.
+ *
  * Or return all variables as a PHP array from getOutput(), for maximum 
- * flexibility, so that you can assign them the way you like into yout Smarty
+ * flexibility, so that you can assign them the way you like to your Smarty
  * instance.
  *
  * This driver assigns the following Smarty variables: 
