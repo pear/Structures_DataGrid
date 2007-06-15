@@ -211,12 +211,9 @@ class Structures_DataGrid_Column
     }
 
     /**
-     * Get the field name or the expression to order the data by
+     * Get the field name to order the data by
      *
-     * Returns the name of the field to order the data by. With SQL based
-     * datasources, this may be an SQL expression (function, etc..). 
-     *
-     * @return  string
+     * @return  string field name
      * @access  public
      */
     function getOrderBy()
@@ -225,9 +222,7 @@ class Structures_DataGrid_Column
     }
 
     /**
-     * Set the field name or the expression to order the data by
-     *
-     * Set the name of the field to order the data by.  
+     * Set the field name to order the data by
      *
      * @param   string      $str  field name 
      * @access  public
