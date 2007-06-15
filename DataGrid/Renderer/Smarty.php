@@ -113,55 +113,12 @@ require_once 'Structures/DataGrid/Renderer.php';
  * which you can pass the $datagrid variable, to display paging for an
  * arbitrary datagrid (useful with multiple dynamic datagrids on a single page).
  *
- * Template example, featuring sorting and paging:
- * 
- * <code>
- * <!-- Show paging links using the custom getPaging function -->
- * {getPaging prevImg="<<" nextImg=">>" separator=" | " delta="5"}
- * 
- * <p>Showing records {$firstRecord} to {$lastRecord} 
- * from {$totalRecordsNum}, page {$currentPage} of {$pagesNum}</p>
- * 
- * <table cellspacing="0">
- *     <!-- Build header -->
- *     <tr>
- *         {section name=col loop=$columnSet}
- *             <th {$columnSet[col].attributes}>
- *                 <!-- Check if the column is sortable -->
- *                 {if $columnSet[col].link != ""}
- *                     <a href="{$columnSet[col].link}">{$columnSet[col].label}</a>
- *                 {else}
- *                     {$columnSet[col].label}
- *                 {/if}
- *             </th>
- *         {/section}
- *     </tr>
- *     
- *     <!-- Build body -->
- *     {section name=row loop=$recordSet}
- *         <tr {if $smarty.section.row.iteration is even}bgcolor="#EEEEEE"{/if}>
- *             {section name=col loop=$recordSet[row]}
- *                 <td {$columnSet[col].attributes}>{$recordSet[row][col]}</td>
- *             {/section}
- *         </tr>
- *     {/section}
- * </table>
- * </code>
- * 
- * This template can be used with code similar to this prototype:
- *
- * <code>
- * $smarty = new Smarty(...);
- * $datagrid =& new Structures_DataGrid(...);
- * $datagrid->bind(...);
- * $datagrid->fill($smarty);
- * $smarty->display(PATH TO YOUR TEMPLATE);
- * </code>
- * 
  * @version  $Revision$
+ * @example  smarty-simple.php Using the Smarty renderer
+ * @example  smarty-simple.tpl Smarty template with sorting and paging (smarty-simple.tpl)
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
  * @author   Olivier Guilyardi <olivier@samalyse.com>
- * @access   public
+ * @access   public 
  * @package  Structures_DataGrid_Renderer_Smarty
  * @see      Structures_DataGrid_Renderer_Pager
  * @category Structures

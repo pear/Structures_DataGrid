@@ -54,7 +54,7 @@ fi
 VERSION=0.9
 
 echo "Structures_DataGrid Manual Generator $VERSION"
-echo 'CVS id: $Id: mkmanual.sh,v 1.22 2007-06-15 10:49:59 olivierg Exp $'
+echo 'CVS id: $Id: mkmanual.sh,v 1.23 2007-06-15 16:09:13 olivierg Exp $'
 
 if [ "$TARGET_DIR" == "" ] 
 then
@@ -104,7 +104,6 @@ then
       ln -s "$(pwd)/$f" "$tmpdir/Structures"
       incpath="$tmpdir:$incpath"
     done
-    echo "Temporary incpath: $incpath"
     incpath="-d include_path=$incpath"
 else
     incpath="-d include_path=$MKMANUAL_INCPATH"
