@@ -605,7 +605,7 @@ class Structures_DataGrid
      * @param  array    $options        Rendering options
      * @return mixed    Renderer instance or PEAR_Error
      * @access public
-     * @see Structures_DataGrid::attachRenderer
+     * @see Structures_DataGrid::attachRenderer()
      */
     function &setRenderer($type, $options = array())
     {
@@ -706,7 +706,7 @@ class Structures_DataGrid
      *                         Structures_DataGrid_Renderer
      * @return mixed           Renderer instance or a PEAR_Error object
      * @access public
-     * @see Structures_DataGrid::setRenderer
+     * @see Structures_DataGrid::setRenderer()
      */
     function &attachRenderer(&$renderer)
     {
