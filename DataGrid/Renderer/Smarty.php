@@ -55,6 +55,11 @@ require_once 'Structures/DataGrid/Renderer.php';
  * - sortingResetsPaging: (bool)   Whether sorting HTTP queries reset paging.  
  * - convertEntities:     (bool)   Whether or not to convert html entities.
  *                                 This calls htmlspecialchars(). 
+ * - varPrefix            (string) Prefix for smarty variables and functions 
+ *                                 assigned by this driver. Can be used in 
+ *                                 conjunction with 
+ *                                 Structure_DataGrid::setRequestPrefix() for
+ *                                 displaying several grids on a single page.
  *
  * SUPPORTED OPERATION MODES:
  *
@@ -174,6 +179,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
                 'selfPath'            => htmlspecialchars($_SERVER['PHP_SELF']),
                 'convertEntities'     => true,
                 'sortingResetsPaging' => true,
+                'varPrefix'           => '',
             )
         );
     }
@@ -215,17 +221,18 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
             $id = __CLASS__ . '::' . __FUNCTION__;
             return PEAR::raiseError("$id: no Smarty container loaded");
         }
-        $this->_smarty->assign('currentPage', $this->_page);
-        $this->_smarty->assign('recordLimit', $this->_pageLimit);
-        $this->_smarty->assign('columnsNum', $this->_columnsNum);
-        $this->_smarty->assign('recordsNum', $this->_recordsNum);
-        $this->_smarty->assign('totalRecordsNum', $this->_totalRecordsNum);
-        $this->_smarty->assign('pagesNum', $this->_pagesNum);
-        $this->_smarty->assign('firstRecord', $this->_firstRecord);
-        $this->_smarty->assign('lastRecord', $this->_lastRecord);
-        $this->_smarty->assign('currentSort', $this->_currentSort);
+        $p = $this->_options['varPrefix'];
+        $this->_smarty->assign("{$p}currentPage", $this->_page);
+        $this->_smarty->assign("{$p}recordLimit", $this->_pageLimit);
+        $this->_smarty->assign("{$p}columnsNum", $this->_columnsNum);
+        $this->_smarty->assign("{$p}recordsNum", $this->_recordsNum);
+        $this->_smarty->assign("{$p}totalRecordsNum", $this->_totalRecordsNum);
+        $this->_smarty->assign("{$p}pagesNum", $this->_pagesNum);
+        $this->_smarty->assign("{$p}firstRecord", $this->_firstRecord);
+        $this->_smarty->assign("{$p}lastRecord", $this->_lastRecord);
+        $this->_smarty->assign("{$p}currentSort", $this->_currentSort);
 
-        $this->_smarty->register_function('getPaging',
+        $this->_smarty->register_function("{$p}getPaging",
                                           array(&$this, '_smartyGetPaging'));
     }
 
@@ -283,7 +290,8 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
             }
         }
 
-        $this->_smarty->assign('columnSet', $prepared);
+        $this->_smarty->assign($this->_options['varPrefix'] . 'columnSet', 
+                               $prepared);
     }
     
     /**
@@ -294,7 +302,8 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
      */
     function buildBody()
     {
-        $this->_smarty->assign('recordSet', $this->_records);
+        $this->_smarty->assign($this->_options['varPrefix'] . 'recordSet', 
+                               $this->_records);
     }
 
     /**
