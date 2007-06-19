@@ -74,6 +74,17 @@
  *                                 array(fieldName => array(attribute => value, ...) ...)
  *                                 This option is only used by XML/HTML based 
  *                                 drivers.
+ * - jsHandler:            (string) Name of a Javascript function to call on
+ *                                 onClick/onSubmit events. This function 
+ *                                 receives a single object argument of the 
+ *                                 form: { page: <page>, sort: [{field: <field>, 
+ *                                 direction: <direction>}, ...], 
+ *                                 data: <user_data> }
+ * - jsHandlerData:        (string) User data passed in the "data" member of the
+ *                                 object argument passed to jsHandler. No JSON
+ *                                 serialization is performed, this is assigned
+ *                                 as a raw string to the "data" attribute. 
+ *                                 It's up to you to add quotes, slashes, etc...
  * 
  * --- DRIVER INTERFACE ---
  *
@@ -370,7 +381,8 @@ class Structures_DataGrid_Renderer
             'defaultCellValue'      => null,
             'defaultColumnValues'   => array(),
             'hideColumnLinks'       => array(), 
-
+            'jsHandler'            => null,
+            'jsHandlerData'        => '',
         );
 
         $this->_features = array(
@@ -1021,11 +1033,11 @@ class Structures_DataGrid_Renderer
      * $_requestPrefix property into account and can also convert the ampersand 
      * to XML/HTML entities according to the "encoding" option.
      *
-     * @param $field            Sort field name
-     * @param $direction        Sort direction
-     * @param $convertAmpersand Whether to convert ampersands to XML/HTML 
-     *                          compliant entities
-     * @param $extraParameters  Optional extra HTTP parameters
+     * @param string $field            Sort field name
+     * @param string $direction        Sort direction
+     * @param bool   $convertAmpersand Whether to convert ampersands to 
+     *                                 XML/HTML compliant entities
+     * @param array  $extraParameters  Optional extra HTTP parameters
      * @return string Query string of the
      * @access protected
      *             
@@ -1071,6 +1083,37 @@ class Structures_DataGrid_Renderer
         }
 
         return $query;
+    }
+
+    /**
+     * Build a Javascript handler for a given page and sorting spec
+     *
+     * @param  string   $page     Page number (can also be "%d" for replacement
+     *                            by Pager, etc...)
+     * @param  mixed    $sortSpec Array of fields and directions, or raw 
+     *                            javascript string
+     * @return string             JS function string, semi-colon included
+     * @access protected
+     */
+    function _buildJsHandler($page, $sortSpec)
+    {
+        $handler = '';
+        if ($this->_options['jsHandler']) {
+            if (is_array($sortSpec)) {
+                $sort = array();
+                foreach ($sortSpec as $field => $direction) {
+                    $sort[] = "{field: '" . addslashes($field) . "', " .
+                              "direction:'$direction'}";
+                }
+                $sort = "[" . join(',', $sort) . "]";
+            } else {
+                $sort = $sortSpec;
+            }
+            $data = $this->_options['jsHandlerData'] or $data = "''";
+            $handler = $this->_options['jsHandler'] .
+                "({ page: $page, sort: $sort, data: $data });";
+        }
+        return $handler;
     }
 
     /**
