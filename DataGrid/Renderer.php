@@ -1086,7 +1086,7 @@ class Structures_DataGrid_Renderer
     }
 
     /**
-     * Build a Javascript handler for a given page and sorting spec
+     * Build a Javascript handler call for a given page and sorting spec
      *
      * @param  string   $page     Page number (can also be "%d" for replacement
      *                            by Pager, etc...)
