@@ -122,6 +122,13 @@ class Structures_DataGrid
     var $_rendererType = null;
 
     /**
+     * Options to use for all renderers
+     * @var array
+     * @access private
+     */
+    var $_rendererCommonOptions = array();
+
+    /**
      * Renderer driver backup
      * @var object Structures_DataGrid_Renderer_* family
      * @access private
@@ -441,6 +448,7 @@ class Structures_DataGrid
             return $driver;
         }        
 
+        $options = array_merge($this->_rendererCommonOptions, $options);
         if ($options) {
             $driver->setOptions((array)$options);
         }
@@ -480,8 +488,9 @@ class Structures_DataGrid
             }
         }
 
+        $options = array_merge($this->_rendererCommonOptions, (array)$options);
         if ($options) {
-            $this->_renderer->setOptions((array)$options);
+            $this->_renderer->setOptions($options);
         }
 
         if (!$this->_renderer->isBuilt()) {
@@ -539,8 +548,9 @@ class Structures_DataGrid
             $this->setRenderer(DATAGRID_RENDER_DEFAULT);
         }
         
+        $options = array_merge($this->_rendererCommonOptions, (array)$options);
         if ($options) {
-            $this->_renderer->setOptions((array)$options);
+            $this->_renderer->setOptions($options);
         }
         
         if (!$this->_renderer->isBuilt()) {
@@ -771,7 +781,8 @@ class Structures_DataGrid
                 return $test;
             }
         } else {
-            $this->_renderer->setOptions((array)$options);
+            $options = array_merge($this->_rendererCommonOptions, (array)$options);
+            $this->_renderer->setOptions($options);
         }
 
         $test = $this->_renderer->setContainer($container);
@@ -1595,13 +1606,16 @@ class Structures_DataGrid
     /**
      * Set a single renderer option
      *
-     * @param   string  $name       Option name
-     * @param   mixed   $value      Option value
+     * @param   string  $name   Option name
+     * @param   mixed   $value  Option value
+     * @param   bool    $common Whether to use this option for all 
+     *                          renderers (true) or only for the current 
+     *                          one (false)
      * @access  public
      */
-    function setRendererOption($name,$value)
+    function setRendererOption($name, $value, $common = false)
     {
-        $this->setRendererOptions(array($name => $value));
+        $this->setRendererOptions(array($name => $value), $common);
     }
 
     /**
@@ -1609,10 +1623,17 @@ class Structures_DataGrid
      *
      * @param   array   $options    An associative array of the form:
      *                              array("option_name" => "option_value",...)
+     * @param   bool    $common     Whether to use these options for all 
+     *                              renderers (true) or only for the current 
+     *                              one (false)
      * @access  public
      */
-    function setRendererOptions($options)
+    function setRendererOptions($options, $common = false)
     {
+        if ($common) {
+            $this->_rendererCommonOptions 
+                = array_merge($this->_rendererCommonOptions, (array)$options);
+        }
         isset($this->_renderer) or $this->setRenderer(DATAGRID_RENDER_DEFAULT);
         $this->_renderer->setOptions((array)$options);
     }
