@@ -29,11 +29,11 @@ This concept is based on the .NET Framework DataGrid control and works very well
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2007-04-12</date>
- <time>16:45:00</time>
+ <date>?</date>
+ <time>?</time>
  <version>
-  <release>0.8.3</release>
-  <api>0.8.0</api>
+  <release>?</release>
+  <api>?</api>
  </version>
  <stability>
   <release>beta</release>
@@ -41,8 +41,11 @@ This concept is based on the .NET Framework DataGrid control and works very well
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- Bug #10590: calls to removeColumn() could lead to a fatal PHP error
-  (thanks to Chris Van De Wouw)
+- add 16 examples, including simple AJAX support
+- support setting rendering options for all renderers at once
+  with setRendererOption*()
+- new common renderer options: jsHandler and jsHandlerData, for support of
+  onclick/onsubmit events
  </notes>
  <contents>
   <dir name="/">
@@ -52,6 +55,26 @@ This concept is based on the .NET Framework DataGrid control and works very well
     <file baseinstalldir="Structures" name="Renderer.php" role="php" />
    </dir> <!-- /DataGrid -->
    <file baseinstalldir="Structures" name="DataGrid.php" role="php" />
+    <dir name="docs">
+      <dir name="examples">
+        <file name="addColumn.php" role="doc" />
+        <file name="ajax-simple.php" role="doc" />
+        <file name="bind-dataobject.php" role="doc" />
+        <file name="bind-sql.php" role="doc" />
+        <file name="checkablehtmltable.php" role="doc" />
+        <file name="constructor.php" role="doc" />
+        <file name="fill-pager.php" role="doc" />
+        <file name="fill-sortform.php" role="doc" />
+        <file name="format.php" role="doc" />
+        <file name="htmleditform-basic.php" role="doc" />
+        <file name="htmleditform-tableless.php" role="doc" />
+        <file name="removeColumn.php" role="doc" />
+        <file name="setAutoFormatter.php" role="doc" />
+        <file name="smarty-simple.php" role="doc" />
+        <file name="smarty-simple.tpl" role="doc" />
+        <file name="xul.php" role="doc" />
+      </dir> <!-- /docs/examples -->
+    </dir> <!-- /docs -->
   </dir> <!-- / -->
  </contents>
  <dependencies>

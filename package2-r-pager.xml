@@ -26,8 +26,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-12-28</date>
- <time>14:10:00</time>
+ <date>?</date>
+ <time>?</time>
  <version>
   <release>0.1.2</release>
   <api>0.1.0</api>
@@ -38,9 +38,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- fixed default values for the "prevImg" and "nextImg" options: instead of
-  "&lt;&lt;" and "&gt;&gt;" (leading to invalid (X)HTML code) they are now
-  defined with entities ("&amp;lt;&amp;lt;" / "&amp;gt;&amp;gt;")
+Beware: don't release until request #11241 gets released  
+- add support for javascript onclick handlers (jsHandler option)
  </notes>
  <contents>
   <dir name="/">
