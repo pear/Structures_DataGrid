@@ -54,6 +54,8 @@ require_once 'Console/Table.php';
  * SUPPORTED OPTIONS:
  *
  * - columnAttributes: (-) IGNORED
+ * - jsHandler:        (-) IGNORED
+ * - jsHandlerData:    (-) IGNORED
  * 
  * SUPPORTED OPERATION MODES:
  *
