@@ -121,6 +121,7 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
                     'perPage'     => null, // dynamic; see init()
                     'urlVar'      => null, // dynamic; see init()
                     'currentPage' => null, // dynamic; see init()
+                    'onclick'     => null, // dynamic; see init()
                     'extraVars'   => array(),
                     'excludeVars' => array(),
                 ),
@@ -185,11 +186,15 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
         if (is_null($this->_options['pagerOptions']['currentPage'])) {
             $options['currentPage'] = $this->_page;
         }
-        
-            
+       
+        if (is_null($this->_options['pagerOptions']['onclick'])) {
+            $onclick = $this->_buildJsHandler('%d', $this->_currentSort);
+            $options['onclick'] = $onclick ? "return $onclick" : '';
+        }
+
         if (!isset($this->_pager)) {
             // No external container, Then we set our defaults.
-            $options = array_merge($this->_options['pagerOptions'],$options);
+            $options = array_merge($this->_options['pagerOptions'], $options);
             
             $options['excludeVars'] = array_merge($this->_options['excludeVars'],
                                                   $options['excludeVars']);    
@@ -241,10 +246,13 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
         $this->setLimit($renderer->_page, $renderer->_pageLimit, 
                         $renderer->_totalRecordsNum);
         $this->setRequestPrefix($renderer->_requestPrefix);
+        $this->setCurrentSorting($renderer->_currentSort, $renderer->_multiSort);
         $options['pagerOptions'] = array_merge($this->_options['pagerOptions'], 
                                                $pagerOptions);
         $options['excludeVars'] = $renderer->_options['excludeVars'];
         $options['extraVars'] = $renderer->_options['extraVars'];
+        $options['jsHandler'] = $renderer->_options['jsHandler'];
+        $options['jsHandlerData'] = $renderer->_options['jsHandlerData'];
         $this->setOptions($options);
     }
 

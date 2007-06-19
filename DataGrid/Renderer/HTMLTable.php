@@ -79,6 +79,7 @@ require_once 'HTML/Table.php';
  * - Streaming:         no
  *
  * @version  $Revision$
+ * @example  ajax-simple.php Simple AJAX support using the Prototype framework
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @author   Mark Wiesemann <wiesemann@php.net>
@@ -379,15 +380,20 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 }
 
                 // Build HTTP query
-                $extra = array('page' => $this->_options['sortingResetsPaging'] 
-                                         ? 1 : $this->_page);
+                $page = $this->_options['sortingResetsPaging'] ? 1 : $this->_page;
+                $extra = array('page' => $page);
                 $query = $this->_buildSortingHttpQuery($field, $direction, true, $extra);
 
                 // Build Link URL
                 $url = $this->_options['selfPath'] . '?' . $query;
 
+                // Build onClick attribute
+                $onclick = 
+                    $this->_buildJsHandler($page, array($field => $direction));
+                $onclick = $onclick ? "onClick=\"return $onclick\"" : '';
+
                 // Build HTML Link
-                $str = "<a href=\"$url\">$label$icon</a>";
+                $str = "<a href=\"$url\" $onclick>$label$icon</a>";
             } else {
                 $str = $label;
             }

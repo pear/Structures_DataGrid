@@ -168,6 +168,21 @@ class Structures_DataGrid_Renderer_HTMLSortForm
             // FIXME: Isn't it a bit risky to set this flag here, because this method could be called more than once?
             $this->_isUserContainer = true;
         }
+
+        if (!$this->_form->getAttribute('onsubmit') && 
+                !$this->_form->getAttribute('onSubmit')) {
+            $ii = $this->_multiSort ? $this->_options['sortFieldsNum'] : 1;
+            $sort = array();
+            for ($i = 0; $i < $ii; $i++) {
+                $sort[] = "{field: this.elements[" . ($i * 2) . "].value, " . 
+                          "direction: this.elements[" . ($i * 2 + 1) . "].value}";
+            }
+            $sort = '[' . join(',', $sort) . ']';
+            if ($handler = $this->_buildJsHandler($this->_page, $sort)) {
+                $this->_form->setAttribute('onsubmit', "return $handler");
+            }
+        }
+
     }
 
     /**
