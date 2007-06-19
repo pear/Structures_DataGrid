@@ -27,7 +27,7 @@ string for a XUL listbox.
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-12-16</date>
+ <date>?</date>
  <time>17:00:00</time>
  <version>
   <release>0.1.2</release>
@@ -39,9 +39,7 @@ string for a XUL listbox.
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- Bug #9548: added support for per-column default sort directions
-  (thanks to Anton, hire at ukr dot net)
-- this package is now licensed under the New BSD license
+- add support for the jsHandler option
  </notes>
  <contents>
   <dir name="/">
