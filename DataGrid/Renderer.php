@@ -79,7 +79,10 @@
  *                                 receives a single object argument of the 
  *                                 form: { page: <page>, sort: [{field: <field>, 
  *                                 direction: <direction>}, ...], 
- *                                 data: <user_data> }
+ *                                 data: <user_data> }. Remark: setting this 
+ *                                 option doesn't remove the href attribute,
+ *                                 you should return false from your handler
+ *                                 function to void it (eg: for AJAX, etc..).
  * - jsHandlerData:        (string) User data passed in the "data" member of the
  *                                 object argument passed to jsHandler. No JSON
  *                                 serialization is performed, this is assigned
