@@ -93,6 +93,8 @@ require_once 'Structures/DataGrid/Renderer.php';
  *                                  'label'      => column label,
  *                                  'link'       => sorting link,
  *                                  'attributes' => attributes string,
+ *                                  'direction'  => 'ASC', 'DESC' or '',
+ *                                  'onclick'    => jsHandler call
  *                              ),
  *                              ... 
  *                          )
@@ -244,7 +246,9 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
                     } else {
                         $direction = 'ASC';
                     }
+                    $prepared[$index]['direction'] = $currentDirection;
                 } else {
+                    $prepared[$index]['direction'] = '';
                     $direction = $this->_defaultDirections[$spec['field']];
                 }
                 $extra = array('page' => $this->_options['sortingResetsPaging'] 
@@ -252,6 +256,8 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
                 $query = $this->_buildSortingHttpQuery($spec['field'], 
                                                        $direction, true, $extra);
                 $prepared[$index]['link'] = "{$this->_options['selfPath']}?$query";
+                $prepared[$index]['onclick'] = $this->_buildJsHandler($this->_page, 
+                        array($spec['field'] => $direction));
             } else {
                 $query = '';
                 $prepared[$index]['link'] = "";

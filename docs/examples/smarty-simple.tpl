@@ -13,6 +13,12 @@ from {$totalRecordsNum}, page {$currentPage} of {$pagesNum}</p>
                 <!-- Check if the column is sortable -->
                 {if $columnSet[col].link != ""}
                     <a href="{$columnSet[col].link}">{$columnSet[col].label}</a>
+                    <!-- Show the current ordering with an arrow -->
+                    {if $columnSet[col].direction == "ASC"}
+                      &darr;
+                    {elseif $columnSet[col].direction == "DESC"}
+                      &uarr;
+                    {/if}
                 {else}
                     {$columnSet[col].label}
                 {/if}
