@@ -161,10 +161,15 @@ class Structures_DataGrid_Renderer_XUL extends Structures_DataGrid_Renderer
                     $dirCur = 'natural';
                 }
 
-                $onCommand = 
-                    "oncommand=\"location.href='{$this->_options['selfPath']}?" 
-                    . $this->_buildSortingHttpQuery($field, $dirArg, true)
-                    . "'\"";
+                if ($handler = $this->_buildJsHandler($this->_page, 
+                        array($field => $dirArg))) {
+                    $onCommand = "oncommand=\"$handler\"";
+                } else {
+                    $onCommand = 
+                        "oncommand=\"location.href='{$this->_options['selfPath']}?" 
+                        . $this->_buildSortingHttpQuery($field, $dirArg, true)
+                        . "'\"";
+                }
                 $sortDirection = "sortDirection=\"$dirCur\"";
             } else {
                 $onCommand = '';
