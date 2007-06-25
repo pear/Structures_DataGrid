@@ -67,7 +67,6 @@ require_once 'Structures/DataGrid/DataSource.php';
  * - password:    (string) Password for the crated PDO connection. Only needed in
  *                         conjunction with 'dsn' option.
  * 
- * 
  * GENERAL NOTES:
  *
  * You need to specify either a PDO instance or a PDO compatible dsn string as
