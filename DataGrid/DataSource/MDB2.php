@@ -58,6 +58,8 @@ require_once 'Structures/DataGrid/DataSource.php';
  * - dsn:         (string) A PEAR::MDB2 dsn string. The MDB2 connection will be
  *                         established by this driver. Either this or the 'dbc'
  *                         option is required.
+ * - db_options:  (array)  Options for the created database object. This option
+ *                         is only used when the 'dsn' option is given.
  * - count_query: (string) Query that calculates the number of rows. See below
  *                         for more information about when such a count query
  *                         is needed.
@@ -94,41 +96,6 @@ class Structures_DataGrid_DataSource_MDB2
     extends Structures_DataGrid_DataSource
 {   
     /**
-     * Reference to the PEAR::MDB2 object
-     *
-     * @var object MDB2
-     * @access private
-     */
-    var $_db;
-
-    /**
-     * The query string
-     *
-     * @var string
-     * @access private
-     */
-    var $_query;
-
-    /**
-     * Fields/directions to sort the data by
-     *
-     * @var array Structure: array(fieldName => direction, ....)
-     * @access private
-     */
-    var $_sortSpec = array();
-
-    /**
-     * Total number of rows 
-     * 
-     * This property caches the result of count() to avoid running the same
-     * database query multiple times.
-     *
-     * @var int
-     * @access private
-     */
-     var $_rowNum = null;    
-
-    /**
      * Constructor
      *
      * @access public
@@ -136,9 +103,6 @@ class Structures_DataGrid_DataSource_MDB2
     function Structures_DataGrid_DataSource_MDB2()
     {
         parent::Structures_DataGrid_DataSource();
-        $this->_addDefaultOptions(array('dbc' => null,
-                                        'dsn' => null,
-                                        'count_query' => ''));
         $this->_setFeatures(array('multiSort' => true));
     }
   
@@ -154,36 +118,11 @@ class Structures_DataGrid_DataSource_MDB2
      */
     function bind($query, $options = array())
     {
-        if ($options) {
-            $this->setOptions($options); 
+        $r = $this->_sqlBind($query, $options);
+        if (!PEAR::isError($r)) {
+            $this->_sqlHandle->loadModule('Extended', null, false);
         }
-
-        if (isset($this->_options['dbc']) &&
-            MDB2::isConnection($this->_options['dbc'])) {
-            $this->_db = &$this->_options['dbc'];
-        } elseif (isset($this->_options['dsn'])) {
-            $dbOptions = array();
-            if (array_key_exists('db_options', $options)) {
-                $dbOptions = $options['db_options'];
-            }
-            $this->_db =& MDB2::connect($this->_options['dsn'], $dbOptions);
-            if (PEAR::isError($this->_db)) {
-                return PEAR::raiseError('Could not create connection: ' .
-                                        $this->_db->getMessage() . ', ' .
-                                        $this->_db->getUserInfo());
-            }
-        } else {
-            return PEAR::raiseError('No MDB2 object or dsn string specified');
-        }
-
-        $this->_db->loadModule('Extended', null, false);
-
-        if (is_string($query)) {
-            $this->_query = $query;
-            return true;
-        } else {
-            return PEAR::raiseError('Query parameter must be a string');
-        }
+        return $r;
     }
 
     /**
@@ -197,59 +136,7 @@ class Structures_DataGrid_DataSource_MDB2
     */
     function &fetch($offset = 0, $limit = null)
     {
-        if (!empty($this->_sortSpec)) {
-            foreach ($this->_sortSpec as $field => $direction) {
-                $sortArray[] = $this->_db->quoteIdentifier($field) . ' ' . $direction;
-            }
-            $sortString = join(', ', $sortArray);
-        } else {
-            $sortString = '';
-        }
-
-        $query = $this->_query;
-
-        // drop LIMIT statement
-        $query = preg_replace('#\sLIMIT\s.*$#isD', ' ', $query);
-
-        // if we have a sort string, we need to add it to the query string
-        if ($sortString != '') {
-            // if there is an existing ORDER BY statement, we can just add the
-            // sort string
-            $result = preg_match('#ORDER\s+BY#is', $query);
-            if ($result === 1) {
-                $query .= ', ' . $sortString;
-            } else {  // otherwise we need to specify 'ORDER BY'
-                $query .= ' ORDER BY ' . $sortString;
-            }
-        }
-
-        //FIXME: What about SQL injection ?
-        if (is_null($limit)) {
-            $result = $this->_db->query($query);
-        } else {
-            $result = $this->_db->extended->limitQuery($query, null, $limit, $offset);
-        }
-
-        if (PEAR::isError($result)) {
-            return $result;
-        }
-
-        $recordSet = array();
-
-        // Fetch the Data
-        if ($numRows = $result->numRows()) {
-            while ($record = $result->fetchRow(MDB2_FETCHMODE_ASSOC)) {
-                $recordSet[] = $record;
-            }
-        }
-
-        $result->free();
-
-        // Determine fields to render
-        if (!$this->_options['fields'] && count($recordSet)) {
-            $this->setOptions(array('fields' => array_keys($recordSet[0])));
-        }                
-
+        $recordSet = $this->_sqlFetch($offset, $limit);
         return $recordSet;
     }
 
@@ -262,45 +149,7 @@ class Structures_DataGrid_DataSource_MDB2
     */
     function count()
     {
-        // do we already have the cached number of records? (if yes, return it)
-        if (!is_null($this->_rowNum)) {
-            return $this->_rowNum;
-        }
-        // try to fetch the number of records
-        if ($this->_options['count_query'] != '') {
-            // complex queries might require special queries to get the
-            // right row count
-            $count = $this->_db->extended->getOne($this->_options['count_query']);
-            // $count has an integer value with number of rows or is a
-            // PEAR_Error instance on failure
-        }
-        elseif (preg_match('#GROUP\s+BY#is', $this->_query) === 1 ||
-                preg_match('#SELECT.+SELECT#is', $this->_query) === 1 ||
-                preg_match('#\sUNION\s#is', $this->_query) === 1 ||
-                preg_match('#SELECT.+DISTINCT.+FROM#is', $this->_query) === 1
-            ) {
-            // GROUP BY, DISTINCT, UNION and subqueries are special cases
-            // ==> use the normal query and then numRows()
-            $result = $this->_db->query($this->_query);
-            if (PEAR::isError($result)) {
-                return $result;
-            }
-            $count = $result->numRows();
-        } else {
-            // don't query the whole table, just get the number of rows
-            $query = preg_replace('#SELECT\s.+\sFROM#is',
-                                  'SELECT COUNT(*) FROM',
-                                  $this->_query);
-            $count = $this->_db->extended->getOne($query);
-            // $count has an integer value with number of rows or is a
-            // PEAR_Error instance on failure
-        }
-        // if we've got a number of records, save it to avoid running the same
-        // query multiple times
-        if (!PEAR::isError($count)) {
-            $this->_rowNum = $count;
-        }
-        return $count;
+        return $this->_sqlCount();
     }
     
     /**
@@ -315,14 +164,64 @@ class Structures_DataGrid_DataSource_MDB2
      */
     function sort($sortSpec, $sortDir = 'ASC')
     {
-        if (is_array($sortSpec)) {
-            $this->_sortSpec = $sortSpec;
-        } else {
-            $this->_sortSpec[$sortSpec] = $sortDir;
-        }
+        $this->_sqlSort($sortSpec, $sortDir);
     }
 
+    function &_connect()
+    {
+        return MDB2::connect($this->_options['dsn'], $this->_options['db_options']);
+    }
 
+    function _isConnection($dbc)
+    {
+        return MDB2::isConnection($dbc);
+    }
+
+   
+    function _getRecords($query, $limit, $offset)
+    {
+        if (is_null($limit)) {
+            $result = $this->_sqlHandle->query($query);
+        } else {
+            $result = $this->_sqlHandle->extended->limitQuery($query, null, $limit, $offset);
+        }
+
+        if (PEAR::isError($result)) {
+            return $result;
+        }
+
+        $recordSet = array();
+
+        // Fetch the Data
+        if ($result->numRows()) {
+            while ($record = $result->fetchRow(MDB2_FETCHMODE_ASSOC)) {
+                $recordSet[] = $record;
+            }
+        }
+
+        $result->free();
+
+        return $recordSet;
+    }
+
+    function _quoteIdentifier($field)
+    {
+        return $this->_sqlHandle->quoteIdentifier($field);
+    }
+
+    function _getOne($query)
+    {
+        return $this->_sqlHandle->extended->getOne($query);
+    }
+
+    function _getRecordsNum($query)
+    {
+        $result = $this->_sqlHandle->query($query);
+        if (PEAR::isError($result)) {
+            return $result;
+        }
+        return $result->numRows();
+    }
 }
 
 /* vim: set expandtab tabstop=4 shiftwidth=4: */
