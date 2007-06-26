@@ -217,6 +217,7 @@ class Structures_DataGrid_DataSource_PDO
             case 'oci':     
             case 'pgsql':   
             case 'sqlite':  
+            case 'sqlite2':  
                 $quotes = array('start' => '"', 'end' => '"', 'escape' => '"');
                 break;
             case 'mysql':   
