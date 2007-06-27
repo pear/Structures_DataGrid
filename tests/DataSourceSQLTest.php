@@ -76,6 +76,15 @@ class DataSourceSQLTest extends DataSourceTest
         $this->datasource->bind("SELECT * FROM test", array('dsn' => $this->getDSN()));
     }
 
+    public function testWhere()
+    {
+        $this->datasource->bind("SELECT * FROM test WHERE num=1", 
+                array('dsn' => $this->getDSN()));
+        $this->datasource->sort('the str');
+        $expected = array( array('num' => '1', 'the str' => 'test'),);
+        $this->assertEquals($expected, $this->datasource->fetch(1, 1));
+    }
+
     public function testDistinct()
     {
         $this->datasource->bind("SELECT DISTINCT num FROM test", array('dsn' => $this->getDSN()));
