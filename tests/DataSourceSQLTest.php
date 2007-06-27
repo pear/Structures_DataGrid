@@ -106,6 +106,15 @@ class DataSourceSQLTest extends DataSourceTest
             array('num' => '2', 'the str' => 'viel spaß'),
         );
         $this->assertEquals($expected, $this->datasource->fetch(1, 1));
+
+        $this->datasource->bind("SELECT * FROM test GROUP BY num", array('dsn' => $this->getDSN()));
+        $this->datasource->sort('num');
+        $expected = array(
+            array('num' => '1', 'the str' => 'test'),
+            array('num' => '2', 'the str' => 'viel spaß'),
+            array('num' => '3', 'the str' => ''),
+        );
+        $this->assertEquals($expected, $this->datasource->fetch());
     }
 
     public function testMixedSort()
@@ -134,6 +143,16 @@ class DataSourceSQLTest extends DataSourceTest
         $options['dbc'] = $this->getDatabaseObject();
         $this->datasource->bind("SELECT * FROM test", $options);
         $this->assertEquals($this->data, $this->datasource->fetch());
+    }
+
+    public function testUnion()
+    {
+        $this->datasource->bind("SELECT * FROM test UNION ALL SELECT * FROM test", 
+                array('dsn' => $this->getDSN()));
+        $expected = array_merge($this->data, $this->data);
+        $this->assertEquals($expected, $this->datasource->fetch());
+        $this->assertEquals(count($expected), $this->datasource->count());
+        $this->assertEquals($this->data, $this->datasource->fetch(0,count($this->data)));
     }
 }
 ?>
