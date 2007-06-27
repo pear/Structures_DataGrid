@@ -101,6 +101,10 @@ class DataSourceTest extends PHPUnit_Framework_TestCase
     public function testLimit()
     {
         $this->bindDefault();
+        $records = $this->datasource->fetch(1);
+        $expected = array_slice($this->data, 1);
+        $this->assertEquals($expected, $records);
+        $this->bindDefault();
         $records = $this->datasource->fetch(1,1);
         $this->assertEquals($this->data[1], $records[0]);
     }

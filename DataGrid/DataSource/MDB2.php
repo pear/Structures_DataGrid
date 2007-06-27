@@ -181,9 +181,15 @@ class Structures_DataGrid_DataSource_MDB2
     function _getRecords($query, $limit, $offset)
     {
         if (is_null($limit)) {
-            $result = $this->_sqlHandle->query($query);
+            if ($offset == 0) {
+                $result = $this->_sqlHandle->query($query);
+            } else {
+                $result = $this->_sqlHandle->extended->limitQuery($query, null, 
+                                PHP_INT_MAX, $offset);
+            }
         } else {
-            $result = $this->_sqlHandle->extended->limitQuery($query, null, $limit, $offset);
+            $result = $this->_sqlHandle->extended->limitQuery($query, null, 
+                            $limit, $offset);
         }
 
         if (PEAR::isError($result)) {

@@ -195,6 +195,8 @@ class Structures_DataGrid_DataSource_PDO
     {
         if (!is_null($limit)) {
             $query .= ' LIMIT ' . $offset . ', ' . $limit;
+        } elseif ($offset > 0) {
+            $query .= ' LIMIT ' . $offset . ', ' . PHP_INT_MAX;
         }
         if (($result = $this->_sqlHandle->query($query)) !== false) {
             return $result->fetchAll(PDO::FETCH_ASSOC);

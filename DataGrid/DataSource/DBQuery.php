@@ -177,7 +177,12 @@ class Structures_DataGrid_DataSource_DBQuery
     function _getRecords($query, $limit, $offset)
     {
         if (is_null($limit)) {
-            $result = $this->_sqlHandle->query($query);
+            if ($offset == 0) {
+                $result = $this->_sqlHandle->query($query);
+            } else {
+                $result = $this->_sqlHandle->limitQuery($query, $offset, 
+                                PHP_INT_MAX);
+            }
         } else {
             $result = $this->_sqlHandle->limitQuery($query, $offset, $limit);
         }
