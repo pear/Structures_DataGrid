@@ -12,7 +12,7 @@ $ phpunit DataSourceMDB2Test.php
 Remark: simply running "phpunit" may fail on your system, if that's the case
 try "php5 /usr/bin/phpunit" or "php /usr/bin/phpunit"
 
-You can also run group of test suites:
+You can also run a group of test suites:
 
 $ phpunit AllDataSourceTests.php
 
