@@ -29,7 +29,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <date>2007-05-15</date>
  <time>11:00:00</time>
  <version>
-  <release>0.1.5</release>
+  <release>?</release>
   <api>0.1.1</api>
  </version>
  <stability>
@@ -50,10 +50,6 @@ http://pear.php.net/dtd/package-2.0.xsd">
      <file baseinstalldir="Structures" name="CSV.php" role="php" />
     </dir> <!-- /DataGrid/DataSource -->
    </dir> <!-- /DataGrid -->
-   <dir name="tests">
-    <file baseinstalldir="Structures" name="ds_csv_strings.phpt" role="test" />
-    <file baseinstalldir="Structures" name="ds_csv_file.phpt" role="test" />
-   </dir> <!-- /tests -->
   </dir> <!-- / -->
  </contents>
  <dependencies>

@@ -49,32 +49,43 @@ This concept is based on the .NET Framework DataGrid control and works very well
  </notes>
  <contents>
   <dir name="/">
+   <file baseinstalldir="Structures" name="DataGrid.php" role="php" />
    <dir name="DataGrid">
     <file baseinstalldir="Structures" name="Column.php" role="php" />
     <file baseinstalldir="Structures" name="DataSource.php" role="php" />
     <file baseinstalldir="Structures" name="Renderer.php" role="php" />
    </dir> <!-- /DataGrid -->
-   <file baseinstalldir="Structures" name="DataGrid.php" role="php" />
-    <dir name="docs">
-      <dir name="examples">
-        <file name="addColumn.php" role="doc" />
-        <file name="ajax-simple.php" role="doc" />
-        <file name="bind-dataobject.php" role="doc" />
-        <file name="bind-sql.php" role="doc" />
-        <file name="checkablehtmltable.php" role="doc" />
-        <file name="constructor.php" role="doc" />
-        <file name="fill-pager.php" role="doc" />
-        <file name="fill-sortform.php" role="doc" />
-        <file name="format.php" role="doc" />
-        <file name="htmleditform-basic.php" role="doc" />
-        <file name="htmleditform-tableless.php" role="doc" />
-        <file name="removeColumn.php" role="doc" />
-        <file name="setAutoFormatter.php" role="doc" />
-        <file name="smarty-simple.php" role="doc" />
-        <file name="smarty-simple.tpl" role="doc" />
-        <file name="xul.php" role="doc" />
-      </dir> <!-- /docs/examples -->
-    </dir> <!-- /docs -->
+   <dir name="docs">
+    <dir name="examples">
+     <file name="addColumn.php" role="doc" />
+     <file name="ajax-simple.php" role="doc" />
+     <file name="bind-dataobject.php" role="doc" />
+     <file name="bind-sql.php" role="doc" />
+     <file name="checkablehtmltable.php" role="doc" />
+     <file name="constructor.php" role="doc" />
+     <file name="fill-pager.php" role="doc" />
+     <file name="fill-sortform.php" role="doc" />
+     <file name="format.php" role="doc" />
+     <file name="htmleditform-basic.php" role="doc" />
+     <file name="htmleditform-tableless.php" role="doc" />
+     <file name="removeColumn.php" role="doc" />
+     <file name="setAutoFormatter.php" role="doc" />
+     <file name="smarty-simple.php" role="doc" />
+     <file name="smarty-simple.tpl" role="doc" />
+     <file name="xul.php" role="doc" />
+    </dir> <!-- /docs/examples -->
+   </dir> <!-- /docs -->
+   <dir name="tests">
+    <file baseinstalldir="Structures" name="AllTests.php" role="test" />
+    <file baseinstalldir="Structures" name="AllDataSourceTests.php" role="test" />
+    <file baseinstalldir="Structures" name="DataSourceArrayTest.php" role="test" />
+    <file baseinstalldir="Structures" name="DataSourceCSVTest.php" role="test" />
+    <file baseinstalldir="Structures" name="DataSourceDBQueryTest.php" role="test" />
+    <file baseinstalldir="Structures" name="DataSourceMDB2Test.php" role="test" />
+    <file baseinstalldir="Structures" name="DataSourcePDOTest.php" role="test" />
+    <file baseinstalldir="Structures" name="DataSourceSQLTest.php" role="test" />
+    <file baseinstalldir="Structures" name="DataSourceTest.php" role="test" />
+   </dir> <!-- /tests -->
   </dir> <!-- / -->
  </contents>
  <dependencies>
@@ -91,6 +102,13 @@ This concept is based on the .NET Framework DataGrid control and works very well
     <min>1.2</min>
    </package>
   </required>
+  <optional>
+   <package>
+    <name>PHPUnit</name>
+    <channel>pear.phpunit.de</channel>
+    <min>3.1.0RC1</min>
+   </package>
+  </optional>
   <group name="datasources" hint="(un)installs all optional DataSource drivers">
    <subpackage>
     <name>Structures_DataGrid_DataSource_CSV</name>

@@ -53,6 +53,7 @@ require_once 'PHPUnit/TextUI/TestRunner.php';
  
 require_once 'DataSourceArrayTest.php';
 require_once 'DataSourceDBQueryTest.php';
+require_once 'DataSourceCSVTest.php';
 require_once 'DataSourceMDB2Test.php';
 require_once 'DataSourcePDOTest.php';
 
@@ -72,6 +73,7 @@ class AllDataSourceTests
  
         $suite->addTestSuite('DataSourceArrayTest');
         $suite->addTestSuite('DataSourceDBQueryTest');
+        $suite->addTestSuite('DataSourceCSVTest');
         $suite->addTestSuite('DataSourceMDB2Test');
         $suite->addTestSuite('DataSourcePDOTest');
  
