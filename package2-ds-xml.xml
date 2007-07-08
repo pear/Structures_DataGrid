@@ -26,11 +26,11 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2006-12-16</date>
- <time>17:00:00</time>
+ <date>2006-07-??</date>
+ <time>?</time>
  <version>
-  <release>0.1.2</release>
-  <api>0.1.1</api>
+  <release>0.2.0</release>
+  <api>0.2.0</api>
  </version>
  <stability>
   <release>beta</release>
@@ -38,7 +38,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- this package is now licensed under the New BSD license
+- fixed PHP 5 compatibility of this driver
+- in addition to strings with XML data, this driver now also accepts
+  filenames
  </notes>
  <contents>
   <dir name="/">
@@ -52,10 +54,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <dependencies>
   <required>
    <php>
-    <min>4.2</min>
+    <min>4.3</min>
    </php>
    <pearinstaller>
-    <min>1.4.9</min>
+    <min>1.6.0</min>
    </pearinstaller>
    <package>
     <name>Structures_DataGrid</name>
@@ -67,13 +69,13 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <channel>pear.php.net</channel>
     <min>0.1.0</min>
    </package>
+  </required>
+  <optional>
    <package>
     <name>XML_Serializer</name>
     <channel>pear.php.net</channel>
     <min>0.18.0</min>
    </package>
-  </required>
-  <optional>
    <package>
     <name>XML_XPath</name>
     <channel>pear.php.net</channel>

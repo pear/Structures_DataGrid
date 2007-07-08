@@ -1,6 +1,6 @@
 <?php
 /**
- * XML data source driver
+ * XML DataSource driver
  * 
  * PHP versions 4 and 5
  *
@@ -39,7 +39,7 @@
  * 
  * @version  $Revision$
  * @category Structures
- * @package Structures_DataGrid_DataSource_XML
+ * @package  Structures_DataGrid_DataSource_XML
  * @license  http://opensource.org/licenses/bsd-license.php New BSD License
  */
 
@@ -47,9 +47,11 @@ require_once 'Structures/DataGrid/DataSource/Array.php';
 require_once 'XML/Unserializer.php';
 
 /**
- * XML data source driver
+ * XML DataSource driver
  *
- * This driver accepts the following options:
+ * This class is a DataSource driver for a XML data. It accepts strings
+ * and filenames. An XPath expression can be specified to extract a
+ * subset from the given XML data.
  *
  * SUPPORTED OPTIONS:
  * 
@@ -61,10 +63,11 @@ require_once 'XML/Unserializer.php';
  *                              as column label (only used if 'generate_columns'
  *                              is true and the XML source has attributes).
  *
- * @package Structures_DataGrid_DataSource_XML
- * @author Olivier Guilyardi <olivier@samalyse.com>
+ * @package  Structures_DataGrid_DataSource_XML
+ * @author   Olivier Guilyardi <olivier@samalyse.com>
+ * @author   Mark Wiesemann <wiesemann@php.net>
  * @category Structures
- * @version  $Revision $
+ * @version  $Revision$
  */
 class Structures_DataGrid_DataSource_XML extends
     Structures_DataGrid_DataSource_Array
@@ -91,19 +94,75 @@ class Structures_DataGrid_DataSource_XML extends
      * Bind XML data 
      * 
      * @access  public
-     * @param   string  $xml        XML data
+     * @param   string  $xml        XML data or filename of a XML file
      * @param   array   $options    Options as an associative array
      * @return  mixed               true on success, PEAR_Error on failure 
      */
     function bind($xml, $options = array())
     {
         if ($options) {
-            $this->setOptions($options); 
+            $this->setOptions($options);
         }
-        
-        // Extract a subset from the XML data if an XPath is provided:
+
+        // check whether we have XML data or a filename
+        $isFile = false;
+        if (strlen($xml) < 256 && @is_file($xml)) {
+            $isFile = true;
+        }
+
+        // prepare the XML data
+        if (version_compare(PHP_VERSION, '5.0.0', '>=')) {
+            $xml = $isFile ? simplexml_load_file($xml)
+                           : simplexml_load_string($xml);
+            if ($xml === false) {
+                return PEAR::raiseError('XML couldn\'t be read.');
+            }
+        } elseif ($isFile) {  // PHP 4 and filename given
+            $xml = file_get_contents($xml);
+            if ($xml === false) {
+                return PEAR::raiseError('XML couldn\'t be read.');
+            }
+        }
+
+        // extract a subset from the XML data if an XPath is provided
         if ($this->_options['xpath']) {
-            include_once 'XML/XPath.php';
+            $xml = $this->_evaluteXPath($xml);
+            if (PEAR::isError($xml)) {
+                return $xml;
+            }
+        }
+
+        // parse XML data
+        $xml = $this->_parseXML($xml);
+        if (PEAR::isError($xml)) {
+            return $xml;
+        }
+
+        if ($xml && !$this->_options['fields']) {
+            $this->setOption('fields', array_keys($xml[0]));
+        }
+
+        return true;
+    }
+
+    /**
+     * Extract a subset from the XML data
+     * 
+     * @access  private
+     * @param   mixed    $xml         A string or a SimpleXML instance
+     * @return  mixed    string, PEAR_Error or SimpleXML instance
+     */
+    function _evaluteXPath($xml)
+    {
+        // with PHP 5.2, use SimpleXML
+        if (version_compare(PHP_VERSION, '5.2.0', '>=')) { 
+            $xml = $xml->xpath($this->_options['xpath']);
+            if ($xml === false) {
+                return PEAR::raiseError('\'xpath\' option couldn\'t ' .
+                                        'be evaluated.');
+            }
+            return $xml[0];
+        } elseif (include_once('XML/XPath.php')) { // check for XML_XPath
             $xpath = new XML_XPath($xml);
             $result =& $xpath->evaluate($this->_options['xpath']); 
             if (PEAR::isError($result)) {
@@ -112,54 +171,94 @@ class Structures_DataGrid_DataSource_XML extends
             $xml = '';
             while ($result->next()) {
                 $xml .= $result->toString(null, false, false);
-            }   
-            
+            }
+            return $xml; 
+        } else {
+            return PEAR::raiseError('\'xpath\' option cannot be used ' .
+            'because neither the XML_XPath package nor PHP >= 5.2.0 ' .
+            'is installed.');
         }
-       
-        // Instantiate XML_Unserializer Object
-        $unserializer = &new XML_Unserializer();
+    }
+
+    /**
+     * Parse data from an XML string or a SimpleXML instance
+     * 
+     * @access  private
+     * @param   mixed    $xml         A string or a SimpleXML instance
+     * @return  mixed    array with parsed data or PEAR_Error
+     */
+    function _parseXML($xml)
+    {
+        // PHP 5 handling
+        if (version_compare(PHP_VERSION, '5.0.0', '>=')) {
+            foreach ($xml as $tmprow) {
+                $row = array();
+                foreach ($tmprow as $key => $value) {
+                    // use 'fieldAttribute' as item key, if 'fieldAttribute'
+                    // option set
+                    if (!is_null($this->_options['fieldAttribute'])) {
+                        foreach ($value->attributes() as $a => $b) {
+                            if ($this->_options['fieldAttribute'] == $a) {
+                                $key = (string)$b;
+                            }
+                        }
+                    }
+                    $row[$key] = $value;
+                }
+                $this->_ar[] = $this->_processRowSimpleXML($row);
+            }
+            return $this->_ar;
+        }
+
+        // PHP 4 handling follows
+
+        // instantiate XML_Unserializer object
+        $unserializer =& new XML_Unserializer();
         $unserializer->setOption('parseAttributes', true);
-        // Set containers for attributes and content (for the case attributes are found)
+        // set containers for attributes and content
+        // (for the case that attributes are found)
         $unserializer->setOption('attributesArray', 'attributes');
         $unserializer->setOption('contentName', 'content');
-        // Use fieldAttribute as item key, if fieldAttribute option set
+        // use 'fieldAttribute' as item key, if 'fieldAttribute'
+        // option set
         if (!is_null($this->_options['fieldAttribute'])) {
-            $unserializer->setOption('keyAttribute', $this->_options['fieldAttribute']);
+            $unserializer->setOption('keyAttribute',
+                                     $this->_options['fieldAttribute']);
         }
-        
-        // Unserialize the XML Data
+        // unserialize the XML data
         $test = $unserializer->unserialize($xml, false);
         if (PEAR::isError($test)) {
             return $test;
         }
-        
-        // Fetch the unserialized Data
+        // fetch the unserialized data
         $data = $unserializer->getUnserializedData();
-
-        // Build a simple array:
-        list($junk, $data) = each($data);
+        // build a simple array
+        list($junk, $data) = each($data);  // TODO: check $data here
+        // check the array, can it be parsed?
+        if (!is_array($data)) {
+            return PEAR::raiseError('Unable to bind the XML data. ' .
+                                    'You may want to set the ' .
+                                    '\'xpath\' option.');
+        }
+        // parse the given XML data
         foreach ($data as $index => $row) {
-            if (!is_array($row) or !is_numeric($index)) {
-                return PEAR::raiseError('Unable to bind the xml data. '.
-                                        'You may want to set the \'xpath\' option.');
+            if (!is_array($row) || !is_numeric($index)) {
+                return PEAR::raiseError('Unable to bind the XML data. ' .
+                                        'You may want to set the ' .
+                                        '\'xpath\' option.');
             }
             $this->_ar[] = $this->_processRow($row);
         }
-
-        if ($this->_ar and !$this->_options['fields']) {
-            $this->setOption('fields', array_keys($this->_ar[0]));
-        }
-        
-        return true;
+        return $this->_ar;
     }
 
     /**
-     * Process XML row 
+     * Process XML row
      * 
      * @access  private
      * @param   array    $row         Row from unserializer data array
      * @param   string   $keyPrefix   Prepended to key, for recursive processing
-     * @return  array    of form: array($field1 => $value1, $field2 => $value2, ...) 
+     * @return  array    of form: array($field1 => $value1, $field2 => $value2, ...)
      */
     function _processRow($row, $keyPrefix = '')
     {
@@ -167,38 +266,72 @@ class Structures_DataGrid_DataSource_XML extends
         foreach ($row as $item => $info) {
             $itemKey = $keyPrefix . $item;
             switch (true) {
-                // Item has no attributes and unique tag name
+                // item has no attributes and unique tag name
                 case !is_array($info):
                     $rowProcessed[$itemKey] = $info;
                     break;
-                // Items with non-unique tag names, or fieldAttribute option is null
-                // Process array elements recursively as separate items
+                // items with non-unique tag names, or 'fieldAttribute'
+                // option is null; process array elements recursively as
+                // separate items
                 case !isset($info['attributes']):
                     $rowProcessed += $this->_processRow($info, $itemKey);
                     break;
-                // Attributes found: field attribute is already in item key
-                // extract label if option set and $this->_options['labels'] is empty 
-                case !$this->_options['labels'] && 
-                    !is_null($this->_options['labelAttribute']):
+                // attributes found: field attribute is already in item key;
+                // extract label if option set and 'labels' option is empty 
+                case    !$this->_options['labels']
+                     && !is_null($this->_options['labelAttribute']):
                     if (isset($info['attributes'][$this->_options['labelAttribute']])) {
                         $labels[$itemKey] = $info['attributes'][$this->_options['labelAttribute']];
-                    }
-                    else {
+                    } else {
                         $labels[$itemKey] = $itemKey;
                     }
                     // no break here; we need the content!
                 default:
-                    $rowProcessed[$itemKey] = isset($info['content']) 
-                        ? $info['content'] : ''; 
+                    $rowProcessed[$itemKey] = 
+                        isset($info['content']) ? $info['content'] : ''; 
             }
         }
-        // Set labels if extracted
+        // set labels if extracted
         if (!$this->_options['labels'] && isset($labels)) {
             $this->setOption('labels', $labels);
         }
         return $rowProcessed;
     }
-    
+
+    /**
+     * Process XML row from SimpleXML
+     * 
+     * @access  private
+     * @param   array    $row         Row from SimpleXML
+     * @return  array    of form: array($field1 => $value1, $field2 => $value2, ...)
+     */
+    function _processRowSimpleXML($row)
+    {
+        $rowProcessed = array();
+        foreach ($row as $item => $info) {
+            // extract label if option set and $this->_options['labels']
+            // is empty 
+            if (   !$this->_options['labels']
+                && !is_null($this->_options['labelAttribute'])
+               ) {
+                $key = $value = $item;
+                foreach ($info->attributes() as $a => $b) {
+                    if ($this->_options['labelAttribute'] == $a) {
+                        $value = $b;
+                    }
+                }
+                $labels[$key] = $value;
+            }
+            // save the content
+            $rowProcessed[$item] = $info;
+        }
+        // set labels if extracted
+        if (!$this->_options['labels'] && isset($labels)) {
+            $this->setOption('labels', $labels);
+        }
+        return $rowProcessed;
+    }
+
 }
 
 /* vim: set expandtab tabstop=4 shiftwidth=4: */
