@@ -143,7 +143,7 @@ class DataSourceSQLTest extends DataSourceTest
     {
         $this->datasource->bind("SELECT * FROM test WHERE 0 = 1", 
                 array('dsn' => $this->getDSN(),
-                    'count_query' => 'SELECT COUNT(*) FROM test'));
+                      'count_query' => 'SELECT COUNT(*) FROM test'));
         $this->assertEquals(count($this->data), $this->datasource->count());
     }
 
