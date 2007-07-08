@@ -46,7 +46,8 @@
 
 
 require_once 'Structures/DataGrid/DataSource.php';
-require_once 'PHPUnit2/Framework/TestCase.php';
+require_once 'PEAR.php';
+require_once 'PHPUnit/Framework/TestCase.php';
 
 /**
  * DataSource core tests
