@@ -44,7 +44,6 @@
  */
 
 require_once 'Structures/DataGrid/DataSource/Array.php';
-require_once 'XML/Unserializer.php';
 
 /**
  * XML DataSource driver
@@ -211,6 +210,11 @@ class Structures_DataGrid_DataSource_XML extends
         }
 
         // PHP 4 handling follows
+
+        // check XML_(Un)serializer installation
+        if (!include_once('XML/Unserializer.php')) {
+            return PEAR::raiseError('XML_Serializer package not found');
+        }
 
         // instantiate XML_Unserializer object
         $unserializer =& new XML_Unserializer();
