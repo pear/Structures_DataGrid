@@ -47,28 +47,31 @@
 
 require_once 'Structures/DataGrid/DataSource.php';
 require_once 'PEAR.php';
-require_once 'PHPUnit/Framework/TestCase.php';
+require_once 'PHPUnit.php';
+
+error_reporting(E_ALL);
 
 /**
  * DataSource core tests
  */
-class DataSourceTest extends PHPUnit_Framework_TestCase
+class DataSourceTest extends PHPUnit_TestCase
 {
-    protected $datasource;
-    protected $data = array(
+    var $datasource;
+    var $data = array(
                 array('num' => '1', 'the str' => 'test'),
                 array('num' => '1', 'the str' => 'présent'),
                 array('num' => '2', 'the str' => 'viel spaß'),
                 array('num' => '3', 'the str' => ''),
             );
 
-    public function __construct()
+    function DataSourceTest($name)
     {
-        parent::__construct();
+        parent::PHPUnit_TestCase($name);
         PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, array($this, 'onPearError'));
+        $this->setLooselyTyped(true);
     }
 
-    public function onPearError($error)
+    function onPearError($error)
     {
         $this->fail(
             "------------------------\n".
@@ -76,30 +79,30 @@ class DataSourceTest extends PHPUnit_Framework_TestCase
             "------------------------\n");
     }
 
-    public function setUp()
+    function setUp()
     {
         $class = $this->getDriverClassName();
         $file = str_replace('_', '/', $class) . '.php';
         if (!$fp = @fopen($file, 'r', true)) {
-            $this->markTestSkipped("Driver unavailable: $class");
+            $this->fail("Skipping: Driver unavailable: $class");
         }
         fclose($fp);
         require_once($file);
         $this->datasource = new $class();
     }
 
-    public function tearDown()
+    function tearDown()
     {
         unset($this->datasource);
     }
 
-    public function testFetchAll()
+    function testFetchAll()
     {
         $this->bindDefault();
         $this->assertEquals($this->data, $this->datasource->fetch());
     }
 
-    public function testLimit()
+    function testLimit()
     {
         $this->bindDefault();
         $records = $this->datasource->fetch(1);
@@ -110,21 +113,21 @@ class DataSourceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($this->data[1], $records[0]);
     }
 
-    public function testCountBeforeFetch()
+    function testCountBeforeFetch()
     {
         $this->bindDefault();
         $this->assertEquals(count($this->data), $this->datasource->count());
         $this->assertEquals($this->data, $this->datasource->fetch());
     }
 
-    public function testCountAfterFetch()
+    function testCountAfterFetch()
     {
         $this->bindDefault();
         $this->assertEquals($this->data, $this->datasource->fetch());
         $this->assertEquals(count($this->data), $this->datasource->count());
     }
 
-    public function testSort()
+    function testSort()
     {
         $this->bindDefault();
         $expected = array(
@@ -137,7 +140,7 @@ class DataSourceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($expected, $this->datasource->fetch());
     }
 
-    public function testMultiSort()
+    function testMultiSort()
     {
         $this->bindDefault();
         if ($this->datasource->hasFeature('multiSort')) {
@@ -150,7 +153,7 @@ class DataSourceTest extends PHPUnit_Framework_TestCase
             $this->datasource->sort(array('num' => 'DESC', 'the str' => 'DESC'));
             $this->assertEquals($expected, $this->datasource->fetch());
         } else {
-            $this->markTestSkipped( 'Driver does not support multiSort');
+            $this->fail("Skipping: Driver does not support multiSort");
         }
     }
 }

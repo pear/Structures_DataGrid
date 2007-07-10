@@ -52,7 +52,7 @@ require_once 'File/Util.php';
  */
 class DataSourceCSVTest extends DataSourceTest
 {
-    protected $complexInput = array(
+    var $complexInput = array(
         'aaa,bbb',
         'aaa,"bbb"',
         '"aaa","bbb"',
@@ -75,7 +75,7 @@ class DataSourceCSVTest extends DataSourceTest
         'aaa"\\"a","bbb"'
     );
 
-    protected $complexOutput= array ( 
+    var $complexOutput= array ( 
         array('aaa', 'bbb'),
         array('aaa', 'bbb'),
         array('aaa', 'bbb'),
@@ -98,14 +98,14 @@ class DataSourceCSVTest extends DataSourceTest
         array('aaa"\\"a"', 'bbb'),
     );
 
-    protected $csvFile;
+    var $csvFile;
 
-    protected function getDriverClassName()
+    function getDriverClassName()
     {
         return 'Structures_DataGrid_DataSource_CSV';
     }
 
-    public function setUp()
+    function setUp()
     {
         parent::setUp();
         if (!isset($this->csvFile)) {
@@ -118,24 +118,26 @@ class DataSourceCSVTest extends DataSourceTest
         }
     }
 
-    public function writeCsvFile($filename, $data, $header = null)
+    function writeCsvFile($filename, $data, $header = null)
     {
         $fp = fopen($filename, 'w');
         if (!is_null($header)) {
-            fputcsv($fp, $header);
+            $line = '"' . join('","', $header) . '"' . "\n";
+            fwrite($fp, $line);
         }
         foreach ($data as $row) {
-            fputcsv($fp, $row);
+            $line = '"' . join('","', $row) . '"' . "\n";
+            fwrite($fp, $line);
         }
         fclose($fp);
     }
 
-    public function bindDefault()
+    function bindDefault()
     {
         $this->datasource->bind($this->csvFile, array('header' => true));
     }
 
-    public function testComplexStrings()
+    function testComplexStrings()
     {
         $result = array();
         foreach ($this->complexInput as $line) {
@@ -147,12 +149,14 @@ class DataSourceCSVTest extends DataSourceTest
         $this->assertEquals($this->complexOutput, $result);
     }
 
-    public function testComplexFile()
+    function testComplexFile()
     {
         $filename = File_Util::tmpDir() . '/sdgtest.complex.csv';
         $result = array();
         foreach ($this->complexInput as $line) {
-            file_put_contents($filename, "$line\n");
+            $fp = fopen($filename, "w");
+            fwrite($fp, "$line\n");
+            fclose($fp);
             $datasource = new Structures_DataGrid_DataSource_CSV();
             $datasource->bind($filename);
             $data = $datasource->fetch();

@@ -48,9 +48,7 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
     define('PHPUnit_MAIN_METHOD', 'AllTests::main');
 }
  
-require_once 'PHPUnit/Framework.php';
-require_once 'PHPUnit/TextUI/TestRunner.php';
- 
+require_once 'PHPUnit.php';
 require_once 'AllDataSourceTests.php';
  
 /**
@@ -58,22 +56,25 @@ require_once 'AllDataSourceTests.php';
  */
 class AllTests
 {
-    public static function main()
+    function main()
     {
-        PHPUnit_TextUI_TestRunner::run(self::suite());
+        $suite = new PHPUnit_TestSuite();
+        $names = AllTests::getSuites();
+        foreach ($names as $name) {
+            require_once "$name.php";
+            $suite->addTestSuite($name);
+        }
+        return PHPUnit::run($suite);
     }
  
-    public static function suite()
+    function getSuites()
     {
-        $suite = new PHPUnit_Framework_TestSuite('Structures_DataGrid');
- 
-        $suite->addTest(AllDataSourceTests::suite());
- 
-        return $suite;
+        return AllDataSourceTests::getSuites();
     }
 }
  
 if (PHPUnit_MAIN_METHOD == 'AllTests::main') {
-    AllTests::main();
+    $result = AllTests::main();
+    echo $result->toString();
 }
 ?>

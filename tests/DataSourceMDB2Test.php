@@ -51,17 +51,17 @@ require_once 'DataSourceSQLTest.php';
  */
 class DataSourceMDB2Test extends DataSourceSQLTest 
 {
-    protected function getDriverClassName()
+    function getDriverClassName()
     {
         return 'Structures_DataGrid_DataSource_MDB2';
     }
 
-    public function getDSN()
+    function getDSN()
     {
         return "sqlite:///{$this->dbfile}";
     }
 
-    public function getDatabaseObject()
+    function getDatabaseObject()
     {
         return MDB2::connect($this->getDSN());
     }

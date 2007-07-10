@@ -52,9 +52,9 @@ require_once 'File/Util.php';
  */
 class DataSourceSQLTest extends DataSourceTest
 {
-    protected $dbfile;
+    var $dbfile;
 
-    public function setUp()
+    function setUp()
     {
         parent::setUp();
         if (!isset($this->dbfile)) {
@@ -72,12 +72,12 @@ class DataSourceSQLTest extends DataSourceTest
 
     }
 
-    public function bindDefault()
+    function bindDefault()
     {
         $this->datasource->bind("SELECT * FROM test", array('dsn' => $this->getDSN()));
     }
 
-    public function testWhere()
+    function testWhere()
     {
         $this->datasource->bind("SELECT * FROM test WHERE num=1", 
                 array('dsn' => $this->getDSN()));
@@ -86,7 +86,7 @@ class DataSourceSQLTest extends DataSourceTest
         $this->assertEquals($expected, $this->datasource->fetch(1, 1));
     }
 
-    public function testDistinct()
+    function testDistinct()
     {
         $this->datasource->bind("SELECT DISTINCT num FROM test", array('dsn' => $this->getDSN()));
         $this->assertEquals(3, $this->datasource->count());
@@ -102,7 +102,7 @@ class DataSourceSQLTest extends DataSourceTest
         $this->assertEquals($expected, $this->datasource->fetch(1,1));
     }
 
-    public function testGroupBy()
+    function testGroupBy()
     {
         $this->datasource->bind("SELECT * FROM test GROUP BY num", array('dsn' => $this->getDSN()));
         $this->assertEquals(3, $this->datasource->count());
@@ -127,7 +127,7 @@ class DataSourceSQLTest extends DataSourceTest
         $this->assertEquals($expected, $this->datasource->fetch());
     }
 
-    public function testMixedSort()
+    function testMixedSort()
     {
         $this->datasource->bind("SELECT * FROM test ORDER BY num DESC", array('dsn' => $this->getDSN()));
         $this->datasource->sort('the str', 'DESC');
@@ -140,7 +140,7 @@ class DataSourceSQLTest extends DataSourceTest
         $this->assertEquals($expected, $this->datasource->fetch());
     }
 
-    public function testCountQuery()
+    function testCountQuery()
     {
         $this->datasource->bind("SELECT * FROM test WHERE 0 = 1", 
                 array('dsn' => $this->getDSN(),
@@ -148,14 +148,14 @@ class DataSourceSQLTest extends DataSourceTest
         $this->assertEquals(count($this->data), $this->datasource->count());
     }
 
-    public function testDatabaseObject()
+    function testDatabaseObject()
     {
         $options['dbc'] = $this->getDatabaseObject();
         $this->datasource->bind("SELECT * FROM test", $options);
         $this->assertEquals($this->data, $this->datasource->fetch());
     }
 
-    public function testUnion()
+    function testUnion()
     {
         $this->datasource->bind("SELECT * FROM test UNION ALL SELECT * FROM test", 
                 array('dsn' => $this->getDSN()));

@@ -48,40 +48,45 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
     define('PHPUnit_MAIN_METHOD', 'AllDataSourceTests::main');
 }
  
-require_once 'PHPUnit/Framework.php';
-require_once 'PHPUnit/TextUI/TestRunner.php';
+require_once 'PHPUnit.php';
  
-require_once 'DataSourceArrayTest.php';
-require_once 'DataSourceDBQueryTest.php';
-require_once 'DataSourceCSVTest.php';
-require_once 'DataSourceMDB2Test.php';
-require_once 'DataSourcePDOTest.php';
-
 /**
  * Test all datasources
  */
 class AllDataSourceTests
 {
-    public static function main()
+    function main()
     {
-        PHPUnit_TextUI_TestRunner::run(self::suite());
+        $suite = new PHPUnit_TestSuite();
+        $names = AllDataSourceTests::getSuites();
+        foreach ($names as $name) {
+            require_once "$name.php";
+            $suite->addTestSuite($name);
+        }
+        return PHPUnit::run($suite);
     }
  
-    public static function suite()
+    function getSuites()
     {
-        $suite = new PHPUnit_Framework_TestSuite('Structures_DataGrid DataSources');
+        // PHP4 & PHP5:
+        $suites =  array(
+            'DataSourceArrayTest',
+            'DataSourceDBQueryTest',
+            'DataSourceCSVTest',
+            'DataSourceMDB2Test',
+        );
+
+        // PHP5 only:
+        if (version_compare(phpversion(), '5', '>=')) {
+            $suites[] = 'DataSourcePDOTest';
+        }
  
-        $suite->addTestSuite('DataSourceArrayTest');
-        $suite->addTestSuite('DataSourceDBQueryTest');
-        $suite->addTestSuite('DataSourceCSVTest');
-        $suite->addTestSuite('DataSourceMDB2Test');
-        $suite->addTestSuite('DataSourcePDOTest');
- 
-        return $suite;
+        return $suites;
     }
 }
  
 if (PHPUnit_MAIN_METHOD == 'AllDataSourceTests::main') {
-    AllDataSourceTests::main();
+    $result = AllDataSourceTests::main();
+    echo $result->toString();
 }
 ?>

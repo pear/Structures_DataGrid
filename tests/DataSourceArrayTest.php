@@ -51,12 +51,12 @@ require_once 'DataSourceTest.php';
  */
 class DataSourceArrayTest extends DataSourceTest
 {
-    protected function getDriverClassName()
+    function getDriverClassName()
     {
         return 'Structures_DataGrid_DataSource_Array';
     }
 
-    public function bindDefault()
+    function bindDefault()
     {
         $this->datasource->bind($this->data);
     }

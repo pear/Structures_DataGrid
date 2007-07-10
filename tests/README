@@ -2,32 +2,24 @@
 ==  Structures_DataGrid Unit Tests ==
 
 To run the tests you need:
-- PHP5
-- PHPUnit >= 3.1.0RC1 from http://phpunit.de/
+- PHP4 or PHP5
+- PHPUnit >= 1.3.2 from http://phpunit.de/
 
-You can run one test suite at a time ; example:
+For the SQL-based tests you need the sqlite extension (bundled by default
+in PHP5)
 
-$ phpunit DataSourceMDB2Test.php
+You can run a group of tests:
 
-Remark: simply running "phpunit" may fail on your system, if that's the case
-try "php5 /usr/bin/phpunit" or "php /usr/bin/phpunit"
-
-You can also run a group of test suites:
-
-$ phpunit AllDataSourceTests.php
+$ php AllDataSourceTests.php
 
 Or all:
 
-$ phpunit AllTests.php
-
-If something seems wrong, look at the verbose output with:
-
-$ phpunit --verbose AllTests.php
+$ php AllTests.php
 
 If you have your Structures_DataGrid files in a special location, set the
 include_path with something like:
 
-$ php5 -d 'include_path=.:/special/location:/path/to/pear' /usr/bin/phpunit AllTests.php
+$ php -d 'include_path=.:/special/location:/path/to/pear' AllTests.php
 
 where /path/to/pear may be /usr/share/php if you're on a unix-like system.
 
