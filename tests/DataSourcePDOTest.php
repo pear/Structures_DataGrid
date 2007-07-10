@@ -44,12 +44,12 @@
  * @license  http://opensource.org/licenses/bsd-license.php New BSD License
  */
 
-require_once 'DataSourceSQLTest.php';
+require_once 'DataSourceSQLTestCore.php';
 
 /**
  * Structures_DataGrid_DataSource_PDO tests
  */
-class DataSourcePDOTest extends DataSourceSQLTest 
+class DataSourcePDOTest extends DataSourceSQLTestCore
 {
     protected function getDriverClassName()
     {

@@ -44,13 +44,13 @@
  * @license  http://opensource.org/licenses/bsd-license.php New BSD License
  */
 
-require_once 'DataSourceTest.php';
+require_once 'DataSourceTestCore.php';
 require_once 'File/Util.php';
 
 /**
  * Structures_DataGrid_DataSource_CSV tests
  */
-class DataSourceCSVTest extends DataSourceTest
+class DataSourceCSVTest extends DataSourceTestCore
 {
     var $complexInput = array(
         'aaa,bbb',

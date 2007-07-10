@@ -44,12 +44,12 @@
  * @license  http://opensource.org/licenses/bsd-license.php New BSD License
  */
 
-require_once 'DataSourceTest.php';
+require_once 'DataSourceTestCore.php';
 
 /**
  * Structures_DataGrid_DataSource_Array tests
  */
-class DataSourceArrayTest extends DataSourceTest
+class DataSourceArrayTest extends DataSourceTestCore
 {
     function getDriverClassName()
     {

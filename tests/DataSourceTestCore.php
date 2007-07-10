@@ -54,7 +54,7 @@ error_reporting(E_ALL);
 /**
  * DataSource core tests
  */
-class DataSourceTest extends PHPUnit_TestCase
+class DataSourceTestCore extends PHPUnit_TestCase
 {
     var $datasource;
     var $data = array(
@@ -64,7 +64,7 @@ class DataSourceTest extends PHPUnit_TestCase
                 array('num' => '3', 'the str' => ''),
             );
 
-    function DataSourceTest($name)
+    function DataSourceTestCore($name)
     {
         parent::PHPUnit_TestCase($name);
         PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, array($this, 'onPearError'));

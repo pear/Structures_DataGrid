@@ -44,13 +44,13 @@
  * @license  http://opensource.org/licenses/bsd-license.php New BSD License
  */
 
-require_once 'DataSourceTest.php';
+require_once 'DataSourceTestCore.php';
 require_once 'File/Util.php';
 
 /**
  * SQL-based DataSource core tests
  */
-class DataSourceSQLTest extends DataSourceTest
+class DataSourceSQLTestCore extends DataSourceTestCore
 {
     var $dbfile;
 
