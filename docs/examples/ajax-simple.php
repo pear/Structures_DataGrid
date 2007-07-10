@@ -10,17 +10,18 @@ $datagrid->bind("SELECT * FROM mytable", $options);
 // Set the javascript handler function for onclick events
 $datagrid->setRendererOption('jsHandler', 'updateGrid', true);
 
-// Handle table AJAX requests 
-if (@$_GET['ajax'] == 'table') {
-    $datagrid->render();
-    exit();
-}
-
-// Handle pager AJAX requests 
-if (@$_GET['ajax'] == 'pager') {
-    // Warning: require Pager CVS or above 2.4.3
-    $datagrid->render('Pager');
-    exit();
+if (isset($_GET['ajax'])) {
+    // Handle table AJAX requests 
+    if ($_GET['ajax'] == 'table') {
+        $datagrid->render();
+        exit();
+    }
+    // Handle pager AJAX requests 
+    if ($_GET['ajax'] == 'pager') {
+        // Warning: require Pager CVS or above 2.4.3
+        $datagrid->render('Pager');
+        exit();
+    }
 }
 
 // No AJAX request, render the initial content..
