@@ -45,6 +45,7 @@
  */
 
 require_once 'DataSourceTest.php';
+require_once 'File/Util.php';
 
 /**
  * SQL-based DataSource core tests
@@ -57,7 +58,7 @@ class DataSourceSQLTest extends DataSourceTest
     {
         parent::setUp();
         if (!isset($this->dbfile)) {
-            $this->dbfile = "/tmp/sdgtest.db";
+            $this->dbfile = File_Util::tmpDir() . '/sdgtest.db';
             if (file_exists($this->dbfile)) {
                 unlink($this->dbfile);
             }

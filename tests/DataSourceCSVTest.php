@@ -45,6 +45,7 @@
  */
 
 require_once 'DataSourceTest.php';
+require_once 'File/Util.php';
 
 /**
  * Structures_DataGrid_DataSource_CSV tests
@@ -108,7 +109,7 @@ class DataSourceCSVTest extends DataSourceTest
     {
         parent::setUp();
         if (!isset($this->csvFile)) {
-            $this->csvFile = "/tmp/sdgtest.csv";
+            $this->csvFile = File_Util::tmpDir() . '/sdgtest.csv';
             if (file_exists($this->csvFile)) {
                 unlink($this->csvFile);
             }
@@ -148,7 +149,7 @@ class DataSourceCSVTest extends DataSourceTest
 
     public function testComplexFile()
     {
-        $filename = '/tmp/sdgtest.complex.csv';
+        $filename = File_Util::tmpDir() . '/sdgtest.complex.csv';
         $result = array();
         foreach ($this->complexInput as $line) {
             file_put_contents($filename, "$line\n");
