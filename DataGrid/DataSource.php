@@ -406,6 +406,20 @@ class Structures_DataGrid_DataSource
                                 "supported by the current driver");
     }
 
+    /**
+     * Resources cleanup method prototype
+     *
+     * This is where drivers should close sql connections, files, etc...
+     * if needed.
+     *
+     * @abstract
+     * @return  void 
+     * @access  public                          
+     */
+    function free()
+    {
+    }
+
     /**#@-*/
 
     // End DocBook template
@@ -605,6 +619,13 @@ class Structures_DataGrid_DataSource
             $this->_sqlRowNum = $count;
         }
         return $count;
+    }
+
+    function _sqlFree()
+    {
+        if ($this->_sqlHandle && is_null($this->_options['dbc'])) {
+            $this->_disconnect();
+        }
     }
 }
 

@@ -149,6 +149,18 @@ class Structures_DataGrid_DataSource_DBQuery
     }
     
     /**
+     * Disconnect from the database, if needed 
+     *
+     * @abstract
+     * @return void
+     * @access public
+     */
+    function free()
+    {
+        $this->_sqlFree();
+    }
+
+    /**
      * This can only be called prior to the fetch method.
      *
      * @access  public
@@ -166,6 +178,11 @@ class Structures_DataGrid_DataSource_DBQuery
     function &_connect()
     {
         return DB::connect($this->_options['dsn'], $this->_options['db_options']);
+    }
+
+    function _disconnect()
+    {
+        $this->_sqlHandle->disconnect();
     }
 
     function _isConnection($dbc)

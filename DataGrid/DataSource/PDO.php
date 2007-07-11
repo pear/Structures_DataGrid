@@ -154,6 +154,18 @@ class Structures_DataGrid_DataSource_PDO
     }
     
     /**
+     * Disconnect from the database, if needed 
+     *
+     * @abstract
+     * @return void
+     * @access public
+     */
+    function free()
+    {
+        $this->_sqlFree();
+    }
+
+    /**
      * This can only be called prior to the fetch method.
      *
      * @access  public
@@ -183,6 +195,11 @@ class Structures_DataGrid_DataSource_PDO
                                     $e->getMessage());
         }
         return $dbh;
+    }
+
+    function _disconnect()
+    {
+        $this->_sqlHandle = null;
     }
 
     function _isConnection($dbc)
