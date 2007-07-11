@@ -93,6 +93,7 @@ class DataSourceTestCore extends PHPUnit_TestCase
 
     function tearDown()
     {
+        $this->datasource->free();
         unset($this->datasource);
     }
 

@@ -61,9 +61,15 @@ class DataSourceMDB2Test extends DataSourceSQLTestCore
         return "sqlite:///{$this->dbfile}";
     }
 
-    function getDatabaseObject()
+    function &getDatabaseObject()
     {
-        return MDB2::connect($this->getDSN());
+        $mdb2 =& MDB2::connect($this->getDSN());
+        return $mdb2;
+    }
+
+    function closeDatabaseObject(&$mdb2)
+    {
+        $mdb2->disconnect();
     }
 }
 

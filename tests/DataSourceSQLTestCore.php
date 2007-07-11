@@ -150,9 +150,10 @@ class DataSourceSQLTestCore extends DataSourceTestCore
 
     function testDatabaseObject()
     {
-        $options['dbc'] = $this->getDatabaseObject();
+        $options['dbc'] =& $this->getDatabaseObject();
         $this->datasource->bind("SELECT * FROM test", $options);
         $this->assertEquals($this->data, $this->datasource->fetch());
+        $this->closeDatabaseObject($options['dbc']);
     }
 
     function testUnion()

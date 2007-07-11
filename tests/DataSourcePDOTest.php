@@ -61,9 +61,15 @@ class DataSourcePDOTest extends DataSourceSQLTestCore
         return "sqlite2:{$this->dbfile}";
     }
 
-    public function getDatabaseObject()
+    public function &getDatabaseObject()
     {
-        return new PDO($this->getDSN());
+        $pdo = new PDO($this->getDSN());
+        return $pdo;
+    }
+
+    public function closeDatabaseObject(&$pdo)
+    {
+        $pdo = null;
     }
 }
 

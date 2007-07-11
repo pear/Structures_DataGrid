@@ -61,9 +61,15 @@ class DataSourceDBQueryTest extends DataSourceSQLTestCore
         return "sqlite:///{$this->dbfile}";
     }
 
-    function getDatabaseObject()
+    function &getDatabaseObject()
     {
-        return DB::connect($this->getDSN());
+        $db =& DB::connect($this->getDSN());
+        return $db;
+    }
+
+    function closeDatabaseObject(&$db)
+    {
+        $db->disconnect();
     }
 }
 
