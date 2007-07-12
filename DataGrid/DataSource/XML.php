@@ -48,7 +48,7 @@ require_once 'Structures/DataGrid/DataSource/Array.php';
 /**
  * XML DataSource driver
  *
- * This class is a DataSource driver for a XML data. It accepts strings
+ * This class is a DataSource driver for XML data. It accepts strings
  * and filenames. An XPath expression can be specified to extract a
  * subset from the given XML data.
  *
