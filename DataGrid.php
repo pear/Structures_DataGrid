@@ -1386,63 +1386,44 @@ class Structures_DataGrid
             // DB_DataObject
             case is_object($source) && is_subclass_of($source, 'db_dataobject'):
                 return DATAGRID_SOURCE_DATAOBJECT;
-                break;
 
             // DB_Result
             case strtolower(get_class($source)) == 'db_result':
                 return DATAGRID_SOURCE_DB;
-                break;
                 
             // Array
             case is_array($source):
                 return DATAGRID_SOURCE_ARRAY;
-                break;
 
             // RSS
             case is_string($source) && stristr('<rss', $source):
             case is_string($source) && stristr('<rdf:RDF', $source):
             case is_string($source) && strpos($source, '.rss') !== false:
                 return DATAGRID_SOURCE_RSS;
-                break;
 
             // XML
             case is_string($source) && preg_match('#^ *<\?xml#', $source) === 1:
                 return DATAGRID_SOURCE_XML;
-                break;
             
-            // DBQuery / MDB2
-            case is_string($source) &&
+            // SQL query based drivers
+            case is_string($source) && 
                 preg_match('#SELECT\s.+\sFROM#is', $source) === 1:
-                if (version_compare(phpversion(), '5.0.0', '<')) {  // PHP 4
-                    if (   array_key_exists('dbc', $options)
-                        && is_subclass_of($options['dbc'], 'db_common')
-                       ) {
-                        return 'DBQuery';
+                if (array_key_exists('dbc', $options)) {
+                    switch (true) {
+                        case is_subclass_of($options['dbc'], 'db_common'):
+                            return 'DBQuery';
+                        case is_subclass_of($options['dbc'], 'PDO'):
+                            return 'PDO';
                     }
-                    return 'MDB2';
-                } else {  // PHP 5
-                    if (    array_key_exists('dsn', $options)
-                        && !array_key_exists('backend', $options)
-                       ) {  // detect MDB2 driver for BC reasons here
-                        return 'MDB2';
-                    }
-                    return 'SQLQuery';
                 }
-                break;
+                return 'MDB2';  // default driver for SQL queries
 
             // DB_Table
             case is_object($source) && is_subclass_of($source, 'db_table'):
                 return DATAGRID_SOURCE_DBTABLE;
-                break;
 
-            // CSV
-            //case is_string($source):
-            //    return DATAGRID_SOURCE_CSV;
-            //    break;
-                
             default:
                 return null;
-                break;
         }
     }
 
