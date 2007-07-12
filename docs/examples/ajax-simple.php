@@ -34,7 +34,7 @@ if (isset($_GET['ajax'])) {
 <script type="text/javascript">
 function updateGrid(info) 
 {
-    var url = '<?=$_SERVER['PHP_SELF']?>';
+    var url = '<?php echo $_SERVER['PHP_SELF']; ?>';
     var pars = 'page=' + info.page;
     if (info.sort.length > 0) {
         pars += '&orderBy=' + info.sort[0].field + '&direction=' + info.sort[0].direction;
@@ -51,7 +51,7 @@ function updateGrid(info)
 
 <body>
 Pages: <span id="pager"><?php $datagrid->render('Pager'); ?></span>
-<div id="grid"><? $datagrid->render(); ?></div>
+<div id="grid"><?php $datagrid->render(); ?></div>
 </body>
 
 </html>
