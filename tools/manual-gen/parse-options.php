@@ -85,8 +85,8 @@ function parseDirectory(&$descriptions, &$modes, &$options, &$notes, &$examples,
     $entries = scandir(PATH . $dir);
     foreach ($entries as $entry) {
         // ignore pointers to current and parent directory
-        // ignore CVS, documentation and tools directories
-        if (!in_array($entry, array('.', '..', 'CVS', 'docs', 'tools'))) {
+        // ignore CVS, documentation, tests and tools directories
+        if (!in_array($entry, array('.', '..', 'CVS', 'docs', 'tests', 'tools'))) {
             // step recursive into subdirectories
             if (is_dir(PATH . $dir . '/' . $entry)) {
                 $current = realpath(PATH . $dir);
