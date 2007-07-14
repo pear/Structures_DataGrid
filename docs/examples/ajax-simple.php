@@ -43,7 +43,7 @@ function updateGrid(info)
     new Ajax.Updater( 'grid', url, { method: 'get', parameters: pars + '&ajax=table' });
     new Ajax.Updater( 'pager', url, { method: 'get', parameters: pars + '&ajax=pager' });
 
-    // Important: return false to void href links
+    // Important: return false to avoid href links
     return false;
 }
 </script>
