@@ -68,6 +68,7 @@ class DataSourceSQLTestCore extends DataSourceTestCore
                 sqlite_query($db, "INSERT INTO test VALUES ({$row['num']}, '{$row['the str']}');");
             }
             sqlite_close($db);
+            unset($db);
         }
 
     }
@@ -154,6 +155,7 @@ class DataSourceSQLTestCore extends DataSourceTestCore
         $this->datasource->bind("SELECT * FROM test", $options);
         $this->assertEquals($this->data, $this->datasource->fetch());
         $this->closeDatabaseObject($options['dbc']);
+        unset($options['dbc']);
     }
 
     function testUnion()

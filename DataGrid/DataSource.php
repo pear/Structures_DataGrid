@@ -625,6 +625,7 @@ class Structures_DataGrid_DataSource
     {
         if ($this->_sqlHandle && is_null($this->_options['dbc'])) {
             $this->_disconnect();
+            unset($this->_sqlHandle);
         }
     }
 }
