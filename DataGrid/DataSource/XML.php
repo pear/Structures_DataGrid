@@ -62,6 +62,8 @@ require_once 'Structures/DataGrid/DataSource/Array.php';
  *                              as column label (only used if 'generate_columns'
  *                              is true and the XML source has attributes).
  *
+ * @example  bind-xml1.php  Bind a simple XML string
+ * @example  bind-xml2.php  Bind a more complex XML string (using 'xpath' option)
  * @package  Structures_DataGrid_DataSource_XML
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @author   Mark Wiesemann <wiesemann@php.net>

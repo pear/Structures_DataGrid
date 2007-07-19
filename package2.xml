@@ -61,6 +61,8 @@ This concept is based on the .NET Framework DataGrid control and works very well
      <file name="ajax-simple.php" role="doc" />
      <file name="bind-dataobject.php" role="doc" />
      <file name="bind-sql.php" role="doc" />
+     <file name="bind-xml1.php" role="doc" />
+     <file name="bind-xml2.php" role="doc" />
      <file name="checkablehtmltable.php" role="doc" />
      <file name="constructor.php" role="doc" />
      <file name="fill-pager.php" role="doc" />
