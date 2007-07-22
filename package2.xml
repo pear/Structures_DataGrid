@@ -32,8 +32,8 @@ This concept is based on the .NET Framework DataGrid control and works very well
  <date>?</date>
  <time>?</time>
  <version>
-  <release>?</release>
-  <api>?</api>
+  <release>0.8.4</release>
+  <api>0.8.0</api>
  </version>
  <stability>
   <release>beta</release>
@@ -41,11 +41,13 @@ This concept is based on the .NET Framework DataGrid control and works very well
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- add 16 examples, including simple AJAX support
+- add 17 examples, including simple AJAX support
 - support setting rendering options for all renderers at once
   with setRendererOption*()
 - new common renderer options: jsHandler and jsHandlerData, for support of
   onclick/onsubmit events
+- rename 'primary_key' DataSource option as 'primaryKey'
+- new PDO DataSource driver is available as a separate subpackage
  </notes>
  <contents>
   <dir name="/">
@@ -88,6 +90,7 @@ This concept is based on the .NET Framework DataGrid control and works very well
     <file baseinstalldir="Structures" name="DataSourceMDB2Test.php" role="test" />
     <file baseinstalldir="Structures" name="DataSourcePDOTest.php" role="test" />
     <file baseinstalldir="Structures" name="DataSourceSQLTest.php" role="test" />
+    <file baseinstalldir="Structures" name="DataSourceXMLTest.php" role="test" />
    </dir> <!-- /tests -->
   </dir> <!-- / -->
  </contents>
@@ -97,13 +100,8 @@ This concept is based on the .NET Framework DataGrid control and works very well
     <min>4.3</min>
    </php>
    <pearinstaller>
-    <min>1.4.9</min>
+    <min>1.6.0</min>
    </pearinstaller>
-   <package>
-    <name>PEAR</name>
-    <channel>pear.php.net</channel>
-    <min>1.2</min>
-   </package>
   </required>
   <optional>
    <package>
@@ -120,7 +118,7 @@ This concept is based on the .NET Framework DataGrid control and works very well
     <name>sqlite</name>
    </extension>
   </optional>
-  <group name="datasources" hint="(un)installs all optional DataSource drivers">
+  <group name="datasources" hint="(un)installs all official DataSource drivers">
    <subpackage>
     <name>Structures_DataGrid_DataSource_CSV</name>
     <channel>pear.php.net</channel>
@@ -166,8 +164,13 @@ This concept is based on the .NET Framework DataGrid control and works very well
     <channel>pear.php.net</channel>
     <min>0.1.0</min>
    </subpackage>
+   <subpackage>
+    <name>Structures_DataGrid_DataSource_PDO</name>
+    <channel>pear.php.net</channel>
+    <min>0.1.0</min>
+   </subpackage>
   </group>
-  <group name="renderers" hint="(un)installs all Renderer drivers">
+  <group name="renderers" hint="(un)installs all official Renderer drivers">
    <subpackage>
     <name>Structures_DataGrid_Renderer_XLS</name>
     <channel>pear.php.net</channel>
