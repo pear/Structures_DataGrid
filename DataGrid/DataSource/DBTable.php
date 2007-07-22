@@ -69,7 +69,7 @@ require_once 'Structures/DataGrid/DataSource.php';
  * To use update() and delete() methods, it is required that the indexes are
  * properly defined in the $idx array in your DB_Table subclass. If you have,
  * for example, created your database table yourself and did not setup the $idx
- * array, you can use the 'primary_key' option to define the primary key field.
+ * array, you can use the 'primaryKey' option to define the primary key field.
  *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@php.net>
@@ -171,33 +171,21 @@ class Structures_DataGrid_DataSource_DBTable
             $sortString = null;
         }
 
-        $result = $this->_object->selectResult(
+        if (is_a($result, 'db_result')) {
+            $this->_object->fetchmode = DB_FETCHMODE_ASSOC;
+        } else {
+            $this->_object->fetchmode = MDB2_FETCHMODE_ASSOC;
+        }
+
+        $recordSet = $this->_object->select(
                             $this->_options['view'],
                             $this->_options['where'], 
                             $sortString, 
                             $offset, $limit,
                             $this->_options['params']);
-
-        if (PEAR::isError($result)) {
-            return $result;
+        if (PEAR::isError($recordSet)) {
+            return $recordSet;
         }
-
-        if (is_a($result, 'db_result')) {
-            $fetchmode = DB_FETCHMODE_ASSOC;
-        } else {
-            $fetchmode = MDB2_FETCHMODE_ASSOC;
-        }
-
-        $recordSet = array();
-
-        // Fetch the Data
-        if ($numRows = $result->numRows()) {
-            while ($record = $result->fetchRow($fetchmode)) {
-                $recordSet[] = $record;
-            }
-        }
-
-        $result->free();
 
         // Determine fields to render
         if (!$this->_options['fields'] && count($recordSet)) {
@@ -260,8 +248,8 @@ class Structures_DataGrid_DataSource_DBTable
      */
     function getPrimaryKey()
     {
-        if (!is_null($this->_options['primary_key'])) {
-            return $this->_options['primary_key'];
+        if (!is_null($this->_options['primaryKey'])) {
+            return $this->_options['primaryKey'];
         }
         include_once 'DB/Table/Manager.php';
         // try to find a primary key or unique index (for a single field)
