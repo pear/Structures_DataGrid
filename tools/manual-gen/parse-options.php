@@ -70,7 +70,9 @@ foreach ($inheritance as $class => $extends) {
     // save the options as an XML file
     $id = writeXMLFile($orig_class, $descriptions[$orig_class], $modes[$orig_class], $driver_options, $notes[$orig_class], 
                        $examples[$orig_class], $releases[$orig_class]);
-    $ids[] = $id;
+    if ($id !== false) {
+        $ids[] = $id;
+    }
 }
 
 // write all IDs into a temporary file (contents need to be manually copied!)
@@ -107,7 +109,7 @@ function parseDirectory(&$descriptions, &$modes, &$options, &$notes, &$examples,
 
 function parseFile(&$descriptions, &$modes, &$options, &$notes, &$examples, &$inheritance, &$releases, $filename)
 {
-    echo 'Parsing ' . $filename . ' ... ';
+    echo 'Parsing file ' . $filename . " ... \n";
 
     // read the file contents
     // (using file() instead of file_get_contents() to avoid a complex regular
@@ -116,51 +118,65 @@ function parseFile(&$descriptions, &$modes, &$options, &$notes, &$examples, &$in
     $file = file(PATH . $filename);
 
     // get the class name and the name of the extended class
-    $classSpec = getClassName($file);
-    if (!$classSpec) {
+    $classSpecs = getClassNames($file);
+    if (!$classSpecs) {
         echo "SKIPPING\n";
         return;
     }
-    list($class, $extends) = $classSpec;
 
-    // save the inheritance relation
-    $inheritance[$class] = $extends;
+    $filenameForInclusion = null;
 
-    // get the descriptions
-    $descriptions[$class] = getDescriptions($file, $descriptionsEndRow);
+    foreach ($classSpecs as $classSpec) {
+        list($class, $extends) = $classSpec;
+
+        if (is_null($filenameForInclusion)) {
+            $filenameForInclusion = str_replace('_', '/', $class) . '.php';
+        }
+
+        echo '  Parsing class ' . $class . ' ... ';
+
+        // save the inheritance relation
+        $inheritance[$class] = $extends;
+
+        // get the descriptions
+        $descriptions[$class] = getDescriptions($file, $descriptionsEndRow);
     
-    // get the support modes
-    $modes[$class] = getSupportedModes($class, $filename);
+        // get the support modes
+        $modes[$class] = getSupportedModes($class, $filename, $filenameForInclusion);
 
-    // get the options
-    $options[$class] = getOptions($class, $filename, $file, $descriptionsEndRow, $optionsEndRow);
+        // get the options
+        $options[$class] = getOptions($class, $filename, $file, $descriptionsEndRow,
+                                      $optionsEndRow, $filenameForInclusion);
 
-    // get the 'GENERAL NOTES'
-    $notes[$class] = getNotes($file, $optionsEndRow);
+        // get the 'GENERAL NOTES'
+        $notes[$class] = getNotes($file, $optionsEndRow);
     
-    // get the examples
-    $examples[$class] = getExamples($class, $filename);
+        // get the examples
+        $examples[$class] = getExamples($class, $filename);
 
-    // get the release info
-    $releases[$class] = getRelease(PATH . $filename);
+        // get the release info
+        $releases[$class] = getRelease(PATH . $filename);
+    }
 
     // we're done with this file
     echo "DONE\n";
 }
 
-function getSupportedModes($class, $filename)
+function getSupportedModes($class, $filename, $filenameForInclusion)
 {
     if (strpos($class, 'DataSource') !== false) {
         // get supported modes for a DataSource driver
         $modeTranslation = array('multiSort' => 'Multiple field sorting',
                                  'writeMode' => 'Insert, update and delete records'
                                 );
-        require_once str_replace('_', '/', $class) . '.php';
+        require_once $filenameForInclusion;
         $driver =& new $class;
-        $features = $driver->getFeatures();
         $modes = array();
-        foreach ($features as $feature => $support) {
-            $modes[$modeTranslation[$feature]] = (($support) ? 'yes' : 'no');
+        if (method_exists($driver, 'getFeatures')) {
+            $features = $driver->getFeatures();
+            foreach ($features as $feature => $support) {
+                $modes[$modeTranslation[$feature]] = (($support) ? 'yes' : 'no');
+            }
         }
         return $modes;
     } else {
@@ -310,10 +326,18 @@ function getDescriptions($file, &$descriptionsEndRow)
     return array('short' => trim($short), 'long' => trim($long));
 }
 
-function getOptionsStartRow($file, $descriptionsEndRow)
+function getOptionsStartRow($file, $class)
 {
-    if (strpos($file[$descriptionsEndRow + 1], ' * SUPPORTED OPTIONS:') !== false) {
-        return $descriptionsEndRow + 1;
+    for ($line = 0; $line < count($file); $line++) {
+        if (strpos($file[$line], 'class ' . $class) !== false) {
+            do {
+                $line--;
+                if (strpos($file[$line], ' * SUPPORTED OPTIONS:') !== false) {
+                    return $line;
+                }
+            } while ($line > 0 && substr($file[$line], 0, 2) == ' *');
+            return false;
+        }
     }
     return false;
 
@@ -333,10 +357,10 @@ function getOptionsEndRow($file, $startRow)
     return $endRow;
 }
 
-function getOptions($class, $filename, $file, $descriptionsEndRow, &$optionsEndRow)
+function getOptions($class, $filename, $file, $descriptionsEndRow, &$optionsEndRow, $filenameForInclusion)
 {
     // search for the row after that the options are documented
-    $startRow = getOptionsStartRow($file, $descriptionsEndRow);
+    $startRow = getOptionsStartRow($file, $class);
 
     // the driver has no options
     if ($startRow === false) {
@@ -356,14 +380,14 @@ function getOptions($class, $filename, $file, $descriptionsEndRow, &$optionsEndR
     $optionsEndRow = $endRow;
 
     // collect the options
-    return _getOptions($class, $filename, $file, $startRow, $endRow);
+    return _getOptions($class, $filename, $file, $startRow, $endRow, $filenameForInclusion);
 }
 
-function _getOptions($class, $filename, $file, $startRow, $endRow)
+function _getOptions($class, $filename, $file, $startRow, $endRow, $filenameForInclusion)
 {
     $currOption = '';
     $options = array();
-    require_once str_replace('_', '/', $class) . '.php';
+    require_once $filenameForInclusion;
     $driver =& new $class;
     for ($i = $startRow + 2; $i < $endRow; $i++) {
 
@@ -376,6 +400,9 @@ function _getOptions($class, $filename, $file, $startRow, $endRow)
                 die('FATAL: REGEXP DID NOT MATCH IN LINE ' . $i . "\n");
             }
             $currOption = $matches[1];
+            if (!isset($driver->_options)) {  // this is not a SDG driver
+                continue;
+            }
             if (!array_key_exists($currOption, $driver->_options)) {
                 die('FATAL: OPTION NOT DECLARED: ' . $currOption . "\n");
             }
@@ -494,18 +521,24 @@ function getNotes($file, $optionsEndRow)
     return $notes;
 }
 
-function getClassName($file)
+function getClassNames($file)
 {
     $file = join("\n", $file);
-    if (preg_match('#class ([a-z0-9_]+)\s+(extends\s+([a-z0-9_]+)\s+)?\{#im', $file, $matches)) {
-        $class = $matches[1];
-        $extends = null;
-        if (array_key_exists(3, $matches)) {
-            $extends = $matches[3];
+    if (preg_match_all('#class ([a-z0-9_]+)\s+(extends\s+([a-z0-9_]+)\s+)?\{#im',
+        $file, $matches, PREG_SET_ORDER)
+       ) {
+        $classes = array();
+        foreach ($matches as $match) {
+            $class = $match[1];
+            $extends = null;
+            if (array_key_exists(3, $match)) {
+                $extends = $match[3];
+            }
+            $classes[] = array($class, $extends);
         }
-        return array($class, $extends);
+        return $classes;
     }
-    echo 'CLASS NAME NOT FOUND' . "\n";
+    echo 'NO CLASS NAME FOUND' . "\n";
     return array();
 }
 
@@ -538,6 +571,11 @@ function indentMultiLine($content, $indentStr, $indentNum)
 
 function writeXMLFile($driver, $descriptions, $modes, $options, $notes, $examples, $release)
 {
+    $ignore_drivers = array('Structures_DataGrid_DataSource_SQLQuery');
+    if (in_array($driver, $ignore_drivers)) {
+        return false;
+    }
+
     // prepare some variables for the XML contents
     $type = 'structures-datagrid-' . ((strpos($driver, 'DataSource') !== false) ? 'datasource' : 'renderer');
     $name = strtolower(substr($driver, strrpos($driver, '_') + 1));
