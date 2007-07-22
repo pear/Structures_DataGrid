@@ -74,6 +74,7 @@ class AllDataSourceTests
             'DataSourceDBQueryTest',
             'DataSourceCSVTest',
             'DataSourceMDB2Test',
+            'DataSourceXMLTest',
         );
 
         // PHP5 only:
