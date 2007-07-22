@@ -58,11 +58,6 @@ require_once 'Structures/DataGrid/DataSource.php';
  * - dsn:         (string) A PEAR::MDB2 dsn string. The MDB2 connection will be
  *                         established by this driver. Either this or the 'dbc'
  *                         option is required.
- * - db_options:  (array)  Options for the created database object. This option
- *                         is only used when the 'dsn' option is given.
- * - count_query: (string) Query that calculates the number of rows. See below
- *                         for more information about when such a count query
- *                         is needed.
  * 
  * GENERAL NOTES:
  *
@@ -93,119 +88,81 @@ require_once 'Structures/DataGrid/DataSource.php';
  * @category Structures
  */
 class Structures_DataGrid_DataSource_MDB2
-    extends Structures_DataGrid_DataSource
+    extends Structures_DataGrid_DataSource_SQLQuery
 {   
-    /**
-     * Constructor
-     *
-     * @access public
-     */
-    function Structures_DataGrid_DataSource_MDB2()
-    {
-        parent::Structures_DataGrid_DataSource();
-        $this->_setFeatures(array('multiSort' => true));
-    }
-  
     /**
      * Bind
      *
      * @param   string    $query     The query string
-     * @param   mixed     $options   array('dbc' => [PEAR::MDB2 object])
+     * @param   mixed     $options   array('dbc' => [connection object])
      *                               or
-     *                               array('dsn' => [PEAR::MDB2 dsn string])
+     *                               array('dsn' => [dsn string])
      * @access  public
      * @return  mixed                True on success, PEAR_Error on failure
      */
     function bind($query, $options = array())
     {
-        $r = $this->_sqlBind($query, $options);
-        if (!PEAR::isError($r)) {
-            $this->_sqlHandle->loadModule('Extended', null, false);
+        $result = $this->_bind($query, $options);
+        if (!PEAR::isError($result)) {
+            $this->_handle->loadModule('Extended', null, false);
         }
-        return $r;
+        return $result;
     }
 
     /**
-     * Fetch
-     *
-     * @param   integer $offset     Offset (starting from 0)
-     * @param   integer $limit      Limit
-     * @access  public
-     * @return  mixed               The 2D Array of the records on success,
-     *                              PEAR_Error on failure
-    */
-    function &fetch($offset = 0, $limit = null)
-    {
-        $recordSet = $this->_sqlFetch($offset, $limit);
-        return $recordSet;
-    }
-
-    /**
-     * Count
-     *
-     * @access  public
-     * @return  mixed       The number or records (int),
-     *                      PEAR_Error on failure
+     * Connect to the database
+     * 
+     * @access protected
+     * @return mixed      Instantiated databased object, PEAR_Error on failure
      */
-    function count()
-    {
-        return $this->_sqlCount();
-    }
-   
-    /**
-     * Disconnect from the database, if needed 
-     *
-     * @abstract
-     * @return void
-     * @access public
-     */
-    function free()
-    {
-        $this->_sqlFree();
-    }
-
-    /**
-     * This can only be called prior to the fetch method.
-     *
-     * @access  public
-     * @param   mixed   $sortSpec   A single field (string) to sort by, or a 
-     *                              sort specification array of the form:
-     *                              array(field => direction, ...)
-     * @param   string  $sortDir    Sort direction: 'ASC' or 'DESC'
-     *                              This is ignored if $sortDesc is an array
-     */
-    function sort($sortSpec, $sortDir = 'ASC')
-    {
-        $this->_sqlSort($sortSpec, $sortDir);
-    }
-
     function &_connect()
     {
         return MDB2::connect($this->_options['dsn'], $this->_options['db_options']);
     }
 
+    /**
+     * Disconnect from the database
+     *
+     * @access protected
+     * @return void
+     */
     function _disconnect()
     {
-        $this->_sqlHandle->disconnect();
+        $this->_handle->disconnect();
     }
 
+    /**
+     * Whether the parameter is a MDB2 object
+     *
+     * @access protected
+     * @param  object     $dbc      MDB2 object
+     * @return bool       Whether the parameter is a MDB2 object
+     */
     function _isConnection($dbc)
     {
         return MDB2::isConnection($dbc);
     }
 
-   
+    /**
+     * Fetches and returns the records
+     *
+     * @access protected
+     * @param  string     $query    The (modified) query string
+     * @param  integer    $offset   Offset (starting from 0)
+     * @param  integer    $limit    Limit
+     * @return mixed      The fetched records, PEAR_Error on failure
+     */
     function _getRecords($query, $limit, $offset)
     {
         if (is_null($limit)) {
             if ($offset == 0) {
-                $result = $this->_sqlHandle->query($query);
+                $result = $this->_handle->query($query);
             } else {
-                $result = $this->_sqlHandle->extended->limitQuery($query, null, 
+                $result = $this->_handle->extended->limitQuery($query, null, 
                                 PHP_INT_MAX, $offset);
             }
         } else {
-            $result = $this->_sqlHandle->extended->limitQuery($query, null, 
+            $result = $this->_handle->extended->limitQuery($query, null, 
                             $limit, $offset);
         }
 
@@ -215,7 +172,7 @@ class Structures_DataGrid_DataSource_MDB2
 
         $recordSet = array();
 
-        // Fetch the Data
+        // Fetch the data
         if ($result->numRows()) {
             while ($record = $result->fetchRow(MDB2_FETCHMODE_ASSOC)) {
                 $recordSet[] = $record;
@@ -227,24 +184,45 @@ class Structures_DataGrid_DataSource_MDB2
         return $recordSet;
     }
 
+    /**
+     * Returns a quoted identifier
+     *
+     * @access protected
+     * @return string     The quoted identifier
+     */
     function _quoteIdentifier($field)
     {
-        return $this->_sqlHandle->quoteIdentifier($field);
+        return $this->_handle->quoteIdentifier($field);
     }
 
+    /**
+     * Fetches and returns a single value
+     *
+     * @access protected
+     * @param  string     $query    The query string
+     * @return mixed      The fetched value, PEAR_Error on failure
+     */
     function _getOne($query)
     {
-        return $this->_sqlHandle->extended->getOne($query);
+        return $this->_handle->extended->getOne($query);
     }
 
+    /**
+     * Calculates (and returns) the number of records by getting all records
+     *
+     * @access protected
+     * @param  string     $query    The query string
+     * @return mixed      The numbers row records, PEAR_Error on failure
+     */
     function _getRecordsNum($query)
     {
-        $result = $this->_sqlHandle->query($query);
+        $result = $this->_handle->query($query);
         if (PEAR::isError($result)) {
             return $result;
         }
         return $result->numRows();
     }
+
 }
 
 /* vim: set expandtab tabstop=4 shiftwidth=4: */

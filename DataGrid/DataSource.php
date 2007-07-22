@@ -44,14 +44,14 @@
  */
 
 /**
- * Base abstract class for data source drivers
+ * Base abstract class for DataSource drivers
  * 
  * SUPPORTED OPTIONS:
  *
  * - fields:            (array) Which data fields to fetch from the datasource.
  *                              An empty array means: all fields.
  *                              Form: array(field1, field2, ...)
- * - primary_key:       (array) Name(s), or numerical index(es) of the 
+ * - primaryKey:        (array) Name(s), or numerical index(es) of the 
  *                              field(s) which contain a unique record 
  *                              identifier (only use several fields in case
  *                              of a multiple-fields primary key)
@@ -64,17 +64,13 @@
  *                              Form: array(field => label, ...)
  *                              DEPRECATED: 
  *                              use Structures_DataGrid::generateColumns() instead
- * - dbc:              (object) IGNORED
- * - dsn:              (string) IGNORED
- * - db_options:       (array)  IGNORED
- * - count_query:      (string) IGNORED
  *
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @author   Andrew Nagy <asnagy@webitecture.org>
  * @author   Mark Wiesemann <wiesemann@php.net>
  * @package  Structures_DataGrid
  * @category Structures
- * @version  $Revision $
+ * @version  $Revision$
  */
 class Structures_DataGrid_DataSource
 {
@@ -95,33 +91,6 @@ class Structures_DataGrid_DataSource
      * @access protected
      */
     var $_features = array();
-  
-    /**
-     * SQL query (only for SQL based drivers)
-     * @var string
-     * @access protected
-     */
-    var $_sqlQuery;
-
-    /**
-     * Fields/directions to sort the data by (only for SQL based drivers)
-     * @var array
-     * @access protected
-     */
-    var $_sqlSortSpec;
-
-    var $_sqlHandle;
-
-    /**
-     * Total number of rows (only for SQL based drivers)
-     * 
-     * This property caches the result of count() to avoid running the same
-     * database query multiple times.
-     *
-     * @var int
-     * @access private
-     */
-     var $_sqlRowNum = null;    
 
     /**
      * Constructor
@@ -132,12 +101,8 @@ class Structures_DataGrid_DataSource
         $this->_options = array('generate_columns' => false,
                                 'labels'           => array(),
                                 'fields'           => array(),
-                                'primary_key'      => null,
-                                # Only for SQL query based drivers:
-                                'dbc' => null,
-                                'dsn' => null,
-                                'db_options'  => array(),
-                                'count_query' => '');
+                                'primaryKey'       => null,
+                               );
 
         $this->_features = array(
                 'multiSort' => false, // Multiple field sorting
@@ -352,14 +317,14 @@ class Structures_DataGrid_DataSource
      *
      * Drivers that support the "writeMode" feature should overload this method
      * if the key can be detected. However, the detection must not override the
-     * "primary_key" option.
+     * "primaryKey" option.
      *
      * @return  array       Field(s) name(s) or numerical index(es)
      * @access  protected
      */
     function getPrimaryKey()
     {
-        return $this->_options['primary_key'];
+        return $this->_options['primaryKey'];
     }
 
     /**
@@ -494,16 +459,100 @@ class Structures_DataGrid_DataSource
         return $table->getTable();
     }
 
-    function _sqlSort($sortSpec, $sortDir)
+}
+
+/**
+ * Base abstract class for SQL query based DataSource drivers
+ * 
+ * SUPPORTED OPTIONS:
+ *
+ * - db_options:  (array)  Options for the created database object. This option
+ *                         is only used when the 'dsn' option is given.
+ * - count_query: (string) Query that calculates the number of rows. See below
+ *                         for more information about when such a count query
+ *                         is needed.
+ *
+ * @author   Olivier Guilyardi <olivier@samalyse.com>
+ * @author   Mark Wiesemann <wiesemann@php.net>
+ * @package  Structures_DataGrid
+ * @category Structures
+ * @version  $Revision$
+ */
+class Structures_DataGrid_DataSource_SQLQuery
+    extends Structures_DataGrid_DataSource
+{
+    /**
+     * SQL query
+     * @var string
+     * @access protected
+     */
+    var $_query;
+
+    /**
+     * Fields/directions to sort the data by
+     * @var array
+     * @access protected
+     */
+    var $_sortSpec;
+
+    /**
+     * Instantiated database object
+     * @var object
+     * @access protected
+     */
+    var $_handle;
+
+    /**
+     * Total number of rows
+     * 
+     * This property caches the result of count() to avoid running the same
+     * database query multiple times.
+     *
+     * @var int
+     * @access private
+     */
+     var $_rowNum = null;
+
+    /**
+     * Constructor
+     *
+     */
+    function Structures_DataGrid_DataSource_SQLQuery()
     {
-        if (is_array($sortSpec)) {
-            $this->_sqlSortSpec = $sortSpec;
-        } else {
-            $this->_sqlSortSpec[$sortSpec] = $sortDir;
-        }
+        parent::Structures_DataGrid_DataSource();
+        $this->_addDefaultOptions(array('dbc' => null,
+                                        'dsn' => null,
+                                        'db_options'  => array(),
+                                        'count_query' => ''));
+        $this->_setFeatures(array('multiSort' => true));
     }
 
-    function _sqlBind($query, $options)
+    /**
+     * Bind
+     *
+     * @param   string    $query     The query string
+     * @param   mixed     $options   array('dbc' => [connection object])
+     *                               or
+     *                               array('dsn' => [dsn string])
+     * @access  public
+     * @return  mixed                True on success, PEAR_Error on failure
+     */
+    function bind($query, $options = array())
+    {
+        return $this->_bind($query, $options);
+    }
+
+    /**
+     * Bind
+     *
+     * @param   string    $query     The query string
+     * @param   mixed     $options   array('dbc' => [connection object])
+     *                               or
+     *                               array('dsn' => [dsn string])
+     * @access  protected
+     * @return  mixed                True on success, PEAR_Error on failure
+     */
+    function _bind($query, $options)
     {
         if ($options) {
             $this->setOptions($options); 
@@ -511,34 +560,58 @@ class Structures_DataGrid_DataSource
 
         if (isset($this->_options['dbc']) &&
             $this->_isConnection($this->_options['dbc'])) {
-            $this->_sqlHandle = &$this->_options['dbc'];
+            $this->_handle = &$this->_options['dbc'];
         } elseif (isset($this->_options['dsn'])) {
             $dbOptions = array();
             if (array_key_exists('db_options', $options)) {
                 $dbOptions = $options['db_options'];
             }
-            $this->_sqlHandle =& $this->_connect();
-            if (PEAR::isError($this->_sqlHandle)) {
+            $this->_handle =& $this->_connect();
+            if (PEAR::isError($this->_handle)) {
                 return PEAR::raiseError('Could not create connection: ' .
-                                        $this->_sqlHandle->getMessage() . ', ' .
-                                        $this->_sqlHandle->getUserInfo());
+                                        $this->_handle->getMessage() . ', ' .
+                                        $this->_handle->getUserInfo());
             }
         } else {
             return PEAR::raiseError('No Database object or dsn string specified');
         }
 
         if (is_string($query)) {
-            $this->_sqlQuery = $query;
+            $this->_query = $query;
             return true;
         } else {
             return PEAR::raiseError('Query parameter must be a string');
         }
     }
 
-    function &_sqlFetch($offset, $limit)
+    /**
+     * Fetch
+     *
+     * @param   integer $offset     Offset (starting from 0)
+     * @param   integer $limit      Limit
+     * @access  public
+     * @return  mixed               The 2D Array of the records on success,
+     *                              PEAR_Error on failure
+     */
+    function &fetch($offset = 0, $limit = null)
     {
-        if (!empty($this->_sqlSortSpec)) {
-            foreach ($this->_sqlSortSpec as $field => $direction) {
+        $recordSet = $this->_fetch($offset, $limit);
+        return $recordSet;
+    }
+
+    /**
+     * Fetch
+     *
+     * @param   integer $offset     Offset (starting from 0)
+     * @param   integer $limit      Limit
+     * @access  protected
+     * @return  mixed               The 2D Array of the records on success,
+     *                              PEAR_Error on failure
+     */
+    function &_fetch($offset, $limit)
+    {
+        if (!empty($this->_sortSpec)) {
+            foreach ($this->_sortSpec as $field => $direction) {
                 $sortArray[] = $this->_quoteIdentifier($field) . ' ' . $direction;
             }
             $sortString = join(', ', $sortArray);
@@ -546,7 +619,7 @@ class Structures_DataGrid_DataSource
             $sortString = '';
         }
 
-        $query = $this->_sqlQuery;
+        $query = $this->_query;
 
         // drop LIMIT statement
         $query = preg_replace('#\sLIMIT\s.*$#isD', ' ', $query);
@@ -576,14 +649,32 @@ class Structures_DataGrid_DataSource
         }                
 
         return $recordSet;
-
     }
 
-    function _sqlCount()
+    /**
+     * Count
+     *
+     * @access  public
+     * @return  mixed       The number or records (int),
+     *                      PEAR_Error on failure
+     */
+    function count()
+    {
+        return $this->_count();
+    }
+
+    /**
+     * Count
+     *
+     * @access  protected
+     * @return  mixed       The number or records (int),
+     *                      PEAR_Error on failure
+     */
+    function _count()
     {
         // do we already have the cached number of records? (if yes, return it)
-        if (!is_null($this->_sqlRowNum)) {
-            return $this->_sqlRowNum;
+        if (!is_null($this->_rowNum)) {
+            return $this->_rowNum;
         }
         // try to fetch the number of records
         if ($this->_options['count_query'] != '') {
@@ -593,14 +684,14 @@ class Structures_DataGrid_DataSource
             // $count has an integer value with number of rows or is a
             // PEAR_Error instance on failure
         }
-        elseif (preg_match('#GROUP\s+BY#is', $this->_sqlQuery) === 1 ||
-                preg_match('#SELECT.+SELECT#is', $this->_sqlQuery) === 1 ||
-                preg_match('#\sUNION\s#is', $this->_sqlQuery) === 1 ||
-                preg_match('#SELECT.+DISTINCT.+FROM#is', $this->_sqlQuery) === 1
+        elseif (preg_match('#GROUP\s+BY#is', $this->_query) === 1 ||
+                preg_match('#SELECT.+SELECT#is', $this->_query) === 1 ||
+                preg_match('#\sUNION\s#is', $this->_query) === 1 ||
+                preg_match('#SELECT.+DISTINCT.+FROM#is', $this->_query) === 1
             ) {
             // GROUP BY, DISTINCT, UNION and subqueries are special cases
             // ==> use the normal query and then numRows()
-            $count = $this->_getRecordsNum($this->_sqlQuery);
+            $count = $this->_getRecordsNum($this->_query);
             if (PEAR::isError($count)) {
                 return $count;
             }
@@ -608,7 +699,7 @@ class Structures_DataGrid_DataSource
             // don't query the whole table, just get the number of rows
             $query = preg_replace('#SELECT\s.+\sFROM#is',
                                   'SELECT COUNT(*) FROM',
-                                  $this->_sqlQuery);
+                                  $this->_query);
             $count = $this->_getOne($query);
             // $count has an integer value with number of rows or is a
             // PEAR_Error instance on failure
@@ -616,18 +707,72 @@ class Structures_DataGrid_DataSource
         // if we've got a number of records, save it to avoid running the same
         // query multiple times
         if (!PEAR::isError($count)) {
-            $this->_sqlRowNum = $count;
+            $this->_rowNum = $count;
         }
         return $count;
     }
 
-    function _sqlFree()
+    /**
+     * Disconnect from the database, if needed 
+     *
+     * @abstract
+     * @return void
+     * @access public
+     */
+    function free()
     {
-        if ($this->_sqlHandle && is_null($this->_options['dbc'])) {
+        $this->_free();
+    }
+
+    /**
+     * Disconnect from the database, if needed 
+     *
+     * @abstract
+     * @return void
+     * @access protected
+     */
+    function _free()
+    {
+        if ($this->_handle && is_null($this->_options['dbc'])) {
             $this->_disconnect();
-            unset($this->_sqlHandle);
+            unset($this->_handle);
         }
     }
+
+    /**
+     * This can only be called prior to the fetch method.
+     *
+     * @access  public
+     * @param   mixed   $sortSpec   A single field (string) to sort by, or a 
+     *                              sort specification array of the form:
+     *                              array(field => direction, ...)
+     * @param   string  $sortDir    Sort direction: 'ASC' or 'DESC'
+     *                              This is ignored if $sortDesc is an array
+     */
+    function sort($sortSpec, $sortDir = 'ASC')
+    {
+        $this->_sort($sortSpec, $sortDir);
+    }
+
+    /**
+     * This can only be called prior to the fetch method.
+     *
+     * @access  protected
+     * @param   mixed   $sortSpec   A single field (string) to sort by, or a 
+     *                              sort specification array of the form:
+     *                              array(field => direction, ...)
+     * @param   string  $sortDir    Sort direction: 'ASC' or 'DESC'
+     *                              This is ignored if $sortDesc is an array
+     */
+    function _sort($sortSpec, $sortDir)
+    {
+        if (is_array($sortSpec)) {
+            $this->_sortSpec = $sortSpec;
+        } else {
+            $this->_sortSpec[$sortSpec] = $sortDir;
+        }
+    }
+
 }
 
 /* vim: set expandtab tabstop=4 shiftwidth=4: */

@@ -57,11 +57,6 @@ require_once 'Structures/DataGrid/DataSource.php';
  * - dsn:         (string) A PDO dsn string. The PDO connection will be
  *                         established by this driver. Either this or the 'dbc'
  *                         option is required.
- * - db_options:  (array)  Options for the created database object. This option
- *                         is only used when the 'dsn' option is given.
- * - count_query: (string) Query that calculates the number of rows. See below
- *                         for more information about when such a count query
- *                         is needed.
  * - username:    (string) Username for the created PDO connection. Only needed in
  *                         conjunction with 'dsn' option.
  * - password:    (string) Password for the crated PDO connection. Only needed in
@@ -96,7 +91,7 @@ require_once 'Structures/DataGrid/DataSource.php';
  * @category Structures
  */
 class Structures_DataGrid_DataSource_PDO
-    extends Structures_DataGrid_DataSource
+    extends Structures_DataGrid_DataSource_SQLQuery
 {   
     /**
      * Constructor
@@ -105,83 +100,16 @@ class Structures_DataGrid_DataSource_PDO
      */
     function Structures_DataGrid_DataSource_PDO()
     {
-        parent::Structures_DataGrid_DataSource();
-        $this->_setFeatures(array('multiSort' => true));
+        parent::Structures_DataGrid_DataSource_SQLQuery();
         $this->_addDefaultOptions(array('username'    => null,
-                                        'password'    => null,));
-    }
-  
-    /**
-     * Bind
-     *
-     * @param   string    $query     The query string
-     * @param   mixed     $options   array('dbc' => [PDO object])
-     *                               or
-     *                               array('dsn' => [PDO dsn string])
-     * @access  public
-     * @return  mixed                True on success, PEAR_Error on failure
-     */
-    function bind($query, $options = array())
-    {
-        return $this->_sqlBind($query, $options);
-    }
-
-    /**
-     * Fetch
-     *
-     * @param   integer $offset     Offset (starting from 0)
-     * @param   integer $limit      Limit
-     * @access  public
-     * @return  mixed               The 2D Array of the records on success,
-     *                              PEAR_Error on failure
-    */
-    function &fetch($offset = 0, $limit = null)
-    {
-        $recordSet = $this->_sqlFetch($offset, $limit);
-        return $recordSet;
-    }
-
-    /**
-     * Count
-     *
-     * @access  public
-     * @return  mixed       The number or records (int),
-                            PEAR_Error on failure
-    */
-    function count()
-    {
-        return $this->_sqlCount();
-    }
-    
-    /**
-     * Disconnect from the database, if needed 
-     *
-     * @abstract
-     * @return void
-     * @access public
-     */
-    function free()
-    {
-        $this->_sqlFree();
-    }
-
-    /**
-     * This can only be called prior to the fetch method.
-     *
-     * @access  public
-     * @param   mixed   $sortSpec   A single field (string) to sort by, or a 
-     *                              sort specification array of the form:
-     *                              array(field => direction, ...)
-     * @param   string  $sortDir    Sort direction: 'ASC' or 'DESC'
-     *                              This is ignored if $sortDesc is an array
-     */
-    function sort($sortSpec, $sortDir = 'ASC')
-    {
-        $this->_sqlSort($sortSpec, $sortDir);
+                                        'password'    => null));
     }
 
     /**
      * Connect to the database
+     * 
+     * @access protected
+     * @return mixed      Instantiated databased object, PEAR_Error on failure
      */
     function &_connect()
     {
@@ -197,17 +125,38 @@ class Structures_DataGrid_DataSource_PDO
         return $dbh;
     }
 
+    /**
+     * Disconnect from the database
+     *
+     * @access protected
+     * @return void
+     */
     function _disconnect()
     {
-        $this->_sqlHandle = null;
+        $this->_handle = null;
     }
 
+    /**
+     * Whether the parameter is a PDO object
+     *
+     * @access protected
+     * @param  object     $dbc      PDO object
+     * @return bool       Whether the parameter is a PDO object
+     */
     function _isConnection($dbc)
     {
         return is_a($dbc, 'pdo');
     }
 
-   
+    /**
+     * Fetches and returns the records
+     *
+     * @access protected
+     * @param  string     $query    The (modified) query string
+     * @param  integer    $offset   Offset (starting from 0)
+     * @param  integer    $limit    Limit
+     * @return mixed      The fetched records, PEAR_Error on failure
+     */
     function _getRecords($query, $limit, $offset)
     {
         if (!is_null($limit)) {
@@ -215,20 +164,26 @@ class Structures_DataGrid_DataSource_PDO
         } elseif ($offset > 0) {
             $query .= ' LIMIT ' . $offset . ', ' . PHP_INT_MAX;
         }
-        if (($result = $this->_sqlHandle->query($query)) !== false) {
+        if (($result = $this->_handle->query($query)) !== false) {
             return $result->fetchAll(PDO::FETCH_ASSOC);
         } else {
-            $error = $this->_sqlHandle->errorInfo();
+            $error = $this->_handle->errorInfo();
             return PEAR::raiseError('PDO error: ' .
                                     $error[0] . ', ' . $error[2]);
         }
     }
 
+    /**
+     * Returns a quoted identifier
+     *
+     * @access protected
+     * @return string     The quoted identifier
+     */
     function _quoteIdentifier($field)
     {
-        $driver = $this->_sqlHandle->getAttribute(PDO::ATTR_DRIVER_NAME);
+        $driver = $this->_handle->getAttribute(PDO::ATTR_DRIVER_NAME);
 
-        # The following is directly inspired from MDB2 CVS as of june 25th, 2007
+        // The following is directly inspired from MDB2 CVS as of june 25th, 2007
         switch ($driver) {
             case 'mssql':   
                 $quotes = array('start' => '[', 'end' => ']', 'escape' => ']');
@@ -253,18 +208,32 @@ class Structures_DataGrid_DataSource_PDO
         return $quotes['start'] . $field .  $quotes['end'];
     }
 
+    /**
+     * Fetches and returns a single value
+     *
+     * @access protected
+     * @param  string     $query    The query string
+     * @return mixed      The fetched value, PEAR_Error on failure
+     */
     function _getOne($query)
     {
-        if (($result = $this->_sqlHandle->query($query)) !== false) {
+        if (($result = $this->_handle->query($query)) !== false) {
             $result = $result->fetchAll();
         } else {
-            $error = $this->_sqlHandle->errorInfo();
+            $error = $this->_handle->errorInfo();
             return PEAR::raiseError('PDO error: ' .
                                     $error[0] . ', ' . $error[2]);
         }
         return $result[0][0];
     }
 
+    /**
+     * Calculates (and returns) the number of records by getting all records
+     *
+     * @access protected
+     * @param  string     $query    The query string
+     * @return mixed      The numbers row records, PEAR_Error on failure
+     */
     function _getRecordsNum($query)
     {
         $records = $this->_getRecords($query, null, 0);
@@ -273,8 +242,6 @@ class Structures_DataGrid_DataSource_PDO
         }
         return count($records);
     }
-
-
 
 }
 
