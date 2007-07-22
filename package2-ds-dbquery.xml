@@ -27,11 +27,11 @@ SQL query.
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2007-06-01</date>
- <time>18:00:00</time>
+ <date>?</date>
+ <time>?</time>
  <version>
-  <release>0.1.10</release>
-  <api>0.1.1</api>
+  <release>0.1.11</release>
+  <api>0.1.2</api>
  </version>
  <stability>
   <release>beta</release>
@@ -39,8 +39,7 @@ SQL query.
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- Security fix: users could manipulate the generated sorting queries
-  (thanks to Sascha Grossenbacher)
+- internal changes related to internal changes in Structures_DataGrid 0.8.4
  </notes>
  <contents>
   <dir name="/">
@@ -54,20 +53,20 @@ SQL query.
  <dependencies>
   <required>
    <php>
-    <min>4.2</min>
+    <min>4.3</min>
    </php>
    <pearinstaller>
-    <min>1.4.9</min>
+    <min>1.6.0</min>
    </pearinstaller>
    <package>
     <name>Structures_DataGrid</name>
     <channel>pear.php.net</channel>
-    <min>0.7.0</min>
+    <min>0.8.4</min>
    </package>
    <package>
     <name>DB</name>
     <channel>pear.php.net</channel>
-    <min>1.7.6</min>
+    <min>1.7.12</min>
    </package>
   </required>
  </dependencies>

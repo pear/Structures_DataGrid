@@ -3,18 +3,12 @@
 http://pear.php.net/dtd/tasks-1.0.xsd
 http://pear.php.net/dtd/package-2.0
 http://pear.php.net/dtd/package-2.0.xsd">
- <name>Structures_DataGrid_DataSource_MDB2</name>
+ <name>Structures_DataGrid_DataSource_PDO</name>
  <channel>pear.php.net</channel>
- <summary>DataSource driver using PEAR::MDB2 and an SQL query</summary>
- <description>This is a DataSource driver for Structures_DataGrid using PEAR::MDB2 and an
+ <summary>DataSource driver using PHP Data Objects (PDO) and an SQL query</summary>
+ <description>This is a DataSource driver for Structures_DataGrid using PHP Data Objects (PDO) and an
 SQL query.
  </description>
- <lead>
-  <name>Andrew S. Nagy</name>
-  <user>asnagy</user>
-  <email>asnagy@webitecture.org</email>
-  <active>no</active>
- </lead>
  <lead>
   <name>Olivier Guilyardi</name>
   <user>olivierg</user>
@@ -30,8 +24,8 @@ SQL query.
  <date>?</date>
  <time>?</time>
  <version>
-  <release>0.1.11</release>
-  <api>0.1.2</api>
+  <release>0.1.0</release>
+  <api>0.1.0</api>
  </version>
  <stability>
   <release>beta</release>
@@ -39,13 +33,13 @@ SQL query.
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- internal changes related to internal changes in Structures_DataGrid 0.8.4
+- initial release
  </notes>
  <contents>
   <dir name="/">
    <dir name="DataGrid">
     <dir name="DataSource">
-     <file baseinstalldir="Structures" name="MDB2.php" role="php" />
+     <file baseinstalldir="Structures" name="PDO.php" role="php" />
     </dir> <!-- //DataGrid/DataSource -->
    </dir> <!-- //DataGrid -->
   </dir> <!-- / -->
@@ -62,11 +56,6 @@ SQL query.
     <name>Structures_DataGrid</name>
     <channel>pear.php.net</channel>
     <min>0.8.4</min>
-   </package>
-   <package>
-    <name>MDB2</name>
-    <channel>pear.php.net</channel>
-    <min>2.4.1</min>
    </package>
   </required>
  </dependencies>
