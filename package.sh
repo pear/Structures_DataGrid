@@ -8,6 +8,7 @@ pear package package2-ds-dataobject.xml
 pear package package2-ds-dbquery.xml
 pear package package2-ds-dbtable.xml
 pear package package2-ds-mdb2.xml
+pear package package2-ds-pdo.xml
 pear package package2-ds-rss.xml
 pear package package2-ds-xml.xml
 pear package package2-r-console.xml

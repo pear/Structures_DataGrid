@@ -8,6 +8,7 @@ call pear package-validate package2-ds-dbdataobject.xml
 call pear package-validate package2-ds-dbquery.xml
 call pear package-validate package2-ds-dbtable.xml
 call pear package-validate package2-ds-mdb2.xml
+call pear package-validate package2-ds-pdo.xml
 call pear package-validate package2-ds-rss.xml
 call pear package-validate package2-ds-xml.xml
 call pear package-validate package2-r-console.xml
