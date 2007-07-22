@@ -323,13 +323,13 @@ class Structures_DataGrid_DataSource_XML extends
                 $key = $value = $item;
                 foreach ($info->attributes() as $a => $b) {
                     if ($this->_options['labelAttribute'] == $a) {
-                        $value = $b;
+                        $value = (string)$b;
                     }
                 }
                 $labels[$key] = $value;
             }
             // save the content
-            $rowProcessed[$item] = $info;
+            $rowProcessed[$item] = (string)$info;
         }
         // set labels if extracted
         if (!$this->_options['labels'] && isset($labels)) {
