@@ -171,7 +171,7 @@ class Structures_DataGrid_DataSource_DBTable
             $sortString = null;
         }
 
-        if (is_a($result, 'db_result')) {
+        if (is_subclass_of($this->_object->db, 'db_common')) {
             $this->_object->fetchmode = DB_FETCHMODE_ASSOC;
         } else {
             $this->_object->fetchmode = MDB2_FETCHMODE_ASSOC;
