@@ -102,7 +102,7 @@ class Structures_DataGrid_DataSource_MDB2
      */
     function bind($query, $options = array())
     {
-        $result = $this->_bind($query, $options);
+        $result = parent::bind($query, $options);
         if (!PEAR::isError($result)) {
             $this->_handle->loadModule('Extended', null, false);
         }

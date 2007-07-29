@@ -539,21 +539,6 @@ class Structures_DataGrid_DataSource_SQLQuery
      */
     function bind($query, $options = array())
     {
-        return $this->_bind($query, $options);
-    }
-
-    /**
-     * Bind
-     *
-     * @param   string    $query     The query string
-     * @param   mixed     $options   array('dbc' => [connection object])
-     *                               or
-     *                               array('dsn' => [dsn string])
-     * @access  protected
-     * @return  mixed                True on success, PEAR_Error on failure
-     */
-    function _bind($query, $options)
-    {
         if ($options) {
             $this->setOptions($options); 
         }
@@ -594,21 +579,6 @@ class Structures_DataGrid_DataSource_SQLQuery
      *                              PEAR_Error on failure
      */
     function &fetch($offset = 0, $limit = null)
-    {
-        $recordSet = $this->_fetch($offset, $limit);
-        return $recordSet;
-    }
-
-    /**
-     * Fetch
-     *
-     * @param   integer $offset     Offset (starting from 0)
-     * @param   integer $limit      Limit
-     * @access  protected
-     * @return  mixed               The 2D Array of the records on success,
-     *                              PEAR_Error on failure
-     */
-    function &_fetch($offset, $limit)
     {
         if (!empty($this->_sortSpec)) {
             foreach ($this->_sortSpec as $field => $direction) {
@@ -660,18 +630,6 @@ class Structures_DataGrid_DataSource_SQLQuery
      */
     function count()
     {
-        return $this->_count();
-    }
-
-    /**
-     * Count
-     *
-     * @access  protected
-     * @return  mixed       The number or records (int),
-     *                      PEAR_Error on failure
-     */
-    function _count()
-    {
         // do we already have the cached number of records? (if yes, return it)
         if (!is_null($this->_rowNum)) {
             return $this->_rowNum;
@@ -721,18 +679,6 @@ class Structures_DataGrid_DataSource_SQLQuery
      */
     function free()
     {
-        $this->_free();
-    }
-
-    /**
-     * Disconnect from the database, if needed 
-     *
-     * @abstract
-     * @return void
-     * @access protected
-     */
-    function _free()
-    {
         if ($this->_handle && is_null($this->_options['dbc'])) {
             $this->_disconnect();
             unset($this->_handle);
@@ -750,21 +696,6 @@ class Structures_DataGrid_DataSource_SQLQuery
      *                              This is ignored if $sortDesc is an array
      */
     function sort($sortSpec, $sortDir = 'ASC')
-    {
-        $this->_sort($sortSpec, $sortDir);
-    }
-
-    /**
-     * This can only be called prior to the fetch method.
-     *
-     * @access  protected
-     * @param   mixed   $sortSpec   A single field (string) to sort by, or a 
-     *                              sort specification array of the form:
-     *                              array(field => direction, ...)
-     * @param   string  $sortDir    Sort direction: 'ASC' or 'DESC'
-     *                              This is ignored if $sortDesc is an array
-     */
-    function _sort($sortSpec, $sortDir)
     {
         if (is_array($sortSpec)) {
             $this->_sortSpec = $sortSpec;
