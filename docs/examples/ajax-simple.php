@@ -18,7 +18,7 @@ if (isset($_GET['ajax'])) {
     }
     // Handle pager AJAX requests 
     if ($_GET['ajax'] == 'pager') {
-        // Warning: require Pager CVS or above 2.4.3
+        // Warning: requires Pager >= 2.4.4
         $datagrid->render('Pager');
         exit();
     }

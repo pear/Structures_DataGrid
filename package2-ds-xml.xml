@@ -79,7 +79,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
    <package>
     <name>XML_XPath</name>
     <channel>pear.php.net</channel>
-    <min>1.2.3</min>
+    <min>1.2.4</min>
    </package>
   </optional>
  </dependencies>
