@@ -14,14 +14,12 @@ if (isset($_GET['ajax'])) {
     // Handle table AJAX requests 
     if ($_GET['ajax'] == 'table') {
         $datagrid->render();
-        exit();
     }
     // Handle pager AJAX requests 
     if ($_GET['ajax'] == 'pager') {
-        // Warning: requires Pager >= 2.4.4
         $datagrid->render('Pager');
-        exit();
     }
+    exit();
 }
 
 // No AJAX request, render the initial content..
