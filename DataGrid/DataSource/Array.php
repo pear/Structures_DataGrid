@@ -48,7 +48,30 @@ require_once 'Structures/DataGrid/DataSource.php';
 /**
  * Array Data Source Driver
  *
- * This class is a data source driver for a 2D Array
+ * This class is a data source driver for a 2D array
+ *
+ * SUPPORTED OPTIONS:
+ * 
+ * - natsort:  (boolean)  Whether the array should be sorted naturally (e.g.
+ *                        example1, Example2, test1, Test2) or not (e.g.
+ *                        Example2, Test2, example1, test1; i.e. capital
+ *                        letters will come first).
+ * 
+ * GENERAL NOTES:
+ *
+ * This driver expects an array of the following form:
+ * <code>
+ * $data = array(0 => array('col0' => 'val00', 'col1' => 'val01', ...),
+ *               1 => array('col0' => 'val10', 'col1' => 'val11', ...),
+ *               ...
+ *              );
+ * </code>
+ *
+ * The first level of this array contains one entry for each row. For every
+ * row entry an array with the data for this row is expected. Such an array
+ * contains the field names as the keys. For example, 'val01' is the value
+ * of the column with the field name 'col1' in the first row. Row numbers
+ * start with 0, not with 1.
  *
  * @version  $Revision$
  * @author   Olivier Guilyardi <olivier@samalyse.com>
@@ -72,6 +95,7 @@ class Structures_DataGrid_DataSource_Array
     function Structures_DataGrid_DataSource_Array()
     {
         parent::Structures_DataGrid_DataSource();
+        $this->_addDefaultOptions(array('natsort' => false));
     }
 
     /**
@@ -88,7 +112,14 @@ class Structures_DataGrid_DataSource_Array
         } 
                
         if (is_array($ar)) {
-            $this->_ar = $ar;
+            // if the array keys are non-continuous, reset the array keys to
+            // ensure correct sorting
+            $keys = array_keys($ar);
+            if (count($ar) != max($keys) + 1) {
+                $this->_ar = array_values($ar);
+            } else {
+                $this->_ar = $ar;
+            }
             return true;
         } else {
             return PEAR::raiseError('The provided source must be an array');
@@ -168,6 +199,9 @@ class Structures_DataGrid_DataSource_Array
 
         $sortDir = (is_null($sortDir) or strtoupper($sortDir) == 'ASC') 
                  ? SORT_ASC : SORT_DESC;
+        if ($this->_options['natsort']) {
+            $sortAr = array_map('strtolower', $sortAr);
+        }
         array_multisort($sortAr, $sortDir, $this->_ar);
     }
 }
