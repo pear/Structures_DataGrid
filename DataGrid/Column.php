@@ -314,6 +314,22 @@ class Structures_DataGrid_Column
      * Define a formatting callback function with optional arguments for 
      * this column.
      *
+     * The callback function receives the following array as its first argument:
+     * <code>
+     * array(
+     *   'record' => associative array of all fields values for this record,
+     *   'fieldName' => the field name of this column,
+     *   'columnName' => the label (header) of this column,
+     *   'orderBy' => the field name to sort this column by,
+     *   'attribs' => this column's attributes,
+     *   'currRow' => zero-based row index,
+     *   'currCol' => zero-based column index,
+     * );
+     * </code>
+     *
+     * If you pass the optional $arguments parameter to setFormatter(), the callback
+     * function will receive it as its second argument.
+     *
      * @param   mixed   $formatter  Callback PHP pseudo-type (Array or String)
      * @param   array   $arguments  Associative array of parameters passed to 
      *                              as second argument to the callback function
