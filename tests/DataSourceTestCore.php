@@ -45,16 +45,15 @@
  */
 
 
+require_once 'TestCore.php';
 require_once 'Structures/DataGrid/DataSource.php';
-require_once 'PEAR.php';
-require_once 'PHPUnit.php';
 
 error_reporting(E_ALL);
 
 /**
  * DataSource core tests
  */
-class DataSourceTestCore extends PHPUnit_TestCase
+class DataSourceTestCore extends TestCore
 {
     var $datasource;
     var $data = array(

@@ -44,44 +44,32 @@
  * @license  http://opensource.org/licenses/bsd-license.php New BSD License
  */
 
-if (!defined('PHPUnit_MAIN_METHOD')) {
-    define('PHPUnit_MAIN_METHOD', 'AllTests::main');
-}
- 
+
+require_once 'PEAR.php';
 require_once 'PHPUnit.php';
-require_once 'AllDataSourceTests.php';
- 
+
+error_reporting(E_ALL);
+
 /**
- * Test (almost ;) everything
+ * DataSource core tests
  */
-class AllTests
+class TestCore extends PHPUnit_TestCase
 {
-    function main()
+    function TestCore($name)
     {
-        $suite = new PHPUnit_TestSuite();
-        $names = AllTests::getSuites();
-        foreach ($names as $name) {
-            require_once "$name.php";
-            $suite->addTestSuite($name);
-        }
-        return PHPUnit::run($suite);
+        parent::PHPUnit_TestCase($name);
+        PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, array($this, 'onPearError'));
+        $this->setLooselyTyped(true);
     }
- 
-    function getSuites()
+
+    function onPearError($error)
     {
-        $suites = AllDataSourceTests::getSuites();
-
-        // PHP5 only:
-        if (version_compare(phpversion(), '5', '>=')) {
-            $suites[] = 'URLMappingTest';
-        }
-
-        return $suites;
+        $this->fail(
+            "------------------------\n".
+            "PEAR Error: " . $error->toString() . "\n" .
+            "------------------------\n");
     }
+
 }
- 
-if (PHPUnit_MAIN_METHOD == 'AllTests::main') {
-    $result = AllTests::main();
-    echo $result->toString();
-}
+
 ?>
