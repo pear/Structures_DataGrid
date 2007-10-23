@@ -191,6 +191,21 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
             $onclick = $this->_buildJsHandler('%d', $this->_currentSort);
             $options['onclick'] = $onclick ? "return $onclick" : '';
         }
+        
+        // Check if NUM is enabled
+        if (isset($this->_options['__SDG_MapperOptions'])) {
+            $options['append'] = false;        
+            
+            reset($this->_currentSort);
+            $orderBy = key($this->_currentSort);
+            $direction = current($this->_currentSort);
+            $options['fileName'] = $this->_buildMapperURL($orderBy, 
+                                                          $direction, 
+                                                          '00000');
+            
+            // NUM does not allow a %d to be generated as page, hack needed..
+            $options['fileName'] = str_replace('00000', '%d', $options['fileName']);
+        }
 
         if (!isset($this->_pager)) {
             // No external container, Then we set our defaults.

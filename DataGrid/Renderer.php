@@ -1087,6 +1087,42 @@ class Structures_DataGrid_Renderer
 
         return $query;
     }
+    
+    /**
+     * Builds a HTTP URL for sorting and paging.
+     * 
+     * It uses NUM and optionally adds a query string with extraVars/GET
+     *
+     * @param string $field     Sort field name
+     * @param string $direction Sort direction
+     * @param int    $page      Pager index
+     * 
+     * @return string generated HTTP URL
+     */
+    function _buildMapperURL($field, $direction, $page = 1) 
+    {
+        $prefix = $this->_options['__SDG_MapperOptions']['prefix'];
+        $mapper = Net_URL_Mapper::getInstance('__SDG_Instance_' . $prefix);
+        
+        $params = array('page' => $page,
+                        'orderBy' => $field,
+                        'direction' => $direction);
+        
+        if (is_null($this->_sortingHttpQueryCommon)) {
+            // Build and cache the list of common get parameters
+            $this->_sortingHttpQueryCommon = $this->_options['extraVars'];
+            $ignore   = $this->_options['excludeVars'];
+            $ignore[] = $prefix . 'orderBy';
+            $ignore[] = $prefix . 'direction';
+            foreach ($_GET as $key => $val) {
+                if (!in_array($key, $ignore)) {
+                    $this->_sortingHttpQueryCommon[$key] = $val;
+                }
+            }
+        }
+            
+        return $mapper->generate($params, $this->_sortingHttpQueryCommon);
+    }
 
     /**
      * Build a Javascript handler call for a given page and sorting spec

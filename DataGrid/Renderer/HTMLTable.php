@@ -378,14 +378,20 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                     $icon = '';
                     $direction = $this->_defaultDirections[$field];
                 }
-
-                // Build HTTP query
+                
                 $page = $this->_options['sortingResetsPaging'] ? 1 : $this->_page;
-                $extra = array('page' => $page);
-                $query = $this->_buildSortingHttpQuery($field, $direction, true, $extra);
-
-                // Build Link URL
-                $url = $this->_options['selfPath'] . '?' . $query;
+                
+                // Check if NUM is enabled
+                if (isset($this->_options['__SDG_MapperOptions'])) {
+                    $url = $this->_buildMapperURL($field, $direction, $page);
+                } else {
+                    // Build HTTP query
+                    $extra = array('page' => $page);
+                    $query = $this->_buildSortingHttpQuery($field, $direction, true, $extra);
+                    
+                    // Build Link URL
+                    $url = $this->_options['selfPath'] . '?' . $query;
+                }
 
                 // Build onClick attribute
                 $onclick = 

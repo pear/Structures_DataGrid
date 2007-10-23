@@ -237,6 +237,39 @@ class Structures_DataGrid
      * @access private
      */
     var $_bufferSize = null;
+    
+    /**
+     * Array of matched params
+     *
+     * @var array
+     * @access private
+     */
+    var $_mapperMatch = null;
+    
+    /**
+     * Allowed URL parameters. Format: Name => regex
+     *
+     * @var array
+     * @access private
+     */
+    var $_mapperRules = array(
+        'page' => '[0-9]+',
+        'orderBy' => '[^\/]+',
+        'direction' => '(ASC|DESC)'
+    );
+    
+    /**
+     * Default values for mapper. Format: Name => value
+     * 
+     * A default value triggers the param to be optional
+     * 
+     * @var array
+     * @access private
+     */
+    var $_mapperDefaults = array(
+        'orderBy' => null,
+        'direction' => null
+    );
 
    /**
      * Constructor
@@ -1299,6 +1332,12 @@ class Structures_DataGrid
     function _getRequestArgument($name)
     {
         $value = null;
+        if (is_array($this->_mapperMatch)) {
+            if (isset($this->_mapperMatch[$name])) {
+                return $this->_mapperMatch[$name];
+            }
+        }
+
         $prefix = $this->_requestPrefix;
         if (isset($_REQUEST["$prefix$name"])) {
             if (isset($_POST["$prefix$name"])) {
@@ -1690,6 +1729,99 @@ class Structures_DataGrid
             $this->addColumn($column);
             unset($column);
         }
+    }
+
+    /**
+     * Set the special URL
+     *
+     * If this is set, it will be parsed instead of GET/POST.
+     * This is only supported on PHP5, as it depends on 
+     * Net_URL_Mapper.
+     *
+     * Exampe: setUrlFormat("/page/:page/:orderBy/:direction")
+     *
+     * @param string $format     The URL format, see example
+     * @param string $prefix     Set the url prefix if needed
+     * @param string $scriptname Set the scriptname if mod_rewrite not available
+     * 
+     * @return void
+     * @access public
+     * @throws Net_URL_Mapper_InvalidException
+     * 
+     */
+    function setUrlFormat($format, $prefix = null, $scriptname = null)
+    {
+        if (!Structures_DataGrid::fileExists('Net/URL/Mapper.php')) {
+            return PEAR::raiseError('Net_URL_Mapper Package is missing');
+        }
+        include_once 'Net/URL/Mapper.php';
+        
+        // reset parsed Params and reparse the request
+        $this->_mapperMatch = null;
+        
+        
+        // only call _parseHttpRequest again if the URL matches
+        if ($this->_parseRequestWithMapper($format, $prefix, $scriptname)) {
+            $this->_parseHttpRequest();
+
+            // copied from setRequestPrefix
+            // perhabs, this part can be moved to _parseHttpRequest
+            if (isset($this->_renderer)) {
+                /* The page and sort request might have changed, so we need
+                 * to pass them again to the renderer */
+                $this->_renderer->setLimit($this->page, $this->rowLimit, 
+                                           $this->getRecordCount());
+                $this->_setRendererCurrentSorting();
+            }
+        }
+        
+                    
+        // Store needed information for renderers in common options
+        $options = array('path'   => $format,
+                         'prefix' => $prefix);
+            
+        $this->setRendererOptions(array('__SDG_MapperOptions' => $options),
+                                  true);
+    }
+    
+    /**
+     * Tries to parse the request with
+     * Net_URL_Mapper.
+     *
+     * @param string $format     $format The URL format, see example
+     * @param string $prefix     Set the url prefix if needed
+     * @param string $scriptname Set the scriptname if mod_rewrite not available
+     * 
+     * @return void
+     * @access private
+     * @throws Net_URL_Mapper_InvalidException
+     * 
+     */
+    function _parseRequestWithMapper($format, $prefix = null, $scriptname = null)
+    {
+        // Use a special instance, so that it is usable for multipe 
+        // SDG instances and other NUM Instances
+        $mapper = Net_URL_Mapper::getInstance('__SDG_Instance_' . $prefix);
+        
+        // If the prefix is not null, set it
+        if (!is_null($prefix)) {
+            $mapper->setPrefix($prefix);
+        }
+        
+        //if the scriptname is not null, set it
+        if (!is_null($scriptname)) {
+            $mapper->setScriptName($scriptname);
+        }
+        
+        // "connect" the format wit defaults and the defined rules
+        $mapper->connect($format, $this->_mapperDefaults, $this->_mapperRules);
+        
+        // run NUM, if it returns an array, the url was successfully matched,
+        // return true
+        if ($this->_mapperMatch = $mapper->match($_SERVER['REQUEST_URI'])) {
+            return true;
+        }
+        return false;
     }
 }
 

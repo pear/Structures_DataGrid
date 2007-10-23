@@ -253,9 +253,16 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
                 }
                 $extra = array('page' => $this->_options['sortingResetsPaging'] 
                                          ? 1 : $this->_page);
-                $query = $this->_buildSortingHttpQuery($spec['field'], 
+                // Check if NUM is enabled
+                if (isset($this->_options['__SDG_MapperOptions'])) {
+                    $prepared[$index]['link'] = $this->_buildMapperURL($field, 
+                                                                       $direction, 
+                                                                       $extra['page']);
+                } else {
+                    $query = $this->_buildSortingHttpQuery($spec['field'], 
                                                        $direction, true, $extra);
-                $prepared[$index]['link'] = "{$this->_options['selfPath']}?$query";
+                    $prepared[$index]['link'] = "{$this->_options['selfPath']}?$query";
+                }
                 $prepared[$index]['onclick'] = $this->_buildJsHandler($this->_page, 
                         array($spec['field'] => $direction));
             } else {
