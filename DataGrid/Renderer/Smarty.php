@@ -251,19 +251,19 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
                     $prepared[$index]['direction'] = '';
                     $direction = $this->_defaultDirections[$spec['field']];
                 }
-                $extra = array('page' => $this->_options['sortingResetsPaging'] 
-                                         ? 1 : $this->_page);
+                $page = $this->_options['sortingResetsPaging'] ? 1 : $this->_page;
+                $extra = array('page' => $page); 
                 // Check if NUM is enabled
                 if (isset($this->_options['__SDG_MapperOptions'])) {
-                    $prepared[$index]['link'] = $this->_buildMapperURL($field, 
+                    $prepared[$index]['link'] = $this->_buildMapperURL($spec['field'], 
                                                                        $direction, 
-                                                                       $extra['page']);
+                                                                       $page);
                 } else {
                     $query = $this->_buildSortingHttpQuery($spec['field'], 
                                                        $direction, true, $extra);
                     $prepared[$index]['link'] = "{$this->_options['selfPath']}?$query";
                 }
-                $prepared[$index]['onclick'] = $this->_buildJsHandler($this->_page, 
+                $prepared[$index]['onclick'] = $this->_buildJsHandler($page, 
                         array($spec['field'] => $direction));
             } else {
                 $query = '';
