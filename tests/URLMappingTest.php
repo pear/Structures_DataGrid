@@ -52,7 +52,6 @@ require_once 'TestCore.php';
 require_once 'Structures/DataGrid.php';
 require_once 'Structures/DataGrid/DataSource.php';
 
-
 error_reporting(E_ALL);
 
 /**
@@ -62,7 +61,7 @@ class URLMappingTest extends TestCore
 {
     var $datagrid;
 
-    function testSimple() {
+    function testSimpleParsing() {
         $this->setURL("/page/5/foo/DESC");
         $datagrid =& new Structures_DataGrid(10);
         $datagrid->setUrlFormat("/page/:page/:orderBy/:direction");
@@ -72,7 +71,7 @@ class URLMappingTest extends TestCore
         $this->assertEquals(array('foo' => 'DESC'), $datasource->sortSpec);
     }
 
-    function testMissingSort()
+    function testMissingSortParsing()
     {
         $this->setURL("/page/5");
         $datagrid =& new Structures_DataGrid(10);
@@ -80,7 +79,7 @@ class URLMappingTest extends TestCore
         $this->assertEquals(5, $datagrid->getCurrentPage());
     }
 
-    function testPrefix()
+    function testPrefixParsing()
     {
         $this->setURL("/page/5");
         $datagrid =& new Structures_DataGrid(10);
@@ -88,7 +87,7 @@ class URLMappingTest extends TestCore
         $this->assertEquals(5, $datagrid->getCurrentPage());
     }
 
-    function testPostInstantiation()
+    function testPostInstantiationParsing()
     {
         $datagrid =& new Structures_DataGrid(10);
         $this->setURL("/page/5");
@@ -96,11 +95,7 @@ class URLMappingTest extends TestCore
         $this->assertEquals(5, $datagrid->getCurrentPage());
     }
 
-    function setURL($url) {
-        $_SERVER['REQUEST_URI'] = $url;
-    }
-
-    function testPager()
+    function testPagerGeneration()
     {
         // Setting datagrid up
         $this->setURL("/");
@@ -132,6 +127,85 @@ class URLMappingTest extends TestCore
         $this->assertEquals("/page/5/foo/ASC", $urls[3]);
         $this->assertEquals("/page/2/foo/ASC", $urls[4]);
     }
+
+    function testHTMLTableGeneration()
+    {
+        // Setting datagrid up
+        $this->setURL("/page/3/foo/ASC");
+        $datagrid =& new Structures_DataGrid(10);
+        $datagrid->setUrlFormat("/page/:page/:orderBy/:direction");
+        $datasource = new URLMappingTest_MockDataSource();
+        $datasource->fakeCount = 50;
+        $datagrid->bindDataSource($datasource);
+
+        // Retrieving HTML table
+        $table = $datagrid->getOutput();
+        $this->assertFalse(empty($table));
+
+        // Building XML object to parse header links href urls
+        $xml = new SimpleXMLElement($table);
+        $tags = $xml->xpath('//th/a');
+        $this->assertEquals(2, count($tags));
+        $urls = array();
+        foreach ($tags as $link) {
+            $urls[] = (string) $link['href'];
+        }
+
+        // Testing urls
+        // (page is 1 because the sortingResetsPaging option is enabled by default)
+        $this->assertEquals("/page/1/foo/DESC", $urls[0]);
+        $this->assertEquals("/page/1/funky/ASC", $urls[1]);
+    }
+
+    function testSmartyGeneration()
+    {
+        // Setting datagrid up
+        $this->setURL("/page/3/foo/ASC");
+        $datagrid =& new Structures_DataGrid(10);
+        $datagrid->setUrlFormat("/page/:page/:orderBy/:direction");
+        $datasource = new URLMappingTest_MockDataSource();
+        $datasource->fakeCount = 50;
+        $datagrid->bindDataSource($datasource);
+
+        // Retrieving template variables (we actually don't need Smarty here)
+        $vars = $datagrid->getOutput('Smarty', array('jsHandler' => 'update'));
+
+        // Testing global variables
+        $this->assertEquals(3, $vars['currentPage']);
+        $this->assertEquals(array('foo' => 'ASC'), $vars['currentSort']);
+
+        // Testing first column
+        $this->assertEquals('foo', $vars['columnSet'][0]['name']);
+        $this->assertEquals('ASC', $vars['columnSet'][0]['direction']);
+        $this->assertEquals('/page/1/foo/DESC', $vars['columnSet'][0]['link']);
+
+        $onclick = $this->parseOnClick($vars['columnSet'][0]['onclick']);
+        $this->assertEquals(1, $onclick['page']);
+        $this->assertEquals(array('field' => 'foo', 'direction' => 'DESC'), $onclick['sort'][0]);
+
+        // Testing second column
+        $this->assertEquals('funky', $vars['columnSet'][1]['name']);
+        $this->assertEquals('', $vars['columnSet'][1]['direction']);
+        $this->assertEquals('/page/1/funky/ASC', $vars['columnSet'][1]['link']);
+
+        $onclick = $this->parseOnClick($vars['columnSet'][1]['onclick']);
+        $this->assertEquals(1, $onclick['page']);
+        $this->assertEquals(array('field' => 'funky', 'direction' => 'ASC'), $onclick['sort'][0]);
+
+    }
+
+    function parseOnClick($statement) {
+        ereg('(\{.*\})', $statement, $regs);
+        $json = $regs[1];
+        $json = ereg_replace('([a-zA-Z0-9]+) *:', '"\1":', $json);
+        $json = str_replace("'", '"', $json);
+        return json_decode($json, true);
+    }
+
+    function setURL($url) {
+        $_SERVER['REQUEST_URI'] = $url;
+    }
+
     
 }
 
@@ -155,9 +229,9 @@ class URLMappingTest_MockDataSource extends Structures_DataGrid_DataSource
         $ii = $this->fakeCount - $offset;
         $ii = $ii > $len ? $len : $ii;
         for ($i = 0; $i < $ii; $i++) {
-            $data[] = array('foo' => 'bar');
+            $data[] = array('foo' => 'bar', 'funky' => 'stuff');
         }
-        return array();
+        return $data;
     }
 
     function sort($spec) {
