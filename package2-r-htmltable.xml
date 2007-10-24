@@ -39,6 +39,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
 - add support for javascript onclick handlers (jsHandler option)
+- Request #9994: add support for URL mapping, by Sascha Grossenbacher
  </notes>
  <contents>
   <dir name="/">

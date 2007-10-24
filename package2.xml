@@ -48,6 +48,9 @@ This concept is based on the .NET Framework DataGrid control and works very well
   onclick/onsubmit events
 - rename 'primary_key' DataSource option as 'primaryKey'
 - new PDO DataSource driver is available as a separate subpackage
+- new URL mapping feature by Sascha Grossenbacher,
+- Request #9994 :new setUrlFormat() method providing clean URL mapping,
+  by Sascha Grossenbacher
  </notes>
  <contents>
   <dir name="/">
@@ -91,6 +94,7 @@ This concept is based on the .NET Framework DataGrid control and works very well
     <file baseinstalldir="Structures" name="DataSourcePDOTest.php" role="test" />
     <file baseinstalldir="Structures" name="DataSourceSQLTest.php" role="test" />
     <file baseinstalldir="Structures" name="DataSourceXMLTest.php" role="test" />
+    <file baseinstalldir="Structures" name="URLMappingTest.php" role="test" />
    </dir> <!-- /tests -->
   </dir> <!-- / -->
  </contents>
