@@ -9,6 +9,7 @@
  * Copyright (c) 1997-2007, Andrew Nagy <asnagy@webitecture.org>,
  *                          Olivier Guilyardi <olivier@samalyse.com>,
  *                          Mark Wiesemann <wiesemann@php.net>
+ *                          Sascha Grossenbacher <saschagros@bluewin.ch>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -83,6 +84,7 @@ require_once 'HTML/Table.php';
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @author   Mark Wiesemann <wiesemann@php.net>
+ * @author   Sascha Grossenbacher <saschagros@bluewin.ch>
  * @access   public
  * @package  Structures_DataGrid_Renderer_HTMLTable
  * @category Structures

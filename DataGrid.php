@@ -9,6 +9,7 @@
  * Copyright (c) 1997-2007, Andrew Nagy <asnagy@webitecture.org>,
  *                          Olivier Guilyardi <olivier@samalyse.com>,
  *                          Mark Wiesemann <wiesemann@php.net>
+ *                          Sascha Grossenbacher <saschagros@bluewin.ch>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -101,6 +102,7 @@ define('DATAGRID_ERROR_UNSUPPORTED', 1);
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @author   Mark Wiesemann <wiesemann@php.net>
+ * @author   Sascha Grossenbacher <saschagros@bluewin.ch>
  * @access   public
  * @package  Structures_DataGrid
  * @category Structures

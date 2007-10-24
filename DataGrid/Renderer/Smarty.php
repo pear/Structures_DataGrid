@@ -9,6 +9,7 @@
  * Copyright (c) 1997-2007, Andrew Nagy <asnagy@webitecture.org>,
  *                          Olivier Guilyardi <olivier@samalyse.com>,
  *                          Mark Wiesemann <wiesemann@php.net>
+ *                          Sascha Grossenbacher <saschagros@bluewin.ch>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -125,6 +126,7 @@ require_once 'Structures/DataGrid/Renderer.php';
  * @example  smarty-simple.tpl Smarty template with sorting and paging (smarty-simple.tpl)
  * @author   Andrew S. Nagy <asnagy@webitecture.org>
  * @author   Olivier Guilyardi <olivier@samalyse.com>
+ * @author   Sascha Grossenbacher <saschagros@bluewin.ch>
  * @access   public 
  * @package  Structures_DataGrid_Renderer_Smarty
  * @see      Structures_DataGrid_Renderer_Pager
