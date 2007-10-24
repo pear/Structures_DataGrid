@@ -194,7 +194,8 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
         
         // Check if NUM is enabled
         if (isset($this->_options['__SDG_MapperOptions'])) {
-            $options['append'] = false;        
+            $options['append'] = false;  
+            $options['path'] = '';
             
             reset($this->_currentSort);
             $orderBy = key($this->_currentSort);
