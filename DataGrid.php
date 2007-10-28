@@ -270,7 +270,8 @@ class Structures_DataGrid
      */
     var $_mapperDefaults = array(
         'orderBy' => null,
-        'direction' => null
+        'direction' => null,
+        'page' => 1
     );
 
    /**
@@ -1734,16 +1735,22 @@ class Structures_DataGrid
     }
 
     /**
-     * Set the special URL
+     * Set the URL format
      *
      * If this is set, it will be parsed instead of GET/POST.
      * This is only supported on PHP5, as it depends on 
      * Net_URL_Mapper.
+     * 
+     * There are three possible placeholders, :pager, :orderBy and :direction.
+     * :page or (:orderBy and :direction) can be used alone.
+     * 
+     * It is possible to use multipe DataGrid instances on one page with
+     * different prefixes.
      *
-     * Exampe: setUrlFormat("/page/:page/:orderBy/:direction")
+     * @example urlFormat.php    configure a url format
      *
      * @param string $format     The URL format, see example
-     * @param string $prefix     Set the url prefix if needed
+     * @param string $prefix     Sets the url prefix
      * @param string $scriptname Set the scriptname if mod_rewrite not available
      * 
      * @return void
@@ -1790,8 +1797,8 @@ class Structures_DataGrid
      * Tries to parse the request with
      * Net_URL_Mapper.
      *
-     * @param string $format     $format The URL format, see example
-     * @param string $prefix     Set the url prefix if needed
+     * @param string $format     The URL format, see example
+     * @param string $prefix     Set the url prefix
      * @param string $scriptname Set the scriptname if mod_rewrite not available
      * 
      * @return void
