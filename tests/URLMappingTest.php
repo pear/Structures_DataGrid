@@ -86,6 +86,31 @@ class URLMappingTest extends TestCore
         $datagrid->setUrlFormat("/:page", "/page");
         $this->assertEquals(5, $datagrid->getCurrentPage());
     }
+    
+    function testScriptNameParsing()
+    {
+        $this->setURL("/index.php/ScriptName/5");
+        $datagrid =& new Structures_DataGrid(10);
+        $datagrid->setUrlFormat(":page", 'ScriptName', '/index.php');
+        $this->assertEquals(5, $datagrid->getCurrentPage());
+    }
+    
+    function testMultipeParsing()
+    {        
+        $this->setURL("/multiple/page2/5/foo/ASC");
+        $datagrid =& new Structures_DataGrid(10);
+        $datagrid->setUrlFormat("/page/:page/:orderBy/:direction", 'multiple');
+        $datagrid->setUrlFormat("/page2/:page/:orderBy/:direction", 'multiple');
+
+        $this->assertEquals(5, $datagrid->getCurrentPage());
+        
+        $this->setURL("/multiple/page/5/foo/ASC");
+        $datagrid =& new Structures_DataGrid(10);
+        $datagrid->setUrlFormat("/page/:page/:orderBy/:direction", 'multiple');
+        $datagrid->setUrlFormat("/page2/:page/:orderBy/:direction", 'multiple');
+
+        $this->assertEquals(5, $datagrid->getCurrentPage());
+    }
 
     function testPostInstantiationParsing()
     {
@@ -155,6 +180,36 @@ class URLMappingTest extends TestCore
         // (page is 1 because the sortingResetsPaging option is enabled by default)
         $this->assertEquals("/page/1/foo/DESC", $urls[0]);
         $this->assertEquals("/page/1/funky/ASC", $urls[1]);
+    }
+    
+    function testSortOnly()
+    {
+        // Setting datagrid up
+        $this->setURL("/sort/foo/ASC");
+        $datagrid =& new Structures_DataGrid(10);
+        $datagrid->setUrlFormat("/:orderBy/:direction", 'sort');
+        $datasource = new URLMappingTest_MockDataSource();
+        $datasource->fakeCount = 50;
+        $datagrid->bindDataSource($datasource);
+        
+        $this->assertEquals(array('foo' => 'ASC'), $datasource->sortSpec);
+        
+        $table = $datagrid->getOutput();
+        $this->assertFalse(empty($table));
+
+        // Building XML object to parse header links href urls
+        $xml = new SimpleXMLElement($table);
+        $tags = $xml->xpath('//th/a');
+        $this->assertEquals(2, count($tags));
+        $urls = array();
+        foreach ($tags as $link) {
+            $urls[] = (string) $link['href'];
+        }
+        // Testing urls
+        // (page is 1 because the sortingResetsPaging option is enabled by default)
+        $this->assertEquals("/sort/foo/DESC", $urls[0]);
+        $this->assertEquals("/sort/funky/ASC", $urls[1]);
+        
     }
 
     function testSmartyGeneration()
