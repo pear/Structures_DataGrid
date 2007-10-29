@@ -1735,7 +1735,7 @@ class Structures_DataGrid
     }
 
     /**
-     * Set the URL format
+     * Enable and configure URL mapping
      *
      * If this is set, it will be parsed instead of GET/POST.
      * This is only supported on PHP5, as it depends on 
