@@ -45,6 +45,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
 - new columnSet item members: direction and onclick
 - Request #9994: add support for URL mapping, by Sascha Grossenbacher
 - add "Object Preserving" feature
+- fix a bug which prevented smarty {debug} function from working because of a 
+  recursive reference
  </notes>
  <contents>
   <dir name="/">

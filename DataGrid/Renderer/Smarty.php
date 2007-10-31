@@ -176,7 +176,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
             )
         );
     }
-
+        
     /**
      * Attach an already instantiated Smarty object
      * 
@@ -322,12 +322,12 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
                 $this->_smarty->assign($key, $val);
             }
 
-            $this->_smarty->assign_by_ref("{$p}datagrid", $this);
+            $this->_smarty->assign("{$p}datagrid", $this->_getReference());
 
             $this->_smarty->register_function("{$p}getPaging",
                 array(&$this, '_smartyGetPaging'));
         } else {
-            $this->_data["{$p}datagrid"] =& $this;
+            $this->_data["{$p}datagrid"] = $this->_getReference();
         }
     }
 
@@ -383,7 +383,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
 
         // Use a different renderer if provided
         if (isset($params['datagrid'])) {
-            $renderer =& $params['datagrid'];
+            $renderer =& $this->_getReference($params['datagrid']);
             unset($params['datagrid']);
         } else {
             $renderer =& $this; 
@@ -392,6 +392,25 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
         $driver->setupAs($renderer, $params);
         $driver->build(array(), 0);
         return $driver->getOutput();
+    }
+
+    /**
+     * Return a renderer reference by id or create a new id
+     *
+     * @param  int      Renderer id
+     * @return mixed    New id or renderer object
+     */
+    function &_getReference($id = null)
+    {
+        static $references = array();
+        
+        if (!is_null($id)) {
+            return $references[$id - 1];
+        } else {
+            $references[] =& $this;
+            $id = count($references);
+            return $id;
+        }
     }
 
     /**
