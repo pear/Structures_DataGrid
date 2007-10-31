@@ -257,7 +257,7 @@ class Structures_DataGrid
     var $_mapperRules = array(
         'page' => '[0-9]+',
         'orderBy' => '[^\/]+',
-        'direction' => '(ASC|DESC)'
+        'direction' => '(ASC|DESC|asc|desc)'
     );
     
     /**
@@ -274,6 +274,14 @@ class Structures_DataGrid
         'page' => 1
     );
 
+    /**
+     * URL mapper instance, if activated
+     * 
+     * @var object Net_URL_Mapper
+     * @access protected
+     */
+    var $_urlMapper = null;
+    
    /**
      * Constructor
      *
@@ -485,6 +493,9 @@ class Structures_DataGrid
         }        
 
         $options = array_merge($this->_rendererCommonOptions, $options);
+        if ($this->_urlMapper) {
+            $driver->setUrlMapper($this->_urlMapper);
+        }
         if ($options) {
             $driver->setOptions((array)$options);
         }
@@ -1363,6 +1374,7 @@ class Structures_DataGrid
      */
     function _secureDirection($str)
     {
+        $str = strtoupper($str);
         return ($str == 'ASC' or $str == 'DESC') ? $str : 'ASC';
     }
 
@@ -1656,9 +1668,14 @@ class Structures_DataGrid
         if ($common) {
             $this->_rendererCommonOptions 
                 = array_merge($this->_rendererCommonOptions, (array)$options);
+
+            // There is no need to load the default renderer if these are common 
+            // options. rendererFactory() will set them up.
+            isset($this->_renderer) and $this->_renderer->setOptions((array)$options);
+        } else {
+            isset($this->_renderer) or $this->setRenderer(DATAGRID_RENDER_DEFAULT);
+            $this->_renderer->setOptions((array)$options);
         }
-        isset($this->_renderer) or $this->setRenderer(DATAGRID_RENDER_DEFAULT);
-        $this->_renderer->setOptions((array)$options);
     }
 
     /**
@@ -1746,10 +1763,16 @@ class Structures_DataGrid
      * 
      * It is possible to use multipe DataGrid instances on one page with
      * different prefixes.
+     * 
+     * Instead of a format string you might also pass a Net_URL_Mapper instance
+     * to this method, in which case $prefix and $scriptname will be ignored.
+     * This instance must be properly set up, connected to url patterns, etc...
+     * This is especially useful when you've already configured URL mapping
+     * globally for your application and want Structures_DataGrid to integrate.
      *
      * @example urlFormat.php    configure a url format
      *
-     * @param string $format     The URL format, see example
+     * @param mixed  $format     The URL format string or a Net_URL_Mapper instance
      * @param string $prefix     Sets the url prefix
      * @param string $scriptname Set the scriptname if mod_rewrite not available
      * 
@@ -1757,13 +1780,16 @@ class Structures_DataGrid
      * @access public
      * @throws Net_URL_Mapper_InvalidException
      * 
+     * @see http://pear.php.net/Net_URL_Mapper
      */
     function setUrlFormat($format, $prefix = null, $scriptname = null)
     {
-        if (!Structures_DataGrid::fileExists('Net/URL/Mapper.php')) {
-            return PEAR::raiseError('Net_URL_Mapper Package is missing');
+        if (is_string($format)) {
+            if (!Structures_DataGrid::fileExists('Net/URL/Mapper.php')) {
+                return PEAR::raiseError('Net_URL_Mapper Package is missing');
+            }
+            include_once 'Net/URL/Mapper.php';
         }
-        include_once 'Net/URL/Mapper.php';
         
         // reset parsed Params and reparse the request
         $this->_mapperMatch = null;
@@ -1783,21 +1809,13 @@ class Structures_DataGrid
                 $this->_setRendererCurrentSorting();
             }
         }
-        
-                    
-        // Store needed information for renderers in common options
-        $options = array('path'   => $format,
-                         'prefix' => $prefix);
-            
-        $this->setRendererOptions(array('__SDG_MapperOptions' => $options),
-                                  true);
     }
     
     /**
      * Tries to parse the request with
      * Net_URL_Mapper.
      *
-     * @param string $format     The URL format, see example
+     * @param mixed  $format     The URL format string or a Net_URL_Mapper instance
      * @param string $prefix     Set the url prefix
      * @param string $scriptname Set the scriptname if mod_rewrite not available
      * 
@@ -1808,26 +1826,30 @@ class Structures_DataGrid
      */
     function _parseRequestWithMapper($format, $prefix = null, $scriptname = null)
     {
-        // Use a special instance, so that it is usable for multipe 
-        // SDG instances and other NUM Instances
-        $mapper = Net_URL_Mapper::getInstance('__SDG_Instance_' . $prefix);
-        
-        // If the prefix is not null, set it
-        if (!is_null($prefix)) {
-            $mapper->setPrefix($prefix);
+        if (is_a($format, 'Net_URL_Mapper')) {
+            $this->_urlMapper = $format;
+        } else {
+            // Use a special instance, so that it is usable for multipe 
+            // SDG instances and other NUM Instances
+            $this->_urlMapper = Net_URL_Mapper::getInstance('__SDG_Instance_' . $prefix);
+            
+            // If the prefix is not null, set it
+            if (!is_null($prefix)) {
+                $this->_urlMapper->setPrefix($prefix);
+            }
+            
+            //if the scriptname is not null, set it
+            if (!is_null($scriptname)) {
+                $this->_urlMapper->setScriptName($scriptname);
+            }
+            
+            // "connect" the format wit defaults and the defined rules
+            $this->_urlMapper->connect($format, $this->_mapperDefaults, $this->_mapperRules);
         }
-        
-        //if the scriptname is not null, set it
-        if (!is_null($scriptname)) {
-            $mapper->setScriptName($scriptname);
-        }
-        
-        // "connect" the format wit defaults and the defined rules
-        $mapper->connect($format, $this->_mapperDefaults, $this->_mapperRules);
-        
+            
         // run NUM, if it returns an array, the url was successfully matched,
         // return true
-        if ($this->_mapperMatch = $mapper->match($_SERVER['REQUEST_URI'])) {
+        if ($this->_mapperMatch = $this->_urlMapper->match($_SERVER['REQUEST_URI'])) {
             return true;
         }
         return false;

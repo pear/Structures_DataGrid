@@ -263,7 +263,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
                 $page = $this->_options['sortingResetsPaging'] ? 1 : $this->_page;
                 $extra = array('page' => $page); 
                 // Check if NUM is enabled
-                if (isset($this->_options['__SDG_MapperOptions'])) {
+                if ($this->_urlMapper) {
                     $prepared[$index]['link'] = $this->_buildMapperURL($spec['field'], 
                                                                        $direction, 
                                                                        $page);

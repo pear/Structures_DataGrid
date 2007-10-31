@@ -362,6 +362,14 @@ class Structures_DataGrid_Renderer
     var $_streamingEnabled = false;
     
     /**
+     * URL mapper instance, if provided
+     * 
+     * @var object Net_URL_Mapper
+     * @access protected
+     */
+    var $_urlMapper = null;
+    
+    /**
      * Instantiate the driver and set default options and features
      *
      * Drivers may overload this method in order to change/add default options.
@@ -1113,15 +1121,13 @@ class Structures_DataGrid_Renderer
      */
     function _buildMapperURL($field, $direction, $page = 1) 
     {
-        $prefix = $this->_options['__SDG_MapperOptions']['prefix'];
-        $mapper = Net_URL_Mapper::getInstance('__SDG_Instance_' . $prefix);
-        
         $params = array('page' => $page,
                         'orderBy' => $field,
-                        'direction' => $direction);
+                        'direction' => strtolower($direction));
         
         if (is_null($this->_sortingHttpQueryCommon)) {
             // Build and cache the list of common get parameters
+            $prefix = $this->_requestPrefix;
             $this->_sortingHttpQueryCommon = $this->_options['extraVars'];
             $ignore   = $this->_options['excludeVars'];
             $ignore[] = $prefix . 'orderBy';
@@ -1133,7 +1139,7 @@ class Structures_DataGrid_Renderer
             }
         }
             
-        return $mapper->generate($params, $this->_sortingHttpQueryCommon);
+        return $this->_urlMapper->generate($params, $this->_sortingHttpQueryCommon);
     }
 
     /**
@@ -1188,6 +1194,18 @@ class Structures_DataGrid_Renderer
     function hasFeature($name)
     {
         return $this->_features[$name];
+    }
+
+    /**
+     * Set the URL mapper
+     *
+     * @param object $instance Net_URL_Mapper instance
+     * @return void
+     * @access public
+     */
+    function setUrlMapper($instance)
+    {
+        $this->_urlMapper = $instance;
     }
 
 }

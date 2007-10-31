@@ -385,7 +385,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 $page = $this->_options['sortingResetsPaging'] ? 1 : $this->_page;
                 
                 // Check if NUM is enabled
-                if (isset($this->_options['__SDG_MapperOptions'])) {
+                if ($this->_urlMapper) {
                     $url = $this->_buildMapperURL($field, $direction, $page);
                 } else {
                     // Build HTTP query

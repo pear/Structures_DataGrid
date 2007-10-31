@@ -196,7 +196,7 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
         }
         
         // Check if NUM is enabled
-        if (isset($this->_options['__SDG_MapperOptions'])) {
+        if ($this->_urlMapper) {
             $options['append'] = false;  
             $options['path'] = '';
             
