@@ -179,7 +179,7 @@ class Structures_DataGrid_DataSource_DataObject
             $this->setOptions($options); 
         }
 
-        if (is_subclass_of($dataobject, 'DB_DataObject')) {
+        if (is_object($dataobject)) {
             $this->_dataobject =& $dataobject;
 
             $mergeOptions = array();
@@ -237,7 +237,7 @@ class Structures_DataGrid_DataSource_DataObject
                 
             return true;
         } else {
-            return PEAR::raiseError('The provided source must be a DB_DataObject');
+            return PEAR::raiseError('The provided container must be an object');
         }
     }
 
