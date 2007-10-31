@@ -106,6 +106,13 @@ require_once 'Structures/DataGrid/DataSource.php';
  *                               might be heavy.
  *                               If false: perform a smart count query with 
  *                               DB_DataObject::count().
+ * - return_objects:  (bool)     If true, the returned records will consists
+ *                               of clones of the dataobject instead of 
+ *                               associative arrays. This is especially useful
+ *                               when used in conjunction with the smarty 
+ *                               renderer for example, to directly access the 
+ *                               dataobject properties and methods from 
+ *                               your templates.
  *
  * @example bind-dataobject.php  Bind a DB_DataObject to Structures_DataGrid
  *
@@ -158,7 +165,8 @@ class Structures_DataGrid_DataSource_DataObject
                     'link_level' => 0,
                     'link_keep_key' => false,
                     'formbuilder_integration' => false,
-                    'raw_count' => false));
+                    'raw_count' => false,
+                    'return_objects' => false));
        
         $this->_setFeatures(array('multiSort' => true));
     }
@@ -290,51 +298,55 @@ class Structures_DataGrid_DataSource_DataObject
             $links = $this->_dataobject->links();
             $initial = true;
             while ($this->_dataobject->fetch()) {
-                // Determine Fields
-                if ($initial) {
-                    if (!$this->_options['fields']) {
-                        if ($this->_options['use_private_vars']) {
-                            $this->_options['fields'] =
-                                array_keys(get_object_vars($this->_dataobject));
-                        } else {
-                            $this->_options['fields'] =
-                                array_keys($this->_dataobject->toArray());
-                        }
-                    }
-                    $initial = false;
-                }
-                // Build DataSet
-                $rec = array();
-                foreach ($this->_options['fields'] as $fName) {
-                    $getMethod = (strpos($fName, '_') !== false) 
-                        ? 'get' . implode('', array_map('ucfirst', 
-                                            explode('_', $fName)))
-                        : 'get' . ucfirst($fName);
-                    if (method_exists($this->_dataobject, $getMethod)) {
-                        $rec[$fName] = $this->_dataobject->$getMethod();
-                    } elseif (isset($this->_dataobject->$fName)) {                        
-                        $rec[$fName] = $this->_dataobject->$fName;
-                    } else {
-                        $rec[$fName] = null;
-                    }
-                }
-                
-                // Get Linked Fields
-                if ($linkLevel > 0) {
-                    foreach (array_keys($rec) as $field) {
-                        if (isset($links[$field]) &&
-                            isset($this->_dataobject->$field) &&
-                            ($linkedDo = $this->_dataobject->getLink($field)) &&
-                            !PEAR::isError($linkedDo)) {
-                            if ($this->_options['link_keep_key']) {
-                                $rec["{$field}__key"] = $rec[$field];
+                if ($this->_options['return_objects']) {
+                    $records[] = clone($this->_dataobject);
+                } else {
+                    // Determine Fields
+                    if ($initial) {
+                        if (!$this->_options['fields']) {
+                            if ($this->_options['use_private_vars']) {
+                                $this->_options['fields'] =
+                                    array_keys(get_object_vars($this->_dataobject));
+                            } else {
+                                $this->_options['fields'] =
+                                    array_keys($this->_dataobject->toArray());
                             }
-                            $rec[$field] =$this->_getDataObjectString($linkedDo, $linkLevel);
+                        }
+                        $initial = false;
+                    }
+                    // Build DataSet
+                    $rec = array();
+                    foreach ($this->_options['fields'] as $fName) {
+                        $getMethod = (strpos($fName, '_') !== false) 
+                            ? 'get' . implode('', array_map('ucfirst', 
+                                                explode('_', $fName)))
+                            : 'get' . ucfirst($fName);
+                        if (method_exists($this->_dataobject, $getMethod)) {
+                            $rec[$fName] = $this->_dataobject->$getMethod();
+                        } elseif (isset($this->_dataobject->$fName)) {                        
+                            $rec[$fName] = $this->_dataobject->$fName;
+                        } else {
+                            $rec[$fName] = null;
                         }
                     }
+                    
+                    // Get Linked Fields
+                    if ($linkLevel > 0) {
+                        foreach (array_keys($rec) as $field) {
+                            if (isset($links[$field]) &&
+                                isset($this->_dataobject->$field) &&
+                                ($linkedDo = $this->_dataobject->getLink($field)) &&
+                                !PEAR::isError($linkedDo)) {
+                                if ($this->_options['link_keep_key']) {
+                                    $rec["{$field}__key"] = $rec[$field];
+                                }
+                                $rec[$field] =$this->_getDataObjectString($linkedDo, $linkLevel);
+                            }
+                        }
+                    }
+                                    
+                    $records[] = $rec;
                 }
-                                
-                $records[] = $rec;
             }
         }
 

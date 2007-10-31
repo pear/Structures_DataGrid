@@ -41,6 +41,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
 - Fixed reference assignment warnings under PHP 4.4
 - Removed dependency on DB_DataObject_FormBuilder
 - Updated other dependencies
+- new 'return_objects' option: for fetching records as dataobjects instead of 
+  associative arrays
  </notes>
  <contents>
   <dir name="/">
