@@ -844,7 +844,7 @@ class Structures_DataGrid_Renderer
             // Currently, no formatting is performed on object records.
             // These are not converted to indexed arrays, so that some
             // renderer drivers might fail to process them.
-            if (is_array($rec) or !$this->hasFeature('objectPreserving')) {
+            if (is_array($chunk[$rec]) or !$this->hasFeature('objectPreserving')) {
                 $content = array();
                 $col = 0;
                 foreach ($this->_columnObjects as $column) {
