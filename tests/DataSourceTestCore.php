@@ -63,13 +63,6 @@ class DataSourceTestCore extends TestCore
                 array('num' => '3', 'the str' => ''),
             );
 
-    function DataSourceTestCore($name)
-    {
-        parent::PHPUnit_TestCase($name);
-        PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, array($this, 'onPearError'));
-        $this->setLooselyTyped(true);
-    }
-
     function onPearError($error)
     {
         $this->fail(

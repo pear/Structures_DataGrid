@@ -143,13 +143,13 @@ class Structures_DataGrid_DataSource_Array
      * @param   integer $offset     Limit offset (starting from 0)
      * @param   integer $len        Limit length
      * @access  public
-     * @return  array       The 2D Array of the records
+     * @return  array               Array of records
      */
     function &fetch($offset = 0, $len = null)
     {
         if ($this->_ar && !$this->_options['fields']) {
             $firstElement = array_slice($this->_ar, 0, 1);
-            $this->setOptions(array('fields' => array_keys($firstElement[0])));
+            $this->setOptions(array('fields' => array_keys((array) $firstElement[0])));
         }
 
         // slicing
@@ -159,21 +159,30 @@ class Structures_DataGrid_DataSource_Array
             $slice = array_slice($this->_ar, $offset, $len);
         }
 
-        // Filter out fields that are to not be rendered
+        // Filter out fields that are to not be rendered (object records 
+        // excepted)
         $records = array();
         if (version_compare(PHP_VERSION, '5.1.0', '>=')) {
-            foreach ($slice as $rec) {
-                $records[] = array_intersect_key($rec, array_flip($this->_options['fields']));
+            foreach ($slice as $key => $rec) {
+                if (is_array($rec)) {
+                    $records[] = array_intersect_key($rec, array_flip($this->_options['fields']));
+                } else {
+                    $records[] =& $slice[$key];
+                }
             }
         } else {
-            foreach ($slice as $rec) {
-                $buf = array();
-                foreach ($rec as $key => $val) {
-                    if (in_array($key, $this->_options['fields'])) {
-                        $buf[$key] = $val;
+            foreach ($slice as $key => $rec) {
+                if (is_array($rec)) { 
+                    $buf = array();
+                    foreach ($rec as $key => $val) {
+                        if (in_array($key, $this->_options['fields'])) {
+                            $buf[$key] = $val;
+                        }
                     }
+                    $records[] = $buf;
+                } else {
+                    $records[] =& $slice[$key];
                 }
-                $records[] = $buf;
             }
         }
 
@@ -194,7 +203,8 @@ class Structures_DataGrid_DataSource_Array
         $numRows = count($this->_ar);
         
         for ($i = 0; $i < $numRows; $i++) {
-            $sortAr[$i] = $this->_ar[$i][$sortField];
+            $rec = (array) $this->_ar[$i];
+            $sortAr[$i] = $rec[$sortField];
         }
 
         $sortDir = (is_null($sortDir) or strtoupper($sortDir) == 'ASC') 

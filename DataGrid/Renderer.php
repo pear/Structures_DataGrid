@@ -781,6 +781,7 @@ class Structures_DataGrid_Renderer
      */
     function build($chunk, $startRow, $eof = false)
     {
+        print_r($chunk);
         // on first call of build(): initialize the columns and prepare the header
         if (empty($this->_columns)) {
             $this->_columns = array();

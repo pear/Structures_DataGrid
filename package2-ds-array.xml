@@ -43,6 +43,7 @@ base package for some other DataSource drivers like CSV or XML.
   'example1, Example2, test1, Test2' vs. 'Example2, Test2, example1, test1'
   (default sorting, capital letters will come first)
 - Bug #12020: arrays with non-continuous keys are now 
+- add support for using object instead of associative arrays as records
 
 The new option and the bug fix also affect the following DataSource drivers:
 CSV, DB (not DBQuery!), Excel, RSS, XML

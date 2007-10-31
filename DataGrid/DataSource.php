@@ -210,8 +210,11 @@ class Structures_DataGrid_DataSource
     /**
      * Fetching method prototype
      *
-     * When overloaded this method must return a 2D array of records 
-     * on success or a PEAR_Error object on failure.
+     * When overloaded this method must return an array of records. 
+     * Each record can be either an associative array of field name/value 
+     * pairs, or an object carrying fields as properties.
+     *
+     * This method must return a PEAR_Error object on failure.
      *
      * @abstract
      * @param   integer $offset     Limit offset (starting from 0)
