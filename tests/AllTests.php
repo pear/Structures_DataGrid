@@ -50,6 +50,7 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
  
 require_once 'PHPUnit.php';
 require_once 'AllDataSourceTests.php';
+require_once 'ObjectRecordTest.php';
  
 /**
  * Test (almost ;) everything
@@ -70,6 +71,7 @@ class AllTests
     function getSuites()
     {
         $suites = AllDataSourceTests::getSuites();
+        $suites[] = 'ObjectRecordTest';
 
         // PHP5 only:
         if (version_compare(phpversion(), '5', '>=')) {

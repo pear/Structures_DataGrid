@@ -84,6 +84,7 @@ require_once 'XML/Util.php';
  * - Output Buffering:  yes
  * - Direct Rendering:  yes
  * - Streaming:         yes
+ * - Object Preserving: no
  *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>

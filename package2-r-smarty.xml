@@ -44,6 +44,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
 - add support for the jsHandler option
 - new columnSet item members: direction and onclick
 - Request #9994: add support for URL mapping, by Sascha Grossenbacher
+- add "Object Preserving" feature
  </notes>
  <contents>
   <dir name="/">

@@ -60,6 +60,7 @@ require_once 'HTML/QuickForm.php';
  * - Output Buffering:  yes
  * - Direct Rendering:  no
  * - Streaming:         no
+ * - Object Preserving: no
  *
  * @example htmleditform-basic.php      Basic usage
  * @example htmleditform-tableless.php  Usage with tableless renderer and DHTMLRules

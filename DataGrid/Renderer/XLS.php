@@ -86,6 +86,7 @@ require_once 'Spreadsheet/Excel/Writer.php';
  * - Output Buffering:  no
  * - Direct Rendering:  not really, see below
  * - Streaming:         no
+ * - Object Preserving: no
  * 
  * GENERAL NOTES:
  *

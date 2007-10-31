@@ -68,6 +68,7 @@ require_once 'Structures/DataGrid/Renderer.php';
  * - Output Buffering:  yes
  * - Direct Rendering:  no
  * - Streaming:         no
+ * - Object Preserving: yes
  *
  * GENERAL NOTES:
  *
@@ -112,14 +113,19 @@ require_once 'Structures/DataGrid/Renderer.php';
  * - $datagrid:        a reference that you can pass to {getPaging}
  * </code>
  * 
- * This driver also registers a Smarty custom function named getPaging
+ * This driver registers a Smarty custom function named getPaging
  * that can be called from Smarty templates with {getPaging} in order
  * to print paging links. This function accepts the same parameters as the
  * pagerOptions option of Structures_DataGrid_Renderer_Pager.
  *
- * {getPaging} also accepts an optional "datagrid" parameter 
+ * {getPaging} accepts an optional "datagrid" parameter 
  * which you can pass the $datagrid variable, to display paging for an
  * arbitrary datagrid (useful with multiple dynamic datagrids on a single page).
+ *
+ * Object Records : this drivers preserves object records if provided. This means
+ * that if your datasource provides objects instead of associative arrays as
+ * records, you can access their properties and methods in your smarty template, 
+ * with something like: {$recordSet[col]->getSomeInformation()}.
  *
  * @version  $Revision$
  * @example  smarty-simple.php Using the Smarty renderer
@@ -166,6 +172,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
         $this->_setFeatures(
             array(
                 'outputBuffering' => true,
+                'objectPreserving' => true,
             )
         );
     }

@@ -51,6 +51,9 @@ This concept is based on the .NET Framework DataGrid control and works very well
 - new URL mapping feature by Sascha Grossenbacher,
 - Request #9994 :new setUrlFormat() method providing clean URL mapping,
   by Sascha Grossenbacher
+- add ability to use objects of any class instead of associative arrays as 
+  records (not all datasources support that, and renderers handle such objects
+  differently whether they support "Object Preserving" or not)
  </notes>
  <contents>
   <dir name="/">
@@ -95,6 +98,7 @@ This concept is based on the .NET Framework DataGrid control and works very well
     <file baseinstalldir="Structures" name="DataSourceSQLTest.php" role="test" />
     <file baseinstalldir="Structures" name="DataSourceXMLTest.php" role="test" />
     <file baseinstalldir="Structures" name="URLMappingTest.php" role="test" />
+    <file baseinstalldir="Structures" name="ObjectRecordTest.php" role="test" />
    </dir> <!-- /tests -->
   </dir> <!-- / -->
  </contents>

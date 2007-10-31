@@ -393,7 +393,8 @@ class Structures_DataGrid_Renderer
 
         $this->_features = array(
                 'streaming' => false, 
-                'outputBuffering' => false, 
+                'outputBuffering' => false,
+                'objectPreserving' => false,
         );
 
         if (function_exists('mb_internal_encoding')) {
@@ -781,7 +782,6 @@ class Structures_DataGrid_Renderer
      */
     function build($chunk, $startRow, $eof = false)
     {
-        print_r($chunk);
         // on first call of build(): initialize the columns and prepare the header
         if (empty($this->_columns)) {
             $this->_columns = array();
@@ -841,14 +841,19 @@ class Structures_DataGrid_Renderer
 
         $row = 0;
         for ($rec = 0; $rec < $chunkSize; $rec++) {
-            $content = array();
-            $col = 0;
-            foreach ($this->_columnObjects as $column) {
-                $content[] = $this->recordToCell($column, $chunk[$rec],
-                                                 $row + $startRow, $col);
-                $col++;
+            // Currently, no formatting is performed on object records.
+            // These are not converted to indexed arrays, so that some
+            // renderer drivers might fail to process them.
+            if (is_array($rec) or !$this->hasFeature('objectPreserving')) {
+                $content = array();
+                $col = 0;
+                foreach ($this->_columnObjects as $column) {
+                    $content[] = $this->recordToCell($column, $chunk[$rec],
+                                                     $row + $startRow, $col);
+                    $col++;
+                }
+                $chunk[$rec] = $content;
             }
-            $chunk[$rec] = $content;
             $row++;
         }
 
@@ -1008,8 +1013,11 @@ class Structures_DataGrid_Renderer
         $value = '';
         if (isset($column->formatter) and !empty($column->formatter)) {
             $value = $column->formatter($record, $row, $col);
-        } else if (isset($column->fieldName) and isset($record[$column->fieldName])) {
-            $value = $this->defaultCellFormatter($record[$column->fieldName]);
+        } else if (isset($column->fieldName)) { 
+            $record = (array) $record; // record might be an object
+            if (isset($record[$column->fieldName])) {
+                $value = $this->defaultCellFormatter($record[$column->fieldName]);
+            }
         }
 
         if (empty($value) and !is_null($column->autoFillValue)) {

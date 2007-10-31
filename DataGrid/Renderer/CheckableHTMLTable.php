@@ -66,6 +66,7 @@ require_once 'Structures/DataGrid/Renderer/HTMLTable.php';
  * - Output Buffering:  yes
  * - Direct Rendering:  no
  * - Streaming:         no
+ * - Object Preserving: no
  *
  * GENERAL NOTES:
  *

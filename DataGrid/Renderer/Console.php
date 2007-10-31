@@ -63,6 +63,7 @@ require_once 'Console/Table.php';
  * - Output Buffering:  yes
  * - Direct Rendering:  no
  * - Streaming:         no
+ * - Object Preserving: no
  *
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>

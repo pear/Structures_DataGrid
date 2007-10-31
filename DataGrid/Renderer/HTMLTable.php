@@ -78,6 +78,7 @@ require_once 'HTML/Table.php';
  * - Output Buffering:  yes
  * - Direct Rendering:  no
  * - Streaming:         no
+ * - Object Preserving: no
  *
  * @version  $Revision$
  * @example  ajax-simple.php Simple AJAX support using the Prototype framework

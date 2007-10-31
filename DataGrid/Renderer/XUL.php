@@ -61,6 +61,7 @@ require_once 'XML/Util.php';
  * - Output Buffering:  yes
  * - Direct Rendering:  no
  * - Streaming:         no
+ * - Object Preserving: no
  * 
  * GENERAL NOTES:
  * 

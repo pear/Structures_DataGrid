@@ -72,6 +72,7 @@ require_once 'Structures/DataGrid/Renderer.php';
  * - Output Buffering:  yes
  * - Direct Rendering:  yes
  * - Streaming:         yes
+ * - Object Preserving: no
  *                       
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@webitecture.org>

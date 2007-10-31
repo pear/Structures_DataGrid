@@ -24,7 +24,8 @@ if (!is_dir(TMP_PATH . 'structures-datagrid-renderer/')) {
 $availableRendererModes = array('Container Support',
                                 'Output Buffering',
                                 'Direct Rendering',
-                                'Streaming'
+                                'Streaming',
+                                'Object Preserving',
                                );
 
 $descriptions = array();

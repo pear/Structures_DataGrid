@@ -81,6 +81,7 @@ require_once 'Pager/Pager.php';
  * - Output Buffering:  yes
  * - Direct Rendering:  no
  * - Streaming:         no
+ * - Object Preserving: no
  *
  * @version  $Revision$
  * @author   Olivier Guilyardi <olivier@samalyse.com>
