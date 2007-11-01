@@ -62,7 +62,7 @@ class URLMappingTest extends TestCore
     var $datagrid;
 
     function testSimpleParsing() {
-        $this->setURL("/page/5/foo/DESC");
+        $this->setURL("/page/5/foo/desc");
         $datagrid =& new Structures_DataGrid(10);
         $datagrid->setUrlFormat("/page/:page/:orderBy/:direction");
         $this->assertEquals(5, $datagrid->getCurrentPage());
@@ -97,14 +97,14 @@ class URLMappingTest extends TestCore
     
     function testMultipeParsing()
     {        
-        $this->setURL("/multiple/page2/5/foo/ASC");
+        $this->setURL("/multiple/page2/5/foo/asc");
         $datagrid =& new Structures_DataGrid(10);
         $datagrid->setUrlFormat("/page/:page/:orderBy/:direction", 'multiple');
         $datagrid->setUrlFormat("/page2/:page/:orderBy/:direction", 'multiple');
 
         $this->assertEquals(5, $datagrid->getCurrentPage());
         
-        $this->setURL("/multiple/page/5/foo/ASC");
+        $this->setURL("/multiple/page/5/foo/asc");
         $datagrid =& new Structures_DataGrid(10);
         $datagrid->setUrlFormat("/page/:page/:orderBy/:direction", 'multiple');
         $datagrid->setUrlFormat("/page2/:page/:orderBy/:direction", 'multiple');
@@ -146,17 +146,17 @@ class URLMappingTest extends TestCore
         }
 
         // Testing urls
-        $this->assertEquals("/page/2/foo/ASC", $urls[0]);
-        $this->assertEquals("/page/3/foo/ASC", $urls[1]);
-        $this->assertEquals("/page/4/foo/ASC", $urls[2]);
-        $this->assertEquals("/page/5/foo/ASC", $urls[3]);
-        $this->assertEquals("/page/2/foo/ASC", $urls[4]);
+        $this->assertEquals("/page/2/foo/asc", $urls[0]);
+        $this->assertEquals("/page/3/foo/asc", $urls[1]);
+        $this->assertEquals("/page/4/foo/asc", $urls[2]);
+        $this->assertEquals("/page/5/foo/asc", $urls[3]);
+        $this->assertEquals("/page/2/foo/asc", $urls[4]);
     }
 
     function testHTMLTableGeneration()
     {
         // Setting datagrid up
-        $this->setURL("/page/3/foo/ASC");
+        $this->setURL("/page/3/foo/asc");
         $datagrid =& new Structures_DataGrid(10);
         $datagrid->setUrlFormat("/page/:page/:orderBy/:direction");
         $datasource = new URLMappingTest_MockDataSource();
@@ -178,14 +178,14 @@ class URLMappingTest extends TestCore
 
         // Testing urls
         // (page is 1 because the sortingResetsPaging option is enabled by default)
-        $this->assertEquals("/page/1/foo/DESC", $urls[0]);
-        $this->assertEquals("/page/1/funky/ASC", $urls[1]);
+        $this->assertEquals("/page/1/foo/desc", $urls[0]);
+        $this->assertEquals("/page/1/funky/asc", $urls[1]);
     }
     
     function testSortOnly()
     {
         // Setting datagrid up
-        $this->setURL("/sort/foo/ASC");
+        $this->setURL("/sort/foo/asc");
         $datagrid =& new Structures_DataGrid(10);
         $datagrid->setUrlFormat("/:orderBy/:direction", 'sort');
         $datasource = new URLMappingTest_MockDataSource();
@@ -207,15 +207,15 @@ class URLMappingTest extends TestCore
         }
         // Testing urls
         // (page is 1 because the sortingResetsPaging option is enabled by default)
-        $this->assertEquals("/sort/foo/DESC", $urls[0]);
-        $this->assertEquals("/sort/funky/ASC", $urls[1]);
+        $this->assertEquals("/sort/foo/desc", $urls[0]);
+        $this->assertEquals("/sort/funky/asc", $urls[1]);
         
     }
 
     function testSmartyGeneration()
     {
         // Setting datagrid up
-        $this->setURL("/page/3/foo/ASC");
+        $this->setURL("/page/3/foo/asc");
         $datagrid =& new Structures_DataGrid(10);
         $datagrid->setUrlFormat("/page/:page/:orderBy/:direction");
         $datasource = new URLMappingTest_MockDataSource();
@@ -232,7 +232,7 @@ class URLMappingTest extends TestCore
         // Testing first column
         $this->assertEquals('foo', $vars['columnSet'][0]['name']);
         $this->assertEquals('ASC', $vars['columnSet'][0]['direction']);
-        $this->assertEquals('/page/1/foo/DESC', $vars['columnSet'][0]['link']);
+        $this->assertEquals('/page/1/foo/desc', $vars['columnSet'][0]['link']);
 
         $onclick = $this->parseOnClick($vars['columnSet'][0]['onclick']);
         $this->assertEquals(1, $onclick['page']);
@@ -241,7 +241,7 @@ class URLMappingTest extends TestCore
         // Testing second column
         $this->assertEquals('funky', $vars['columnSet'][1]['name']);
         $this->assertEquals('', $vars['columnSet'][1]['direction']);
-        $this->assertEquals('/page/1/funky/ASC', $vars['columnSet'][1]['link']);
+        $this->assertEquals('/page/1/funky/asc', $vars['columnSet'][1]['link']);
 
         $onclick = $this->parseOnClick($vars['columnSet'][1]['onclick']);
         $this->assertEquals(1, $onclick['page']);
