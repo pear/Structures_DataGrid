@@ -312,9 +312,13 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
         if ($this->_options['associative']) {
             $associative = array();
             foreach ($this->_records as $row => $rec) {
-                $associative[$row] = array();
-                foreach ($this->_columns as $col => $spec) {
-                    $associative[$row][$spec['field']] = $rec[$col];
+                if (is_array($rec)) { // object records are left untouched
+                    $associative[$row] = array();
+                    foreach ($this->_columns as $col => $spec) {
+                        $associative[$row][$spec['field']] = $rec[$col];
+                    }
+                } else {
+                    $associative[$row] =& $this->_records[$row];
                 }
             }
             $this->_data[$this->_options['varPrefix'] . 'recordSet'] 
