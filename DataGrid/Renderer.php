@@ -1121,9 +1121,13 @@ class Structures_DataGrid_Renderer
      */
     function _buildMapperURL($field, $direction, $page = 1) 
     {
+        if (!empty($direction)) {
+            $direction = strtolower($direction);
+        }
+
         $params = array('page' => $page,
                         'orderBy' => $field,
-                        'direction' => strtolower($direction));
+                        'direction' => $direction);
         
         if (is_null($this->_sortingHttpQueryCommon)) {
             // Build and cache the list of common get parameters
