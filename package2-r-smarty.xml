@@ -47,6 +47,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
 - add "Object Preserving" feature
 - fix a bug which prevented smarty {debug} function from working because of a 
   recursive reference
+- new 'associative' option to get the column set and records as associative
+  arrays, instead of numerically indexed ones
  </notes>
  <contents>
   <dir name="/">

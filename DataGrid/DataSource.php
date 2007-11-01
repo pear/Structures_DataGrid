@@ -181,7 +181,6 @@ class Structures_DataGrid_DataSource
         $columns = array();
         if ($this->_options['generate_columns'] 
             and $fieldList = $this->_options['fields']) {
-                             
             include_once 'Structures/DataGrid/Column.php';
             
             foreach ($fieldList as $field) {

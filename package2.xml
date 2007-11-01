@@ -54,6 +54,7 @@ This concept is based on the .NET Framework DataGrid control and works very well
 - add ability to use objects of any class instead of associative arrays as 
   records (not all datasources support that, and renderers handle such objects
   differently whether they support "Object Preserving" or not)
+- add Smarty renderer unit test  
  </notes>
  <contents>
   <dir name="/">
@@ -99,6 +100,7 @@ This concept is based on the .NET Framework DataGrid control and works very well
     <file baseinstalldir="Structures" name="DataSourceXMLTest.php" role="test" />
     <file baseinstalldir="Structures" name="URLMappingTest.php" role="test" />
     <file baseinstalldir="Structures" name="ObjectRecordTest.php" role="test" />
+    <file baseinstalldir="Structures" name="RendererSmartyTest.php" role="test" />
    </dir> <!-- /tests -->
   </dir> <!-- / -->
  </contents>

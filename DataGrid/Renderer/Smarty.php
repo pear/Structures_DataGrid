@@ -61,6 +61,10 @@ require_once 'Structures/DataGrid/Renderer.php';
  *                                 conjunction with 
  *                                 Structure_DataGrid::setRequestPrefix() for
  *                                 displaying several grids on a single page.
+ * - associative:         (bool)   By default the column set and the records
+ *                                 are numerically indexed arrays. By setting 
+ *                                 this option to true the keys will be field 
+ *                                 names instead.
  *
  * SUPPORTED OPERATION MODES:
  *
@@ -166,6 +170,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
                 'convertEntities'     => true,
                 'sortingResetsPaging' => true,
                 'varPrefix'           => '',
+                'associative'         => false,  
             )
         );
 
@@ -244,6 +249,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
     {
         $prepared = array();
         foreach ($columns as $index => $spec) {
+            $key = $this->_options['associative'] ? $spec['field'] : $index;
             if (in_array($spec['field'], $this->_sortableFields)) {
                 reset($this->_currentSort);
                 if ((list($currentField, $currentDirection) = each($this->_currentSort))
@@ -255,39 +261,39 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
                     } else {
                         $direction = 'ASC';
                     }
-                    $prepared[$index]['direction'] = $currentDirection;
+                    $prepared[$key]['direction'] = $currentDirection;
                 } else {
-                    $prepared[$index]['direction'] = '';
+                    $prepared[$key]['direction'] = '';
                     $direction = $this->_defaultDirections[$spec['field']];
                 }
                 $page = $this->_options['sortingResetsPaging'] ? 1 : $this->_page;
                 $extra = array('page' => $page); 
                 // Check if NUM is enabled
                 if ($this->_urlMapper) {
-                    $prepared[$index]['link'] = $this->_buildMapperURL($spec['field'], 
+                    $prepared[$key]['link'] = $this->_buildMapperURL($spec['field'], 
                                                                        $direction, 
                                                                        $page);
                 } else {
                     $query = $this->_buildSortingHttpQuery($spec['field'], 
                                                        $direction, true, $extra);
-                    $prepared[$index]['link'] = "{$this->_options['selfPath']}?$query";
+                    $prepared[$key]['link'] = "{$this->_options['selfPath']}?$query";
                 }
-                $prepared[$index]['onclick'] = $this->_buildJsHandler($page, 
+                $prepared[$key]['onclick'] = $this->_buildJsHandler($page, 
                         array($spec['field'] => $direction));
             } else {
                 $query = '';
-                $prepared[$index]['link'] = "";
+                $prepared[$key]['link'] = "";
             }
-            $prepared[$index]['name']   = $spec['field'];
-            $prepared[$index]['label']  = $spec['label'];
+            $prepared[$key]['name']   = $spec['field'];
+            $prepared[$key]['label']  = $spec['label'];
 
-            $prepared[$index]['attributes'] = "";
+            $prepared[$key]['attributes'] = "";
             if (isset($this->_options['columnAttributes'][$spec['field']])) {
                 foreach ($this->_options['columnAttributes'][$spec['field']] 
                             as $name => $value) {
                     $value = htmlspecialchars($value, ENT_COMPAT, 
                                               $this->_options['encoding']);
-                    $prepared[$index]['attributes'] .= "$name=\"$value\" "; 
+                    $prepared[$key]['attributes'] .= "$name=\"$value\" "; 
                 }
             }
         }
@@ -303,8 +309,20 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
      */
     function buildBody()
     {
-        $this->_data[$this->_options['varPrefix'] . 'recordSet'] 
-            = $this->_records;
+        if ($this->_options['associative']) {
+            $associative = array();
+            foreach ($this->_records as $row => $rec) {
+                $associative[$row] = array();
+                foreach ($this->_columns as $col => $spec) {
+                    $associative[$row][$spec['field']] = $rec[$col];
+                }
+            }
+            $this->_data[$this->_options['varPrefix'] . 'recordSet'] 
+                = $associative;
+        } else {
+            $this->_data[$this->_options['varPrefix'] . 'recordSet'] 
+                = $this->_records;
+        }
     }
 
     /**
