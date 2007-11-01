@@ -182,6 +182,39 @@ class URLMappingTest extends TestCore
         $this->assertEquals("/page/1/funky/asc", $urls[1]);
     }
     
+    function testPagerGenerationFromHTMLTable()
+    {
+        // Setting datagrid up
+        $this->setURL("/");
+        $datagrid =& new Structures_DataGrid(10);
+        $datagrid->setDefaultSort(array('foo' => 'ASC'));
+        $datagrid->setUrlFormat("/page/:page/:orderBy/:direction");
+        $datasource = new URLMappingTest_MockDataSource();
+        $datasource->fakeCount = 50;
+        $datagrid->bindDataSource($datasource);
+
+        // Retrieving paging HTML
+        $links = $datagrid->getRenderer()->getPaging();
+        $this->assertFalse(empty($links));
+
+        // Building XML object to parse href urls
+        $links = str_replace('&nbsp;', '', $links);
+        $xml = new SimpleXMLElement("<pager>$links</pager>");
+        $tags = $xml->xpath('//a');
+        $this->assertEquals(5, count($tags));
+        $urls = array();
+        foreach ($tags as $link) {
+            $urls[] = (string) $link['href'];
+        }
+
+        // Testing urls
+        $this->assertEquals("/page/2/foo/asc", $urls[0]);
+        $this->assertEquals("/page/3/foo/asc", $urls[1]);
+        $this->assertEquals("/page/4/foo/asc", $urls[2]);
+        $this->assertEquals("/page/5/foo/asc", $urls[3]);
+        $this->assertEquals("/page/2/foo/asc", $urls[4]);
+    }
+
     function testSortOnly()
     {
         // Setting datagrid up
@@ -248,6 +281,45 @@ class URLMappingTest extends TestCore
         $this->assertEquals(array('field' => 'funky', 'direction' => 'ASC'), $onclick['sort'][0]);
 
     }
+
+    function testPagerGenerationFromSmarty()
+    {
+        // Setting datagrid up
+        $this->setURL("/");
+        $datagrid =& new Structures_DataGrid(10);
+        $datagrid->setDefaultSort(array('foo' => 'ASC'));
+        $datagrid->setUrlFormat("/page/:page/:orderBy/:direction");
+        $datasource = new URLMappingTest_MockDataSource();
+        $datasource->fakeCount = 50;
+        $datagrid->bindDataSource($datasource);
+
+        // Retrieving paging HTML
+        $datagrid->setRenderer('Smarty');
+        $smarty = null;
+        $renderer = $datagrid->getRenderer();
+        $renderer->build(array(), 0);
+        $renderer = $datagrid->getRenderer();
+        $links = $renderer->smartyGetPaging(array(), $smarty);
+        $this->assertFalse(empty($links));
+
+        // Building XML object to parse href urls
+        $links = str_replace('&nbsp;', '', $links);
+        $xml = new SimpleXMLElement("<pager>$links</pager>");
+        $tags = $xml->xpath('//a');
+        $this->assertEquals(5, count($tags));
+        $urls = array();
+        foreach ($tags as $link) {
+            $urls[] = (string) $link['href'];
+        }
+
+        // Testing urls
+        $this->assertEquals("/page/2/foo/asc", $urls[0]);
+        $this->assertEquals("/page/3/foo/asc", $urls[1]);
+        $this->assertEquals("/page/4/foo/asc", $urls[2]);
+        $this->assertEquals("/page/5/foo/asc", $urls[3]);
+        $this->assertEquals("/page/2/foo/asc", $urls[4]);
+    }
+
 
     function parseOnClick($statement) {
         ereg('(\{.*\})', $statement, $regs);

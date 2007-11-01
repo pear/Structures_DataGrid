@@ -44,6 +44,7 @@
  * @license  http://opensource.org/licenses/bsd-license.php New BSD License
  */
 
+require_once 'Structures/DataGrid.php';
 require_once 'Structures/DataGrid/Renderer.php';
 
 /**
@@ -106,6 +107,8 @@ require_once 'Structures/DataGrid/Renderer.php';
  *                          )
  * - $recordSet:       array of records values
  * - $currentPage:     current page (starting from 1)
+ * - $nextPage:        next page
+ * - $previousPage:    previous page
  * - $recordLimit:     number of rows per page
  * - $pagesNum:        number of pages
  * - $columnsNum:      number of columns
@@ -226,6 +229,8 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
         $p = $this->_options['varPrefix'];
         $this->_data = array(
             "{$p}currentPage"       => $this->_page,
+            "{$p}nextPage"          => ($this->_page < $this->_pagesNum) ? $this->_page + 1 : null,
+            "{$p}previousPage"      => ($this->_page > 1) ? $this->_page - 1 : null,
             "{$p}recordLimit"       => $this->_pageLimit,
             "{$p}columnsNum"        => $this->_columnsNum,
             "{$p}recordsNum"        => $this->_recordsNum,
@@ -235,7 +240,6 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
             "{$p}lastRecord"        => $this->_lastRecord,
             "{$p}currentSort"       => $this->_currentSort,
         );                
-
     }
 
     /**
@@ -347,7 +351,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
             $this->_smarty->assign("{$p}datagrid", $this->_getReference());
 
             $this->_smarty->register_function("{$p}getPaging",
-                array(&$this, '_smartyGetPaging'));
+                array(&$this, 'smartyGetPaging'));
         } else {
             $this->_data["{$p}datagrid"] = $this->_getReference();
         }
@@ -389,9 +393,9 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
      * @param array  $params Options passed from the Smarty template
      * @param object $smarty Smarty object
      * @return string Paging HTML links
-     * @access private
+     * @access public
      */
-    function _smartyGetPaging($params, &$smarty)
+    function smartyGetPaging($params, &$smarty)
     {
         // Load and get output from the Pager rendering driver
         $driver =& Structures_DataGrid::loadDriver('Structures_DataGrid_Renderer_Pager');

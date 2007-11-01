@@ -49,6 +49,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
   recursive reference
 - new 'associative' option to get the column set and records as associative
   arrays, instead of numerically indexed ones
+- new smarty variables assigned: previousPage and nextPage
  </notes>
  <contents>
   <dir name="/">

@@ -105,6 +105,15 @@ class RendererSmartyTest extends TestCore
         $this->assertEquals('val3', $output['recordSet'][1]['field1']);
         $this->assertEquals('val4', $output['recordSet'][1]['field2']);
     }
+
+    function testPagesNum()
+    {
+        $renderer = new Structures_DataGrid_Renderer_Smarty();
+        $renderer->setLimit(1, 2, 3);
+        $renderer->build(array(), 0, true);
+        $output = $renderer->getOutput();
+        $this->assertEquals(2, $output['pagesNum']);
+    }
 }
 
 

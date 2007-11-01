@@ -1208,6 +1208,17 @@ class Structures_DataGrid_Renderer
         $this->_urlMapper = $instance;
     }
 
+    /**
+     * Return the URL mapper
+     *
+     * @return object Net_URL_Mapper instance or null
+     * @access public
+     */
+    function getUrlMapper()
+    {
+        return $this->_urlMapper;
+    }
+
 }
 
 // This function is here because we can't depend on PHP_Compat

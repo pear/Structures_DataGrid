@@ -273,6 +273,7 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
         $options['jsHandler'] = $renderer->_options['jsHandler'];
         $options['jsHandlerData'] = $renderer->_options['jsHandlerData'];
         $this->setOptions($options);
+        $this->setUrlMapper($renderer->getUrlMapper());
     }
 
     /**
