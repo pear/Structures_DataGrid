@@ -89,6 +89,7 @@ This concept is based on the .NET Framework DataGrid control and works very well
    <dir name="tests">
     <file baseinstalldir="Structures" name="README" role="test" />
     <file baseinstalldir="Structures" name="AllTests.php" role="test" />
+    <file baseinstalldir="Structures" name="DataGridTest.php" role="test" />
     <file baseinstalldir="Structures" name="AllDataSourceTests.php" role="test" />
     <file baseinstalldir="Structures" name="DataSourceTest.php" role="test" />
     <file baseinstalldir="Structures" name="DataSourceArrayTest.php" role="test" />

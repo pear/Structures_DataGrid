@@ -49,6 +49,7 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
 }
  
 require_once 'PHPUnit.php';
+require_once 'DataGridTest.php';
 require_once 'AllDataSourceTests.php';
 require_once 'ObjectRecordTest.php';
 require_once 'RendererSmartyTest.php';
@@ -72,6 +73,7 @@ class AllTests
     function getSuites()
     {
         $suites = AllDataSourceTests::getSuites();
+        $suites[] = 'DataGridTest';
         $suites[] = 'ObjectRecordTest';
         $suites[] = 'RendererSmartyTest';
 

@@ -744,13 +744,14 @@ class Structures_DataGrid
      */
     function _setRendererCurrentSorting()
     {
-        if (   isset($this->_dataSource)
+        $sortSpec = $this->sortSpec ? $this->sortSpec : $this->defaultSortSpec;
+        if (isset($this->_dataSource)
             && $this->_dataSource->hasFeature('multiSort')
            ) {
-            $this->_renderer->setCurrentSorting($this->sortSpec, true);
+            $this->_renderer->setCurrentSorting($sortSpec, true);
         } else {
-            reset($this->sortSpec);
-            list($field, $direction) = each($this->sortSpec);
+            reset($sortSpec);
+            list($field, $direction) = each($sortSpec);
             $this->_renderer->setCurrentSorting(
                     array($field => $direction), false);
         }

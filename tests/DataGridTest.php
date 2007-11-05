@@ -44,32 +44,56 @@
  * @license  http://opensource.org/licenses/bsd-license.php New BSD License
  */
 
+if (!defined('PHPUnit_MAIN_METHOD')) {
+    define('PHPUnit_MAIN_METHOD', 'DataGridTest::main');
+}
 
-require_once 'PEAR.php';
-require_once 'PHPUnit.php';
+require_once 'TestCore.php';
+require_once 'Structures/DataGrid.php';
+require_once 'Structures/DataGrid/Renderer.php';
 
 error_reporting(E_ALL);
 
 /**
- * DataSource core tests
+ * Tests the driver-less, core routines
  */
-class TestCore extends PHPUnit_TestCase
+class DataGridTest extends TestCore
 {
-    function TestCore($name)
+    function testDefaultSortPassing()
     {
-        parent::PHPUnit_TestCase($name);
-        PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, array(&$this, 'onPearError'));
-        $this->setLooselyTyped(true);
-    }
+        // Setting the default sort before attaching the renderer
+        $datagrid =& new Structures_DataGrid();
+        $datagrid->setDefaultSort(array('date' => 'ASC'));
+        $datagrid->bind(array(array('date' => '2007')));
+        $renderer =& new DataGridTest_MockRenderer();
+        $datagrid->attachRenderer($renderer);
+        $datagrid->render();
+        $this->assertEquals(array('date' => 'ASC'), $renderer->getSort());
 
-    function onPearError($error)
-    {
-        $this->fail(
-            "------------------------\n".
-            "PEAR Error: " . $error->toString() . "\n" .
-            "------------------------\n");
+        // Setting the default sort after attaching the renderer
+        unset($datagrid);
+        unset($renderer);
+        $datagrid =& new Structures_DataGrid();
+        $renderer =& new DataGridTest_MockRenderer();
+        $datagrid->attachRenderer($renderer);
+        $datagrid->setDefaultSort(array('date' => 'ASC'));
+        $datagrid->bind(array(array('date' => '2007')));
+        $datagrid->render();
+        $this->assertEquals(array('date' => 'ASC'), $renderer->getSort());
     }
-
 }
 
+class DataGridTest_MockRenderer extends Structures_DataGrid_Renderer
+{
+    function getSort()
+    {
+        return $this->_currentSort;
+    }
+}
+
+if (PHPUnit_MAIN_METHOD == 'DataGridTest::main') {
+    $suite = new PHPUnit_TestSuite('DataGridTest');
+    $result =& PHPUnit::run($suite);
+    echo $result->toString();
+}
 ?>
