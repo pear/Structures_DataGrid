@@ -66,6 +66,10 @@ require_once 'HTML/Table.php';
  *                                 ascending. Can be text or HTML to define an image.
  * - sortIconDESC:        (string) The icon to define that sorting is currently
  *                                 descending. Can be text or HTML to define an image.
+ * - classASC             (string) A CSS class name for TH elements to define that
+ *                                 sorting is currently ascending. 
+ * - classDESC            (string) A CSS class name for TH elements to define that
+ *                                 sorting is currently descending. 
  * - headerAttributes:    (array)  Attributes for the header row. This is an array
  *                                 of the form: array(attribute => value, ...)
  * - convertEntities:     (bool)   Whether or not to convert html entities.
@@ -135,6 +139,8 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                 'selfPath'            => htmlspecialchars($_SERVER['PHP_SELF']),
                 'sortIconASC'         => '',
                 'sortIconDESC'        => '',
+                'classASC'            => '',
+                'classDESC'           => '',
                 'headerAttributes'    => array(),
                 'convertEntities'     => true,
                 'sortingResetsPaging' => true,
@@ -362,6 +368,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
         foreach ($columns as $col => $spec) {
             $field = $spec['field'];
             $label = $spec['label'];
+            $cssClass = '';
 
             // Define Content
             if (in_array($field, $this->_sortableFields)) {
@@ -372,9 +379,11 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                     and $currentField == $field) {
                     if ($currentDirection == 'ASC') {
                         $icon = $this->_options['sortIconASC'];
+                        $cssClass = $this->_options['classASC'];
                         $direction = 'DESC';
                     } else {
                         $icon = $this->_options['sortIconDESC'];
+                        $cssClass = $this->_options['classDESC'];
                         $direction = 'ASC';
                     }
                 } else {
@@ -409,8 +418,16 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
 
             // Print Content to HTML_Table
             $this->_tableHeader->setHeaderContents($row, $col, $str);
-            if (isset($this->_options['columnAttributes'][$field])) {
-                $this->_tableHeader->setCellAttributes($row, $col, $this->_options['columnAttributes'][$field]);
+
+            // Set TH attributes
+            $attributes = isset($this->_options['columnAttributes'][$field])
+                    ? $this->_options['columnAttributes'][$field] : array();
+            if ($cssClass) {
+                $attributes['class'] = isset($attributes['class']) 
+                    ? "{$attributes['class']} $cssClass" : $cssClass;
+            }
+            if ($attributes) {
+                $this->_tableHeader->setCellAttributes($row, $col, $attributes);
             }
         }
         if (count($this->_options['headerAttributes']) > 0) {

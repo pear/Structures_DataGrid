@@ -40,6 +40,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <notes>
 - add support for javascript onclick handlers (jsHandler option)
 - Request #9994: add support for URL mapping, by Sascha Grossenbacher
+- new classASC and classDESC options, for appending CSS class names to TH
+  elements according to sort order
  </notes>
  <contents>
   <dir name="/">
