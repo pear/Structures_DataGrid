@@ -106,7 +106,7 @@ require_once 'Structures/DataGrid/DataSource.php';
  *                               might be heavy.
  *                               If false: perform a smart count query with 
  *                               DB_DataObject::count().
- * - return_objects:  (bool)     If true, the returned records will consists
+ * - return_objects:    (bool)   If true, the returned records will consists
  *                               of clones of the dataobject instead of 
  *                               associative arrays. This is especially useful
  *                               when used in conjunction with the smarty 

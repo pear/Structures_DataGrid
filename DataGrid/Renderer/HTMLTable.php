@@ -66,9 +66,9 @@ require_once 'HTML/Table.php';
  *                                 ascending. Can be text or HTML to define an image.
  * - sortIconDESC:        (string) The icon to define that sorting is currently
  *                                 descending. Can be text or HTML to define an image.
- * - classASC             (string) A CSS class name for TH elements to define that
+ * - classASC:            (string) A CSS class name for TH elements to define that
  *                                 sorting is currently ascending. 
- * - classDESC            (string) A CSS class name for TH elements to define that
+ * - classDESC:           (string) A CSS class name for TH elements to define that
  *                                 sorting is currently descending. 
  * - headerAttributes:    (array)  Attributes for the header row. This is an array
  *                                 of the form: array(attribute => value, ...)

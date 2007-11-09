@@ -75,7 +75,7 @@
  *                                 array(fieldName => array(attribute => value, ...) ...)
  *                                 This option is only used by XML/HTML based 
  *                                 drivers.
- * - jsHandler:            (string) Name of a Javascript function to call on
+ * - jsHandler:           (string) Name of a Javascript function to call on
  *                                 onClick/onSubmit events. This function 
  *                                 receives a single object argument of the 
  *                                 form: { page: <page>, sort: [{field: <field>, 
@@ -84,7 +84,7 @@
  *                                 option doesn't remove the href attribute,
  *                                 you should return false from your handler
  *                                 function to void it (eg: for AJAX, etc..).
- * - jsHandlerData:        (string) User data passed in the "data" member of the
+ * - jsHandlerData:       (string) User data passed in the "data" member of the
  *                                 object argument passed to jsHandler. No JSON
  *                                 serialization is performed, this is assigned
  *                                 as a raw string to the "data" attribute. 
