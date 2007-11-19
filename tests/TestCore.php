@@ -55,9 +55,8 @@ error_reporting(E_ALL);
  */
 class TestCore extends PHPUnit_TestCase
 {
-    function TestCore($name)
+    function setUp()
     {
-        parent::PHPUnit_TestCase($name);
         PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, array(&$this, 'onPearError'));
         $this->setLooselyTyped(true);
     }

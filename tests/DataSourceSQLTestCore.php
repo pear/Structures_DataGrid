@@ -158,6 +158,23 @@ class DataSourceSQLTestCore extends DataSourceTestCore
         unset($options['dbc']);
     }
 
+    function testUpperCaseFieldNames()
+    {
+        $db = sqlite_open($this->dbfile);
+        sqlite_query($db, 'CREATE TABLE test_upper (NUM int not null, THESTR char(255) not null);'); 
+        sqlite_query($db, "INSERT INTO test_upper VALUES (10, 'foo');");
+        sqlite_query($db, "INSERT INTO test_upper VALUES (20, 'bar');");
+        sqlite_close($db);
+        unset($db);
+
+        $this->datasource->bind("SELECT * FROM test_upper", array('dsn' => $this->getDSN()));
+        $this->datasource->sort(array('NUM' => 'DESC'));
+        $data = $this->datasource->fetch();
+        $this->assertEquals(array('NUM', 'THESTR'), array_keys($data[0]));
+        $this->assertEquals(20, $data[0]['NUM']);
+        $this->assertEquals(10, $data[1]['NUM']);
+    }
+
     function testUnion()
     {
         $this->datasource->bind("SELECT * FROM test UNION ALL SELECT * FROM test", 

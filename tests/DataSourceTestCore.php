@@ -63,16 +63,9 @@ class DataSourceTestCore extends TestCore
                 array('num' => '3', 'the str' => ''),
             );
 
-    function onPearError($error)
-    {
-        $this->fail(
-            "------------------------\n".
-            "PEAR Error: " . $error->toString() . "\n" .
-            "------------------------\n");
-    }
-
     function setUp()
     {
+        parent::setUp();
         $class = $this->getDriverClassName();
         $file = str_replace('_', '/', $class) . '.php';
         if (!$fp = @fopen($file, 'r', true)) {
