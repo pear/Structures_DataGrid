@@ -8,7 +8,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <summary>Render a data table with automatic pagination and sorting</summary>
  <description>
  This package provides a toolkit to generate data tables in HTML, CSV,
- Excel,XML,  Smarty, and other formats.  
+ Excel, XML, Smarty, and other formats.  
  It retrieves data from a variety of data sources, including SQL, CSV,
  XML, PDO, DB_DataObject, DB_Table, and others.
  It can transparently page and sort the data, through optimized database
