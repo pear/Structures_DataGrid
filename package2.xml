@@ -5,11 +5,16 @@ http://pear.php.net/dtd/package-2.0
 http://pear.php.net/dtd/package-2.0.xsd">
  <name>Structures_DataGrid</name>
  <channel>pear.php.net</channel>
- <summary>A tabular structure that contains a record set of data for paging and sorting purposes.</summary>
- <description>This package offers a toolkit to render out a datagrid in HTML format as well as
-many other formats such as an XML Document, an Excel Spreadsheet, an XUL Document and more.
-It also offers paging and sorting functionallity to limit the data that is presented and processed.
-This concept is based on the .NET Framework DataGrid control and works very well with database and XML result sets.
+ <summary>Render a data table with automatic pagination and sorting</summary>
+ <description>
+ This package provides a toolkit to generate data tables in HTML, CSV,
+ Excel,XML,  Smarty, and other formats.  
+ It retrieves data from a variety of data sources, including SQL, CSV,
+ XML, PDO, DB_DataObject, DB_Table, and others.
+ It can transparently page and sort the data, through optimized database
+ queries, by parsing/generating GET, POST requests and REST-like urls.
+ It is designed with modularity and extensibility in mind, using drivers
+ for all rendering and datasource formats.
  </description>
  <lead>
   <name>Andrew S. Nagy</name>
