@@ -101,7 +101,7 @@ require_once 'Structures/DataGrid/Renderer.php';
  *                                  'link'       => sorting link,
  *                                  'attributes' => attributes string,
  *                                  'direction'  => 'ASC', 'DESC' or '',
- *                                  'onclick'    => jsHandler call
+ *                                  'onclick'    => onMove call
  *                              ),
  *                              ... 
  *                          )
@@ -282,7 +282,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
                                                        $direction, true, $extra);
                     $prepared[$key]['link'] = "{$this->_options['selfPath']}?$query";
                 }
-                $prepared[$key]['onclick'] = $this->_buildJsHandler($page, 
+                $prepared[$key]['onclick'] = $this->_buildOnMoveCall($page, 
                         array($spec['field'] => $direction));
             } else {
                 $query = '';

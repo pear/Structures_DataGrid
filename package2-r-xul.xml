@@ -39,7 +39,7 @@ string for a XUL listbox.
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- add support for the jsHandler option
+- add support for the onMove option
  </notes>
  <contents>
   <dir name="/">

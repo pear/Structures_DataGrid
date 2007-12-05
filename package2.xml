@@ -49,7 +49,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
 - add 17 examples, including simple AJAX support
 - support setting rendering options for all renderers at once
   with setRendererOption*()
-- new common renderer options: jsHandler and jsHandlerData, for support of
+- new common renderer options: onMove and onMoveData, for support of
   onclick/onsubmit events
 - rename 'primary_key' DataSource option as 'primaryKey'
 - new PDO DataSource driver is available as a separate subpackage

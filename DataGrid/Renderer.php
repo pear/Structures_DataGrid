@@ -75,8 +75,9 @@
  *                                 array(fieldName => array(attribute => value, ...) ...)
  *                                 This option is only used by XML/HTML based 
  *                                 drivers.
- * - jsHandler:           (string) Name of a Javascript function to call on
- *                                 onClick/onSubmit events. This function 
+ * - onMove:              (string) Name of a Javascript function to call on
+ *                                 onClick/onSubmit events when the user is either paging
+ *                                 or sorting the data. This function 
  *                                 receives a single object argument of the 
  *                                 form: { page: <page>, sort: [{field: <field>, 
  *                                 direction: <direction>}, ...], 
@@ -84,8 +85,8 @@
  *                                 option doesn't remove the href attribute,
  *                                 you should return false from your handler
  *                                 function to void it (eg: for AJAX, etc..).
- * - jsHandlerData:       (string) User data passed in the "data" member of the
- *                                 object argument passed to jsHandler. No JSON
+ * - onMoveData:          (string) User data passed in the "data" member of the
+ *                                 object argument passed to onMove. No JSON
  *                                 serialization is performed, this is assigned
  *                                 as a raw string to the "data" attribute. 
  *                                 It's up to you to add quotes, slashes, etc...
@@ -395,8 +396,8 @@ class Structures_DataGrid_Renderer
             'defaultCellValue'      => null,
             'defaultColumnValues'   => array(),
             'hideColumnLinks'       => array(), 
-            'jsHandler'            => null,
-            'jsHandlerData'        => '',
+            'onMove'                => null,
+            'onMoveData'            => '',
         );
 
         $this->_features = array(
@@ -1156,10 +1157,10 @@ class Structures_DataGrid_Renderer
      * @return string             JS function string, semi-colon included
      * @access protected
      */
-    function _buildJsHandler($page, $sortSpec)
+    function _buildOnMoveCall($page, $sortSpec)
     {
         $handler = '';
-        if ($this->_options['jsHandler']) {
+        if ($this->_options['onMove']) {
             if (is_array($sortSpec)) {
                 $sort = array();
                 foreach ($sortSpec as $field => $direction) {
@@ -1170,8 +1171,8 @@ class Structures_DataGrid_Renderer
             } else {
                 $sort = $sortSpec;
             }
-            $data = $this->_options['jsHandlerData'] or $data = "''";
-            $handler = $this->_options['jsHandler'] .
+            $data = $this->_options['onMoveData'] or $data = "''";
+            $handler = $this->_options['onMove'] .
                 "({ page: $page, sort: $sort, data: $data });";
         }
         return $handler;

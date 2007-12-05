@@ -191,7 +191,7 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
         }
        
         if (is_null($this->_options['pagerOptions']['onclick'])) {
-            $onclick = $this->_buildJsHandler('%d', $this->_currentSort);
+            $onclick = $this->_buildOnMoveCall('%d', $this->_currentSort);
             $options['onclick'] = $onclick ? "return $onclick" : '';
         }
         
@@ -270,8 +270,8 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
                                                $pagerOptions);
         $options['excludeVars'] = $renderer->_options['excludeVars'];
         $options['extraVars'] = $renderer->_options['extraVars'];
-        $options['jsHandler'] = $renderer->_options['jsHandler'];
-        $options['jsHandlerData'] = $renderer->_options['jsHandlerData'];
+        $options['onMove'] = $renderer->_options['onMove'];
+        $options['onMoveData'] = $renderer->_options['onMoveData'];
         $this->setOptions($options);
         $this->setUrlMapper($renderer->getUrlMapper());
     }

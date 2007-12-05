@@ -407,7 +407,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
 
                 // Build onClick attribute
                 $onclick = 
-                    $this->_buildJsHandler($page, array($field => $direction));
+                    $this->_buildOnMoveCall($page, array($field => $direction));
                 $onclick = $onclick ? "onClick=\"return $onclick\"" : '';
 
                 // Build HTML Link

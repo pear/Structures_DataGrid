@@ -77,8 +77,8 @@ require_once 'Spreadsheet/Excel/Writer.php';
  *                           0 => none, 1 => thin, 2 => thick 
  *                           (NOT IMPLEMENTED YET)
  * - columnAttributes: (-)   IGNORED
- * - jsHandler:        (-)   IGNORED
- * - jsHandlerData:    (-)   IGNORED
+ * - onMove:           (-)   IGNORED
+ * - onMoveData:       (-)   IGNORED
  *
  * SUPPORTED OPERATION MODES:
  *

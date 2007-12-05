@@ -256,7 +256,7 @@ class URLMappingTest extends TestCore
         $datagrid->bindDataSource($datasource);
 
         // Retrieving template variables (we actually don't need Smarty here)
-        $vars = $datagrid->getOutput('Smarty', array('jsHandler' => 'update'));
+        $vars = $datagrid->getOutput('Smarty', array('onMove' => 'update'));
 
         // Testing global variables
         $this->assertEquals(3, $vars['currentPage']);

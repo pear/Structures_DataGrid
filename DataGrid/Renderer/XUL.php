@@ -162,7 +162,7 @@ class Structures_DataGrid_Renderer_XUL extends Structures_DataGrid_Renderer
                     $dirCur = 'natural';
                 }
 
-                if ($handler = $this->_buildJsHandler($this->_page, 
+                if ($handler = $this->_buildOnMoveCall($this->_page, 
                         array($field => $dirArg))) {
                     $onCommand = "oncommand=\"$handler\"";
                 } else {

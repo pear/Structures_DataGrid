@@ -38,7 +38,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- add support for javascript onclick handlers (jsHandler option)
+- add support for javascript onclick handlers (onMove option)
 - Request #9994: add support for URL mapping, by Sascha Grossenbacher
 - new classASC and classDESC options, for appending CSS class names to TH
   elements according to sort order

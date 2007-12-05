@@ -35,7 +35,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- add support for javascript onsubmit handlers (jsHandler option)
+- add support for javascript onsubmit handlers (onMove option)
  </notes>
  <contents>
   <dir name="/">

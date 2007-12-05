@@ -179,7 +179,7 @@ class Structures_DataGrid_Renderer_HTMLSortForm
                           "direction: this.elements[" . ($i * 2 + 1) . "].value}";
             }
             $sort = '[' . join(',', $sort) . ']';
-            if ($handler = $this->_buildJsHandler($this->_page, $sort)) {
+            if ($handler = $this->_buildOnMoveCall($this->_page, $sort)) {
                 $this->_form->setAttribute('onsubmit', "return $handler");
             }
         }

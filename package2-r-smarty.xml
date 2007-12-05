@@ -41,7 +41,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
 - Request #8237: support multiple grids on a single page
-- add support for the jsHandler option
+- add support for the onMove option
 - new columnSet item members: direction and onclick
 - Request #9994: add support for URL mapping, by Sascha Grossenbacher
 - add "Object Preserving" feature

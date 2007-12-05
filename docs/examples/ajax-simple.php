@@ -8,7 +8,7 @@ $options['dsn'] = 'mysql://username@localhost/mydatabase';
 $datagrid->bind("SELECT * FROM mytable", $options);
 
 // Set the javascript handler function for onclick events
-$datagrid->setRendererOption('jsHandler', 'updateGrid', true);
+$datagrid->setRendererOption('onMove', 'updateGrid', true);
 
 if (isset($_GET['ajax'])) {
     // Handle table AJAX requests 
