@@ -273,8 +273,9 @@ class Structures_DataGrid_DataSource_DataObject
             // Sorting
             if (($sortProperty = $this->_options['sort_property'])
                       && isset($this->_dataobject->$sortProperty)) {
+                // Keep compatibility with Formbuilder's linkOrderFields option
                 foreach ($this->_dataobject->$sortProperty as $sort) {
-                    $this->sort($sort);
+                    $this->_dataobject->orderBy($sort);
                 }
             }
             
