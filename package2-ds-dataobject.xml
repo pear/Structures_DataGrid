@@ -34,6 +34,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <notes>
 - new 'return_objects' option: for fetching records as dataobjects instead of 
   associative arrays
+- bug #11854: fix compatibility with formbuilder linkOrderFields option  
  </notes>
  <contents>
   <dir name="/">
