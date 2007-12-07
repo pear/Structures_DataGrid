@@ -36,7 +36,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * CSV file id: $Id$
- * 
+ *
  * @version  $Revision$
  * @package  Structures_DataGrid_Renderer_HTMLSortForm
  * @category Structures
@@ -77,6 +77,7 @@ require_once 'HTML/QuickForm.php';
  * - Object Preserving: no
  *
  * @version  $Revision$
+ * @example  fill-sortform.php Fill a form with sort fields 
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @access   public
  * @package  Structures_DataGrid_Renderer_HTMLSortForm 

@@ -75,8 +75,8 @@ require_once 'XML/Util.php';
  * - writeMode:     (string) The mode that is used in the internal fopen() calls.
  *                           Useful e.g. when you want to append to existing file.
  *                           C.p. the fopen() documentation for the allowed modes.
- * - onMove:          (-)   IGNORED
- * - onMoveData:      (-)   IGNORED
+ * - onMove:          (-)    IGNORED
+ * - onMoveData:      (-)    IGNORED
  *
  * SUPPORTED OPERATION MODES:
  *

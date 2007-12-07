@@ -65,8 +65,8 @@ require_once 'Structures/DataGrid/Renderer.php';
  *                         enclosure value.
  *                         true: always, false: never, 'auto': when needed
  * - columnAttributes: (-) IGNORED
- * - onMove:           (-)   IGNORED
- * - onMoveData:       (-)   IGNORED
+ * - onMove:           (-) IGNORED
+ * - onMoveData:       (-) IGNORED
  *           
  * SUPPORTED OPERATION MODES:
  *
