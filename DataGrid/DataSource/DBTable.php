@@ -71,6 +71,7 @@ require_once 'Structures/DataGrid/DataSource.php';
  * for example, created your database table yourself and did not setup the $idx
  * array, you can use the 'primaryKey' option to define the primary key field.
  *
+ * @example  bind-dbtable.php  Bind a DB_Table class to Structures_DataGrid
  * @version  $Revision$
  * @author   Andrew S. Nagy <asnagy@php.net>
  * @author   Mark Wiesemann <wiesemann@php.net>
