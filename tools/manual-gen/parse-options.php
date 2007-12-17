@@ -28,6 +28,9 @@ $availableRendererModes = array('Container Support',
                                 'Object Preserving',
                                );
 
+$ignoredClassnames = array('Structures_DataGrid_Renderer_Flexy'
+                          );
+
 $descriptions = array();
 $modes = array();
 $options = array();
@@ -110,6 +113,8 @@ function parseDirectory(&$descriptions, &$modes, &$options, &$notes, &$examples,
 
 function parseFile(&$descriptions, &$modes, &$options, &$notes, &$examples, &$inheritance, &$releases, $filename)
 {
+    global $ignoredClassnames;
+
     echo 'Parsing file ' . $filename . " ... \n";
 
     // read the file contents
@@ -129,6 +134,11 @@ function parseFile(&$descriptions, &$modes, &$options, &$notes, &$examples, &$in
 
     foreach ($classSpecs as $classSpec) {
         list($class, $extends) = $classSpec;
+
+        if (in_array($class, $ignoredClassnames)) {
+            echo '  SKIPPING class ' . $class . "\n";
+            continue;
+        }
 
         if (is_null($filenameForInclusion)) {
             $filenameForInclusion = str_replace('_', '/', $class) . '.php';
