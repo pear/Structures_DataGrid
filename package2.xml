@@ -37,8 +37,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <date>?</date>
  <time>?</time>
  <version>
-  <release>0.8.4</release>
-  <api>0.8.0</api>
+  <release>0.9.0</release>
+  <api>0.9.0</api>
  </version>
  <stability>
   <release>beta</release>
@@ -46,7 +46,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- add 17 examples, including simple AJAX support
+- add 19 examples, including simple AJAX support
 - support setting rendering options for all renderers at once
   with setRendererOption*()
 - new common renderer options: onMove and onMoveData, for support of
@@ -74,6 +74,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
      <file name="addColumn.php" role="doc" />
      <file name="ajax-simple.php" role="doc" />
      <file name="bind-dataobject.php" role="doc" />
+     <file name="bind-dbtable.php" role="doc" />
      <file name="bind-sql.php" role="doc" />
      <file name="bind-xml1.php" role="doc" />
      <file name="bind-xml2.php" role="doc" />
