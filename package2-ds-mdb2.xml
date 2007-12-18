@@ -27,8 +27,8 @@ SQL query.
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>?</date>
- <time>?</time>
+ <date>2007-12-18</date>
+ <time>17:15:00</time>
  <version>
   <release>0.1.11</release>
   <api>0.1.2</api>
@@ -39,7 +39,7 @@ SQL query.
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- internal changes related to internal changes in Structures_DataGrid 0.8.4
+- internal changes related to internal changes in Structures_DataGrid 0.9.0
  </notes>
  <contents>
   <dir name="/">

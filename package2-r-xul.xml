@@ -27,8 +27,8 @@ string for a XUL listbox.
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>?</date>
- <time>17:00:00</time>
+ <date>2007-12-18</date>
+ <time>17:15:00</time>
  <version>
   <release>0.1.2</release>
   <api>0.1.0</api>

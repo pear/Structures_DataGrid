@@ -34,8 +34,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>?</date>
- <time>?</time>
+ <date>2007-12-18</date>
+ <time>17:15:00</time>
  <version>
   <release>0.9.0</release>
   <api>0.9.0</api>
@@ -46,7 +46,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- add 19 examples, including simple AJAX support
+- add 18 examples, including simple AJAX support
 - support setting rendering options for all renderers at once
   with setRendererOption*()
 - new common renderer options: onMove and onMoveData, for support of
@@ -86,7 +86,6 @@ http://pear.php.net/dtd/package-2.0.xsd">
      <file name="htmleditform-basic.php" role="doc" />
      <file name="htmleditform-tableless.php" role="doc" />
      <file name="removeColumn.php" role="doc" />
-     <file name="setAutoFormatter.php" role="doc" />
      <file name="smarty-simple.php" role="doc" />
      <file name="smarty-simple.tpl" role="doc" />
      <file name="xul.php" role="doc" />
@@ -97,13 +96,13 @@ http://pear.php.net/dtd/package-2.0.xsd">
     <file baseinstalldir="Structures" name="AllTests.php" role="test" />
     <file baseinstalldir="Structures" name="DataGridTest.php" role="test" />
     <file baseinstalldir="Structures" name="AllDataSourceTests.php" role="test" />
-    <file baseinstalldir="Structures" name="DataSourceTest.php" role="test" />
+    <file baseinstalldir="Structures" name="DataSourceTestCore.php" role="test" />
     <file baseinstalldir="Structures" name="DataSourceArrayTest.php" role="test" />
     <file baseinstalldir="Structures" name="DataSourceCSVTest.php" role="test" />
     <file baseinstalldir="Structures" name="DataSourceDBQueryTest.php" role="test" />
     <file baseinstalldir="Structures" name="DataSourceMDB2Test.php" role="test" />
     <file baseinstalldir="Structures" name="DataSourcePDOTest.php" role="test" />
-    <file baseinstalldir="Structures" name="DataSourceSQLTest.php" role="test" />
+    <file baseinstalldir="Structures" name="DataSourceSQLTestCore.php" role="test" />
     <file baseinstalldir="Structures" name="DataSourceXMLTest.php" role="test" />
     <file baseinstalldir="Structures" name="URLMappingTest.php" role="test" />
     <file baseinstalldir="Structures" name="ObjectRecordTest.php" role="test" />
