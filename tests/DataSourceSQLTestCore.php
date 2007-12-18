@@ -167,7 +167,7 @@ class DataSourceSQLTestCore extends DataSourceTestCore
         sqlite_close($db);
         unset($db);
 
-        $this->datasource->bind("SELECT * FROM test_upper", array('dsn' => $this->getDSN()));
+        $this->datasource->bind("SELECT * FROM test_upper", array('dbc' => $this->getDatabaseObject()));
         $this->datasource->sort(array('NUM' => 'DESC'));
         $data = $this->datasource->fetch();
         $this->assertEquals(array('NUM', 'THESTR'), array_keys($data[0]));
