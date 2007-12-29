@@ -63,6 +63,13 @@ require_once 'Spreadsheet/Excel/Writer.php';
  * - tempDir:       (string) A temporary directory to be used by
  *                           Spreadsheet_Excel_Writer (cp. "General Notes"
  *                           section).
+ * - version:       (int)    If you don't pass a worksheet object to this
+ *                           renderer, you can set the BIFF version with this
+ *                           option. The only accepted value by
+ *                           Spreadsheet_Excel_Writer is 8 (for usage of the
+ *                           BIFF8 format). All other values will lead to the
+ *                           older format (which is needed if you get errors
+ *                           in Excel, e.g. about a broken file).
  * - worksheet:     (object) Optional reference to a
  *                           Spreadsheet_Excel_Writer_Worksheet object. You 
  *                           can leave this to null except if your workbook 
@@ -181,6 +188,7 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
                 'filename'      => 'spreadsheet.xls',
                 'sendToBrowser' => true,
                 'tempDir'       => null,
+                'version'       => 8,
                 'worksheet'     => null,
                 'startCol'      => 0,
                 'startRow'      => 0,
@@ -232,7 +240,9 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
             if ($this->_options['tempDir']) {
                 $this->_workbook->setTempDir($this->_options['tempDir']);
             }
-            $this->_workbook->setVersion(8);
+            if ($this->_options['version'] === 8) {
+                $this->_workbook->setVersion(8);
+            }
         }
 
         // Use user-provided worksheet if present
