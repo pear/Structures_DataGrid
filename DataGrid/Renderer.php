@@ -76,7 +76,7 @@
  *                                 This option is only used by XML/HTML based 
  *                                 drivers.
  * - onMove:              (string) Name of a Javascript function to call on
- *                                 onClick/onSubmit events when the user is either paging
+ *                                 onclick/onsubmit events when the user is either paging
  *                                 or sorting the data. This function 
  *                                 receives a single object argument of the 
  *                                 form: { page: <page>, sort: [{field: <field>, 

@@ -26,10 +26,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
   <email>wiesemann@php.net</email>
   <active>yes</active>
  </lead>
- <date>2007-12-18</date>
- <time>17:15:00</time>
+ <date>2008-01-16</date>
+ <time>18:00:00</time>
  <version>
-  <release>0.1.4</release>
+  <release>0.1.5</release>
   <api>0.1.0</api>
  </version>
  <stability>
@@ -38,10 +38,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- add support for javascript onclick handlers (onMove option)
-- Request #9994: add support for URL mapping, by Sascha Grossenbacher
-- new classASC and classDESC options, for appending CSS class names to TH
-  elements according to sort order
+- Bug #12838: XHTML compliance -- onClick handler must be all lowercase
  </notes>
  <contents>
   <dir name="/">

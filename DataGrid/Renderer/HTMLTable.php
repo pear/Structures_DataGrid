@@ -405,10 +405,10 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
                     $url = $this->_options['selfPath'] . '?' . $query;
                 }
 
-                // Build onClick attribute
+                // Build onclick attribute
                 $onclick = 
                     $this->_buildOnMoveCall($page, array($field => $direction));
-                $onclick = $onclick ? "onClick=\"return $onclick\"" : '';
+                $onclick = $onclick ? "onclick=\"return $onclick\"" : '';
 
                 // Build HTML Link
                 $str = "<a href=\"$url\" $onclick>$label$icon</a>";
