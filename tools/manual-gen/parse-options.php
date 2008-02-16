@@ -610,7 +610,6 @@ function writeXMLFile($driver, $descriptions, $modes, $options, $notes, $example
         $xml .= '  </para>' . "\n";
         $xml .= ' </refsect1>' . "\n";
     }
-    // TODO: extract example code link from the source code
     if ($descriptions['long'] != '') {
         $xml .= ' <refsect1 id="' . $id . '.desc">' . "\n";
         $xml .= '  <title>Description</title>' . "\n";
