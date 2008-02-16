@@ -115,7 +115,7 @@ class Structures_DataGrid_DataSource_Array
             // if the array keys are non-continuous, reset the array keys to
             // ensure correct sorting
             $keys = array_keys($ar);
-            if (count($ar) != max($keys) + 1) {
+            if (count($keys) > 0 && count($ar) != max($keys) + 1) {
                 $this->_ar = array_values($ar);
             } else {
                 $this->_ar = $ar;
