@@ -200,8 +200,7 @@ class Structures_DataGrid_Renderer_XML extends Structures_DataGrid_Renderer
         $xml = "  <{$this->_options['rowTag']}>\n";
         foreach ($data as $col => $value) {
             $field = $this->_columns[$col]['field'];
-            $tag = ($this->_options['fieldTag'] == '{field}') 
-                   ? $field : $this->_options['fieldTag'];
+            $tag = str_replace('{field}', $field, $this->_options['fieldTag']);
 
             $attributes = array();
             if (!is_null($this->_options['fieldAttribute'])) {

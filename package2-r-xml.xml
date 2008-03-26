@@ -39,9 +39,8 @@ string.
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- Request #10593: new option 'writeMode' that allows to specify which mode is
-  used in the internal fopen() calls (useful e.g. to append to an existing file)
-  (thanks to Anthony Topper)
+- Bug #13036: 'fieldTag' option doesn't work as documented
+  (thanks to Martin Lehnert)
  </notes>
  <contents>
   <dir name="/">
