@@ -46,20 +46,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- add 18 examples, including simple AJAX support
-- support setting rendering options for all renderers at once
-  with setRendererOption*()
-- new common renderer options: onMove and onMoveData, for support of
-  onclick/onsubmit events
-- rename 'primary_key' DataSource option as 'primaryKey'
-- new PDO DataSource driver is available as a separate subpackage
-- new URL mapping feature by Sascha Grossenbacher,
-- Request #9994 :new setUrlFormat() method providing clean URL mapping,
-  by Sascha Grossenbacher
-- add ability to use objects of any class instead of associative arrays as 
-  records (not all datasources support that, and renderers handle such objects
-  differently whether they support "Object Preserving" or not)
-- add Smarty renderer unit test  
+- Bug #13025: field names in the form "table.field" could lead to syntax errors
+  in the SQL queries of the DBQuery, MDB2, and PDO DataSource drivers; new
+  option 'quote_identifiers' allows to disable the automatic quoting
+  (thanks to Matt Rosenquist)
  </notes>
  <contents>
   <dir name="/">
