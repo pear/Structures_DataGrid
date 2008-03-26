@@ -50,6 +50,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
   in the SQL queries of the DBQuery, MDB2, and PDO DataSource drivers; new
   option 'quote_identifiers' allows to disable the automatic quoting
   (thanks to Matt Rosenquist)
+- Bug #13339: Automatic ORDER BY sort string addition can fail if subqueries
+  are used in the the DBQuery, MDB2, and PDO DataSource drivers
+  (thanks to Issac Navanick)
  </notes>
  <contents>
   <dir name="/">
