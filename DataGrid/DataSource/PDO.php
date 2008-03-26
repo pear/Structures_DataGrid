@@ -159,11 +159,50 @@ class Structures_DataGrid_DataSource_PDO
      */
     function _getRecords($query, $limit, $offset)
     {
-        if (!is_null($limit)) {
-            $query .= ' LIMIT ' . $offset . ', ' . $limit;
-        } elseif ($offset > 0) {
-            $query .= ' LIMIT ' . $offset . ', ' . PHP_INT_MAX;
+        if (is_null($limit)) {
+            $limit = PHP_INT_MAX;
         }
+        $query = rtrim($query);
+        if (substr($query, -1) == ';') {
+            $query = substr($query, 0, -1);
+        }
+        $driver = $this->_handle->getAttribute(PDO::ATTR_DRIVER_NAME);
+
+        // the following limit query handling is directly inspired from MDB2's
+        // CVS code as of March 26th, 2008
+        switch ($driver) {
+            case 'oci':
+                // taken from http://svn.ez.no/svn/ezcomponents/packages/Database
+                $max = $offset + $limit;
+                if ($offset > 0) {
+                    $min = $offset + 1;
+                    $query = "SELECT * FROM (SELECT a.*, ROWNUM mdb2rn FROM ($query) a WHERE ROWNUM <= $max) WHERE mdb2rn >= $min";
+                } else {
+                    $query = "SELECT a.* FROM ($query) a WHERE ROWNUM <= $max";
+                }
+                break;
+            case 'firebird':
+                $query = preg_replace('/^([\s(])*SELECT(?!\s*FIRST\s*\d+)/i',
+                    "SELECT FIRST $limit SKIP $offset", $query);
+                break;
+            case 'mssql':
+                $fetch = $offset + $limit;
+                return preg_replace('/^([\s(])*SELECT( DISTINCT)?(?!\s*TOP\s*\()/i',
+                    "\\1SELECT\\2 TOP $fetch", $query);
+                break;
+            case 'pgsql':
+                $query .= ' LIMIT ' . $limit . ' OFFSET ' . $offset;
+                break;
+            case 'mysql':
+            case 'sqlite':
+            case 'sqlite2':
+            case 'ibm':       // TODO: verify limit query syntax
+            case 'informix':  // TODO: verify limit query syntax
+            case 'odbc':      // TODO: verify limit query syntax
+            default:
+                $query .= ' LIMIT ' . $offset . ', ' . $limit;
+        }
+
         if (($result = $this->_handle->query($query)) !== false) {
             return $result->fetchAll(PDO::FETCH_ASSOC);
         } else {
