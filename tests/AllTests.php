@@ -53,6 +53,7 @@ require_once 'DataGridTest.php';
 require_once 'AllDataSourceTests.php';
 require_once 'ObjectRecordTest.php';
 require_once 'RendererSmartyTest.php';
+require_once 'EncodingTest.php';
  
 /**
  * Test (almost ;) everything
@@ -76,6 +77,7 @@ class AllTests
         $suites[] = 'DataGridTest';
         $suites[] = 'ObjectRecordTest';
         $suites[] = 'RendererSmartyTest';
+        $suites[] = 'EncodingTest';
 
         // PHP5 only:
         if (version_compare(phpversion(), '5', '>=')) {
