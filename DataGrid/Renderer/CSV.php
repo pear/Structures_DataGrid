@@ -64,6 +64,10 @@ require_once 'Structures/DataGrid/Renderer.php';
  * - useQuotes:  (mixed)   Whether or not to encapsulate the values with the 
  *                         enclosure value.
  *                         true: always, false: never, 'auto': when needed
+ * - targetEncoding (string): If set, the content will be converted from 
+ *                         encoding to targetEncoding. A BOM will also be 
+ *                         added, if relevant. See PHP mbstring documentation
+ *                         for encoding names. Tip: for Excel use 'UTF-16LE'.
  * - columnAttributes: (-) IGNORED
  * - onMove:           (-) IGNORED
  * - onMoveData:       (-) IGNORED
@@ -118,7 +122,8 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
                 'writeMode'  => 'wb',
                 'enclosure'  => '"',
                 'lineBreak'  => "\n",
-                'useQuotes'  => "auto"
+                'useQuotes'  => "auto",
+                'targetEncoding' => '',
             )
         );
         $this->_setFeatures(
@@ -136,18 +141,22 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
      */
     function init()
     {
-        $this->_csv = '';
-        if ($this->_options['saveToFile'] === true) {
-            if ($this->_options['filename'] === false) {
-                return PEAR::raiseError('No filename specified via "filename" ' .
-                                        'option.');
-            }
-            $this->_fp = fopen($this->_options['filename'],
-                               $this->_options['writeMode']);
-            if ($this->_fp === false) {
-                return PEAR::raiseError('Could not open file "' .
-                                        $this->_options['filename'] . '" ' .
-                                        'for writing.');
+        $this->_csv = $this->makeBom();
+        if ($this->_streamingEnabled) {
+            echo $this->_csv;
+        } else {
+            if ($this->_options['saveToFile'] === true) {
+                if ($this->_options['filename'] === false) {
+                    return PEAR::raiseError('No filename specified via "filename" ' .
+                                            'option.');
+                }
+                $this->_fp = fopen($this->_options['filename'],
+                                   $this->_options['writeMode']);
+                if ($this->_fp === false) {
+                    return PEAR::raiseError('Could not open file "' .
+                                            $this->_options['filename'] . '" ' .
+                                            'for writing.');
+                }
             }
         }
     }
@@ -184,6 +193,26 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
     function setUseQuotes($bool)
     {
         $this->_options['useQuotes'] = (bool)$bool;
+    }
+
+    /**
+     * Generate the Byte Order Mark according to the encoding, if relevant
+     *
+     * @access  private
+     * @return  string   2 to 4 bytes long BOM, or an empty string
+     */
+    function makeBom()
+    {
+        $encoding = str_replace('-', '', 
+            strtoupper($this->_options['targetEncoding']));
+        switch ($encoding) {
+            case 'UTF8': return "\xEF\xBB\xBF";
+            case 'UTF16LE': return "\xFF\xFE";
+            case 'UTF16BE': return "\xFE\xFF";
+            case 'UTF32LE': return "\xFF\xFE\x00\x00";
+            case 'UTF32BE': return "\x00\x00\xFE\xFF";
+        }
+        return '';
     }
 
     /**
@@ -283,7 +312,12 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
     function render()
     {
         if ($this->_options['saveToFile'] === false) {
-            header('Content-type: text/csv');
+            if (($charset = $this->_options['targetEncoding']) 
+                    || ($charset = $this->_options['encoding'])) {
+                header("Content-type: text/csv; charset=$charset");
+            } else {
+                header("Content-type: text/csv");
+            }
             if ($this->_options['filename'] !== false) {
                 header('Content-disposition: attachment; filename=' .
                        $this->_options['filename']);
@@ -328,6 +362,10 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
         $str = substr($str, 0, strlen($this->_options['delimiter']) * -1);
 
         $str .= $this->_options['lineBreak'];
+
+        if ($target = $this->_options['targetEncoding']) {
+            $str = mb_convert_encoding($str, $target, $this->_options['encoding']);
+        }
 
         return $str;
     }

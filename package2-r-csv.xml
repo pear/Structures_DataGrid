@@ -29,8 +29,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <date>2007-04-21</date>
  <time>16:00:00</time>
  <version>
-  <release>0.1.4</release>
-  <api>0.1.4</api>
+  <release>0.1.5</release>
+  <api>0.1.5</api>
  </version>
  <stability>
   <release>beta</release>
@@ -38,9 +38,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- Request #10593: new option 'writeMode' that allows to specify which mode is
-  used in the internal fopen() calls (useful e.g. to append to an existing file)
-  (thanks to Anthony Topper)
+- Request #13266: add Unicode BOM and conversion support 
+  New option: targetEncoding
  </notes>
  <contents>
   <dir name="/">
