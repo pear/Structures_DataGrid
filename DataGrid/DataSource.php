@@ -736,7 +736,7 @@ class Structures_DataGrid_DataSource_SQLQuery
  * @since       PHP 5
  * @require     PHP 4.0.0 (user_error)
  */
-function php_compat_strripos($haystack, $needle, $offset = null)
+function structures_datagrid_strripos($haystack, $needle, $offset = null)
 {
     // Sanity check
     if (!is_scalar($haystack)) {
@@ -783,7 +783,7 @@ function php_compat_strripos($haystack, $needle, $offset = null)
 if (!function_exists('strripos')) {
     function strripos($haystack, $needle, $offset = null)
     {
-        return php_compat_strripos($haystack, $needle, $offset);
+        return structures_datagrid_strripos($haystack, $needle, $offset);
     }
 }
 
