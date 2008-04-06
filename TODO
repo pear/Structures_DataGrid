@@ -178,6 +178,13 @@ including an HTMLEditForm.
 
 This is related to TODO 16 and 19
 
+--------------------------------------------------------------------------------
+TODO 21 - Unit tests improvements (?) - Priority: Medium
+
+Improve the unit test suite, especially with the following items
+* class Structures_DataGrid_DataSource_SQLQuery: test subquery handling in
+  combination with ORDER BY detection (c.p. Bug #13339) 
+* (to be continued)
 
 ####################### Done Items Archive #########################
 
