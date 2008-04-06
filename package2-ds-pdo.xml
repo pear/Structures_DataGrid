@@ -24,7 +24,7 @@ SQL query.
  <date>2007-12-18</date>
  <time>17:15:00</time>
  <version>
-  <release>0.1.0</release>
+  <release>0.1.1dev1</release>
   <api>0.1.0</api>
  </version>
  <stability>

@@ -30,7 +30,7 @@ string.
  <date>2007-04-21</date>
  <time>16:00:00</time>
  <version>
-  <release>0.1.3</release>
+  <release>0.1.4dev1</release>
   <api>0.1.2</api>
  </version>
  <stability>
