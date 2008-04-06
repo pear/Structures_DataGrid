@@ -473,10 +473,6 @@ class Structures_DataGrid_DataSource
  * - count_query: (string) Query that calculates the number of rows. See below
  *                         for more information about when such a count query
  *                         is needed.
- * - quote_identifiers: (bool) Whether identifiers should be quoted or not. If
- *                             you have field names in the form "table.field",
- *                             set this option to boolean false; otherwise the
- *                             automatic quoting might lead to syntax errors.
  *
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @author   Mark Wiesemann <wiesemann@php.net>
@@ -529,8 +525,7 @@ class Structures_DataGrid_DataSource_SQLQuery
         $this->_addDefaultOptions(array('dbc' => null,
                                         'dsn' => null,
                                         'db_options'  => array(),
-                                        'count_query' => '',
-                                        'quote_identifiers' => true));
+                                        'count_query' => ''));
         $this->_setFeatures(array('multiSort' => true));
     }
 
@@ -589,10 +584,9 @@ class Structures_DataGrid_DataSource_SQLQuery
     {
         if (!empty($this->_sortSpec)) {
             foreach ($this->_sortSpec as $field => $direction) {
-                if ($this->_options['quote_identifiers'] === true) {
-                    $field = $this->_quoteIdentifier($field);
-                }
-                $sortArray[] = $field . ' ' . $direction;
+                $fields = preg_split('#\.#', $field);
+                $fields = array_map(array($this, '_quoteIdentifier'), $fields);
+                $sortArray[] = join('.', $fields) . ' ' . $direction;
             }
             $sortString = join(', ', $sortArray);
         } else {
@@ -614,6 +608,10 @@ class Structures_DataGrid_DataSource_SQLQuery
                 && strpos($query, 'SELECT', $orderByPos) !== false
             ) {
                 // yes => new ORDER BY statement needs to be appended
+                $appendOrderBy = true;
+            }
+            // if no ORDER BY statement exists, a new one needs to be appended
+            if ($orderByPos === false) {
                 $appendOrderBy = true;
             }
             if ($appendOrderBy === true) {

@@ -47,8 +47,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
 - Bug #13025: field names in the form "table.field" could lead to syntax errors
-  in the SQL queries of the DBQuery, MDB2, and PDO DataSource drivers; new
-  option 'quote_identifiers' allows to disable the automatic quoting
+  in the SQL queries of the DBQuery, MDB2, and PDO DataSource drivers
   (thanks to Matt Rosenquist)
 - Bug #13339: Automatic ORDER BY sort string addition can fail if subqueries
   are used in the the DBQuery, MDB2, and PDO DataSource drivers
