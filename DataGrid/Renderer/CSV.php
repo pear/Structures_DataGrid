@@ -64,7 +64,7 @@ require_once 'Structures/DataGrid/Renderer.php';
  * - useQuotes:  (mixed)   Whether or not to encapsulate the values with the 
  *                         enclosure value.
  *                         true: always, false: never, 'auto': when needed
- * - targetEncoding (string): If set, the content will be converted from 
+ * - targetEncoding: (string) If set, the content will be converted from 
  *                         encoding to targetEncoding. A BOM will also be 
  *                         added, if relevant. See PHP mbstring documentation
  *                         for encoding names. Tip: for Excel use 'UTF-16LE'.
