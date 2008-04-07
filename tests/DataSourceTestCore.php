@@ -56,12 +56,9 @@ error_reporting(E_ALL);
 class DataSourceTestCore extends TestCore
 {
     var $datasource;
-    var $data = array(
-                array('num' => '1', 'the str' => 'test'),
-                array('num' => '1', 'the str' => 'présent'),
-                array('num' => '2', 'the str' => 'viel spaß'),
-                array('num' => '3', 'the str' => ''),
-            );
+    var $numField = 'num';
+    var $strField = 'the str';
+    var $data = array();
 
     function setUp()
     {
@@ -74,6 +71,13 @@ class DataSourceTestCore extends TestCore
         fclose($fp);
         require_once($file);
         $this->datasource = new $class();
+
+        $this->data = array(
+            array($this->numField => '1', $this->strField => 'test'),
+            array($this->numField => '1', $this->strField => 'présent'),
+            array($this->numField => '2', $this->strField => 'viel spaß'),
+            array($this->numField => '3', $this->strField => ''),
+        );
     }
 
     function tearDown()
@@ -117,12 +121,12 @@ class DataSourceTestCore extends TestCore
     {
         $this->bindDefault();
         $expected = array(
-            array('num' => '3', 'the str' => ''),
-            array('num' => '2', 'the str' => 'viel spaß'),
-            array('num' => '1', 'the str' => 'présent'),
-            array('num' => '1', 'the str' => 'test'),
+            array($this->numField => '3', $this->strField => ''),
+            array($this->numField => '2', $this->strField => 'viel spaß'),
+            array($this->numField => '1', $this->strField => 'présent'),
+            array($this->numField => '1', $this->strField => 'test'),
         );
-        $this->datasource->sort('num', 'DESC');
+        $this->datasource->sort($this->numField, 'DESC');
         $this->assertEquals($expected, $this->datasource->fetch());
     }
 
@@ -131,12 +135,13 @@ class DataSourceTestCore extends TestCore
         $this->bindDefault();
         if ($this->datasource->hasFeature('multiSort')) {
             $expected = array(
-                array('num' => '3', 'the str' => ''),
-                array('num' => '2', 'the str' => 'viel spaß'),
-                array('num' => '1', 'the str' => 'test'),
-                array('num' => '1', 'the str' => 'présent'),
+                array($this->numField => '3', $this->strField => ''),
+                array($this->numField => '2', $this->strField => 'viel spaß'),
+                array($this->numField => '1', $this->strField => 'test'),
+                array($this->numField => '1', $this->strField => 'présent'),
             );
-            $this->datasource->sort(array('num' => 'DESC', 'the str' => 'DESC'));
+            $this->datasource->sort(array($this->numField => 'DESC', 
+                $this->strField => 'DESC'));
             $this->assertEquals($expected, $this->datasource->fetch());
         } else {
             $this->fail("Skipping: Driver does not support multiSort");

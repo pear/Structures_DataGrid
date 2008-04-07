@@ -75,6 +75,7 @@ class AllDataSourceTests
             'DataSourceCSVTest',
             'DataSourceMDB2Test',
             'DataSourceXMLTest',
+            'DataSourceDataObjectTest',
         );
 
         // PHP5 only:

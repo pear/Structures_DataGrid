@@ -52,12 +52,9 @@ require_once 'File/Util.php';
  */
 class DataSourceXMLTest extends DataSourceTestCore
 {
-    // XML compatible copy of $data from core test class
-    var $data = array(array('num' => '1', 'thestr' => 'test'),
-                      array('num' => '1', 'thestr' => 'présent'),
-                      array('num' => '2', 'thestr' => 'viel spaß'),
-                      array('num' => '3', 'thestr' => ''),
-                     );
+    // No space in tag names
+    var $strField = 'thestr';
+
 // TODO: test 'xpath' option
 // TODO: test both input from string and input from file
 
