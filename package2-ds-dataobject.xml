@@ -23,8 +23,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <date>2007-12-18</date>
  <time>18:30:00</time>
  <version>
-  <release>0.2.1</release>
-  <api>0.2.1</api>
+  <release>0.2.2dev1</release>
+  <api>0.2.2</api>
  </version>
  <stability>
   <release>beta</release>
@@ -32,11 +32,10 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- new 'return_objects' option: for fetching records as dataobjects instead of 
-  associative arrays
-- bug #11854: fix compatibility with formbuilder linkOrderFields option  
-- remove restrictive container type checking: allows to bind any object that 
-  behaves like a DB_DataObject
+- bug #12942: datasource sorting now overrides the dataobject sort property
+  (thanks to Mike Rehacek)
+- fixed limit() when called with a single argument (Warning: this might cause
+  a BC break if you're using this datasource outside of Structures_DataGrid)
  </notes>
  <contents>
   <dir name="/">

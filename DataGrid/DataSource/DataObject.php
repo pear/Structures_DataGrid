@@ -74,8 +74,7 @@ require_once 'Structures/DataGrid/DataSource.php';
  *                               an array of the form:
  *                               array("field1", "field1 DESC", ...)
  *                               If the data is already being sorted then this
- *                               this property's content will be appended 
- *                               to the current ordering.
+ *                               this property's content will be ignored.
  * - link_level:        (int)    The maximum link display level. If equal to 0
  *                               the links will not be followed.
  * - link_property:     (string) The name of a property you can set within a 
@@ -144,7 +143,15 @@ class Structures_DataGrid_DataSource_DataObject
      * @access private
      */
      var $_rowNum = null;    
-    
+   
+     /**
+      * True if the data is sorted using the datasource API (with sort())
+      *
+      * @var bool
+      * @access private
+      */
+     var $_isSorted = false;
+
     /**
      * Constructor
      *
@@ -271,8 +278,9 @@ class Structures_DataGrid_DataSource_DataObject
             }
                     
             // Sorting
-            if (($sortProperty = $this->_options['sort_property'])
-                      && isset($this->_dataobject->$sortProperty)) {
+            if ((!$this->_isSorted) 
+                    && ($sortProperty = $this->_options['sort_property'])
+                    && isset($this->_dataobject->$sortProperty)) {
                 // Keep compatibility with Formbuilder's linkOrderFields option
                 foreach ($this->_dataobject->$sortProperty as $sort) {
                     $this->_dataobject->orderBy($sort);
@@ -281,6 +289,9 @@ class Structures_DataGrid_DataSource_DataObject
             
             // Limiting
             if ($offset) {
+                if (!$len) {
+                    $len = PHP_INT_MAX;
+                }
                 $this->_dataobject->limit($offset, $len);
             } elseif ($len) {
                 $this->_dataobject->limit($len);
@@ -475,7 +486,9 @@ class Structures_DataGrid_DataSource_DataObject
             foreach ($sortSpec as $field => $direction) {
                 $field = $this->_convertLinkKey($field);
                 $field = $db->quoteIdentifier($field);
+                $direction = ($direction == 'DESC' ? 'DESC' : 'ASC');
                 $this->_dataobject->orderBy("$field $direction");
+                $this->_isSorted = true;
             }
         } else {
             $sortSpec = $this->_convertLinkKey($sortSpec);
@@ -483,8 +496,10 @@ class Structures_DataGrid_DataSource_DataObject
             if (is_null($sortDir)) {
                 $this->_dataobject->orderBy($sortSpec);
             } else {
+                $sortDir = ($sortDir == 'DESC' ? 'DESC' : 'ASC');
                 $this->_dataobject->orderBy("$sortSpec $sortDir");
             }
+            $this->_isSorted = true;
         }
     }
     
