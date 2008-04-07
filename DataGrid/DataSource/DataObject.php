@@ -113,6 +113,17 @@ require_once 'Structures/DataGrid/DataSource.php';
  *                               dataobject properties and methods from 
  *                               your templates.
  *
+ * GENERAL NOTES:
+ *
+ * You can use getters in your DataObject, this driver will look for them and
+ * call them if found, instead of accessing the corresponding property.
+ * Two slightly different types of getters are supported.
+ *
+ * Example: if you have a property named my_field, this driver will first 
+ * search for getMyField() (camel case), and then for getMy_field() 
+ * (DB_DataObject compliant). If it can't find any it will access the my_field
+ * property directly.
+ *
  * @example bind-dataobject.php  Bind a DB_DataObject to Structures_DataGrid
  *
  * @version  $Revision$

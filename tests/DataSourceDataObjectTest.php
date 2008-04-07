@@ -127,11 +127,13 @@ class DataSourceDataObjectTest extends DataSourceTestCore
 
     function testGetter()
     {
+        // support camel case getters (see bug #9803)
         $dataobject = new TestDataObjectWithGetter();
         $this->datasource->bind($dataobject);
         $data = $this->datasource->fetch();
         $this->assertEquals('test <- getTheStr()', $data[0]['the_str']);
 
+        // support DB_DataObject half camel case getters (see bug #13199)
         $dataobject = new TestDataObjectWithAltGetter();
         $this->datasource->bind($dataobject);
         $data = $this->datasource->fetch();
