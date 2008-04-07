@@ -37,6 +37,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
 - fixed limit() when called with a single argument (Warning: this might cause
   a BC break if you're using this datasource outside of Structures_DataGrid)
 - bug #13199: support DB_DataObject getters in addition to pure camel-case ones
+  (thanks to Mads Lie Jensen)
  </notes>
  <contents>
   <dir name="/">
