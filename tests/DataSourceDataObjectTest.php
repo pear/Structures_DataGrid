@@ -58,7 +58,7 @@ require_once "DB/DataObject.php";
 class DataSourceDataObjectTest extends DataSourceTestCore
 {
     var $dbfile;
-    var $strField = 'str';
+    var $strField = 'the_str';
     var $dataobject;
 
     function getDriverClassName()
@@ -75,9 +75,11 @@ class DataSourceDataObjectTest extends DataSourceTestCore
                 unlink($this->dbfile);
             }
             $db = sqlite_open($this->dbfile);
-            sqlite_query($db, 'CREATE TABLE test (num int not null, str char(255) not null primary key);'); 
+            sqlite_query($db, 'CREATE TABLE test (num int not null, '.
+                        'the_str char(255) not null primary key);'); 
             foreach ($this->data as $row) {
-                sqlite_query($db, "INSERT INTO test VALUES ({$row['num']}, '{$row['str']}');");
+                sqlite_query($db, "INSERT INTO test VALUES ({$row['num']}, ".
+                        "'{$row['the_str']}');");
             }
             sqlite_close($db);
             unset($db);
@@ -105,22 +107,35 @@ class DataSourceDataObjectTest extends DataSourceTestCore
         
         // Testing that sort() overrides sort property (see bug #12942)
         $dataobject = new TestDataObject();
-        $dataobject->fb_linkOrderFields = array('str');
+        $dataobject->fb_linkOrderFields = array('the_str');
         $this->datasource->bind($dataobject);
-        $this->datasource->sort('str');
+        $this->datasource->sort('the_str');
         $this->datasource->fetch();
-        // With bug #12942 the following equaled to 'ORDER BY "str", str'
-        $this->assertEquals('ORDER BY "str"', 
+        // With bug #12942 the following equaled to 'ORDER BY "the_str", the_str'
+        $this->assertEquals('ORDER BY "the_str"', 
             trim($dataobject->lastQuery['order_by']));
 
         // Testing that sort() overrides sort property when passed an array
         $dataobject = new TestDataObject();
-        $dataobject->fb_linkOrderFields = array('str');
+        $dataobject->fb_linkOrderFields = array('the_str');
         $this->datasource->bind($dataobject);
-        $this->datasource->sort(array('str' => 'ASC'));
+        $this->datasource->sort(array('the_str' => 'ASC'));
         $this->datasource->fetch();
-        $this->assertEquals('ORDER BY "str" ASC', 
+        $this->assertEquals('ORDER BY "the_str" ASC', 
             trim($dataobject->lastQuery['order_by']));
+    }
+
+    function testGetter()
+    {
+        $dataobject = new TestDataObjectWithGetter();
+        $this->datasource->bind($dataobject);
+        $data = $this->datasource->fetch();
+        $this->assertEquals('test <- getTheStr()', $data[0]['the_str']);
+
+        $dataobject = new TestDataObjectWithAltGetter();
+        $this->datasource->bind($dataobject);
+        $data = $this->datasource->fetch();
+        $this->assertEquals('test <- getThe_str()', $data[0]['the_str']);
     }
 }
 
@@ -128,18 +143,34 @@ class TestDataObject extends DB_DataObject
 {
     var $__table = 'test';
     var $num;
-    var $str;
+    var $the_str;
     var $lastQuery = null;
 
     function TestDataObject()
     {
-        $this->keys('str');
+        $this->keys('the_str');
     }
 
     function find($n = false)
     {
         $this->lastQuery = $this->_query;
         parent::find($n);
+    }
+}
+
+class TestDataObjectWithAltGetter extends TestDataObject
+{
+    function getThe_str()
+    {
+        return $this->the_str . ' <- getThe_str()';
+    }
+}
+
+class TestDataObjectWithGetter extends TestDataObjectWithAltGetter
+{
+    function getTheStr()
+    {
+        return $this->the_str . ' <- getTheStr()';
     }
 }
 
