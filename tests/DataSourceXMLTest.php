@@ -178,6 +178,29 @@ XML;
         $this->assertEquals($expected, $this->datasource->fetch());
     }
 
+    function testAttributeToColumn()
+    {
+        // see bug #13840
+        $xml = '<rows><row acctname="x" adgroup="foo" />'.
+            '<row acctname="x" adgroup="bar" /></rows>'; 
+        $this->datasource->setOption('generate_columns', true);
+        $this->datasource->bind($xml);
+        $columns = $this->datasource->getColumns();
+        $this->assertEquals(2, count($columns));
+        if (count($columns) == 2) {
+            $this->assertEquals('attributesacctname', $columns[0]->getLabel());
+            $this->assertEquals('attributesacctname', $columns[0]->getField());
+            $this->assertEquals('attributesadgroup', $columns[1]->getLabel());
+            $this->assertEquals('attributesadgroup', $columns[1]->getField());
+        } else {
+            $this->fail("expected 2 columns");
+        }
+
+        $content = array(array('attributesacctname' => 'x', 'attributesadgroup' => 'foo'),
+                array('attributesacctname' => 'x', 'attributesadgroup' => 'bar'));
+        $this->assertEquals($content, $this->datasource->fetch());                
+    }
+
 }
 
 ?>
