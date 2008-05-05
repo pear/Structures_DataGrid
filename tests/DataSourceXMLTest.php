@@ -192,13 +192,32 @@ XML;
             $this->assertEquals('attributesacctname', $columns[0]->getField());
             $this->assertEquals('attributesadgroup', $columns[1]->getLabel());
             $this->assertEquals('attributesadgroup', $columns[1]->getField());
-        } else {
-            $this->fail("expected 2 columns");
-        }
+        } 
 
         $content = array(array('attributesacctname' => 'x', 'attributesadgroup' => 'foo'),
                 array('attributesacctname' => 'x', 'attributesadgroup' => 'bar'));
         $this->assertEquals($content, $this->datasource->fetch());                
+    }
+
+    function testFieldAndLabelAttributes()
+    {
+        $xml = '<data><item name="foo" label="bar">test</item>'.
+            '<item name="foo" label="bar">test2</item></data>';
+        $this->datasource->setOption('generate_columns', true);
+        $this->datasource->setOption('fieldAttribute', 'name');
+        $this->datasource->setOption('labelAttribute', 'label');
+        $this->datasource->bind($xml);
+        $columns = $this->datasource->getColumns();
+        $this->assertEquals(3, count($columns));
+        if (count($columns) == 3) {
+            $this->assertEquals('attributesname', $columns[0]->getLabel());
+            $this->assertEquals('attributesname', $columns[0]->getField());
+            $this->assertEquals('attributeslabel', $columns[1]->getLabel());
+            $this->assertEquals('attributeslabel', $columns[1]->getField());
+            $this->assertEquals('bar', $columns[2]->getLabel());
+            $this->assertEquals('foo', $columns[2]->getField());
+        }
+
     }
 
 }
