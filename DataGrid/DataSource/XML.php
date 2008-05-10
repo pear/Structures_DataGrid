@@ -241,7 +241,7 @@ class Structures_DataGrid_DataSource_XML extends
         // build a simple array
         list($junk, $data) = each($data);  // TODO: check $data here
         // check the array, can it be parsed?
-        if (!is_array($data)) {
+        if (!is_array($data)) { // FIXME: fails with 1 row of data
             return PEAR::raiseError('Unable to bind the XML data. ' .
                                     'You may want to set the ' .
                                     '\'xpath\' option.');
