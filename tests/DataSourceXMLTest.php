@@ -44,6 +44,10 @@
  * @license  http://opensource.org/licenses/bsd-license.php New BSD License
  */
 
+if (!defined('PHPUnit_MAIN_METHOD')) {
+    define('PHPUnit_MAIN_METHOD', 'DataSourceXMLTest::main');
+}
+
 require_once 'DataSourceTestCore.php';
 require_once 'File/Util.php';
 
@@ -222,4 +226,9 @@ XML;
 
 }
 
+if (PHPUnit_MAIN_METHOD == 'DataSourceXMLTest::main') {
+    $suite = new PHPUnit_TestSuite('DataSourceXMLTest');
+    $result = PHPUnit::run($suite);
+    echo $result->toString();
+}
 ?>
