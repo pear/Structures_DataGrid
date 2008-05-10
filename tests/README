@@ -3,7 +3,7 @@
 
 To run the tests you need:
 - PHP4 or PHP5
-- PHPUnit >= 1.3.2 from http://phpunit.de/
+- PHPUnit >= 1.3.2 (PHP4 compatible, get it from PEAR)
 
 For the SQL-based tests you need the sqlite extension (bundled by default
 in PHP5)
