@@ -194,11 +194,26 @@ class Structures_DataGrid_DataSource_XML extends
         if (version_compare(PHP_VERSION, '5.0.0', '>=')) {
             foreach ($xml as $tmprow) {
                 $row = array();
-                foreach ($tmprow as $key => $value) {
+                foreach ($tmprow->attributes() as $key => $value) {
                     // use 'fieldAttribute' as item key, if 'fieldAttribute'
                     // option set
                     if (!is_null($this->_options['fieldAttribute'])) {
                         foreach ($value->attributes() as $a => $b) {
+                            if ($this->_options['fieldAttribute'] == $a) {
+                                $key = (string)$b;
+                            }
+                        }
+                    }
+                    $row['attributes' . $key] = $value;
+                }
+                foreach ((array)$tmprow as $key => $value) {
+                    if ($key === '@attributes') {
+                        continue;
+                    }
+                    // use 'fieldAttribute' as item key, if 'fieldAttribute'
+                    // option set
+                    if (!is_null($this->_options['fieldAttribute'])) {
+                        foreach ($tmprow->attributes() as $a => $b) {
                             if ($this->_options['fieldAttribute'] == $a) {
                                 $key = (string)$b;
                             }
@@ -321,10 +336,10 @@ class Structures_DataGrid_DataSource_XML extends
                 && !is_null($this->_options['labelAttribute'])
                ) {
                 $key = $value = $item;
-                foreach ($info->attributes() as $a => $b) {
-                    if ($this->_options['labelAttribute'] == $a) {
-                        $value = (string)$b;
-                    }
+                if (   substr($item, 0, 10) != 'attributes'
+                    && array_key_exists('attributes' . $this->_options['labelAttribute'], $row)
+                   ) {
+                    $value = $row['attributes' . $this->_options['labelAttribute']];
                 }
                 $labels[$key] = $value;
             }
