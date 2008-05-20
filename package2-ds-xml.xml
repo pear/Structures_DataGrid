@@ -29,7 +29,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <date>2007-12-18</date>
  <time>17:15:00</time>
  <version>
-  <release>0.2.0</release>
+  <release>0.2.1dev1</release>
   <api>0.2.0</api>
  </version>
  <stability>
@@ -38,9 +38,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- fixed PHP 5 compatibility of this driver
-- in addition to strings with XML data, this driver now also accepts
-  filenames
+- Bug #13840: XML attributes weren't detected correctly
+  (thanks to Anthony Topper)
  </notes>
  <contents>
   <dir name="/">

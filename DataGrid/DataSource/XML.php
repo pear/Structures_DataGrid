@@ -239,7 +239,7 @@ class Structures_DataGrid_DataSource_XML extends
         // set containers for attributes and content
         // (for the case that attributes are found)
         $unserializer->setOption('attributesArray', 'attributes');
-        $unserializer->setOption('contentName', 'content');
+        $unserializer->setOption('contentName', '_content');
         // use 'fieldAttribute' as item key, if 'fieldAttribute'
         // option set
         if (!is_null($this->_options['fieldAttribute'])) {
@@ -289,6 +289,23 @@ class Structures_DataGrid_DataSource_XML extends
             switch (true) {
                 // item has no attributes and unique tag name
                 case !is_array($info):
+                    // $itemKey needs to be replaced in this case to get the
+                    // right field name
+                    if (   !is_null($this->_options['fieldAttribute'])
+                        && isset($row['attributes'][$this->_options['fieldAttribute']])) {
+                        $itemKey = $row['attributes'][$this->_options['fieldAttribute']];
+                    }
+                    // if $item is '_content' here, save attribute's value as
+                    // the label for this column
+                    if (   !$this->_options['labels']
+                        && !is_null($this->_options['labelAttribute'])
+                        && $item == '_content') {
+                        if (isset($row['attributes'][$this->_options['labelAttribute']])) {
+                            $labels[$itemKey] = $row['attributes'][$this->_options['labelAttribute']];
+                        } else {
+                            $labels[$itemKey] = $itemKey;
+                        }
+                    }
                     $rowProcessed[$itemKey] = $info;
                     break;
                 // items with non-unique tag names, or 'fieldAttribute'
@@ -309,7 +326,7 @@ class Structures_DataGrid_DataSource_XML extends
                     // no break here; we need the content!
                 default:
                     $rowProcessed[$itemKey] = 
-                        isset($info['content']) ? $info['content'] : ''; 
+                        isset($info['_content']) ? $info['_content'] : ''; 
             }
         }
         // set labels if extracted
