@@ -261,6 +261,31 @@ XML;
         }
     }
 
+    function testOnlyOneRow()
+    {
+        $xml = <<<XML
+<data>
+  <row>
+    <col0>Test0</col0>
+    <col1>Test1</col1>
+    <col2>Test2</col2>
+  </row>
+</data>
+XML;
+        $this->datasource->setOption('generate_columns', true);
+        $this->datasource->bind($xml);
+        $columns = $this->datasource->getColumns();
+        $this->assertEquals(3, count($columns));
+        if (count($columns) == 3) {
+            $this->assertEquals('col0', $columns[0]->getLabel());
+            $this->assertEquals('col0', $columns[0]->getField());
+            $this->assertEquals('col1', $columns[1]->getLabel());
+            $this->assertEquals('col1', $columns[1]->getField());
+            $this->assertEquals('col2', $columns[2]->getLabel());
+            $this->assertEquals('col2', $columns[2]->getField());
+        }
+    }
+
 }
 
 if (PHPUnit_MAIN_METHOD == 'DataSourceXMLTest::main') {
