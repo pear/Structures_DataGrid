@@ -40,6 +40,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <notes>
 - Bug #13840: XML attributes weren't detected correctly
   (thanks to Anthony Topper)
+- Bug #13950: Deeper nesting of XML data failed on PHP 5
  </notes>
  <contents>
   <dir name="/">

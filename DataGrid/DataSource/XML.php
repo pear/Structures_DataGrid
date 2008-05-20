@@ -341,12 +341,14 @@ class Structures_DataGrid_DataSource_XML extends
      * 
      * @access  private
      * @param   array    $row         Row from SimpleXML
+     * @param   string   $keyPrefix   Prepended to key, for recursive processing
      * @return  array    of form: array($field1 => $value1, $field2 => $value2, ...)
      */
-    function _processRowSimpleXML($row)
+    function _processRowSimpleXML($row, $keyPrefix = '')
     {
         $rowProcessed = array();
         foreach ($row as $item => $info) {
+            $itemKey = $keyPrefix . $item;
             // extract label if option set and $this->_options['labels']
             // is empty 
             if (   !$this->_options['labels']
@@ -361,7 +363,11 @@ class Structures_DataGrid_DataSource_XML extends
                 $labels[$key] = $value;
             }
             // save the content
-            $rowProcessed[$item] = (string)$info;
+            if (is_a($info, 'SimpleXMLElement') && $info->children()) {
+                $rowProcessed += $this->_processRowSimpleXML($info, $itemKey);
+            } else {
+                $rowProcessed[$itemKey] = (string)$info;
+            }
         }
         // set labels if extracted
         if (!$this->_options['labels'] && isset($labels)) {
