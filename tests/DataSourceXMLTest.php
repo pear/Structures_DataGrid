@@ -286,6 +286,55 @@ XML;
         }
     }
 
+    /**
+     * Test extracting tags wherever they are in the tree
+     *
+     * Sometimes a user might like to use the powerful xpath syntax to select
+     * some elements wherever they are in the tree, and build a grid out of that.
+     * This tests tries to do that with a simplified package definition document,
+     * to extract files whatever directory they're in.
+     */
+    function testTransversalXpath()
+    {
+        $xml = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<package>
+ <contents>
+  <dir name="/">
+   <file baseinstalldir="Structures" name="DataGrid.php" role="php" />
+   <dir name="DataGrid">
+    <file baseinstalldir="Structures" name="DataSource.php" role="php" />
+   </dir> 
+   <dir name="docs">
+    <dir name="examples">
+     <file name="ajax-simple.php" role="doc" />
+    </dir> 
+   </dir> 
+   <dir name="tests">
+    <file baseinstalldir="Structures" name="AllTests.php" role="test" />
+   </dir> 
+  </dir> 
+ </contents>
+</package>
+XML;
+        
+        $this->datasource->bind($xml, array('xpath' => '//file'));
+        $actual = $this->datasource->fetch();
+
+        $expected = array(
+            array("attributesbaseinstalldir" => "Structures",
+              "attributesname" => "DataGrid.php", "attributesrole" => "php",),
+            array("attributesbaseinstalldir" => "Structures",
+              "attributesname" => "DataSource.php", "attributesrole" => "php"),
+            array("attributesname" => "ajax-simple.php",
+              "attributesrole" => "doc",),
+            array("attributesbaseinstalldir" => "Structures"
+              "attributesname" => "AllTests.php", "attributesrole" => "test"),
+        );            
+
+        $this->assertEquals($expected, $actual);
+    }
+
 }
 
 if (PHPUnit_MAIN_METHOD == 'DataSourceXMLTest::main') {
