@@ -328,7 +328,7 @@ XML;
               "attributesname" => "DataSource.php", "attributesrole" => "php"),
             array("attributesname" => "ajax-simple.php",
               "attributesrole" => "doc",),
-            array("attributesbaseinstalldir" => "Structures"
+            array("attributesbaseinstalldir" => "Structures",
               "attributesname" => "AllTests.php", "attributesrole" => "test"),
         );            
 
