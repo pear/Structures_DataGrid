@@ -194,18 +194,19 @@ class Structures_DataGrid_DataSource_Array
      * Sorts the array.
      * 
      * @access  public
-     * @param   string  $sortField  Field to sort by
+     * @param   string  $sortSpec   Field to sort by, or array of 
+     *                              the form: array(field => direction, ...)
      * @param   string  $sortDir    Sort direction: 'ASC' or 'DESC' 
      *                              (default: ASC)
      */
-    function sort($sortField, $sortDir = null)
+    function sort($sortSpec, $sortDir = null)
     {
-        if (is_array($sortField)) {
-            $sort = $sortField;
+        if (is_array($sortSpec)) {
+            $sort = $sortSpec;
         } else {
             $sortDir = (is_null($sortDir) || (strtoupper($sortDir) == 'ASC')) 
                      ? 'ASC' : 'DESC';
-            $sort = array($sortField => $sortDir);
+            $sort = array($sortSpec => $sortDir);
         }
 
         $args = array();
@@ -226,24 +227,6 @@ class Structures_DataGrid_DataSource_Array
             $args[] =& $this->_ar;
             call_user_func_array('array_multisort', $args);
         }
-
-        
-/*
-
-
-        $sortAr = array();
-        $numRows = count($this->_ar);
-        
-        for ($i = 0; $i < $numRows; $i++) {
-            $rec = (array) $this->_ar[$i];
-            $sortAr[$i] = $rec[$sortField];
-        }
-
-        if ($this->_options['natsort']) {
-            $sortAr = array_map('strtolower', $sortAr);
-        }
-        array_multisort($sortAr, $sortDir, $this->_ar);
-    */
     }
 }
 
