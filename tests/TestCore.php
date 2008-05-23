@@ -47,6 +47,8 @@
 
 require_once 'PEAR.php';
 require_once 'PHPUnit.php';
+require_once 'Text/Diff.php';
+require_once 'Text/Diff/Renderer/unified.php';
 
 error_reporting(E_ALL);
 
@@ -82,6 +84,106 @@ class TestCore extends PHPUnit_TestCase
     function suppressPhpWarnings()
     {
         error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
+    }
+
+    function assertEquals($expected, $actual, $message = '', $delta = 0) {
+        if ((is_array($actual)  && is_array($expected)) ||
+            (is_object($actual) && is_object($expected))) {
+            if (is_array($actual) && is_array($expected)) {
+                ksort($actual);
+                ksort($expected);
+            }
+
+            if ($this->_looselyTyped) {
+                $actual   = $this->_convertToString($actual);
+                $expected = $this->_convertToString($expected);
+            }
+
+            $orig_actual = $actual;
+            $orig_expected = $expected;
+            $actual   = serialize($actual);
+            $expected = serialize($expected);
+
+            if ($actual !== $expected) {
+
+                $oldIni = ini_get('html_errors');
+                if($oldIni != 0) {
+                    ini_set('html_errors',0);
+                }
+
+                ob_start();
+                echo " --------- EXPECTED -----------\n";
+                var_dump($orig_expected);
+                $expected = explode("\n", ob_get_contents());
+                ob_clean();
+                echo " ---------- ACTUAL ------------\n";
+                var_dump($orig_actual);
+                $actual = explode("\n", ob_get_contents());
+                ob_end_clean();
+
+                if($oldIni != 0) {
+                    ini_set('html_errors',$oldIni);
+                }
+  
+                $diff = new Text_Diff($expected, $actual);
+                $renderer = &new Text_Diff_Renderer_unified();
+                $diff = $renderer->render($diff);
+                $message = sprintf(
+                  "%sdiff:\n%s",
+
+                  !empty($message) ? $message . ' ' : '',
+                  $diff
+                );
+                return $this->fail($message);
+            }
+        }
+
+        elseif (is_numeric($actual) && is_numeric($expected)) {
+            $message = sprintf(
+              '%sexpected %s%s, actual %s',
+
+              !empty($message) ? $message . ' ' : '',
+              $expected,
+              ($delta != 0) ? ('+/- ' . $delta) : '',
+              $actual
+            );
+
+            if (!($actual >= ($expected - $delta) && $actual <= ($expected + $delta))) {
+                return $this->fail($message);
+            }
+        }
+
+        else {
+            $message = sprintf(
+              '%sexpected %s, actual %s',
+
+              !empty($message) ? $message . ' ' : '',
+              $expected,
+              $actual
+            );
+
+            if ($actual !== $expected) {
+                return $this->fail($message);
+            }
+        }
+    }
+
+    function assertContains($needle, $haystack, $message = '') {
+        if (is_string($needle) && is_string($haystack)) {
+            if (strpos($haystack, $needle) === false) {
+                $this->fail("'$haystack' does not contain '$needle'");
+            }
+        }
+
+        else if (is_array($haystack) && !is_object($needle)) {
+            if (!in_array($needle, $haystack)) {
+                $this->fail("Array does not contain '$needle'");
+            }
+        }
+
+        else {
+            $this->fail('Unsupported parameter passed to assertContains().');
+        }
     }
 }
 
