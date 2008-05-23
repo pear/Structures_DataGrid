@@ -211,24 +211,53 @@ XML;
         $this->assertEquals($content, $this->datasource->fetch());                
     }
 
+    function testFieldAttributeToColumn()
+    {
+        $xml = '<data><row><item id="1">2</item></row></data>';
+        $this->datasource->setOption('generate_columns', true);
+        $this->datasource->bind($xml);
+        $columns = $this->datasource->getColumns();
+        $this->assertEquals(2, count($columns));
+        if (count($columns) == 2) {
+            $this->assertEquals('itemattributesid', $columns[0]->getLabel());
+            $this->assertEquals('itemattributesid', $columns[0]->getField());
+            $this->assertEquals('item', $columns[1]->getLabel());
+            $this->assertEquals('item', $columns[1]->getField());
+        }
+
+        $content = array(array('itemattributesid' => 1, 'item' => 2));
+        $this->assertEquals($content, $this->datasource->fetch());                
+    }
+
     function testFieldAndLabelAttributes()
     {
-        $xml = '<data><item name="foo" label="bar">test</item>'.
-            '<item name="foo" label="bar">test2</item></data>';
+$xml = <<<XML
+<datagrid>
+  <row>
+    <field label="Product Name" name="name">Pears</field>
+    <field label="Quantity in Stock" name="stock">510</field>
+  </row>
+  <row>
+    <field label="Product Name" name="name">Apples</field>
+    <field label="Quantity in Stock" name="stock">210</field>
+  </row>
+</datagrid>  
+XML;
         $this->datasource->setOption('generate_columns', true);
         $this->datasource->setOption('fieldAttribute', 'name');
         $this->datasource->setOption('labelAttribute', 'label');
         $this->datasource->bind($xml);
         $columns = $this->datasource->getColumns();
-        $this->assertEquals(3, count($columns));
-        if (count($columns) == 3) {
-            $this->assertEquals('attributesname', $columns[0]->getLabel());
-            $this->assertEquals('attributesname', $columns[0]->getField());
-            $this->assertEquals('attributeslabel', $columns[1]->getLabel());
-            $this->assertEquals('attributeslabel', $columns[1]->getField());
-            $this->assertEquals('bar', $columns[2]->getLabel());
-            $this->assertEquals('foo', $columns[2]->getField());
+        $this->assertEquals(2, count($columns));
+        if (count($columns) == 2) {
+            $this->assertEquals('name', $columns[0]->getField());
+            $this->assertEquals('Product Name', $columns[0]->getLabel());
+            $this->assertEquals('stock', $columns[1]->getField());
+            $this->assertEquals('Quantity in Stock', $columns[1]->getLabel());
         }
+        $expected = array(array('name' => 'Pears', 'stock' => 510),
+            array('name' => 'Apples', 'stock' => 210));
+        $this->assertEquals($expected, $this->datasource->fetch());
     }
 
     function testDeeperNesting()
