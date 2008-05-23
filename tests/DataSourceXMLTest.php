@@ -157,6 +157,14 @@ XML;
     {
         $filename = File_Util::tmpDir() . '/sdgtest.complex.xml';
         $this->writeComplexXmlFile($filename, $this->data);
+        $this->datasource->bind($filename, array('path' => '/result/records/*'));
+        $this->assertEquals($this->data, $this->datasource->fetch());
+    }
+
+    function testObsoleteXPath()
+    {
+        $filename = File_Util::tmpDir() . '/sdgtest.complex.xml';
+        $this->writeComplexXmlFile($filename, $this->data);
         $this->datasource->bind($filename, array('xpath' => '/result/records'));
         $this->assertEquals($this->data, $this->datasource->fetch());
     }
@@ -171,7 +179,7 @@ XML;
     function testSortFromComplexString()
     {
         $this->datasource->bind($this->buildComplexXmlString($this->data),
-                                array('xpath' => '/result/records'));
+                                array('path' => '/result/records/*'));
         $expected = array(
             array('num' => '1', 'thestr' => 'présent'),
             array('num' => '1', 'thestr' => 'test'),
@@ -318,7 +326,7 @@ XML;
 </package>
 XML;
         
-        $this->datasource->bind($xml, array('xpath' => '//file'));
+        $this->datasource->bind($xml, array('path' => '//file'));
         $actual = $this->datasource->fetch();
 
         $expected = array(
@@ -335,6 +343,55 @@ XML;
         $this->assertEquals($expected, $actual);
     }
 
+    function testRedundantField()
+    {
+        $this->datasource->d =  true;
+        $xml = "<data><item><link>first</link><link>second</link></item></data>";
+        $this->datasource->bind($xml);
+        $expected = array(array('link0' => 'first', 'link1' => 'second'));
+        $this->assertEquals($expected, $this->datasource->fetch());
+    }
+
+    function testEmptyData()
+    {
+        $xml = "<data></data>";
+        $this->datasource->bind($xml);
+        $this->assertEquals(array(), $this->datasource->fetch());
+    }
+
+    function testNotWellFormed()
+    {
+        $xml = "<data>";
+        $this->catchPearError = true;
+        $this->suppressPhpWarnings();
+        $error = $this->datasource->bind($xml);
+        $this->assertTrue(PEAR::isError($error));
+    }
+
+    function testXPathNamespace()
+    {
+        $xml = <<<XML
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Testing news</title>
+  <entry>
+    <title>test</title>
+  </entry>
+</feed>
+XML;
+        // Returns nothing without namespace:
+        $this->datasource->bind($xml, array('path' => '//entry'));
+        $this->assertEquals(array(), $this->datasource->fetch());
+
+        $this->resetDataSource();
+
+        // Setting the namespace fixes this up:
+        $this->datasource->bind($xml, array(
+            'namespaces' => array('atom' => 'http://www.w3.org/2005/Atom'), 
+            'path' => '//atom:entry'));
+        $expected = array(array('title' => 'test'));
+        $this->assertEquals($expected, $this->datasource->fetch());
+    }
 }
 
 if (PHPUnit_MAIN_METHOD == 'DataSourceXMLTest::main') {

@@ -41,6 +41,13 @@ http://pear.php.net/dtd/package-2.0.xsd">
 - Bug #13840: XML attributes weren't detected correctly
   (thanks to Anthony Topper)
 - Bug #13950: Deeper nesting of XML data failed on PHP 5
+- Bug #13951: fix parsing XML with only one row
+- New 'path' option, more flexible than 'xpath', which is now deprecated
+  but kept for BC
+- New 'namespaces' option (used for XPath processing) 
+- Fix handling of redundant fields under PHP5
+- Do not issue an error for empty data
+- Allow binding XML streams (http, etc...)
  </notes>
  <contents>
   <dir name="/">

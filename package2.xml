@@ -54,6 +54,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
   (thanks to Issac Navanick)
 - Added encoding unit tests
 - Added DataObject datasource unit tests
+- New XML datasource example about parsing an Atom feed
+- Improve XML datasource test suite
  </notes>
  <contents>
   <dir name="/">
@@ -72,6 +74,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
      <file name="bind-sql.php" role="doc" />
      <file name="bind-xml1.php" role="doc" />
      <file name="bind-xml2.php" role="doc" />
+     <file name="bind-atom.php" role="doc" />
      <file name="checkablehtmltable.php" role="doc" />
      <file name="constructor.php" role="doc" />
      <file name="fill-pager.php" role="doc" />

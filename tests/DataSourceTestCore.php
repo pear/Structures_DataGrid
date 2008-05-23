@@ -63,14 +63,7 @@ class DataSourceTestCore extends TestCore
     function setUp()
     {
         parent::setUp();
-        $class = $this->getDriverClassName();
-        $file = str_replace('_', '/', $class) . '.php';
-        if (!$fp = @fopen($file, 'r', true)) {
-            $this->fail("Skipping: Driver unavailable: $class");
-        }
-        fclose($fp);
-        require_once($file);
-        $this->datasource = new $class();
+        $this->resetDataSource();
 
         $this->data = array(
             array($this->numField => '1', $this->strField => 'test'),
@@ -78,6 +71,21 @@ class DataSourceTestCore extends TestCore
             array($this->numField => '2', $this->strField => 'viel spaß'),
             array($this->numField => '3', $this->strField => ''),
         );
+    }
+
+    function resetDataSource()
+    {
+        $class = $this->getDriverClassName();
+        if (!class_exists($class)) {
+            $file = str_replace('_', '/', $class) . '.php';
+            if (!$fp = @fopen($file, 'r', true)) {
+                $this->fail("Skipping: Driver unavailable: $class");
+            }
+            fclose($fp);
+            require_once($file);
+        }
+        $this->datasource = 1;
+        $this->datasource = new $class();
     }
 
     function tearDown()

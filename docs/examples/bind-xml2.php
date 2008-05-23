@@ -20,8 +20,8 @@ $xml = <<<XML
 </response>
 XML;
 
-// Options for the bind() call
-$options = array('xpath' => '/response/records');
+// Options for the bind() call, using XPath
+$options = array('path' => '/response/records/*');
 
 // Bind the XML string
 $test = $datagrid->bind($xml, $options, 'XML');

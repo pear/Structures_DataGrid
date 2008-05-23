@@ -49,12 +49,16 @@ require_once 'Structures/DataGrid/DataSource/Array.php';
  * XML DataSource driver
  *
  * This class is a DataSource driver for XML data. It accepts strings
- * and filenames. An XPath expression can be specified to extract a
- * subset from the given XML data.
+ * and filenames. An XPath expression can be specified to extract data
+ * rows from the given XML data.
  *
  * SUPPORTED OPTIONS:
  * 
- * - xpath:           (string)  XPath to a subset of the XML data.
+ * - path:             (string) XPath used to extract the data rows. The default
+ *                              is "*", which means all children of the context
+ *                              (root) node.
+ * - namespaces:       (array)  Pairs of prefix/namespace to register for XPath
+ *                              processing
  * - fieldAttribute:  (string)  Which attribute of the XML source should be used
  *                              as column field name (only used if the XML source
  *                              has attributes).
@@ -63,7 +67,8 @@ require_once 'Structures/DataGrid/DataSource/Array.php';
  *                              is true and the XML source has attributes).
  *
  * @example  bind-xml1.php  Bind a simple XML string
- * @example  bind-xml2.php  Bind a more complex XML string (using 'xpath' option)
+ * @example  bind-xml2.php  Bind a more complex XML string using XPath
+ * @example  bind-atom.php  Bind an Atom feed with XPath and namespace
  * @package  Structures_DataGrid_DataSource_XML
  * @author   Olivier Guilyardi <olivier@samalyse.com>
  * @author   Mark Wiesemann <wiesemann@php.net>
@@ -84,7 +89,9 @@ class Structures_DataGrid_DataSource_XML extends
         parent::Structures_DataGrid_DataSource_Array();
         $this->_addDefaultOptions(
             array(
-                'xpath'          => '',
+                'path'           => '*',
+                'namespaces'     => array(),
+                'xpath'          => null,
                 'fieldAttribute' => null,
                 'labelAttribute' => null
             )
@@ -104,14 +111,13 @@ class Structures_DataGrid_DataSource_XML extends
         if ($options) {
             $this->setOptions($options);
         }
-
-        // check whether we have XML data or a filename
-        $isFile = false;
-        if (strlen($xml) < 256 && @is_file($xml)) {
-            $isFile = true;
+        if ($path = $this->_options['xpath']) {
+            $this->_options['path'] = "$path/*";
         }
 
-        // prepare the XML data
+        // check whether we have XML data or a filename/stream
+        $isFile = !strstr($xml, '<'); 
+
         if (version_compare(PHP_VERSION, '5.0.0', '>=')) {
             $xml = $isFile ? simplexml_load_file($xml)
                            : simplexml_load_string($xml);
@@ -125,9 +131,10 @@ class Structures_DataGrid_DataSource_XML extends
             }
         }
 
+
         // extract a subset from the XML data if an XPath is provided
-        if ($this->_options['xpath']) {
-            $xml = $this->_evaluteXPath($xml);
+        if ($this->_options['path'] != '*') {
+            $xml = $this->_evaluateXPath($xml);
             if (PEAR::isError($xml)) {
                 return $xml;
             }
@@ -153,19 +160,22 @@ class Structures_DataGrid_DataSource_XML extends
      * @param   mixed    $xml         A string or a SimpleXML instance
      * @return  mixed    string, PEAR_Error or SimpleXML instance
      */
-    function _evaluteXPath($xml)
+    function _evaluateXPath($xml)
     {
         // with PHP 5.2, use SimpleXML
         if (version_compare(PHP_VERSION, '5.2.0', '>=')) { 
-            $xml = $xml->xpath($this->_options['xpath']);
-            if ($xml === false) {
-                return PEAR::raiseError('\'xpath\' option couldn\'t ' .
-                                        'be evaluated.');
+            foreach ($this->_options['namespaces'] as $prefix => $ns) {
+                $xml->registerXPathNamespace($prefix, $ns);
             }
-            return $xml[0];
+            $xml = $xml->xpath($this->_options['path']);
+            if ($xml === false) {
+                return PEAR::raiseError('Failed to evaluate XPath');
+            }
+            return $xml;
         } elseif (include_once('XML/XPath.php')) { // check for XML_XPath
             $xpath = new XML_XPath($xml);
-            $result =& $xpath->evaluate($this->_options['xpath']); 
+            $xpath->registerNamespace($this->_options['namespaces']);
+            $result =& $xpath->evaluate($this->_options['path']); 
             if (PEAR::isError($result)) {
                 return $result;
             }
@@ -173,9 +183,10 @@ class Structures_DataGrid_DataSource_XML extends
             while ($result->next()) {
                 $xml .= $result->toString(null, false, false);
             }
-            return $xml; 
+            $wrap = uniqid('sdg');
+            return "<$wrap>$xml</$wrap>"; 
         } else {
-            return PEAR::raiseError('\'xpath\' option cannot be used ' .
+            return PEAR::raiseError('XPath cannot be used ' .
             'because neither the XML_XPath package nor PHP >= 5.2.0 ' .
             'is installed.');
         }
@@ -253,22 +264,31 @@ class Structures_DataGrid_DataSource_XML extends
         }
         // fetch the unserialized data
         $data = $unserializer->getUnserializedData();
-        // build a simple array
-        list($junk, $data) = each($data);  // TODO: check $data here
-        // check the array, can it be parsed?
-        if (!is_array($data)) { // FIXME: fails with 1 row of data
-            return PEAR::raiseError('Unable to bind the XML data. ' .
-                                    'You may want to set the ' .
-                                    '\'xpath\' option.');
+        if (PEAR::isError($data)) {
+            return $data;
         }
-        // parse the given XML data
-        foreach ($data as $index => $row) {
-            if (!is_array($row) || !is_numeric($index)) {
+        if (!empty($data)) {
+            // build a simple array
+            list($junk, $data) = each($data);  
+            // check the array, can it be parsed?
+            if (!is_array($data)) { // FIXME: fails with 1 row of data
                 return PEAR::raiseError('Unable to bind the XML data. ' .
                                         'You may want to set the ' .
-                                        '\'xpath\' option.');
+                                        '\'path\' option.');
             }
-            $this->_ar[] = $this->_processRow($row);
+            // Handle a single row of data
+            if (!isset($data[0])) {
+                $data = array($data);
+            }
+            // parse the given XML data
+            foreach ($data as $index => $row) {
+                if (!is_array($row) || !is_numeric($index)) {
+                    return PEAR::raiseError('Unable to bind the XML data. ' .
+                                            'You may want to set the ' .
+                                            '\'path\' option.');
+                }
+                $this->_ar[] = $this->_processRow($row);
+            }
         }
         return $this->_ar;
     }
@@ -363,7 +383,7 @@ class Structures_DataGrid_DataSource_XML extends
                 $labels[$key] = $value;
             }
             // save the content
-            if (is_a($info, 'SimpleXMLElement') && $info->children()) {
+            if (is_array($info) or (is_a($info, 'SimpleXMLElement') && $info->children())) {
                 $rowProcessed += $this->_processRowSimpleXML($info, $itemKey);
             } else {
                 $rowProcessed[$itemKey] = (string)$info;

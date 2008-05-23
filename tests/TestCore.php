@@ -55,20 +55,34 @@ error_reporting(E_ALL);
  */
 class TestCore extends PHPUnit_TestCase
 {
+    var $lastPearError = null;
+    var $catchPearError = false;
+
     function setUp()
     {
+        error_reporting(E_ALL);
+        $this->catchPearError = false;
         PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, array(&$this, 'onPearError'));
         $this->setLooselyTyped(true);
     }
 
     function onPearError($error)
     {
-        $this->fail(
-            "------------------------\n".
-            "PEAR Error: " . $error->toString() . "\n" .
-            "------------------------\n");
+        if ($this->catchPearError) {
+            $this->lastPearError =& $error;
+        } else {
+        print_r($error->getType());
+            $this->fail(
+                "------------------------\n".
+                "PEAR Error: " . $error->toString() . "\n" .
+                "------------------------\n");
+        }            
     }
 
+    function suppressPhpWarnings()
+    {
+        error_reporting(E_ALL ^ E_WARNING ^ E_NOTICE);
+    }
 }
 
 
