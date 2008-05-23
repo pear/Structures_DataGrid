@@ -57,7 +57,7 @@ require_once 'Structures/DataGrid/DataSource/Array.php';
  * - path:             (string) XPath used to extract the data rows. The default
  *                              is "*", which means all children of the context
  *                              (root) node.
- * - namespaces:       (array)  Pairs of prefix/namespace to register for XPath
+ * - namespaces:       (array)  Pairs of prefix/uri to register for XPath
  *                              processing
  * - fieldAttribute:  (string)  Which attribute of the XML source should be used
  *                              as column field name (only used if the XML source
