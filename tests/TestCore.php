@@ -73,7 +73,6 @@ class TestCore extends PHPUnit_TestCase
         if ($this->catchPearError) {
             $this->lastPearError =& $error;
         } else {
-        print_r($error->getType());
             $this->fail(
                 "------------------------\n".
                 "PEAR Error: " . $error->toString() . "\n" .
