@@ -39,7 +39,8 @@ base package for some other DataSource drivers like CSV or XML.
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- add support for sorting by multiple fields 
+- add support for sorting by multiple fields (also affects the CSV, DB, Excel,
+  RSS and XML datasources)
  </notes>
  <contents>
   <dir name="/">
