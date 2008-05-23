@@ -111,291 +111,436 @@ class Structures_DataGrid_DataSource_XML extends
         if ($options) {
             $this->setOptions($options);
         }
+
+        $this->doc = $this->_loadDocument($xml);
+        if (PEAR::isError($this->doc)) {
+            return $this->doc;
+        }
+
         if ($path = $this->_options['xpath']) {
             $this->_options['path'] = "$path/*";
         }
 
-        // check whether we have XML data or a filename/stream
-        $isFile = !strstr($xml, '<'); 
+        $nodes = $this->doc->xpath($this->_options['path'], 
+                                   $this->_options['namespaces']); 
 
-        if (version_compare(PHP_VERSION, '5.0.0', '>=')) {
-            $xml = $isFile ? simplexml_load_file($xml)
-                           : simplexml_load_string($xml);
-            if ($xml === false) {
-                return PEAR::raiseError('XML couldn\'t be read.');
-            }
-        } elseif ($isFile) {  // PHP 4 and filename given
-            $xml = file_get_contents($xml);
-            if ($xml === false) {
-                return PEAR::raiseError('XML couldn\'t be read.');
-            }
+        foreach ($nodes as $rowNode) {
+            $this->_ar[] = $this->_processRow($rowNode);
         }
 
-
-        // extract a subset from the XML data if an XPath is provided
-        if ($this->_options['path'] != '*') {
-            $xml = $this->_evaluateXPath($xml);
-            if (PEAR::isError($xml)) {
-                return $xml;
-            }
+        if (!$this->_options['labels']) {
+            $this->_options['labels'] = $this->_extractLabels($nodes);
         }
 
-        // parse XML data
-        $xml = $this->_parseXML($xml);
-        if (PEAR::isError($xml)) {
-            return $xml;
+        if ($this->_ar && !$this->_options['fields']) {
+            $this->setOption('fields', array_keys($this->_ar[0]));
         }
 
-        if ($xml && !$this->_options['fields']) {
-            $this->setOption('fields', array_keys($xml[0]));
-        }
+        $this->doc->free();
 
         return true;
     }
 
     /**
-     * Extract a subset from the XML data
-     * 
+     * Load XML Document Model
+     *
      * @access  private
-     * @param   mixed    $xml         A string or a SimpleXML instance
-     * @return  mixed    string, PEAR_Error or SimpleXML instance
+     * @param   string  $xml    XML string or filename
+     * @return  object  Structures_DataGrid_DataSource_XMLDomWrapper (PHP5) or
+     *                  Structures_DataGrid_DataSource_XMLDomXmlWrapper (PHP4)
      */
-    function _evaluateXPath($xml)
+    function _loadDocument($xml)
     {
-        // with PHP 5.2, use SimpleXML
-        if (version_compare(PHP_VERSION, '5.2.0', '>=')) { 
-            foreach ($this->_options['namespaces'] as $prefix => $ns) {
-                $xml->registerXPathNamespace($prefix, $ns);
-            }
-            $xml = $xml->xpath($this->_options['path']);
-            if ($xml === false) {
-                return PEAR::raiseError('Failed to evaluate XPath');
-            }
-            return $xml;
-        } elseif (include_once('XML/XPath.php')) { // check for XML_XPath
-            $xpath = new XML_XPath($xml);
-            $xpath->registerNamespace($this->_options['namespaces']);
-            $result =& $xpath->evaluate($this->_options['path']); 
-            if (PEAR::isError($result)) {
-                return $result;
-            }
-            $xml = '';
-            while ($result->next()) {
-                $xml .= $result->toString(null, false, false);
-            }
-            $wrap = uniqid('sdg');
-            return "<$wrap>$xml</$wrap>"; 
+        if (extension_loaded('dom')) {
+            $doc = new Structures_DataGrid_DataSource_XMLDomWrapper();
+        } elseif (extension_loaded('domxml')) {
+            $doc = new Structures_DataGrid_DataSource_XMLDomXmlWrapper();
         } else {
-            return PEAR::raiseError('XPath cannot be used ' .
-            'because neither the XML_XPath package nor PHP >= 5.2.0 ' .
-            'is installed.');
+            return PEAR::raiseError('DOM or DOM XML is required for XML processing');
         }
+
+        $test = strstr($xml, '<') 
+            ? $doc->loadString($xml) : $doc->loadFile($xml);
+
+        if (!$test) {
+            return PEAR::raiseError('XML couldn\'t be read.');
+        }
+
+        return $doc;
     }
 
     /**
-     * Parse data from an XML string or a SimpleXML instance
-     * 
-     * @access  private
-     * @param   mixed    $xml         A string or a SimpleXML instance
-     * @return  mixed    array with parsed data or PEAR_Error
+     * Process a data row
+     *
+     * @access private
+     * @param  object $node Row node
+     * @return array        Fields and values
      */
-    function _parseXML($xml)
+    function _processRow($rowNode)
     {
-        // PHP 5 handling
-        if (version_compare(PHP_VERSION, '5.0.0', '>=')) {
-            foreach ($xml as $tmprow) {
-                $row = array();
-                foreach ($tmprow->attributes() as $key => $value) {
-                    // use 'fieldAttribute' as item key, if 'fieldAttribute'
-                    // option set
-                    if (!is_null($this->_options['fieldAttribute'])) {
-                        foreach ($value->attributes() as $a => $b) {
-                            if ($this->_options['fieldAttribute'] == $a) {
-                                $key = (string)$b;
-                            }
-                        }
-                    }
-                    $row['attributes' . $key] = $value;
+        $row = array();
+        foreach ($rowNode->childNodes() as $fieldNode) {
+            $value = '';
+            foreach ($fieldNode->childNodes() as $valueNode) {
+                $value .= $this->doc->getXML($valueNode);
+            }
+            $nodeName = $fieldNode->nodeName();
+            $fieldName = $nodeName;
+            foreach ($fieldNode->attributes() as $name => $content) {
+                if ($name == $this->_options['fieldAttribute']) {
+                    $fieldName = $content;
                 }
-                foreach ((array)$tmprow as $key => $value) {
-                    if ($key === '@attributes') {
-                        continue;
-                    }
-                    // use 'fieldAttribute' as item key, if 'fieldAttribute'
-                    // option set
-                    if (!is_null($this->_options['fieldAttribute'])) {
-                        foreach ($tmprow->attributes() as $a => $b) {
-                            if ($this->_options['fieldAttribute'] == $a) {
-                                $key = (string)$b;
-                            }
-                        }
-                    }
-                    $row[$key] = $value;
+                $row["{$nodeName}attributes$name"][] = $content;
+            }
+            $row[$fieldName][] = $value;
+        }
+        foreach ($rowNode->attributes() as $name => $content)
+        {
+            $row["attributes$name"][] = $content;
+        }
+        $flat = array();
+        foreach ($row as $field => $value) {
+            if (count($value) > 1) {
+                foreach ($value as $i => $item) {
+                    $flat["$field$i"] = $item;
                 }
-                $this->_ar[] = $this->_processRowSimpleXML($row);
-            }
-            return $this->_ar;
-        }
-
-        // PHP 4 handling follows
-
-        // check XML_(Un)serializer installation
-        if (!include_once('XML/Unserializer.php')) {
-            return PEAR::raiseError('XML_Serializer package not found');
-        }
-
-        // instantiate XML_Unserializer object
-        $unserializer =& new XML_Unserializer();
-        $unserializer->setOption('parseAttributes', true);
-        // set containers for attributes and content
-        // (for the case that attributes are found)
-        $unserializer->setOption('attributesArray', 'attributes');
-        $unserializer->setOption('contentName', '_content');
-        // use 'fieldAttribute' as item key, if 'fieldAttribute'
-        // option set
-        if (!is_null($this->_options['fieldAttribute'])) {
-            $unserializer->setOption('keyAttribute',
-                                     $this->_options['fieldAttribute']);
-        }
-        // unserialize the XML data
-        $test = $unserializer->unserialize($xml, false);
-        if (PEAR::isError($test)) {
-            return $test;
-        }
-        // fetch the unserialized data
-        $data = $unserializer->getUnserializedData();
-        if (PEAR::isError($data)) {
-            return $data;
-        }
-        if (!empty($data)) {
-            // build a simple array
-            list($junk, $data) = each($data);  
-            // check the array, can it be parsed?
-            if (!is_array($data)) { // FIXME: fails with 1 row of data
-                return PEAR::raiseError('Unable to bind the XML data. ' .
-                                        'You may want to set the ' .
-                                        '\'path\' option.');
-            }
-            // Handle a single row of data
-            if (!isset($data[0])) {
-                $data = array($data);
-            }
-            // parse the given XML data
-            foreach ($data as $index => $row) {
-                if (!is_array($row) || !is_numeric($index)) {
-                    return PEAR::raiseError('Unable to bind the XML data. ' .
-                                            'You may want to set the ' .
-                                            '\'path\' option.');
-                }
-                $this->_ar[] = $this->_processRow($row);
-            }
-        }
-        return $this->_ar;
-    }
-
-    /**
-     * Process XML row
-     * 
-     * @access  private
-     * @param   array    $row         Row from unserializer data array
-     * @param   string   $keyPrefix   Prepended to key, for recursive processing
-     * @return  array    of form: array($field1 => $value1, $field2 => $value2, ...)
-     */
-    function _processRow($row, $keyPrefix = '')
-    {
-        $rowProcessed = array();
-        foreach ($row as $item => $info) {
-            $itemKey = $keyPrefix . $item;
-            switch (true) {
-                // item has no attributes and unique tag name
-                case !is_array($info):
-                    // $itemKey needs to be replaced in this case to get the
-                    // right field name
-                    if (   !is_null($this->_options['fieldAttribute'])
-                        && isset($row['attributes'][$this->_options['fieldAttribute']])) {
-                        $itemKey = $row['attributes'][$this->_options['fieldAttribute']];
-                    }
-                    // if $item is '_content' here, save attribute's value as
-                    // the label for this column
-                    if (   !$this->_options['labels']
-                        && !is_null($this->_options['labelAttribute'])
-                        && $item == '_content') {
-                        if (isset($row['attributes'][$this->_options['labelAttribute']])) {
-                            $labels[$itemKey] = $row['attributes'][$this->_options['labelAttribute']];
-                        } else {
-                            $labels[$itemKey] = $itemKey;
-                        }
-                    }
-                    $rowProcessed[$itemKey] = $info;
-                    break;
-                // items with non-unique tag names, or 'fieldAttribute'
-                // option is null; process array elements recursively as
-                // separate items
-                case !isset($info['attributes']):
-                    $rowProcessed += $this->_processRow($info, $itemKey);
-                    break;
-                // attributes found: field attribute is already in item key;
-                // extract label if option set and 'labels' option is empty 
-                case    !$this->_options['labels']
-                     && !is_null($this->_options['labelAttribute']):
-                    if (isset($info['attributes'][$this->_options['labelAttribute']])) {
-                        $labels[$itemKey] = $info['attributes'][$this->_options['labelAttribute']];
-                    } else {
-                        $labels[$itemKey] = $itemKey;
-                    }
-                    // no break here; we need the content!
-                default:
-                    $rowProcessed[$itemKey] = 
-                        isset($info['_content']) ? $info['_content'] : ''; 
-            }
-        }
-        // set labels if extracted
-        if (!$this->_options['labels'] && isset($labels)) {
-            $this->setOption('labels', $labels);
-        }
-        return $rowProcessed;
-    }
-
-    /**
-     * Process XML row from SimpleXML
-     * 
-     * @access  private
-     * @param   array    $row         Row from SimpleXML
-     * @param   string   $keyPrefix   Prepended to key, for recursive processing
-     * @return  array    of form: array($field1 => $value1, $field2 => $value2, ...)
-     */
-    function _processRowSimpleXML($row, $keyPrefix = '')
-    {
-        $rowProcessed = array();
-        foreach ($row as $item => $info) {
-            $itemKey = $keyPrefix . $item;
-            // extract label if option set and $this->_options['labels']
-            // is empty 
-            if (   !$this->_options['labels']
-                && !is_null($this->_options['labelAttribute'])
-               ) {
-                $key = $value = $item;
-                if (   substr($item, 0, 10) != 'attributes'
-                    && array_key_exists('attributes' . $this->_options['labelAttribute'], $row)
-                   ) {
-                    $value = $row['attributes' . $this->_options['labelAttribute']];
-                }
-                $labels[$key] = $value;
-            }
-            // save the content
-            if (is_array($info) or (is_a($info, 'SimpleXMLElement') && $info->children())) {
-                $rowProcessed += $this->_processRowSimpleXML($info, $itemKey);
             } else {
-                $rowProcessed[$itemKey] = (string)$info;
+                $flat[$field] = $value[0];
             }
         }
-        // set labels if extracted
-        if (!$this->_options['labels'] && isset($labels)) {
-            $this->setOption('labels', $labels);
-        }
-        return $rowProcessed;
+        return $flat;
     }
 
+    /**
+     * Extract column labels
+     *
+     * @access private
+     * @param  array  $nodes Array of row nodes
+     * @return array         Fields and Labels  
+     */
+    function _extractLabels($nodes)
+    {
+        $labels = array();
+        $labelAttr = $this->_options['labelAttribute'];
+        $fieldAttr = $this->_options['fieldAttribute'];
+
+        if (count($nodes) && $labelAttr) {
+            foreach ($nodes[0]->childNodes() as $fieldNode) {
+                if (($name = $fieldAttr) && $fieldNode->hasAttribute($name)) {
+                    $fieldName = $fieldNode->getAttribute($name);
+                } else {
+                    $fieldName = $fieldNode->nodeName();
+                }
+                if ($fieldNode->hasAttribute($labelAttr)) {
+                    $labels[$fieldName] 
+                        = $fieldNode->getAttribute($labelAttr);
+                }
+            }
+        }
+        return $labels;
+    }
+}
+
+
+/**
+ * XML Document Model core Wrapper
+ *
+ * @access private
+ * @package  Structures_DataGrid_DataSource_XML
+ * @author   Olivier Guilyardi <olivier@samalyse.com>
+ * @category Structures
+ */
+class Structures_DataGrid_DataSource_XMLWrapper
+{
+    var $object;
+
+    /**
+     * Constructor
+     *
+     * @param object $domObject DOM or DOM XML object
+     */
+    function Structures_DataGrid_DataSource_XMLWrapper($domObject = null)
+    {
+        $this->object = $domObject;
+    }
+
+    /**
+     * Decorate items of an iterable object
+     *
+     * @param  array  $mixed Array or Iterable DOM/DOM XML object
+     * @return array         Array of wrapped items
+     */
+    function wrapArray($object)
+    {
+        $wrapped = array();
+        $class = get_class($this);
+        foreach ($object as $key => $value) {
+            $wrapped[$key] = new $class($value);
+        }
+        return $wrapped;
+    }
+}
+
+/**
+ * XML Document Model DOM (PHP5) Wrapper
+ *
+ * @access private
+ * @package  Structures_DataGrid_DataSource_XML
+ * @author   Olivier Guilyardi <olivier@samalyse.com>
+ * @category Structures
+ */
+class Structures_DataGrid_DataSource_XMLDomWrapper
+    extends Structures_DataGrid_DataSource_XMLWrapper
+{
+    /**
+     * Load an XML string
+     * 
+     * @param  string $xml
+     * @return bool   true on success, false on failure
+     */
+    function loadString($xml)
+    {
+        $this->object = new DOMDocument();
+        $this->object->preserveWhiteSpace = false;
+        return $this->object->loadXML($xml);
+    }
+
+    /**
+     * Load an XML file
+     * 
+     * @param  string $filename
+     * @return bool   true on success, false on failure
+     */
+    function loadFile($filename)
+    {
+        $this->object = new DOMDocument();
+        $this->object->preserveWhiteSpace = false;
+        return $this->object->load($filename);
+    }
+
+    /**
+     * Run an xpath query, registering namespaces
+     *
+     * @param  string $query      XPath query
+     * @param  array  $namespaces prefix/uri pairs
+     * @return array              Nodes found
+     */
+    function xpath($query, $namespaces)
+    {
+        $xpath = new DOMXPath($this->object);
+        foreach ($namespaces as $prefix => $uri) {
+            $xpath->registerNamespace($prefix, $uri);
+        }
+
+        return $this->wrapArray($xpath->query($query)); 
+    }
+
+    /**
+     * Return child nodes
+     *
+     * @return array Child nodes
+     */
+    function childNodes()
+    {
+        return $this->wrapArray($this->object->childNodes);
+    }
+
+    /**
+     * Dump a node into an XML string
+     *
+     * @param  object $node Node to dump
+     * @return string       XML
+     */
+    function getXML($node)
+    {
+        return $this->object->saveXML($node->object);
+    }
+
+    /**
+     * Get the node name
+     *
+     * @return string
+     */
+    function nodeName()
+    {
+        return $this->object->nodeName;
+    }
+
+    /**
+     * Get all node's attributes
+     *
+     * @return array name/value pairs
+     */
+    function attributes()
+    {
+        $attributes = array();
+        foreach ($this->object->attributes as $item) {
+            $attributes[$item->name] = $item->value;
+        }
+        return $attributes;
+    }
+
+    /**
+     * Check for attribute existence
+     *
+     * @return bool
+     */
+    function hasAttribute($name)
+    {
+        return $this->object->hasAttribute($name);
+    }
+
+    /**
+     * Get an attribute value
+     *
+     * @param  string $name
+     * @return string
+     */
+    function getAttribute($name)
+    {
+        return $this->object->getAttribute($name);
+    }
+
+    /**
+     * Free document memory
+     */
+    function free()
+    {
+        $this->object = null;
+    }
+}
+
+/**
+ * XML Document Model DOM XML (PHP4) Wrapper
+ *
+ * @access private
+ * @package  Structures_DataGrid_DataSource_XML
+ * @author   Olivier Guilyardi <olivier@samalyse.com>
+ * @category Structures
+ */
+class Structures_DataGrid_DataSource_XMLDomXmlWrapper
+    extends Structures_DataGrid_DataSource_XMLWrapper
+{
+    /**
+     * Load an XML string
+     * 
+     * @param  string $xml
+     * @return bool   true on success, false on failure
+     */
+    function loadString($xml)
+    {
+        $this->object = domxml_open_mem($xml, DOMXML_LOAD_DONT_KEEP_BLANKS);
+        return (bool) $this->object;
+    }
+
+    /**
+     * Load an XML file
+     * 
+     * @param  string $filename
+     * @return bool   true on success, false on failure
+     */
+    function loadFile($filename)
+    {
+        $this->object = domxml_open_file($filename, DOMXML_LOAD_DONT_KEEP_BLANKS);
+        return (bool) $this->object;
+    }
+
+    /**
+     * Run an xpath query, registering namespaces
+     *
+     * @param  string $query      XPath query
+     * @param  array  $namespaces prefix/uri pairs
+     * @return array              Nodes found
+     */
+    function xpath($query, $namespaces)
+    {
+        $xpath = xpath_new_context($this->object);
+        foreach ($namespaces as $prefix => $uri) {
+            xpath_register_ns($xpath, $prefix, $uri);
+        }
+        $result = xpath_eval($xpath, $query);
+        return $this->wrapArray($result->nodeset);
+    }
+
+    /**
+     * Return child nodes
+     *
+     * @return array Child nodes
+     */
+    function childNodes()
+    {
+        return $this->wrapArray($this->object->child_nodes());
+    }
+
+    /**
+     * Dump a node into an XML string
+     *
+     * @param  object $node Node to dump
+     * @return string       XML
+     */
+    function getXML($node)
+    {
+        return $this->object->dump_node($node->object);
+    }
+
+    /**
+     * Get the node name
+     *
+     * @return string
+     */
+    function nodeName()
+    {
+        return $this->object->node_name();
+    }
+
+    /**
+     * Get all node's attributes
+     *
+     * @return array name/value pairs
+     */
+    function attributes()
+    {
+        $attributes = array();
+        if ($items = $this->object->attributes()) {
+            foreach ($items as $item) {
+                $attributes[$item->name()] = $item->value();
+            }
+        }
+        return $attributes;
+    }
+
+    /**
+     * Check for attribute existence
+     *
+     * @return bool
+     */
+    function hasAttribute($name)
+    {
+        if (method_exists($this->object, 'has_attribute')) {
+            return $this->object->has_attribute($name);
+        }
+        return false;
+    }
+
+    /**
+     * Get an attribute value
+     *
+     * @param  string $name
+     * @return string
+     */
+    function getAttribute($name)
+    {
+        return $this->object->get_attribute($name);
+    }
+
+    /**
+     * Free document memory
+     */
+    function free()
+    {
+        $this->object->free();
+        $this->object = null;
+    }
 }
 
 /* vim: set expandtab tabstop=4 shiftwidth=4: */
