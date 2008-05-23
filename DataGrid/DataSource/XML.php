@@ -156,7 +156,8 @@ class Structures_DataGrid_DataSource_XML extends
         } elseif (extension_loaded('domxml')) {
             $doc = new Structures_DataGrid_DataSource_XMLDomXmlWrapper();
         } else {
-            return PEAR::raiseError('DOM or DOM XML is required for XML processing');
+            return PEAR::raiseError('DOM (PHP5) or DOM XML (PHP4) is required '.
+                                    'for XML processing');
         }
 
         $test = strstr($xml, '<') 
