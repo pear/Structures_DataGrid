@@ -1,7 +1,6 @@
 <?php
 
 require_once 'Structures/DataGrid.php';    
-PEAR::setErrorHandling(PEAR_ERROR_PRINT);
 
 // Create the datagrid
 $datagrid =& new Structures_DataGrid();
