@@ -102,7 +102,7 @@ class Structures_DataGrid_DataSource_XML extends
      * Bind XML data 
      * 
      * @access  public
-     * @param   string  $xml        XML data or filename of a XML file
+     * @param   string  $xml        XML string or filename/stream
      * @param   array   $options    Options as an associative array
      * @return  mixed               true on success, PEAR_Error on failure 
      */
