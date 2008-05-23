@@ -84,7 +84,6 @@ class DataSourceTestCore extends TestCore
             fclose($fp);
             require_once($file);
         }
-        $this->datasource = 1;
         $this->datasource = new $class();
     }
 
