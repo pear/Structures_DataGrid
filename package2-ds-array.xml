@@ -30,8 +30,8 @@ base package for some other DataSource drivers like CSV or XML.
  <date>2008-02-16</date>
  <time>19:00:00</time>
  <version>
-  <release>0.1.4</release>
-  <api>0.1.1</api>
+  <release>0.2.0dev1</release>
+  <api>0.1.2</api>
  </version>
  <stability>
   <release>beta</release>
@@ -39,7 +39,7 @@ base package for some other DataSource drivers like CSV or XML.
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
-- Bug #13134: A notice is raised if an empty array is passed to bind()
+- add support for sorting by multiple fields 
  </notes>
  <contents>
   <dir name="/">

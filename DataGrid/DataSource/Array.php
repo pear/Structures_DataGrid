@@ -96,6 +96,7 @@ class Structures_DataGrid_DataSource_Array
     {
         parent::Structures_DataGrid_DataSource();
         $this->_addDefaultOptions(array('natsort' => false));
+        $this->_setFeatures(array('multiSort' => true));
     }
 
     /**
@@ -199,6 +200,37 @@ class Structures_DataGrid_DataSource_Array
      */
     function sort($sortField, $sortDir = null)
     {
+        if (is_array($sortField)) {
+            $sort = $sortField;
+        } else {
+            $sortDir = (is_null($sortDir) || (strtoupper($sortDir) == 'ASC')) 
+                     ? 'ASC' : 'DESC';
+            $sort = array($sortField => $sortDir);
+        }
+
+        $args = array();
+        foreach ($sort as $field => $dir) {
+            $column = array();
+            foreach ($this->_ar as $i => $row) {
+                $row = (array) $row;
+                $column[$i] = $row[$field];
+            }
+            if ($this->_options['natsort']) {
+                $column = array_map('strtolower', $column);
+            }
+            $args[] = $column;
+            $args[] = (strtoupper($dir) == 'ASC') ? SORT_ASC : SORT_DESC;
+        }
+
+        if ($args) {
+            $args[] =& $this->_ar;
+            call_user_func_array('array_multisort', $args);
+        }
+
+        
+/*
+
+
         $sortAr = array();
         $numRows = count($this->_ar);
         
@@ -207,12 +239,11 @@ class Structures_DataGrid_DataSource_Array
             $sortAr[$i] = $rec[$sortField];
         }
 
-        $sortDir = (is_null($sortDir) or strtoupper($sortDir) == 'ASC') 
-                 ? SORT_ASC : SORT_DESC;
         if ($this->_options['natsort']) {
             $sortAr = array_map('strtolower', $sortAr);
         }
         array_multisort($sortAr, $sortDir, $this->_ar);
+    */
     }
 }
 
