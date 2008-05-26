@@ -171,7 +171,7 @@ class Structures_DataGrid_DataSource_XML extends
     }
 
     /**
-     * Process a data row
+     * Extract a data row out of a row node 
      *
      * @access private
      * @param  object $node Row node
@@ -181,35 +181,83 @@ class Structures_DataGrid_DataSource_XML extends
     {
         $row = array();
         foreach ($rowNode->childNodes() as $fieldNode) {
-            $value = '';
-            foreach ($fieldNode->childNodes() as $valueNode) {
-                $value .= $this->doc->getXML($valueNode);
-            }
-            $nodeName = $fieldNode->nodeName();
-            $fieldName = $nodeName;
-            foreach ($fieldNode->attributes() as $name => $content) {
-                if ($name == $this->_options['fieldAttribute']) {
-                    $fieldName = $content;
-                }
-                $row["{$nodeName}attributes$name"][] = $content;
-            }
-            $row[$fieldName][] = $value;
+            $this->_extractFields($row, $fieldNode);
         }
-        foreach ($rowNode->attributes() as $name => $content)
-        {
-            $row["attributes$name"][] = $content;
+        foreach ($rowNode->attributes() as $name => $value) {
+            $row[] = array('field' => "attributes$name", 'content' => $value);
         }
         $flat = array();
-        foreach ($row as $field => $value) {
-            if (count($value) > 1) {
-                foreach ($value as $i => $item) {
-                    $flat["$field$i"] = $item;
-                }
+        $indexes = array();
+        foreach ($row as $item) {
+            $field = $item['field'];
+            if (isset($indexes[$field])) {
+                $i = ++$indexes[$field];
             } else {
-                $flat[$field] = $value[0];
+                $indexes[$field] = 0;
+                $i = '';
+            }
+            if (isset($item['content'])) {
+                $flat["$field$i"] = $item['content'];
+            }
+            if (isset($item['attributes'])) {
+                foreach ($item['attributes'] as $name => $value) {
+                    $flat["$field{$i}attributes$name"] = $value;
+                }
             }
         }
         return $flat;
+    }
+
+    /**
+     * Extract one or more data fields out of a field node
+     *
+     * @access private
+     * @param array  $row       reference to serialized row data, to put the 
+     *                          news fields into
+     * @param object $fieldNode DOM field node
+     * @return void
+     */
+    function _extractFields(&$row, $fieldNode)
+    {
+        $content = '';
+        foreach ($fieldNode->childNodes() as $valueNode) {
+            $nodeType = $valueNode->nodeType();
+            if (($nodeType == XML_CDATA_SECTION_NODE) 
+                    || ($nodeType == XML_TEXT_NODE)) {
+                $content .= $valueNode->nodeValue();
+            } else {
+                $content .= $this->doc->getXML($valueNode);
+            }
+        }
+        $fieldName = $this->_getFieldName($fieldNode);
+        $nodeName = $fieldNode->nodeName();
+        if ($nodeName != $fieldName) {
+            $row[] = array('field' => $fieldName, 'content' => $content);
+            $row[] = array('field' => $nodeName,
+                    'attributes' => $fieldNode->attributes());
+        } else {
+            $row[] = array('field' => $nodeName, 'content' => $content, 
+                    'attributes' => $fieldNode->attributes());
+        }
+    }
+
+    /**
+     * Determine the main field name of a field node 
+     *
+     * @access private
+     * @param object $fieldNode DOM field node
+     * @return string
+     */
+    function _getFieldName($fieldNode)
+    {
+        $nodeName = $fieldNode->nodeName();
+        $fieldName = $nodeName;
+        foreach ($fieldNode->attributes() as $name => $content) {
+            if ($name == $this->_options['fieldAttribute']) {
+                $fieldName = $content;
+            }
+        }
+        return $fieldName;
     }
 
     /**
@@ -403,6 +451,28 @@ class Structures_DataGrid_DataSource_XMLDomWrapper
     }
 
     /**
+     * Get this node type
+     *
+     * @param  string $name
+     * @return string
+     */
+    function nodeType()
+    {
+        return $this->object->nodeType;
+    }
+
+    /**
+     * Get this node value
+     *
+     * @param  string $name
+     * @return string
+     */
+    function nodeValue()
+    {
+        return $this->object->nodeValue;
+    }
+
+    /**
      * Free document memory
      */
     function free()
@@ -532,6 +602,28 @@ class Structures_DataGrid_DataSource_XMLDomXmlWrapper
     function getAttribute($name)
     {
         return $this->object->get_attribute($name);
+    }
+
+    /**
+     * Get this node type
+     *
+     * @param  string $name
+     * @return string
+     */
+    function nodeType()
+    {
+        return $this->object->node_type();
+    }
+
+    /**
+     * Get this node value
+     *
+     * @param  string $name
+     * @return string
+     */
+    function nodeValue()
+    {
+        return $this->object->node_value();
     }
 
     /**

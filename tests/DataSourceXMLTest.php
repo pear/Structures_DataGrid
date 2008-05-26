@@ -219,13 +219,13 @@ XML;
         $columns = $this->datasource->getColumns();
         $this->assertEquals(2, count($columns));
         if (count($columns) == 2) {
-            $this->assertEquals('itemattributesid', $columns[0]->getLabel());
-            $this->assertEquals('itemattributesid', $columns[0]->getField());
-            $this->assertEquals('item', $columns[1]->getLabel());
-            $this->assertEquals('item', $columns[1]->getField());
+            $this->assertEquals('item', $columns[0]->getLabel());
+            $this->assertEquals('item', $columns[0]->getField());
+            $this->assertEquals('itemattributesid', $columns[1]->getLabel());
+            $this->assertEquals('itemattributesid', $columns[1]->getField());
         }
 
-        $content = array(array('itemattributesid' => 1, 'item' => 2));
+        $content = array(array('item' => 2, 'itemattributesid' => 1));
         $this->assertEquals($content, $this->datasource->fetch());                
     }
 
@@ -248,15 +248,28 @@ XML;
         $this->datasource->setOption('labelAttribute', 'label');
         $this->datasource->bind($xml);
         $columns = $this->datasource->getColumns();
-        $this->assertEquals(2, count($columns));
-        if (count($columns) == 2) {
+        $this->assertEquals(6, count($columns));
+        if (count($columns) == 6) {
             $this->assertEquals('name', $columns[0]->getField());
             $this->assertEquals('Product Name', $columns[0]->getLabel());
-            $this->assertEquals('stock', $columns[1]->getField());
-            $this->assertEquals('Quantity in Stock', $columns[1]->getLabel());
+            $this->assertEquals('stock', $columns[3]->getField());
+            $this->assertEquals('Quantity in Stock', $columns[3]->getLabel());
         }
-        $expected = array(array('name' => 'Pears', 'stock' => 510),
-            array('name' => 'Apples', 'stock' => 210));
+        $expected = array(
+            array(
+              'name' => 'Pears', 
+              'fieldattributeslabel' => 'Product Name', 
+              'fieldattributesname' => 'name', 
+              'stock' => 510,
+              'field1attributeslabel' => 'Quantity in Stock', 
+              'field1attributesname' => 'stock', ),  
+            array(
+              'name' => 'Apples', 
+              'fieldattributeslabel' => 'Product Name', 
+              'fieldattributesname' => 'name', 
+              'stock' => 210,
+              'field1attributeslabel' => 'Quantity in Stock', 
+              'field1attributesname' => 'stock', ));         
         $this->assertEquals($expected, $this->datasource->fetch());
     }
 
@@ -374,10 +387,11 @@ XML;
 
     function testRedundantField()
     {
-        $this->datasource->d =  true;
         $xml = "<data><item><link>first</link><link>second</link></item></data>";
         $this->datasource->bind($xml);
-        $expected = array(array('link0' => 'first', 'link1' => 'second'));
+        // For the first field we obtain "link" not "link0", so that it remains
+        // the same field name if there's only one link (useful for news feeds)
+        $expected = array(array('link' => 'first', 'link1' => 'second'));
         $this->assertEquals($expected, $this->datasource->fetch());
     }
 
@@ -420,6 +434,23 @@ XML;
             'path' => '//atom:entry'));
         $expected = array(array('title' => 'test'));
         $this->assertEquals($expected, $this->datasource->fetch());
+    }
+
+    function testNestedHTML()
+    {
+        // as an example, php.net's Atom feed contains nested HTML data
+        $xml = "<data><row><content><p><b>Foo:</b> bar</p></content></row></data>";
+        $this->datasource->bind($xml);
+        $rows = $this->datasource->fetch();
+        $this->assertEquals("<p><b>Foo:</b> bar</p>", $rows[0]['content']);
+    }
+
+    function testCData()
+    {
+        $xml = "<data><row><field><![CDATA[<foo>]]></field></row></data>";
+        $this->datasource->bind($xml);
+        $rows = $this->datasource->fetch();
+        $this->assertEquals("<foo>", $rows[0]['field']);
     }
 }
 
