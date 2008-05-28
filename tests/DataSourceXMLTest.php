@@ -273,44 +273,6 @@ XML;
         $this->assertEquals($expected, $this->datasource->fetch());
     }
 
-    function testDeeperNesting()
-    {
-        $xml = <<<XML
-<data>
-  <row>
-    <col0>Test0</col0>
-    <col1><x><a>Test1</a></x></col1>
-    <col2><y><b><c>Test2</c></b></y></col2>
-    <col3><z>Test3</z></col3>
-    <col4>Test4</col4>
-  </row>
-  <row>
-    <col0>Test0</col0>
-    <col1><x><a>Test1</a></x></col1>
-    <col2><y><b><c>Test2</c></b></y></col2>
-    <col3><z>Test3</z></col3>
-    <col4>Test4</col4>
-  </row>
-</data>
-XML;
-        $this->datasource->setOption('generate_columns', true);
-        $this->datasource->bind($xml);
-        $columns = $this->datasource->getColumns();
-        $this->assertEquals(5, count($columns));
-        if (count($columns) == 5) {
-            $this->assertEquals('col0',    $columns[0]->getLabel());
-            $this->assertEquals('col0',    $columns[0]->getField());
-            $this->assertEquals('col1xa',  $columns[1]->getLabel());
-            $this->assertEquals('col1xa',  $columns[1]->getField());
-            $this->assertEquals('col2ybc', $columns[2]->getLabel());
-            $this->assertEquals('col2ybc', $columns[2]->getField());
-            $this->assertEquals('col3z',   $columns[3]->getLabel());
-            $this->assertEquals('col3z',   $columns[3]->getField());
-            $this->assertEquals('col4',    $columns[4]->getLabel());
-            $this->assertEquals('col4',    $columns[4]->getField());
-        }
-    }
-
     function testOnlyOneRow()
     {
         $xml = <<<XML

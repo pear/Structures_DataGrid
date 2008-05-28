@@ -48,6 +48,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
 - Fix handling of redundant fields under PHP5
 - Do not issue an error for empty data
 - Allow binding XML streams (http, etc...)
+- Removed dependencies on XML_Serializer and XML_XPath
+- Added optional dependencies on DOM and DOM XML (one of these is required)
  </notes>
  <contents>
   <dir name="/">
@@ -78,16 +80,12 @@ http://pear.php.net/dtd/package-2.0.xsd">
    </package>
   </required>
   <optional>
-   <package>
-    <name>XML_Serializer</name>
-    <channel>pear.php.net</channel>
-    <min>0.18.0</min>
-   </package>
-   <package>
-    <name>XML_XPath</name>
-    <channel>pear.php.net</channel>
-    <min>1.2.4</min>
-   </package>
+   <extension>
+    <name>dom</name>
+   </extension>
+   <extension>
+    <name>domxml</name>
+   </extension>
   </optional>
  </dependencies>
  <phprelease />
