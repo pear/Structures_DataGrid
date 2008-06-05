@@ -52,10 +52,12 @@ http://pear.php.net/dtd/package-2.0.xsd">
 - Bug #13339: Automatic ORDER BY sort string addition can fail if subqueries
   are used in the the DBQuery, MDB2, and PDO DataSource drivers
   (thanks to Issac Navanick)
+- Bug #14078: SQL errors weren't returned
+  (thanks to Antonino Balsamo)
 - Added encoding unit tests
 - Added DataObject datasource unit tests
 - New XML datasource example about parsing an Atom feed
-- Improve XML datasource test suite
+- Improved XML datasource test suite
  </notes>
  <contents>
   <dir name="/">

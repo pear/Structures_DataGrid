@@ -625,7 +625,7 @@ class Structures_DataGrid_DataSource_SQLQuery
         $recordSet = $this->_getRecords($query, $limit, $offset);
 
         if (PEAR::isError($recordSet)) {
-            return $result;
+            return $recordSet;
         }
 
         // Determine fields to render
