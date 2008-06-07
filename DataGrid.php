@@ -983,7 +983,7 @@ class Structures_DataGrid
      * If you need to change the request variables, you can define a prefix.
      * This is extra useful when using multiple datagrids.
      * 
-     * This methods need to be called before bind().
+     * This method needs to be called before bind().
      *
      * @access  public
      * @param   string $prefix      The prefix to use on request variables;
