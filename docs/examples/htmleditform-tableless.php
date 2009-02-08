@@ -5,8 +5,9 @@ require_once 'Structures/DataGrid.php';
 require_once 'HTML/QuickForm/DHTMLRulesTableless.php';
 require_once 'HTML/QuickForm/Renderer/Tableless.php';
 
+$your_data = array();
 $datagrid =& new Structures_DataGrid();
-$datagrid->bind(...);  // bind your data here
+$datagrid->bind($your_data);  // bind your data here
 
 // create the form object, using DHTMLRules
 $form = new HTML_QuickForm_DHTMLRulesTableless('editform', null, null,
