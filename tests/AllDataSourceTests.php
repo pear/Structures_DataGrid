@@ -48,8 +48,8 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
     define('PHPUnit_MAIN_METHOD', 'AllDataSourceTests::main');
 }
  
-require_once 'PHPUnit.php';
- 
+require_once 'PHPUnit/TextUI/TestRunner.php';
+
 /**
  * Test all datasources
  */
@@ -88,7 +88,6 @@ class AllDataSourceTests
 }
  
 if (PHPUnit_MAIN_METHOD == 'AllDataSourceTests::main') {
-    $result = AllDataSourceTests::main();
-    echo $result->toString();
+    AllDataSourceTests::main();
 }
 ?>
