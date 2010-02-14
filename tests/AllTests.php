@@ -45,10 +45,11 @@
  */
 
 if (!defined('PHPUnit_MAIN_METHOD')) {
-    define('PHPUnit_MAIN_METHOD', 'AllTests::main');
+    define('PHPUnit_MAIN_METHOD', 'Structures_DataGrid_AllTests::main');
 }
  
-require_once 'PHPUnit.php';
+require_once 'PHPUnit/TextUI/TestRunner.php';
+
 require_once 'DataGridTest.php';
 require_once 'AllDataSourceTests.php';
 require_once 'ObjectRecordTest.php';
@@ -58,12 +59,12 @@ require_once 'EncodingTest.php';
 /**
  * Test (almost ;) everything
  */
-class AllTests
+class Structures_DataGrid_AllTests
 {
     function main()
     {
         $suite = new PHPUnit_TestSuite();
-        $names = AllTests::getSuites();
+        $names = Structures_DataGrid_AllTests::getSuites();
         foreach ($names as $name) {
             require_once "$name.php";
             $suite->addTestSuite($name);
@@ -88,8 +89,7 @@ class AllTests
     }
 }
  
-if (PHPUnit_MAIN_METHOD == 'AllTests::main') {
-    $result = AllTests::main();
-    echo $result->toString();
+if (PHPUnit_MAIN_METHOD == 'Structures_DataGrid_AllTests::main') {
+    Structures_DataGrid_AllTests::main();
 }
 ?>
