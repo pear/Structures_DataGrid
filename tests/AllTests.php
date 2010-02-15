@@ -1,11 +1,11 @@
 <?php
 /**
  * Unit Tests for Structures_DataGrid
- * 
+ *
  * PHP versions 4 and 5
  *
  * LICENSE:
- * 
+ *
  * Copyright (c) 1997-2007, Olivier Guilyardi <olivier@samalyse.com>,
  *                          Mark Wiesemann <wiesemann@php.net>
  * All rights reserved.
@@ -17,9 +17,9 @@
  *    * Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
  *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the 
+ *      notice, this list of conditions and the following disclaimer in the
  *      documentation and/or other materials provided with the distribution.
- *    * The names of the authors may not be used to endorse or promote products 
+ *    * The names of the authors may not be used to endorse or promote products
  *      derived from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
@@ -35,7 +35,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * CVS file id: $Id$
- * 
+ *
  * @version  $Revision$
  * @package  Structures_DataGrid
  * @author   Olivier Guilyardi <olivier@samalyse.com>
@@ -47,7 +47,7 @@
 if (!defined('PHPUnit_MAIN_METHOD')) {
     define('PHPUnit_MAIN_METHOD', 'Structures_DataGrid_AllTests::main');
 }
- 
+
 require_once 'PHPUnit/TextUI/TestRunner.php';
 
 require_once 'DataGridTest.php';
@@ -55,7 +55,8 @@ require_once 'AllDataSourceTests.php';
 require_once 'ObjectRecordTest.php';
 require_once 'RendererSmartyTest.php';
 require_once 'EncodingTest.php';
- 
+require_once 'URLMappingTest.php';
+
 /**
  * Test (almost ;) everything
  */
@@ -63,32 +64,27 @@ class Structures_DataGrid_AllTests
 {
     function main()
     {
-        $suite = new PHPUnit_TestSuite();
-        $names = Structures_DataGrid_AllTests::getSuites();
-        foreach ($names as $name) {
-            require_once "$name.php";
-            $suite->addTestSuite($name);
-        }
-        return PHPUnit::run($suite);
+
+        PHPUnit_TextUI_TestRunner::run(self::suite());
     }
- 
-    function getSuites()
+
+    function suite()
     {
-        $suites = AllDataSourceTests::getSuites();
-        $suites[] = 'DataGridTest';
-        $suites[] = 'ObjectRecordTest';
-        $suites[] = 'RendererSmartyTest';
-        $suites[] = 'EncodingTest';
+        $suite = AllDataSourceTests::suite();
+        $suite->addTestSuite('DataGridTest');
+        $suite->addTestSuite('ObjectRecordTest');
+        $suite->addTestSuite('RendererSmartyTest');
+        $suite->addTestSuite('EncodingTest');
 
         // PHP5 only:
         if (version_compare(phpversion(), '5', '>=')) {
-            $suites[] = 'URLMappingTest';
+            $suite->addTestSuite('URLMappingTest');
         }
 
-        return $suites;
+        return $suite;
     }
 }
- 
+
 if (PHPUnit_MAIN_METHOD == 'Structures_DataGrid_AllTests::main') {
     Structures_DataGrid_AllTests::main();
 }

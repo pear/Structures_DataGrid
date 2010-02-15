@@ -1,11 +1,11 @@
 <?php
 /**
  * Unit Tests for Structures_DataGrid
- * 
+ *
  * PHP versions 4 and 5
  *
  * LICENSE:
- * 
+ *
  * Copyright (c) 1997-2007, Olivier Guilyardi <olivier@samalyse.com>,
  *                          Mark Wiesemann <wiesemann@php.net>
  * All rights reserved.
@@ -17,9 +17,9 @@
  *    * Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
  *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the 
+ *      notice, this list of conditions and the following disclaimer in the
  *      documentation and/or other materials provided with the distribution.
- *    * The names of the authors may not be used to endorse or promote products 
+ *    * The names of the authors may not be used to endorse or promote products
  *      derived from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
@@ -35,7 +35,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * CVS file id: $Id$
- * 
+ *
  * @version  $Revision$
  * @package  Structures_DataGrid
  * @author   Olivier Guilyardi <olivier@samalyse.com>
@@ -56,6 +56,10 @@ class DataSourceSQLTestCore extends DataSourceTestCore
 
     function setUp()
     {
+        if (!function_exists('sqlite_open')) {
+            $this->markTestSkipped("This test requires sqlite");
+        }
+
         parent::setUp();
         if (!isset($this->dbfile)) {
             $this->dbfile = File_Util::tmpDir() . '/sdgtest.db';
@@ -63,7 +67,7 @@ class DataSourceSQLTestCore extends DataSourceTestCore
                 unlink($this->dbfile);
             }
             $db = sqlite_open($this->dbfile);
-            sqlite_query($db, 'CREATE TABLE test (num int not null, "the str" char(255) not null);'); 
+            sqlite_query($db, 'CREATE TABLE test (num int not null, "the str" char(255) not null);');
             foreach ($this->data as $row) {
                 sqlite_query($db, "INSERT INTO test VALUES ({$row['num']}, '{$row['the str']}');");
             }
@@ -80,7 +84,7 @@ class DataSourceSQLTestCore extends DataSourceTestCore
 
     function testWhere()
     {
-        $this->datasource->bind("SELECT * FROM test WHERE num=1", 
+        $this->datasource->bind("SELECT * FROM test WHERE num=1",
                 array('dsn' => $this->getDSN()));
         $this->datasource->sort('the str');
         $expected = array( array('num' => '1', 'the str' => 'test'),);
@@ -143,7 +147,7 @@ class DataSourceSQLTestCore extends DataSourceTestCore
 
     function testCountQuery()
     {
-        $this->datasource->bind("SELECT * FROM test WHERE 0 = 1", 
+        $this->datasource->bind("SELECT * FROM test WHERE 0 = 1",
                 array('dsn' => $this->getDSN(),
                       'count_query' => 'SELECT COUNT(*) FROM test'));
         $this->assertEquals(count($this->data), $this->datasource->count());
@@ -161,7 +165,7 @@ class DataSourceSQLTestCore extends DataSourceTestCore
     function testUpperCaseFieldNames()
     {
         $db = sqlite_open($this->dbfile);
-        sqlite_query($db, 'CREATE TABLE test_upper (NUM int not null, THESTR char(255) not null);'); 
+        sqlite_query($db, 'CREATE TABLE test_upper (NUM int not null, THESTR char(255) not null);');
         sqlite_query($db, "INSERT INTO test_upper VALUES (10, 'foo');");
         sqlite_query($db, "INSERT INTO test_upper VALUES (20, 'bar');");
         sqlite_close($db);
@@ -177,7 +181,7 @@ class DataSourceSQLTestCore extends DataSourceTestCore
 
     function testUnion()
     {
-        $this->datasource->bind("SELECT * FROM test UNION ALL SELECT * FROM test", 
+        $this->datasource->bind("SELECT * FROM test UNION ALL SELECT * FROM test",
                 array('dsn' => $this->getDSN()));
         $expected = array_merge($this->data, $this->data);
         $this->assertEquals($expected, $this->datasource->fetch());

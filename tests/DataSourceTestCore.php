@@ -1,11 +1,11 @@
 <?php
 /**
  * Unit Tests for Structures_DataGrid
- * 
+ *
  * PHP versions 4 and 5
  *
  * LICENSE:
- * 
+ *
  * Copyright (c) 1997-2007, Olivier Guilyardi <olivier@samalyse.com>,
  *                          Mark Wiesemann <wiesemann@php.net>
  * All rights reserved.
@@ -17,9 +17,9 @@
  *    * Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
  *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the 
+ *      notice, this list of conditions and the following disclaimer in the
  *      documentation and/or other materials provided with the distribution.
- *    * The names of the authors may not be used to endorse or promote products 
+ *    * The names of the authors may not be used to endorse or promote products
  *      derived from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
@@ -35,7 +35,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * CVS file id: $Id$
- * 
+ *
  * @version  $Revision$
  * @package  Structures_DataGrid
  * @author   Olivier Guilyardi <olivier@samalyse.com>
@@ -89,8 +89,10 @@ class DataSourceTestCore extends TestCore
 
     function tearDown()
     {
-        $this->datasource->free();
-        unset($this->datasource);
+        if ($this->datasource) {
+            $this->datasource->free();
+            unset($this->datasource);
+        }
     }
 
     function testFetchAll()
@@ -147,7 +149,7 @@ class DataSourceTestCore extends TestCore
                 array($this->numField => '1', $this->strField => 'test'),
                 array($this->numField => '1', $this->strField => 'présent'),
             );
-            $this->datasource->sort(array($this->numField => 'DESC', 
+            $this->datasource->sort(array($this->numField => 'DESC',
                 $this->strField => 'DESC'));
             $this->assertEquals($expected, $this->datasource->fetch());
         } else {

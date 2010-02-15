@@ -1,11 +1,11 @@
 <?php
 /**
  * Unit Tests for Structures_DataGrid
- * 
+ *
  * PHP versions 4 and 5
  *
  * LICENSE:
- * 
+ *
  * Copyright (c) 1997-2007, Olivier Guilyardi <olivier@samalyse.com>,
  *                          Mark Wiesemann <wiesemann@php.net>
  * All rights reserved.
@@ -17,9 +17,9 @@
  *    * Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
  *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the 
+ *      notice, this list of conditions and the following disclaimer in the
  *      documentation and/or other materials provided with the distribution.
- *    * The names of the authors may not be used to endorse or promote products 
+ *    * The names of the authors may not be used to endorse or promote products
  *      derived from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
@@ -35,7 +35,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * CVS file id: $Id$
- * 
+ *
  * @version  $Revision$
  * @package  Structures_DataGrid
  * @author   Olivier Guilyardi <olivier@samalyse.com>
@@ -59,6 +59,14 @@ error_reporting(E_ALL);
  */
 class EncodingTest extends TestCore
 {
+
+    public function setUp() {
+        if (!function_exists('mb_convert_encoding')) {
+            $this->markTestSkipped("This test requires mb");
+        }
+        parent::setUp();
+    }
+
     /**
      * Test BOM and encoding conversion from the CSV renderer
      */
@@ -70,29 +78,29 @@ class EncodingTest extends TestCore
         $renderer->setOption('lineBreak', "\r\n");
 
         $data = array(
-            array('A' => 'e', 'B' => 'é'), 
+            array('A' => 'e', 'B' => 'é'),
             array('A' => 'a', 'B' => 'à'));
         $columns = array(
-            new Structures_DataGrid_Column('A', 'A'), 
+            new Structures_DataGrid_Column('A', 'A'),
             new Structures_DataGrid_Column('B', 'B'));
         $renderer->setColumns($columns);
 
         // Test strings made with Excel, vim and hexdump:
-        $utf8 = 
+        $utf8 =
             "\xef\xbb\xbf\x41\x3b\x42\x0d\x0a\x65\x3b\xc3\xa9\x0d\x0a\x61\x3b".
             "\xc3\xa0\x0d\x0a";
-        $utf16le = 
+        $utf16le =
             "\xff\xfe\x41\x00\x3b\x00\x42\x00\x0d\x00\x0a\x00\x65\x00\x3b\x00".
             "\xe9\x00\x0d\x00\x0a\x00\x61\x00\x3b\x00\xe0\x00\x0d\x00\x0a\x00";
-        $utf16be = 
+        $utf16be =
             "\xfe\xff\x00\x41\x00\x3b\x00\x42\x00\x0d\x00\x0a\x00\x65\x00\x3b".
             "\x00\xe9\x00\x0d\x00\x0a\x00\x61\x00\x3b\x00\xe0\x00\x0d\x00\x0a";
-        $utf32le = 
+        $utf32le =
             "\xff\xfe\x00\x00\x41\x00\x00\x00\x3b\x00\x00\x00\x42\x00\x00\x00".
             "\x0d\x00\x00\x00\x0a\x00\x00\x00\x65\x00\x00\x00\x3b\x00\x00\x00".
             "\xe9\x00\x00\x00\x0d\x00\x00\x00\x0a\x00\x00\x00\x61\x00\x00\x00".
             "\x3b\x00\x00\x00\xe0\x00\x00\x00\x0d\x00\x00\x00\x0a\x00\x00\x00";
-        $utf32be = 
+        $utf32be =
             "\x00\x00\xfe\xff\x00\x00\x00\x41\x00\x00\x00\x3b\x00\x00\x00\x42".
             "\x00\x00\x00\x0d\x00\x00\x00\x0a\x00\x00\x00\x65\x00\x00\x00\x3b".
             "\x00\x00\x00\xe9\x00\x00\x00\x0d\x00\x00\x00\x0a\x00\x00\x00\x61".
@@ -106,7 +114,7 @@ class EncodingTest extends TestCore
 
         // Checking that the BOM is present when header is turned off
         $renderer->setOption('buildHeader', false);
-        $this->assertEquals("\xef\xbb\xbfe;é\r\na;à\r\n", 
+        $this->assertEquals("\xef\xbb\xbfe;é\r\na;à\r\n",
                 $this->_buildCSV($renderer, $data, 'utf-8'));
     }
 

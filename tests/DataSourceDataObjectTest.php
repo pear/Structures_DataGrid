@@ -1,11 +1,11 @@
 <?php
 /**
  * Unit Tests for Structures_DataGrid
- * 
+ *
  * PHP versions 4 and 5
  *
  * LICENSE:
- * 
+ *
  * Copyright (c) 1997-2007, Olivier Guilyardi <olivier@samalyse.com>,
  *                          Mark Wiesemann <wiesemann@php.net>
  * All rights reserved.
@@ -17,9 +17,9 @@
  *    * Redistributions of source code must retain the above copyright
  *      notice, this list of conditions and the following disclaimer.
  *    * Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the 
+ *      notice, this list of conditions and the following disclaimer in the
  *      documentation and/or other materials provided with the distribution.
- *    * The names of the authors may not be used to endorse or promote products 
+ *    * The names of the authors may not be used to endorse or promote products
  *      derived from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
@@ -35,7 +35,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  * CVS file id: $Id$
- * 
+ *
  * @version  $Revision$
  * @package  Structures_DataGrid
  * @author   Olivier Guilyardi <olivier@samalyse.com>
@@ -68,6 +68,10 @@ class DataSourceDataObjectTest extends DataSourceTestCore
 
     function setUp()
     {
+        if (!function_exists('sqlite_open')) {
+            $this->markTestSkipped("This test requires sqlite");
+        }
+
         parent::setUp();
         if (!isset($this->dbfile)) {
             $this->dbfile = File_Util::tmpDir() . '/sdgtest.db';
@@ -76,7 +80,7 @@ class DataSourceDataObjectTest extends DataSourceTestCore
             }
             $db = sqlite_open($this->dbfile);
             sqlite_query($db, 'CREATE TABLE test (num int not null, '.
-                        'the_str char(255) not null primary key);'); 
+                        'the_str char(255) not null primary key);');
             foreach ($this->data as $row) {
                 sqlite_query($db, "INSERT INTO test VALUES ({$row['num']}, ".
                         "'{$row['the_str']}');");
@@ -102,9 +106,9 @@ class DataSourceDataObjectTest extends DataSourceTestCore
         $dataobject->fb_linkOrderFields = array('num');
         $this->datasource->bind($dataobject);
         $this->datasource->fetch();
-        $this->assertEquals('ORDER BY num', 
+        $this->assertEquals('ORDER BY num',
             trim($dataobject->lastQuery['order_by']));
-        
+
         // Testing that sort() overrides sort property (see bug #12942)
         $dataobject = new TestDataObject();
         $dataobject->fb_linkOrderFields = array('the_str');
@@ -112,7 +116,7 @@ class DataSourceDataObjectTest extends DataSourceTestCore
         $this->datasource->sort('the_str');
         $this->datasource->fetch();
         // With bug #12942 the following equaled to 'ORDER BY "the_str", the_str'
-        $this->assertEquals('ORDER BY "the_str"', 
+        $this->assertEquals('ORDER BY "the_str"',
             trim($dataobject->lastQuery['order_by']));
 
         // Testing that sort() overrides sort property when passed an array
@@ -121,7 +125,7 @@ class DataSourceDataObjectTest extends DataSourceTestCore
         $this->datasource->bind($dataobject);
         $this->datasource->sort(array('the_str' => 'ASC'));
         $this->datasource->fetch();
-        $this->assertEquals('ORDER BY "the_str" ASC', 
+        $this->assertEquals('ORDER BY "the_str" ASC',
             trim($dataobject->lastQuery['order_by']));
     }
 
