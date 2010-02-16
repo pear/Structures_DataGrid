@@ -63,7 +63,7 @@ class URLMappingTest extends TestCore
 
     function testSimpleParsing() {
         $this->setURL("/page/5/foo/desc");
-        $datagrid =& new Structures_DataGrid(10);
+        $datagrid = new Structures_DataGrid(10);
         $datagrid->setUrlFormat("/page/:page/:orderBy/:direction");
         $this->assertEquals(5, $datagrid->getCurrentPage());
         $datasource = new URLMappingTest_MockDataSource();
@@ -74,7 +74,7 @@ class URLMappingTest extends TestCore
     function testMissingSortParsing()
     {
         $this->setURL("/page/5");
-        $datagrid =& new Structures_DataGrid(10);
+        $datagrid = new Structures_DataGrid(10);
         $datagrid->setUrlFormat("/page/:page/:orderBy/:direction");
         $this->assertEquals(5, $datagrid->getCurrentPage());
     }
@@ -82,7 +82,7 @@ class URLMappingTest extends TestCore
     function testPrefixParsing()
     {
         $this->setURL("/page/5");
-        $datagrid =& new Structures_DataGrid(10);
+        $datagrid = new Structures_DataGrid(10);
         $datagrid->setUrlFormat("/:page", "/page");
         $this->assertEquals(5, $datagrid->getCurrentPage());
     }
@@ -90,7 +90,7 @@ class URLMappingTest extends TestCore
     function testScriptNameParsing()
     {
         $this->setURL("/index.php/ScriptName/5");
-        $datagrid =& new Structures_DataGrid(10);
+        $datagrid = new Structures_DataGrid(10);
         $datagrid->setUrlFormat(":page", 'ScriptName', '/index.php');
         $this->assertEquals(5, $datagrid->getCurrentPage());
     }
@@ -98,14 +98,14 @@ class URLMappingTest extends TestCore
     function testMultipeParsing()
     {        
         $this->setURL("/multiple/page2/5/foo/asc");
-        $datagrid =& new Structures_DataGrid(10);
+        $datagrid = new Structures_DataGrid(10);
         $datagrid->setUrlFormat("/page/:page/:orderBy/:direction", 'multiple');
         $datagrid->setUrlFormat("/page2/:page/:orderBy/:direction", 'multiple');
 
         $this->assertEquals(5, $datagrid->getCurrentPage());
         
         $this->setURL("/multiple/page/5/foo/asc");
-        $datagrid =& new Structures_DataGrid(10);
+        $datagrid = new Structures_DataGrid(10);
         $datagrid->setUrlFormat("/page/:page/:orderBy/:direction", 'multiple');
         $datagrid->setUrlFormat("/page2/:page/:orderBy/:direction", 'multiple');
 
@@ -114,7 +114,7 @@ class URLMappingTest extends TestCore
 
     function testPostInstantiationParsing()
     {
-        $datagrid =& new Structures_DataGrid(10);
+        $datagrid = new Structures_DataGrid(10);
         $this->setURL("/page/5");
         $datagrid->setUrlFormat("/page/:page");
         $this->assertEquals(5, $datagrid->getCurrentPage());
@@ -124,7 +124,7 @@ class URLMappingTest extends TestCore
     {
         // Setting datagrid up
         $this->setURL("/");
-        $datagrid =& new Structures_DataGrid(10);
+        $datagrid = new Structures_DataGrid(10);
         $datagrid->setDefaultSort(array('foo' => 'ASC'));
         $datagrid->setUrlFormat("/page/:page/:orderBy/:direction");
         $datasource = new URLMappingTest_MockDataSource();
@@ -157,7 +157,7 @@ class URLMappingTest extends TestCore
     {
         // Setting datagrid up
         $this->setURL("/page/3/foo/asc");
-        $datagrid =& new Structures_DataGrid(10);
+        $datagrid = new Structures_DataGrid(10);
         $datagrid->setUrlFormat("/page/:page/:orderBy/:direction");
         $datasource = new URLMappingTest_MockDataSource();
         $datasource->fakeCount = 50;
@@ -186,7 +186,7 @@ class URLMappingTest extends TestCore
     {
         // Setting datagrid up
         $this->setURL("/");
-        $datagrid =& new Structures_DataGrid(10);
+        $datagrid = new Structures_DataGrid(10);
         $datagrid->setDefaultSort(array('foo' => 'ASC'));
         $datagrid->setUrlFormat("/page/:page/:orderBy/:direction");
         $datasource = new URLMappingTest_MockDataSource();
@@ -219,7 +219,7 @@ class URLMappingTest extends TestCore
     {
         // Setting datagrid up
         $this->setURL("/sort/foo/asc");
-        $datagrid =& new Structures_DataGrid(10);
+        $datagrid = new Structures_DataGrid(10);
         $datagrid->setUrlFormat("/:orderBy/:direction", 'sort');
         $datasource = new URLMappingTest_MockDataSource();
         $datasource->fakeCount = 50;
@@ -249,7 +249,7 @@ class URLMappingTest extends TestCore
     {
         // Setting datagrid up
         $this->setURL("/page/3/foo/asc");
-        $datagrid =& new Structures_DataGrid(10);
+        $datagrid = new Structures_DataGrid(10);
         $datagrid->setUrlFormat("/page/:page/:orderBy/:direction");
         $datasource = new URLMappingTest_MockDataSource();
         $datasource->fakeCount = 50;
@@ -286,7 +286,7 @@ class URLMappingTest extends TestCore
     {
         // Setting datagrid up
         $this->setURL("/");
-        $datagrid =& new Structures_DataGrid(10);
+        $datagrid = new Structures_DataGrid(10);
         $datagrid->setDefaultSort(array('foo' => 'ASC'));
         $datagrid->setUrlFormat("/page/:page/:orderBy/:direction");
         $datasource = new URLMappingTest_MockDataSource();

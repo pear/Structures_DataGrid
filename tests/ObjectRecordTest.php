@@ -77,7 +77,7 @@ class ObjectRecordTest extends TestCore
         $doctrine = new ObjectRecordTest_Store('doctrine');
         $propel = new ObjectRecordTest_Store('propel');
 
-        $datagrid =& new Structures_DataGrid(2);
+        $datagrid = new Structures_DataGrid(2);
         $datagrid->bind(array(&$pear, &$doctrine, &$propel));
 
         $output = $datagrid->getOutput('Smarty');
@@ -93,7 +93,7 @@ class ObjectRecordTest extends TestCore
         $doctrine = new ObjectRecordTest_Store('doctrine');
         $propel = new ObjectRecordTest_Store('propel');
 
-        $datagrid =& new Structures_DataGrid();
+        $datagrid = new Structures_DataGrid();
         $datagrid->bind(array(&$pear, &$doctrine, &$propel));
 
         $column = new Structures_DataGrid_Column('brand', 'brand');
