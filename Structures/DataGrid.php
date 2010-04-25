@@ -508,7 +508,7 @@ class Structures_DataGrid
      *
      * You can call this method several times with different renderers.
      * 
-     * @param  mixed  $renderer Renderer type or instance (optional)
+     * @param  mixed  $renderer Renderer type or instance (optional)is_object($source) && 
      * @param  array  $options  An associative array of the form:
      *                          array(optionName => optionValue, ...)
      * @access public
@@ -1443,7 +1443,7 @@ class Structures_DataGrid
                 return DATAGRID_SOURCE_DATAOBJECT;
 
             // DB_Result
-            case strtolower(get_class($source)) == 'db_result':
+            case is_object($source) && strtolower(get_class($source)) == 'db_result':
                 return DATAGRID_SOURCE_DB;
                 
             // Array
