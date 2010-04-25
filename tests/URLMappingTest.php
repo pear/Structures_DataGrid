@@ -61,6 +61,12 @@ class URLMappingTest extends TestCore
 {
     var $datagrid;
 
+    function setUp() {
+        if (!Structures_DataGrid::fileExists('Net/URL/Mapper.php')) {
+            $this->markTestSkipped('Net/URL/Mapper.php isnt available - pear install Net_URL_Mapper');
+        }
+    }
+
     function testSimpleParsing() {
         $this->setURL("/page/5/foo/desc");
         $datagrid = new Structures_DataGrid(10);
