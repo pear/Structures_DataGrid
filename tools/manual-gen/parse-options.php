@@ -575,7 +575,7 @@ function indentMultiLine($content, $indentStr, $indentNum)
 {
     $prefix = str_repeat($indentStr, $indentNum);
     $width = 80 - $indentNum - 1;
-    $content = ereg_replace("[ \n]+", ' ', $content);
+    $content = preg_replace("/[ \n]+/", ' ', $content);
     $content = wordwrap($content, $width);
     return $prefix . trim(str_replace("\n", "\n$prefix$indentStr", $content));
 }

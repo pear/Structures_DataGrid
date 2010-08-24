@@ -460,14 +460,14 @@ class Structures_DataGrid_Column
             // Build the list of parameters
             $length = strlen($orig_callback) - $size - 2;
             $parameters = substr($orig_callback, $size + 1, $length);
-            $parameters = ($parameters === '') ? array() : split(',', $parameters);
+            $parameters = ($parameters === '') ? array() : explode(',', $parameters);
 
             // Process the parameters
             foreach($parameters as $param) {
                 if ($param != '') {
                     $param = str_replace('$', '', $param);
                     if (strpos($param, '=') != false) {
-                        $vars = split('=', $param);
+                        $vars = explode('=', $param);
                         $paramList[trim($vars[0])] = trim($vars[1]);
                     } else {
                         $paramList[$param] = $$param;

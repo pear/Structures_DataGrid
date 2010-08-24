@@ -328,9 +328,9 @@ class URLMappingTest extends TestCore
 
 
     function parseOnClick($statement) {
-        ereg('(\{.*\})', $statement, $regs);
+        preg_match('/(\{.*\})/', $statement, $regs);
         $json = $regs[1];
-        $json = ereg_replace('([a-zA-Z0-9]+) *:', '"\1":', $json);
+        $json = preg_replace('/([a-zA-Z0-9]+) *:/', '"\1":', $json);
         $json = str_replace("'", '"', $json);
         return json_decode($json, true);
     }
