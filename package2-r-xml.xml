@@ -39,6 +39,8 @@ string.
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
+QA Release
+Directory layout
 - Bug #13036: 'fieldTag' option doesn't work as documented
   (thanks to Martin Lehnert)
  </notes>
