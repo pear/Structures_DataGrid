@@ -39,6 +39,9 @@ base package for some other DataSource drivers like CSV or XML.
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
+QA release
+Directory layout
+Bug #13134 A notice is raised if an empty array is passed to bind()
 - add support for sorting by multiple fields (also affects the CSV, DB, Excel,
   RSS and XML datasources)
  </notes>

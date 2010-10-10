@@ -38,6 +38,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
+QA Release
+Directory layout
+- Request #10593 Option to change fileWriteMode
 - Request #13266: add Unicode BOM and conversion support 
   New option: targetEncoding
  </notes>
