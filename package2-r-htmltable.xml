@@ -38,6 +38,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
+QA Release
+Directory layout
 - Bug #12838: XHTML compliance -- onClick handler must be all lowercase
  </notes>
  <contents>
