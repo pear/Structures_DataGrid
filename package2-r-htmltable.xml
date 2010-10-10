@@ -29,7 +29,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <date>2008-01-16</date>
  <time>18:00:00</time>
  <version>
-  <release>0.1.5</release>
+  <release>0.1.6</release>
   <api>0.1.0</api>
  </version>
  <stability>
