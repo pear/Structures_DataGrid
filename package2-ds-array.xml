@@ -43,12 +43,14 @@ base package for some other DataSource drivers like CSV or XML.
   RSS and XML datasources)
  </notes>
  <contents>
-  <dir name="/">
+  <dir baseinstalldir="/" name="/">
+   <dir name="Structures">
    <dir name="DataGrid">
     <dir name="DataSource">
-     <file baseinstalldir="Structures" name="Array.php" role="php" />
+     <file name="Array.php" role="php" />
     </dir> <!-- //DataGrid/DataSource -->
    </dir> <!-- //DataGrid -->
+   </dir> <!-- /Structures -->
   </dir> <!-- / -->
  </contents>
  <dependencies>

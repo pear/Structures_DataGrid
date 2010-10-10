@@ -41,13 +41,14 @@ http://pear.php.net/dtd/package-2.0.xsd">
 - Bug #12838: XHTML compliance -- onClick handler must be all lowercase
  </notes>
  <contents>
-  <dir name="/">
+    <dir baseinstalldir="/" name="/">
+   <dir name="Structures">
    <dir name="DataGrid">
     <dir name="Renderer">
-     <file baseinstalldir="Structures" name="HTMLTable.php" role="php" />
+     <file  name="HTMLTable.php" role="php" />
     </dir> <!-- //DataGrid/Renderer -->
    </dir> <!-- //DataGrid -->
-  </dir> <!-- / -->
+  </dir></dir> <!-- / -->
  </contents>
  <dependencies>
   <required>

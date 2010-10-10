@@ -44,12 +44,14 @@ http://pear.php.net/dtd/package-2.0.xsd">
 - new option 'enclosure' that allows to specify the field enclosure character
  </notes>
  <contents>
-  <dir name="/">
+  <dir baseinstalldir="/" name="/">
+   <dir name="Structures">
    <dir name="DataGrid">
     <dir name="DataSource">
-     <file baseinstalldir="Structures" name="CSV.php" role="php" />
+     <file name="CSV.php" role="php" />
     </dir> <!-- /DataGrid/DataSource -->
    </dir> <!-- /DataGrid -->
+  </dir> <!-- / -->
   </dir> <!-- / -->
  </contents>
  <dependencies>

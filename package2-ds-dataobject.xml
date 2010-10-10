@@ -32,6 +32,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
+QA release
+Directory layout
 - bug #12942: datasource sorting now overrides the dataobject sort property
   (thanks to Mike Rehacek)
 - fixed limit() when called with a single argument (Warning: this might cause
@@ -40,13 +42,14 @@ http://pear.php.net/dtd/package-2.0.xsd">
   (thanks to Mads Lie Jensen)
  </notes>
  <contents>
-  <dir name="/">
+    <dir baseinstalldir="/" name="/">
+   <dir name="Structures">
    <dir name="DataGrid">
     <dir name="DataSource">
-     <file baseinstalldir="Structures" name="DataObject.php" role="php" />
+     <file  name="DataObject.php" role="php" />
     </dir> <!-- //DataGrid/DataSource -->
    </dir> <!-- //DataGrid -->
-  </dir> <!-- / -->
+  </dir></dir> <!-- / -->
  </contents>
  <dependencies>
   <required>

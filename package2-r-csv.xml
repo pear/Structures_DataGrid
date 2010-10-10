@@ -42,13 +42,14 @@ http://pear.php.net/dtd/package-2.0.xsd">
   New option: targetEncoding
  </notes>
  <contents>
-  <dir name="/">
+    <dir baseinstalldir="/" name="/">
+   <dir name="Structures">
    <dir name="DataGrid">
     <dir name="Renderer">
-     <file baseinstalldir="Structures" name="CSV.php" role="php" />
+     <file  name="CSV.php" role="php" />
     </dir> <!-- //DataGrid/Renderer -->
    </dir> <!-- //DataGrid -->
-  </dir> <!-- / -->
+  </dir></dir> <!-- / -->
  </contents>
  <dependencies>
   <required>

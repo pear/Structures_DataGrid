@@ -41,13 +41,14 @@ http://pear.php.net/dtd/package-2.0.xsd">
 - this package is now licensed under the New BSD license
  </notes>
  <contents>
-  <dir name="/">
+    <dir baseinstalldir="/" name="/">
+   <dir name="Structures">
    <dir name="DataGrid">
     <dir name="Renderer">
-     <file baseinstalldir="Structures" name="Console.php" role="php" />
+     <file  name="Console.php" role="php" />
     </dir> <!-- //DataGrid/Renderer -->
    </dir> <!-- //DataGrid -->
-  </dir> <!-- / -->
+  </dir></dir> <!-- / -->
  </contents>
  <dependencies>
   <required>

@@ -42,13 +42,14 @@ SQL query.
 - internal changes related to internal changes in Structures_DataGrid 0.9.0
  </notes>
  <contents>
-  <dir name="/">
+    <dir baseinstalldir="/" name="/">
+   <dir name="Structures">
    <dir name="DataGrid">
     <dir name="DataSource">
-     <file baseinstalldir="Structures" name="MDB2.php" role="php" />
+     <file  name="MDB2.php" role="php" />
     </dir> <!-- //DataGrid/DataSource -->
    </dir> <!-- //DataGrid -->
-  </dir> <!-- / -->
+  </dir></dir> <!-- / -->
  </contents>
  <dependencies>
   <required>

@@ -31,7 +31,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <date>2007-12-18</date>
  <time>17:15:00</time>
  <version>
-  <release>0.1.4</release>
+  <release>0.1.5</release>
   <api>0.1.1</api>
  </version>
  <stability>
@@ -40,6 +40,9 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
+QA release
+Directory layout
+
 - Request #8237: support multiple grids on a single page
 - add support for the onMove option
 - new columnSet item members: direction and onclick
@@ -52,13 +55,14 @@ http://pear.php.net/dtd/package-2.0.xsd">
 - new smarty variables assigned: previousPage and nextPage
  </notes>
  <contents>
-  <dir name="/">
+    <dir baseinstalldir="/" name="/">
+   <dir name="Structures">
    <dir name="DataGrid">
     <dir name="Renderer">
-     <file baseinstalldir="Structures" name="Smarty.php" role="php" />
+     <file  name="Smarty.php" role="php" />
     </dir> <!-- //DataGrid/Renderer -->
    </dir> <!-- //DataGrid -->
-  </dir> <!-- / -->
+  </dir></dir> <!-- / -->
  </contents>
  <dependencies>
   <required>

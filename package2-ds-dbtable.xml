@@ -29,13 +29,14 @@ http://pear.php.net/dtd/package-2.0.xsd">
 - internal optimization related to the record fetching
  </notes>
  <contents>
-  <dir name="/">
+    <dir baseinstalldir="/" name="/">
+   <dir name="Structures">
    <dir name="DataGrid">
     <dir name="DataSource">
-     <file baseinstalldir="Structures" name="DBTable.php" role="php" />
+     <file  name="DBTable.php" role="php" />
     </dir> <!-- //DataGrid/DataSource -->
    </dir> <!-- //DataGrid -->
-  </dir> <!-- / -->
+  </dir></dir> <!-- / -->
  </contents>
  <dependencies>
   <required>

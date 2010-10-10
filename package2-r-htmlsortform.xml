@@ -38,13 +38,14 @@ http://pear.php.net/dtd/package-2.0.xsd">
 - add support for javascript onsubmit handlers (onMove option)
  </notes>
  <contents>
-  <dir name="/">
+    <dir baseinstalldir="/" name="/">
+   <dir name="Structures">
    <dir name="DataGrid">
     <dir name="Renderer">
-     <file baseinstalldir="Structures" name="HTMLSortForm.php" role="php" />
+     <file  name="HTMLSortForm.php" role="php" />
     </dir> <!-- //DataGrid/Renderer -->
    </dir> <!-- //DataGrid -->
-  </dir> <!-- / -->
+  </dir></dir> <!-- / -->
  </contents>
  <dependencies>
   <required>

@@ -32,13 +32,14 @@ as a PEAR package, but via Sourceforge: http://sourceforge.net/projects/phpexcel
 - this package is now licensed under the New BSD license
  </notes>
  <contents>
-  <dir name="/">
+    <dir baseinstalldir="/" name="/">
+   <dir name="Structures">
    <dir name="DataGrid">
     <dir name="DataSource">
-     <file baseinstalldir="Structures" name="Excel.php" role="php" />
+     <file  name="Excel.php" role="php" />
     </dir> <!-- //DataGrid/DataSource -->
    </dir> <!-- //DataGrid -->
-  </dir> <!-- / -->
+  </dir></dir> <!-- / -->
  </contents>
  <dependencies>
   <required>

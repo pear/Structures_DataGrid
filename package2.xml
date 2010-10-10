@@ -46,6 +46,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
+QA release
+Directory layout
 - Bug #13025: field names in the form "table.field" could lead to syntax errors
   in the SQL queries of the DBQuery, MDB2, and PDO DataSource drivers
   (thanks to Matt Rosenquist)
@@ -58,15 +60,18 @@ http://pear.php.net/dtd/package-2.0.xsd">
 - Added DataObject datasource unit tests
 - New XML datasource example about parsing an Atom feed
 - Improved XML datasource test suite
+- Bug #17731 - avoid ereg
  </notes>
  <contents>
-  <dir name="/">
-   <file baseinstalldir="Structures" name="DataGrid.php" role="php" />
+  <dir baseinstalldir="/" name="/">
+   <dir name="Structures">
+   <file  name="DataGrid.php" role="php" />
    <dir name="DataGrid">
-    <file baseinstalldir="Structures" name="Column.php" role="php" />
-    <file baseinstalldir="Structures" name="DataSource.php" role="php" />
-    <file baseinstalldir="Structures" name="Renderer.php" role="php" />
+    <file  name="Column.php" role="php" />
+    <file  name="DataSource.php" role="php" />
+    <file  name="Renderer.php" role="php" />
    </dir> <!-- /DataGrid -->
+   </dir>
    <dir name="docs">
     <dir name="examples">
      <file name="addColumn.php" role="doc" />
@@ -91,23 +96,23 @@ http://pear.php.net/dtd/package-2.0.xsd">
     </dir> <!-- /docs/examples -->
    </dir> <!-- /docs -->
    <dir name="tests">
-    <file baseinstalldir="Structures" name="README" role="test" />
-    <file baseinstalldir="Structures" name="AllTests.php" role="test" />
-    <file baseinstalldir="Structures" name="DataGridTest.php" role="test" />
-    <file baseinstalldir="Structures" name="AllDataSourceTests.php" role="test" />
-    <file baseinstalldir="Structures" name="DataSourceTestCore.php" role="test" />
-    <file baseinstalldir="Structures" name="DataSourceArrayTest.php" role="test" />
-    <file baseinstalldir="Structures" name="DataSourceCSVTest.php" role="test" />
-    <file baseinstalldir="Structures" name="DataSourceDataObjectTest.php" role="test" />
-    <file baseinstalldir="Structures" name="DataSourceDBQueryTest.php" role="test" />
-    <file baseinstalldir="Structures" name="DataSourceMDB2Test.php" role="test" />
-    <file baseinstalldir="Structures" name="DataSourcePDOTest.php" role="test" />
-    <file baseinstalldir="Structures" name="DataSourceSQLTestCore.php" role="test" />
-    <file baseinstalldir="Structures" name="DataSourceXMLTest.php" role="test" />
-    <file baseinstalldir="Structures" name="URLMappingTest.php" role="test" />
-    <file baseinstalldir="Structures" name="ObjectRecordTest.php" role="test" />
-    <file baseinstalldir="Structures" name="RendererSmartyTest.php" role="test" />
-    <file baseinstalldir="Structures" name="EncodingTest.php" role="test" />
+    <file  name="README" role="test" />
+    <file  name="AllTests.php" role="test" />
+    <file  name="DataGridTest.php" role="test" />
+    <file  name="AllDataSourceTests.php" role="test" />
+    <file  name="DataSourceTestCore.php" role="test" />
+    <file  name="DataSourceArrayTest.php" role="test" />
+    <file  name="DataSourceCSVTest.php" role="test" />
+    <file  name="DataSourceDataObjectTest.php" role="test" />
+    <file  name="DataSourceDBQueryTest.php" role="test" />
+    <file  name="DataSourceMDB2Test.php" role="test" />
+    <file  name="DataSourcePDOTest.php" role="test" />
+    <file  name="DataSourceSQLTestCore.php" role="test" />
+    <file  name="DataSourceXMLTest.php" role="test" />
+    <file  name="URLMappingTest.php" role="test" />
+    <file  name="ObjectRecordTest.php" role="test" />
+    <file  name="RendererSmartyTest.php" role="test" />
+    <file  name="EncodingTest.php" role="test" />
    </dir> <!-- /tests -->
   </dir> <!-- / -->
  </contents>

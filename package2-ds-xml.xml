@@ -38,6 +38,8 @@ http://pear.php.net/dtd/package-2.0.xsd">
  </stability>
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
+QA release
+Directory layout
 - Bug #13840: XML attributes weren't detected correctly
   (thanks to Anthony Topper)
 - Bug #13950: Deeper nesting of XML data failed on PHP 5
@@ -52,13 +54,14 @@ http://pear.php.net/dtd/package-2.0.xsd">
 - Added optional dependencies on DOM and DOM XML (one of these is required)
  </notes>
  <contents>
-  <dir name="/">
+    <dir baseinstalldir="/" name="/">
+   <dir name="Structures">
    <dir name="DataGrid">
     <dir name="DataSource">
-     <file baseinstalldir="Structures" name="XML.php" role="php" />
+     <file  name="XML.php" role="php" />
     </dir> <!-- //DataGrid/DataSource -->
    </dir> <!-- //DataGrid -->
-  </dir> <!-- / -->
+  </dir></dir> <!-- / -->
  </contents>
  <dependencies>
   <required>
