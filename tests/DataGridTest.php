@@ -52,8 +52,6 @@ require_once 'TestCore.php';
 require_once 'Structures/DataGrid.php';
 require_once 'Structures/DataGrid/Renderer.php';
 
-error_reporting(E_ALL);
-
 /**
  * Tests the driver-less, core routines
  */

@@ -51,8 +51,6 @@ if (!defined('PHPUnit_MAIN_METHOD')) {
 require_once 'TestCore.php';
 require_once 'Structures/DataGrid.php';
 
-error_reporting(E_ALL);
-
 /**
  * Object record support test
  *

@@ -60,7 +60,6 @@ class TestCore extends PHPUnit_Framework_TestCase
 
     function setUp()
     {
-        error_reporting(E_ALL);
         $this->catchPearError = false;
         PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, array(&$this, 'onPearError'));
     }

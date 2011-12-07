@@ -52,8 +52,6 @@ require_once 'TestCore.php';
 require_once 'Structures/DataGrid.php';
 require_once 'Structures/DataGrid/DataSource.php';
 
-error_reporting(E_ALL);
-
 /**
  * URL Mapping Tests
  */

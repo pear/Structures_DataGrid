@@ -48,8 +48,6 @@
 require_once 'TestCore.php';
 require_once 'Structures/DataGrid/DataSource.php';
 
-error_reporting(E_ALL);
-
 /**
  * DataSource core tests
  */

@@ -52,8 +52,6 @@ require_once 'TestCore.php';
 require_once 'Structures/DataGrid/Renderer/CSV.php';
 require_once 'Structures/DataGrid/Column.php';
 
-error_reporting(E_ALL);
-
 /**
  * Encoding/Charsets support tests
  */

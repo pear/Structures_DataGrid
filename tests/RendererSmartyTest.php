@@ -52,8 +52,6 @@ require_once 'TestCore.php';
 require_once 'Structures/DataGrid/Column.php';
 require_once 'Structures/DataGrid/Renderer/Smarty.php';
 
-error_reporting(E_ALL);
-
 /**
  * Smarty renderer test
  *
