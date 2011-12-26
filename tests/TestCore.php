@@ -61,13 +61,14 @@ class TestCore extends PHPUnit_Framework_TestCase
     function setUp()
     {
         $this->catchPearError = false;
-        PEAR::setErrorHandling(PEAR_ERROR_CALLBACK, array(&$this, 'onPearError'));
+        $p = new PEAR();
+        $p->setErrorHandling(PEAR_ERROR_CALLBACK, array($this, 'onPearError'));
     }
 
     function onPearError($error)
     {
         if ($this->catchPearError) {
-            $this->lastPearError =& $error;
+            $this->lastPearError = $error;
         } else {
             $this->fail(
                 "------------------------\n".
