@@ -62,13 +62,13 @@ require_once 'URLMappingTest.php';
  */
 class Structures_DataGrid_AllTests
 {
-    function main()
+    public static function main()
     {
 
         PHPUnit_TextUI_TestRunner::run(self::suite());
     }
 
-    function suite()
+    public static function suite()
     {
         $suite = AllDataSourceTests::suite();
         $suite->addTestSuite('DataGridTest');
@@ -88,4 +88,3 @@ class Structures_DataGrid_AllTests
 if (PHPUnit_MAIN_METHOD == 'Structures_DataGrid_AllTests::main') {
     Structures_DataGrid_AllTests::main();
 }
-?>
