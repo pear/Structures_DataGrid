@@ -44,10 +44,6 @@
  * @license  http://opensource.org/licenses/bsd-license.php New BSD License
  */
 
-if (!defined('PHPUnit_MAIN_METHOD')) {
-    define('PHPUnit_MAIN_METHOD', 'DataSourceDataObjectTest::main');
-}
-
 require_once 'DataSourceTestCore.php';
 require_once 'File/Util.php';
 require_once "DB/DataObject.php";
@@ -180,9 +176,3 @@ class TestDataObjectWithGetter extends TestDataObjectWithAltGetter
     }
 }
 
-if (PHPUnit_MAIN_METHOD == 'DataSourceDataObjectTest::main') {
-    $suite = new PHPUnit_TestSuite('DataSourceDataObjectTest');
-    $result = PHPUnit::run($suite);
-    echo $result->toString();
-}
-?>

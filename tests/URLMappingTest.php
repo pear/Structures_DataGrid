@@ -44,10 +44,6 @@
  * @license  http://opensource.org/licenses/bsd-license.php New BSD License
  */
 
-if (!defined('PHPUnit_MAIN_METHOD')) {
-    define('PHPUnit_MAIN_METHOD', 'URLMappingTest::main');
-}
-
 require_once 'TestCore.php';
 require_once 'Structures/DataGrid.php';
 require_once 'Structures/DataGrid/DataSource.php';
@@ -370,10 +366,3 @@ class URLMappingTest_MockDataSource extends Structures_DataGrid_DataSource
     }
 }
 
-if (PHPUnit_MAIN_METHOD == 'URLMappingTest::main') {
-    $suite = new PHPUnit_TestSuite('URLMappingTest');
-    $result = PHPUnit::run($suite);
-    echo $result->toString();
-}
-
-?>

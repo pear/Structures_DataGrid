@@ -44,9 +44,6 @@
  * @license  http://opensource.org/licenses/bsd-license.php New BSD License
  */
 
-if (!defined('PHPUnit_MAIN_METHOD')) {
-    define('PHPUnit_MAIN_METHOD', 'ObjectRecordTest::main');
-}
 
 require_once 'TestCore.php';
 require_once 'Structures/DataGrid.php';
@@ -127,9 +124,3 @@ class ObjectRecordTest_Store
     }
 }
 
-if (PHPUnit_MAIN_METHOD == 'ObjectRecordTest::main') {
-    $suite = new PHPUnit_TestSuite('ObjectRecordTest');
-    $result = PHPUnit::run($suite);
-    echo $result->toString();
-}
-?>

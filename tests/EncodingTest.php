@@ -44,9 +44,6 @@
  * @license  http://opensource.org/licenses/bsd-license.php New BSD License
  */
 
-if (!defined('PHPUnit_MAIN_METHOD')) {
-    define('PHPUnit_MAIN_METHOD', 'EncodingTest::main');
-}
 
 require_once 'TestCore.php';
 require_once 'Structures/DataGrid/Renderer/CSV.php';
@@ -127,9 +124,3 @@ class EncodingTest extends TestCore
 
 }
 
-if (PHPUnit_MAIN_METHOD == 'EncodingTest::main') {
-    $suite = new PHPUnit_TestSuite('EncodingTest');
-    $result = PHPUnit::run($suite);
-    echo $result->toString();
-}
-?>

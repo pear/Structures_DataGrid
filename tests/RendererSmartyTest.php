@@ -44,10 +44,6 @@
  * @license  http://opensource.org/licenses/bsd-license.php New BSD License
  */
 
-if (!defined('PHPUnit_MAIN_METHOD')) {
-    define('PHPUnit_MAIN_METHOD', 'RendererSmartyTest::main');
-}
-
 require_once 'TestCore.php';
 require_once 'Structures/DataGrid/Column.php';
 require_once 'Structures/DataGrid/Renderer/Smarty.php';
@@ -115,9 +111,3 @@ class RendererSmartyTest extends TestCore
 }
 
 
-if (PHPUnit_MAIN_METHOD == 'RendererSmartyTest::main') {
-    $suite = new PHPUnit_TestSuite('RendererSmartyTest');
-    $result = PHPUnit::run($suite);
-    echo $result->toString();
-}
-?>
