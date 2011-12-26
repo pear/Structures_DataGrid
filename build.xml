@@ -27,7 +27,7 @@
 
 		<exec executable="svn">
 			<arg value="export" />
- 			<arg value="https://svn.php.net/repository/pear/packages/MDB2" />
+ 			<arg value="https://svn.php.net/repository/pear/packages/MDB2/trunk" />
  			<arg value="lib/MDB2" />
 		</exec>
 	</target>
@@ -36,7 +36,7 @@
 		<exec executable="phpcs" output="/dev/null">
 			<arg value="--report=checkstyle" />
 			<arg value="--report-file=${basedir}/build/logs/checkstyle.xml" />
-			<arg path="${basedir}/Console/" />
+			<arg path="${basedir}/Structures/" />
 		</exec>
 	</target>
 
