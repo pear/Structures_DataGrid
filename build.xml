@@ -34,7 +34,8 @@
         <exec executable="git">
             <arg value="clone" />
             <arg value="git://github.com/pear/Net_URL_Mapper.git" />
-            <arg value="lib/Net_URL_Mapper" />
+            <!-- Work around annoyance with dir layout -->
+            <arg value="lib/Net_URL_Mapper/Net" />
         </exec>
 	</target>
 
