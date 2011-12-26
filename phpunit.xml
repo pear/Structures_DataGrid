@@ -18,7 +18,8 @@
 		</testsuite>
 	</testsuites>
 	<php>
-		<includePath>lib/MDB2:lib/Net_URL_Mapper</includePath>
+		<includePath>lib/MDB2</includePath>
+        <includePath>lib/Net_URL_Mapper</includePath>
 		<!-- E_ALL -->
 		<ini name="error_reporting" value="30719" />
 	</php>
