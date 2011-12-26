@@ -42,6 +42,7 @@
  * @category Structures
  * @license  http://opensource.org/licenses/bsd-license.php New BSD License
  */
+require_once 'Structures/DataGrid/Exception.php';
 
 /**
  * Base abstract class for DataSource drivers
@@ -519,7 +520,7 @@ class Structures_DataGrid_DataSource_SQLQuery
      * Constructor
      *
      */
-    function Structures_DataGrid_DataSource_SQLQuery()
+    public function __construct()
     {
         parent::Structures_DataGrid_DataSource();
         $this->_addDefaultOptions(array('dbc' => null,
@@ -555,9 +556,11 @@ class Structures_DataGrid_DataSource_SQLQuery
             }
             $this->_handle = $this->_connect();
             if (PEAR::isError($this->_handle)) {
-                return PEAR::raiseError('Could not create connection: ' .
-                                        $this->_handle->getMessage() . ', ' .
-                                        $this->_handle->getUserInfo());
+                throw new Structures_DataGrid_Exception(
+                    'Could not create connection: ' .
+                    $this->_handle->getMessage() . ', ' .
+                    $this->_handle->getUserInfo()
+                );
             }
         } else {
             return PEAR::raiseError('No Database object or dsn string specified');
