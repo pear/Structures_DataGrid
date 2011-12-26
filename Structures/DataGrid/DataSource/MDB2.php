@@ -128,7 +128,9 @@ class Structures_DataGrid_DataSource_MDB2
      */
     function _disconnect()
     {
-        $this->_handle->disconnect();
+        if ($this->_isConnection($this->handle)) {
+            $this->_handle->disconnect();
+        }
     }
 
     /**
