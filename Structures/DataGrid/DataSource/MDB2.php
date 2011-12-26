@@ -156,6 +156,10 @@ class Structures_DataGrid_DataSource_MDB2
      */
     function _getRecords($query, $limit, $offset)
     {
+        if (!$this->_isConnection($this->handle)) {
+            return array();
+        }
+
         if (is_null($limit)) {
             if ($offset == 0) {
                 $result = $this->_handle->query($query);
@@ -194,7 +198,9 @@ class Structures_DataGrid_DataSource_MDB2
      */
     function _quoteIdentifier($field)
     {
-        return $this->_handle->quoteIdentifier($field);
+        if ($this->_isConnection($this->handle)) {
+            return $this->_handle->quoteIdentifier($field);
+        }
     }
 
     /**
@@ -206,7 +212,9 @@ class Structures_DataGrid_DataSource_MDB2
      */
     function _getOne($query)
     {
-        return $this->_handle->extended->getOne($query);
+        if ($this->_isConnection($this->handle)) {
+            return $this->_handle->extended->getOne($query);
+        }
     }
 
     /**
@@ -218,11 +226,14 @@ class Structures_DataGrid_DataSource_MDB2
      */
     function _getRecordsNum($query)
     {
-        $result = $this->_handle->query($query);
-        if (PEAR::isError($result)) {
-            return $result;
+        if ($this->_isConnection($this->handle)) {
+  
+            $result = $this->_handle->query($query);
+            if (PEAR::isError($result)) {
+                return $result;
+            }
+            return $result->numRows();
         }
-        return $result->numRows();
     }
 
 }
