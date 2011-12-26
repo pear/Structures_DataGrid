@@ -30,6 +30,12 @@
  			<arg value="https://svn.php.net/repository/pear/packages/MDB2/trunk" />
  			<arg value="lib/MDB2" />
 		</exec>
+
+        <exec executable="git">
+            <arg value="clone" />
+            <arg value="git://github.com/pear/Net_URL_Mapper.git" />
+            <arg value="lib/Net_URL_Mapper" />
+        </exec>
 	</target>
 
 	<target name="phpcs-ci" description="Find coding standard violations using PHP_CodeSniffer">
