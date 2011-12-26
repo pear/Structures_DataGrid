@@ -214,7 +214,7 @@ class Structures_DataGrid_DataSource_Array
             $column = array();
             foreach ($this->_ar as $i => $row) {
                 $row = (array) $row;
-                $column[$i] = $row[$field];
+                $column[$i] = isset($row[$field]) ? $row[$field] : null;
             }
             if ($this->_options['natsort']) {
                 $column = array_map('strtolower', $column);
