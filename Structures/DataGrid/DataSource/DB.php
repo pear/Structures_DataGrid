@@ -91,7 +91,8 @@ class Structures_DataGrid_DataSource_DB
         if ($options) {
             $this->setOptions($options); 
         }
-        
+
+        $this->_ar = array();        
         if (strtolower(get_class($result)) == 'db_result') { 
             while ($record = $result->fetchRow(DB_FETCHMODE_ASSOC)) {
                 $this->_ar[] = $record;
