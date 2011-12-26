@@ -44,10 +44,6 @@
  * @license  http://opensource.org/licenses/bsd-license.php New BSD License
  */
 
-if (!defined('PHPUnit_MAIN_METHOD')) {
-    define('PHPUnit_MAIN_METHOD', 'DataSourceArrayTest::main');
-}
-
 require_once 'DataSourceTestCore.php';
 
 /**
@@ -114,10 +110,3 @@ class DataSourceArrayTestStore
     }
 }
 
-if (PHPUnit_MAIN_METHOD == 'DataSourceArrayTest::main') {
-    $suite = new PHPUnit_TestSuite('DataSourceArrayTest');
-    $result = PHPUnit::run($suite);
-    echo $result->toString();
-}
-
-?>
