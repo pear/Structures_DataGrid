@@ -62,7 +62,8 @@ class DataSourceSQLTestCore extends DataSourceTestCore
 
         parent::setUp();
         if (!isset($this->dbfile)) {
-            $this->dbfile = File_Util::tmpDir() . '/sdgtest.db';
+            $util = new File_Util();
+            $this->dbfile = $util->tmpDir() . '/sdgtest.db';
             if (file_exists($this->dbfile)) {
                 unlink($this->dbfile);
             }
@@ -155,7 +156,7 @@ class DataSourceSQLTestCore extends DataSourceTestCore
 
     function testDatabaseObject()
     {
-        $options['dbc'] =& $this->getDatabaseObject();
+        $options['dbc'] = $this->getDatabaseObject();
         $this->datasource->bind("SELECT * FROM test", $options);
         $this->assertEquals($this->data, $this->datasource->fetch());
         $this->closeDatabaseObject($options['dbc']);
