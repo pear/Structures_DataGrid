@@ -676,6 +676,11 @@ class Structures_DataGrid_DataSource_SQLQuery
             $query = preg_replace('#SELECT\s.+\sFROM#is',
                                   'SELECT COUNT(*) FROM',
                                   $this->_query);
+            $query = preg_replace(
+                '#ORDER\s+BY\s.+sc#',
+                '',
+                $query
+            );
             $count = $this->_getOne($query);
             // $count has an integer value with number of rows or is a
             // PEAR_Error instance on failure
