@@ -365,7 +365,7 @@ class URLMappingTest_MockDataSource extends Structures_DataGrid_DataSource
         return $data;
     }
 
-    function sort($spec) {
+    function sort($spec, $sortDir = null) {
         $this->sortSpec = $spec;
     }
 }
