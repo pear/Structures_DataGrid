@@ -1135,6 +1135,7 @@ class Structures_DataGrid_Renderer
             $prefix = $this->_requestPrefix;
             $this->_sortingHttpQueryCommon = $this->_options['extraVars'];
             $ignore   = $this->_options['excludeVars'];
+            $ignore[] = $prefix . 'page';
             $ignore[] = $prefix . 'orderBy';
             $ignore[] = $prefix . 'direction';
             foreach ($_GET as $key => $val) {
