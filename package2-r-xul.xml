@@ -54,7 +54,7 @@ string for a XUL listbox.
  <dependencies>
   <required>
    <php>
-    <min>4.2</min>
+    <min>5.0.0</min>
    </php>
    <pearinstaller>
     <min>1.4.9</min>

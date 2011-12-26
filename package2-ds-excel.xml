@@ -44,7 +44,7 @@ as a PEAR package, but via Sourceforge: http://sourceforge.net/projects/phpexcel
  <dependencies>
   <required>
    <php>
-    <min>4.3</min>
+    <min>5.0.0</min>
    </php>
    <pearinstaller>
     <min>1.4.11</min>
