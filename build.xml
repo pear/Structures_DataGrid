@@ -27,7 +27,8 @@
 
 		<exec executable="svn">
 			<arg value="export" />
- 			<arg value="https://svn.php.net/repository/pear/packages/MDB2 lib/MDB2" />
+ 			<arg value="https://svn.php.net/repository/pear/packages/MDB2" />
+ 			<arg value="lib/MDB2" />
 		</exec>
 	</target>
 
