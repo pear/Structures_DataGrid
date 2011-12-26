@@ -2,7 +2,7 @@
 /**
  * PEAR::DB_Table DataSource Driver
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -133,10 +133,10 @@ class Structures_DataGrid_DataSource_DBTable
      * @access  public
      * @return  mixed               True on success, PEAR_Error on failure
      */
-    function bind(&$object, $options = array())
+    function bind($object, $options = array())
     {
         if (is_object($object) && is_subclass_of($object, 'db_table')) {
-            $this->_object =& $object;
+            $this->_object = $object;
         } else {
             return PEAR::raiseError(
                 'The provided source must be a subclass of DB_Table');
@@ -160,7 +160,7 @@ class Structures_DataGrid_DataSource_DBTable
      * @access  public
      * @return  array               The 2D Array of the records
      */
-    function &fetch($offset = 0, $limit = null)
+    function fetch($offset = 0, $limit = null)
     {
         if (!empty($this->_sortSpec)) {
             foreach ($this->_sortSpec as $field => $direction) {

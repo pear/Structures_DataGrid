@@ -2,7 +2,7 @@
 /**
  * Structures_DataGrid_Column Class
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -445,7 +445,7 @@ class Structures_DataGrid_Column
      * @return  string              Function name
      * @access  private
      */
-    function _parseCallbackString($callback, &$paramList)
+    function _parseCallbackString($callback, $paramList)
     {   
         if ($size = strpos($callback, '(')) {
             $orig_callback = $callback;

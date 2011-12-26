@@ -2,7 +2,7 @@
 /**
  * Base class of all Renderer drivers
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -481,9 +481,9 @@ class Structures_DataGrid_Renderer
      * @param array $columns Array of Structures_DataGrid_Column objects
      * @access public
      */
-    function setColumns(&$columns)
+    function setColumns($columns)
     {
-        $this->_columnObjects = &$columns;
+        $this->_columnObjects = $columns;
     }
   
     /**
@@ -560,7 +560,7 @@ class Structures_DataGrid_Renderer
      * @access public
      * @return mixed  True or PEAR_Error
      */
-    function setContainer(&$container)
+    function setContainer($container)
     {
         return $this->_noSupport(__FUNCTION__);
     }
@@ -576,7 +576,7 @@ class Structures_DataGrid_Renderer
      *                or PEAR_Error
      * @access public
      */
-    function &getContainer()
+    function getContainer()
     {
         return $this->_noSupport(__FUNCTION__);
     }
@@ -612,7 +612,7 @@ class Structures_DataGrid_Renderer
      * @access  protected
      * @return  void or PEAR_Error
      */
-    function buildHeader(&$columns) 
+    function buildHeader($columns) 
     {
     }
 
@@ -1017,7 +1017,7 @@ class Structures_DataGrid_Renderer
      * @return string Formatted cell value
      * @access private
      */
-    function recordToCell(&$column, $record, $row = null, $col = null)
+    function recordToCell($column, $record, $row = null, $col = null)
     {
         $value = '';
         if (isset($column->formatter) and !empty($column->formatter)) {

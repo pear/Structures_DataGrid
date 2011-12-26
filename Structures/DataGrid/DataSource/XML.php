@@ -2,7 +2,7 @@
 /**
  * XML DataSource driver
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -217,7 +217,7 @@ class Structures_DataGrid_DataSource_XML extends
      * @param object $fieldNode DOM field node
      * @return void
      */
-    function _extractFields(&$row, $fieldNode)
+    function _extractFields($row, $fieldNode)
     {
         $content = '';
         foreach ($fieldNode->childNodes() as $valueNode) {

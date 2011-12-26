@@ -2,7 +2,7 @@
 /**
  * Console Table Rendering Driver
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -107,9 +107,9 @@ class Structures_DataGrid_Renderer_Console extends Structures_DataGrid_Renderer
      * @return mixed True or a PEAR_Error
      * @access public
      */
-    function setContainer(&$consoleTable)
+    function setContainer($consoleTable)
     {
-        $this->_table =& $consoleTable;
+        $this->_table = $consoleTable;
         return true;
     }
     
@@ -119,7 +119,7 @@ class Structures_DataGrid_Renderer_Console extends Structures_DataGrid_Renderer
      * @return object Console_Table or PEAR_Error
      * @access public
      */
-    function &getContainer(&$consoleTable)
+    function getContainer($consoleTable)
     {
         if (!isset($this->_table)) {
             $id = __CLASS__ . '::' . __FUNCTION__;
@@ -170,7 +170,7 @@ class Structures_DataGrid_Renderer_Console extends Structures_DataGrid_Renderer
      * @access  public
      * @return  object Console_Table   The Console_Table object for the DataGrid
      */
-    function &getTable()
+    function getTable()
     {
         return $this->getContainer();
     }   

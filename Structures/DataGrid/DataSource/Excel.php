@@ -2,7 +2,7 @@
 /**
  * Excel Spreadsheet Data Source Driver
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -104,7 +104,7 @@ class Structures_DataGrid_DataSource_Excel extends
             $this->setOptions($options); 
         }
         
-        $reader =& new Spreadsheet_Excel_Reader();
+        $reader = new Spreadsheet_Excel_Reader();
         $result = $reader->read($filename);
         if (PEAR::isError($result)) {
             return $result;

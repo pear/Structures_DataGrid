@@ -2,7 +2,7 @@
 /**
  * Smarty Rendering Driver
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -191,9 +191,9 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
      * @param  object $smarty Smarty container
      * @return mixed True or PEAR_Error
      */
-    function setContainer(&$smarty)
+    function setContainer($smarty)
     {
-        $this->_smarty =& $smarty;
+        $this->_smarty = $smarty;
         return true;
     }
 
@@ -204,7 +204,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
      * @param object Smarty instance
      * @access public
      */
-    function setSmarty(&$smarty)
+    function setSmarty($smarty)
     {
         return $this->setContainer($smarty);
     }
@@ -214,7 +214,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
      *
      * @return object Smarty or PEAR_Error object
      */
-    function &getContainer()
+    function getContainer()
     {
         return $this->_smarty;
     }
@@ -249,7 +249,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
      * @access  protected
      * @return  void
      */
-    function buildHeader(&$columns)
+    function buildHeader($columns)
     {
         $prepared = array();
         foreach ($columns as $index => $spec) {
@@ -323,7 +323,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
                     }
                 } else {
                     // object records are left untouched
-                    $associative[$row] =& $this->_records[$row];
+                    $associative[$row] = $this->_records[$row];
                 }
             }
             $this->_data[$this->_options['varPrefix'] . 'recordSet'] 
@@ -352,7 +352,7 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
             $this->_smarty->assign("{$p}datagrid", $this->_getReference());
 
             $this->_smarty->register_function("{$p}getPaging",
-                array(&$this, 'smartyGetPaging'));
+                array($this, 'smartyGetPaging'));
         } else {
             $this->_data["{$p}datagrid"] = $this->_getReference();
         }
@@ -396,10 +396,10 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
      * @return string Paging HTML links
      * @access public
      */
-    function smartyGetPaging($params, &$smarty)
+    function smartyGetPaging($params, $smarty)
     {
         // Load and get output from the Pager rendering driver
-        $driver =& Structures_DataGrid::loadDriver('Structures_DataGrid_Renderer_Pager');
+        $driver = Structures_DataGrid::loadDriver('Structures_DataGrid_Renderer_Pager');
 
         // Propagate the selfPath option. Do not override user params
         if (!isset($params['path']) && !isset($params['filename'])) {
@@ -410,10 +410,10 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
 
         // Use a different renderer if provided
         if (isset($params['datagrid'])) {
-            $renderer =& $this->_getReference($params['datagrid']);
+            $renderer = $this->_getReference($params['datagrid']);
             unset($params['datagrid']);
         } else {
-            $renderer =& $this; 
+            $renderer = $this; 
         }
 
         $driver->setupAs($renderer, $params);
@@ -427,14 +427,14 @@ class Structures_DataGrid_Renderer_Smarty extends Structures_DataGrid_Renderer
      * @param  int      Renderer id
      * @return mixed    New id or renderer object
      */
-    function &_getReference($id = null)
+    function _getReference($id = null)
     {
         static $references = array();
         
         if (!is_null($id)) {
             return $references[$id - 1];
         } else {
-            $references[] =& $this;
+            $references[] = $this;
             $id = count($references);
             return $id;
         }

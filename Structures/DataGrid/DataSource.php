@@ -2,7 +2,7 @@
 /**
  * Base abstract class for data source drivers
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -222,7 +222,7 @@ class Structures_DataGrid_DataSource
      *                              "No data source driver loaded" 
      * @access  public                          
      */
-    function &fetch($offset = 0, $len = null)
+    function fetch($offset = 0, $len = null)
     {
         return PEAR::raiseError("No data source driver loaded");
     }
@@ -431,7 +431,7 @@ class Structures_DataGrid_DataSource
      */
     function dump($offset=0, $len=null, $sortField=null, $sortDir='ASC')
     {
-        $records =& $this->fetch($offset, $len, $sortField, $sortDir);
+        $records = $this->fetch($offset, $len, $sortField, $sortDir);
         $columns = $this->getColumns();
 
         if (!$columns and !$records) {
@@ -547,13 +547,13 @@ class Structures_DataGrid_DataSource_SQLQuery
 
         if (isset($this->_options['dbc']) &&
             $this->_isConnection($this->_options['dbc'])) {
-            $this->_handle = &$this->_options['dbc'];
+            $this->_handle = $this->_options['dbc'];
         } elseif (isset($this->_options['dsn'])) {
             $dbOptions = array();
             if (array_key_exists('db_options', $options)) {
                 $dbOptions = $options['db_options'];
             }
-            $this->_handle =& $this->_connect();
+            $this->_handle = $this->_connect();
             if (PEAR::isError($this->_handle)) {
                 return PEAR::raiseError('Could not create connection: ' .
                                         $this->_handle->getMessage() . ', ' .
@@ -580,7 +580,7 @@ class Structures_DataGrid_DataSource_SQLQuery
      * @return  mixed               The 2D Array of the records on success,
      *                              PEAR_Error on failure
      */
-    function &fetch($offset = 0, $limit = null)
+    function fetch($offset = 0, $limit = null)
     {
         if (!empty($this->_sortSpec)) {
             foreach ($this->_sortSpec as $field => $direction) {

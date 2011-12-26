@@ -2,7 +2,7 @@
 /**
  * PDO SQL Query Data Source Driver
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -111,7 +111,7 @@ class Structures_DataGrid_DataSource_PDO
      * @access protected
      * @return mixed      Instantiated databased object, PEAR_Error on failure
      */
-    function &_connect()
+    function _connect()
     {
         try {
             $dbh = new PDO($this->_options['dsn'],

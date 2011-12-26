@@ -2,7 +2,7 @@
 /**
  * CSV Rendering Driver
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -221,7 +221,7 @@ class Structures_DataGrid_Renderer_CSV extends Structures_DataGrid_Renderer
      * @access  protected
      * @return  void
      */
-    function buildHeader(&$columns)
+    function buildHeader($columns)
     {
         $data = array();
         foreach ($columns as $spec) {

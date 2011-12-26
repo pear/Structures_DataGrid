@@ -2,7 +2,7 @@
 /**
  * PEAR::DB SQL Query Data Source Driver
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -96,7 +96,7 @@ class Structures_DataGrid_DataSource_DBQuery
      * @access protected
      * @return mixed      Instantiated databased object, PEAR_Error on failure
      */
-    function &_connect()
+    function _connect()
     {
         return DB::connect($this->_options['dsn'], $this->_options['db_options']);
     }

@@ -2,7 +2,7 @@
 /**
  * Excel Spreadsheet Rendering Driver
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -132,11 +132,11 @@ require_once 'Spreadsheet/Excel/Writer.php';
  * $workbook->send('test.xls');
  *
  * // Create your format
- * $format_bold =& $workbook->addFormat();
+ * $format_bold = $workbook->addFormat();
  * $format_bold->setBold();
  *
  * // Fill the workbook, passing the format as an option
- * $options = array('headerFormat' => &$format_bold);
+ * $options = array('headerFormat' => $format_bold);
  * $datagrid->fill($workbook, $options);
  * </code>
  *
@@ -205,9 +205,9 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
      * @return mixed True or a PEAR_Error
      * @access public
      */
-    function setContainer(&$workbook)
+    function setContainer($workbook)
     {
-        $this->_workbook =& $workbook;
+        $this->_workbook = $workbook;
         return true;
     }
    
@@ -217,7 +217,7 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
      * @return object Spreadsheet_Excel_Writer or PEAR_Error
      * @access public
      */
-    function &getContainer()
+    function getContainer()
     {
         isset($this->_workbook) or $this->init();
         return $this->_workbook;
@@ -247,15 +247,15 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
 
         // Use user-provided worksheet if present
         if (!is_null($this->_options['worksheet'])) {
-            $this->_worksheet =& $this->_options['worksheet'];
+            $this->_worksheet = $this->_options['worksheet'];
         } else {
             // Use the first worksheet or create one if the workbook is empty
             $worksheets = $this->_workbook->worksheets();
             if (empty($worksheets)) {
-                $this->_worksheet =& $this->_workbook->addWorksheet();
+                $this->_worksheet = $this->_workbook->addWorksheet();
                 $this->_worksheet->setInputEncoding($this->_options['encoding']);
             } else {
-                $this->_worksheet =& $worksheets[0];
+                $this->_worksheet = $worksheets[0];
             }
         }
 
@@ -297,10 +297,10 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
      *                          (optional)
      * @see Structures_DataGrid_Renderer_XLS::setFilename()
      */
-    function setCustomWriter(&$workbook, &$worksheet)
+    function setCustomWriter($workbook, $worksheet)
     {
         $this->setContainer($workbook);
-        $this->_options['worksheet'] =& $worksheet;
+        $this->_options['worksheet'] = $worksheet;
     }
 
     /**
@@ -311,9 +311,9 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
      * @param object $format Spreadsheet_Excel_Writer_Format object
      * @see Structures_DataGrid_Renderer_XLS
      */
-    function setHeaderFormat(&$format)
+    function setHeaderFormat($format)
     {
-        $this->_options['headerFormat'] =& $format;
+        $this->_options['headerFormat'] = $format;
     }
 
     /**
@@ -324,9 +324,9 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
      * @param object $format Spreadsheet_Excel_Writer_Format object
      * @see Structures_DataGrid_Renderer_XLS
      */
-    function setBodyFormat(&$format)
+    function setBodyFormat($format)
     {
-        $this->_options['bodyFormat'] =& $format;
+        $this->_options['bodyFormat'] = $format;
     }
 
     /**
@@ -334,7 +334,7 @@ class Structures_DataGrid_Renderer_XLS extends Structures_DataGrid_Renderer
      *
      * @access  public
      */
-    function &getSpreadsheet()
+    function getSpreadsheet()
     {
         return $this->getContainer();
     }

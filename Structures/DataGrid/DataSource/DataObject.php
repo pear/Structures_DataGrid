@@ -2,7 +2,7 @@
 /**
  * PEAR::DB_DataObject Data Source Driver
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -199,14 +199,14 @@ class Structures_DataGrid_DataSource_DataObject
      * @access  public
      * @return  mixed   True on success, PEAR_Error on failure
      */
-    function bind(&$dataobject, $options = array())
+    function bind($dataobject, $options = array())
     {
         if ($options) {
             $this->setOptions($options); 
         }
 
         if (is_object($dataobject)) {
-            $this->_dataobject =& $dataobject;
+            $this->_dataobject = $dataobject;
 
             $mergeOptions = array();
             
@@ -275,7 +275,7 @@ class Structures_DataGrid_DataSource_DataObject
      * @access  public
      * @return  array   The 2D Array of the records
      */    
-    function &fetch($offset = 0, $len = null)
+    function fetch($offset = 0, $len = null)
     {
         // Check to see if Query has already been submitted
         if ($this->_dataobject->getDatabaseResult()) {
@@ -397,7 +397,7 @@ class Structures_DataGrid_DataSource_DataObject
      * @return string                   String representing this dataobject
      * @access public
      */
-    function _getDataObjectString(&$do, $linkLevel = 1, $level = 1) {
+    function _getDataObjectString($do, $linkLevel = 1, $level = 1) {
         if (!is_array($links = $do->links())) {
             $links = array();
         }

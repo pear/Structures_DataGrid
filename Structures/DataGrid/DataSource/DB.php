@@ -2,7 +2,7 @@
 /**
  * PEAR::DB Data Source Driver
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -86,7 +86,7 @@ class Structures_DataGrid_DataSource_DB
      * @access  public
      * @return  mixed               True on success, PEAR_Error on failure
      */
-    function bind(&$result, $options = array())
+    function bind($result, $options = array())
     {
         if ($options) {
             $this->setOptions($options); 

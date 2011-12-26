@@ -2,7 +2,7 @@
 /**
  * Pager rendering driver
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -144,9 +144,9 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
      * @return  mixed   True or PEAR_Error
      * @access public
      */
-    function setContainer(&$pager)
+    function setContainer($pager)
     {
-        $this->_pager =& $pager;
+        $this->_pager = $pager;
         return true;
     }
     
@@ -156,7 +156,7 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
      * @return object Pager (reference to) or PEAR_Error
      * @access public
      */
-    function &getContainer()
+    function getContainer()
     {
         isset($this->_pager) or $this->init();
         return $this->_pager;
@@ -221,7 +221,7 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
             $options['extraVars'] = array_merge($this->_options['extraVars'],
                                                 $options['extraVars']);    
             
-            $this->_pager =& Pager::factory($options);
+            $this->_pager = Pager::factory($options);
         } else {
             // There is an external container. We try to be less intrusive as 
             // possible. We need to set the core options anyway.
@@ -260,7 +260,7 @@ class Structures_DataGrid_Renderer_Pager extends Structures_DataGrid_Renderer
      * @return void
      * @access public
      */
-    function setupAs(&$renderer, $pagerOptions)
+    function setupAs($renderer, $pagerOptions)
     {
         $this->setLimit($renderer->_page, $renderer->_pageLimit, 
                         $renderer->_totalRecordsNum);

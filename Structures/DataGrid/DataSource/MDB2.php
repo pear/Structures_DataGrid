@@ -2,7 +2,7 @@
 /**
  * PEAR::MDB2 SQL Query Data Source Driver
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -115,7 +115,7 @@ class Structures_DataGrid_DataSource_MDB2
      * @access protected
      * @return mixed      Instantiated databased object, PEAR_Error on failure
      */
-    function &_connect()
+    function _connect()
     {
         return MDB2::connect($this->_options['dsn'], $this->_options['db_options']);
     }

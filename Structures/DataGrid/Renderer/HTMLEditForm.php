@@ -2,7 +2,7 @@
 /**
  * Record editing form rendering driver
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -116,9 +116,9 @@ class Structures_DataGrid_Renderer_HTMLEditForm
      * @return mixed  True or PEAR_Error
      * @access public
      */
-    function setContainer(&$form)
+    function setContainer($form)
     {
-        $this->_form =& $form;
+        $this->_form = $form;
         return true;
     }
     
@@ -128,7 +128,7 @@ class Structures_DataGrid_Renderer_HTMLEditForm
      * @return object HTML_QuickForm (reference to) or PEAR_Error
      * @access public
      */
-    function &getContainer()
+    function getContainer()
     {
         isset($this->_form) or $this->init();
         return $this->_form;
@@ -143,7 +143,7 @@ class Structures_DataGrid_Renderer_HTMLEditForm
     {
         if (!isset($this->_form)) {
             // Try to give the form a unique name using $_requestPrefix
-            $this->_form =& new HTML_QuickForm(
+            $this->_form = new HTML_QuickForm(
                     "{$this->_requestPrefix}DataGridEditForm", 'get');
             $this->_isUserContainer = false;
         } else {

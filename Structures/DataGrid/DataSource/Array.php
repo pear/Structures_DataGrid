@@ -2,7 +2,7 @@
 /**
  * Array Data Source Driver
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -146,7 +146,7 @@ class Structures_DataGrid_DataSource_Array
      * @access  public
      * @return  array               Array of records
      */
-    function &fetch($offset = 0, $len = null)
+    function fetch($offset = 0, $len = null)
     {
         if ($this->_ar && !$this->_options['fields']) {
             $firstElement = array_slice($this->_ar, 0, 1);
@@ -168,7 +168,7 @@ class Structures_DataGrid_DataSource_Array
                 if (is_array($rec)) {
                     $records[] = array_intersect_key($rec, array_flip($this->_options['fields']));
                 } else {
-                    $records[] =& $slice[$key];
+                    $records[] = $slice[$key];
                 }
             }
         } else {
@@ -182,7 +182,7 @@ class Structures_DataGrid_DataSource_Array
                     }
                     $records[] = $buf;
                 } else {
-                    $records[] =& $slice[$key];
+                    $records[] = $slice[$key];
                 }
             }
         }
@@ -224,7 +224,7 @@ class Structures_DataGrid_DataSource_Array
         }
 
         if ($args) {
-            $args[] =& $this->_ar;
+            $args[] = $this->_ar;
             call_user_func_array('array_multisort', $args);
         }
     }

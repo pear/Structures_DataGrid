@@ -2,7 +2,7 @@
 /**
  * Multiple fields sorting form rendering driver
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -136,9 +136,9 @@ class Structures_DataGrid_Renderer_HTMLSortForm
      * @return mixed  True or PEAR_Error
      * @access public
      */
-    function setContainer(&$form)
+    function setContainer($form)
     {
-        $this->_form =& $form;
+        $this->_form = $form;
         return true;
     }
     
@@ -148,7 +148,7 @@ class Structures_DataGrid_Renderer_HTMLSortForm
      * @return object HTML_QuickForm (reference to) or PEAR_Error
      * @access public
      */
-    function &getContainer()
+    function getContainer()
     {
         isset($this->_form) or $this->init();
         return $this->_form;
@@ -163,7 +163,7 @@ class Structures_DataGrid_Renderer_HTMLSortForm
     {
         if (!isset($this->_form)) {
             // Try to give the form a unique name using $_requestPrefix
-            $this->_form =& new HTML_QuickForm(
+            $this->_form = new HTML_QuickForm(
                     "{$this->_requestPrefix}DataGridSortForm", 'get');
             $this->_isUserContainer = false;
         } else {
@@ -215,7 +215,7 @@ class Structures_DataGrid_Renderer_HTMLSortForm
             for ($i=0; $i < $ii; $i++) {
                 
                 // Create the field select element
-                $select =& HTML_QuickForm::createElement(
+                $select = HTML_QuickForm::createElement(
                         'select', "{$this->_requestPrefix}orderBy[$i]");
                 $select->loadArray($options);
                 
@@ -225,16 +225,16 @@ class Structures_DataGrid_Renderer_HTMLSortForm
                 
                 if ($this->_options['directionStyle'] == 'radio') {
                     // radio button style
-                    $asc =& HTML_QuickForm::createElement(
+                    $asc = HTML_QuickForm::createElement(
                             'radio', "{$this->_requestPrefix}direction[$i]", 
                             null, $this->_options['textAscending'], 'ASC');
-                    $desc =& HTML_QuickForm::createElement(
+                    $desc = HTML_QuickForm::createElement(
                             'radio', "{$this->_requestPrefix}direction[$i]", 
                             null, $this->_options['textDescending'], 'DESC');
                     $this->_form->addGroup(array($select, $asc, $desc), null, $label);
                 } else {
                     // select style
-                    $dirSelect =& HTML_QuickForm::createElement(
+                    $dirSelect = HTML_QuickForm::createElement(
                             'select', "{$this->_requestPrefix}direction[$i]");
                     $dirSelect->loadArray(
                             array('ASC' => $this->_options['textAscending'], 

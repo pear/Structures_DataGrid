@@ -2,7 +2,7 @@
 /**
  * Comma Seperated Value (CSV) Data Source Driver
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -207,7 +207,7 @@ class Structures_DataGrid_DataSource_CSV_Memory
      * @param string    $opened_path    The opened path (not used)
      * @return boolean                  true on success, false on error
      */
-    function stream_open($path, $mode, $options, &$opened_path)
+    function stream_open($path, $mode, $options, $opened_path)
     {
         $this->_varname = '';
         $this->_position = 0;

@@ -2,7 +2,7 @@
 /**
  * XUL Rendering Driver
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 

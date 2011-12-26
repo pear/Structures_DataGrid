@@ -2,7 +2,7 @@
 /**
  * HTML Table Rendering Driver
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -160,9 +160,9 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      * @return mixed  True or PEAR_Error
      * @access public
      */
-    function setContainer(&$table)
+    function setContainer($table)
     {
-        $this->_table =& $table;
+        $this->_table = $table;
         return true;
     }
     
@@ -172,7 +172,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      * @return object HTML_Table (reference to) or PEAR_Error
      * @access public
      */
-    function &getContainer()
+    function getContainer()
     {
         isset($this->_table) or $this->init();
         return $this->_table;
@@ -189,8 +189,8 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
             $this->_table = new HTML_Table(null, null, true);
         }
 
-        $this->_tableHeader =& $this->_table->getHeader();
-        $this->_tableBody =& $this->_table->getBody();
+        $this->_tableHeader = $this->_table->getHeader();
+        $this->_tableBody = $this->_table->getBody();
 
         $this->_bodyStartRow = $this->_tableBody->getRowCount();
     }
@@ -348,7 +348,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      * @access  public
      * @return  object HTML_Table   The HTML Table object for the DataGrid
      */
-    function &getTable()
+    function getTable()
     {
         return $this->_table;
     }   
@@ -361,7 +361,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
      * @return  void
      * @see     http://www.php.net/manual/en/function.http-build-query.php
      */
-    function buildHeader(&$columns)
+    function buildHeader($columns)
     {
         $row = $this->_tableHeader->getRowCount();
 
@@ -581,7 +581,7 @@ class Structures_DataGrid_Renderer_HTMLTable extends Structures_DataGrid_Rendere
         }
     
         // Load and get output from the Pager rendering driver
-        $driver =& Structures_DataGrid::loadDriver('Structures_DataGrid_Renderer_Pager');
+        $driver = Structures_DataGrid::loadDriver('Structures_DataGrid_Renderer_Pager');
         $driver->setupAs($this, $options);
         $driver->build(array(), 0, true);
         return $driver->getOutput();

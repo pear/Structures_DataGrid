@@ -2,7 +2,7 @@
 /**
  * Structures_DataGrid Class
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
@@ -92,7 +92,7 @@ define('DATAGRID_ERROR_UNSUPPORTED', 1);
  * <code>
  * <?php
  * require 'Structures/DataGrid.php';
- * $datagrid =& new Structures_DataGrid();
+ * $datagrid = new Structures_DataGrid();
  * $options = array('dsn' => 'mysql://user:password@host/db_name');
  * $datagrid->bind("SELECT * FROM my_table", $options);
  * $datagrid->render();
@@ -380,7 +380,7 @@ class Structures_DataGrid
      * @return object The driver object or a PEAR_Error
      * @static
      */
-    function &loadDriver($className)
+    function loadDriver($className)
     {
         if (!Structures_DataGrid::classExists($className)) {
             $fileName = str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
@@ -395,7 +395,7 @@ class Structures_DataGrid
             }
         }
 
-        $driver =& new $className();
+        $driver = new $className();
         return $driver;
     }
     
@@ -409,18 +409,18 @@ class Structures_DataGrid
      * Detect the source type and load the appropriate driver with default
      * options:
      * <code>
-     * $driver =& Structures_DataGrid::dataSourceFactory($source);
+     * $driver = Structures_DataGrid::dataSourceFactory($source);
      * </code>
      *
      * Detect the source type and load the appropriate driver with custom
      * options:
      * <code>
-     * $driver =& Structures_DataGrid::dataSourceFactory($source, $options);
+     * $driver = Structures_DataGrid::dataSourceFactory($source, $options);
      * </code>
      *
      * Load a driver for an explicit type (faster, bypasses detection routine):
      * <code>
-     * $driver =& Structures_DataGrid::dataSourceFactory($source, $options, $type);
+     * $driver = Structures_DataGrid::dataSourceFactory($source, $options, $type);
      * </code>
      *
      * @access  public
@@ -434,7 +434,7 @@ class Structures_DataGrid
      *                              driver object or PEAR_Error on failure
      * @static
      */
-    function &dataSourceFactory($source, $options = array(), $type = null)
+    function dataSourceFactory($source, $options = array(), $type = null)
     {
         if (is_null($type) &&
             !($type = Structures_DataGrid::_detectSourceType($source,
@@ -451,7 +451,7 @@ class Structures_DataGrid
 
         $className = "Structures_DataGrid_DataSource_$type";
 
-        if (PEAR::isError($driver =& Structures_DataGrid::loadDriver($className))) {
+        if (PEAR::isError($driver = Structures_DataGrid::loadDriver($className))) {
             return $driver;
         }
         
@@ -479,7 +479,7 @@ class Structures_DataGrid
      * @return  mixed               Returns the renderer driver object or 
      *                              PEAR_Error on failure
      */
-    function &rendererFactory($type, $options = array())
+    function rendererFactory($type, $options = array())
     {
         $type = Structures_DataGrid::_correctDriverName($type, 'Renderer');
         if (PEAR::isError($type)) {
@@ -488,7 +488,7 @@ class Structures_DataGrid
 
         $className = "Structures_DataGrid_Renderer_$type";
 
-        if (PEAR::isError($driver =& Structures_DataGrid::loadDriver($className))) {
+        if (PEAR::isError($driver = Structures_DataGrid::loadDriver($className))) {
             return $driver;
         }        
 
@@ -629,7 +629,7 @@ class Structures_DataGrid
      * @return object Renderer object reference
      * @access public
      */
-    function &getRenderer()
+    function getRenderer()
     {
         isset($this->_renderer) or $this->setRenderer(DATAGRID_RENDER_DEFAULT);
         return $this->_renderer;
@@ -643,7 +643,7 @@ class Structures_DataGrid
      * @return object DataSource object reference or null if no driver is loaded
      * @access public
      */
-    function &getDataSource()
+    function getDataSource()
     {
         if (isset($this->_dataSource)) {
             return $this->_dataSource;
@@ -664,9 +664,9 @@ class Structures_DataGrid
      * @access public
      * @see Structures_DataGrid::attachRenderer()
      */
-    function &setRenderer($type, $options = array())
+    function setRenderer($type, $options = array())
     {
-        $renderer =& $this->rendererFactory($type, $options);
+        $renderer = $this->rendererFactory($type, $options);
         if (PEAR::isError($renderer)) {
             return $renderer;
         }
@@ -688,7 +688,7 @@ class Structures_DataGrid
             // Another solution would be to remove __get which is used only for BC
             $this->_rendererBackup = 1; 
 
-            $this->_rendererBackup =& $this->_renderer;
+            $this->_rendererBackup = $this->_renderer;
             $this->_rendererTypeBackup = $this->_rendererType;
 
             unset($this->_renderer);
@@ -713,7 +713,7 @@ class Structures_DataGrid
             unset($this->_renderer);
             $this->_rendererType = null;
         } elseif (isset($this->_rendererBackup)) {
-            $this->_renderer =& $this->_rendererBackup;
+            $this->_renderer = $this->_rendererBackup;
             $this->_rendererType = $this->_rendererTypeBackup;
         } 
         
@@ -766,14 +766,14 @@ class Structures_DataGrid
      * @access public
      * @see Structures_DataGrid::setRenderer()
      */
-    function &attachRenderer(&$renderer)
+    function attachRenderer($renderer)
     {
         if (is_subclass_of($renderer, 'structures_datagrid_renderer')) {
             // The following line is a workaround for PHP bug 32660
             // See: http://bugs.php.net/bug.php?id=32660
             $this->_renderer = 1;
             
-            $this->_renderer =& $renderer;
+            $this->_renderer = $renderer;
             if (isset($this->_dataSource)) {
                 $this->_renderer->setColumns($this->columnSet);
                 $this->_renderer->setLimit($this->page, $this->rowLimit, 
@@ -797,7 +797,7 @@ class Structures_DataGrid
      * 
      * @example fill-sortform.php Fill a form with sort fields
      * @example fill-pager.php    Filling a Pager object
-     * @param object &$container A rendering container of any of the supported
+     * @param object $container A rendering container of any of the supported
      *                          types (example: an HTML_Table object, 
      *                          a Spreadsheet_Excel_Writer object, etc...)
      * @param array  $options   Options for the corresponding rendering driver
@@ -806,7 +806,7 @@ class Structures_DataGrid
      * @return mixed            Either true or a PEAR_Error object 
      * @access public
      */
-    function fill(&$container, $options = array(), $type = null)
+    function fill($container, $options = array(), $type = null)
     {
         if (is_null($type)) {
             $type = $this->_detectRendererType($container);
@@ -1020,7 +1020,7 @@ class Structures_DataGrid
      *                              or "before"
      * @return  mixed               PEAR_Error on failure, void otherwise
      */
-    function addColumn(&$column, $position = 'last', $relativeTo = null)
+    function addColumn($column, $position = 'last', $relativeTo = null)
     {
         if (!is_a($column, 'structures_datagrid_column')) {
             return PEAR::raiseError(__FUNCTION__ . "(): not a valid ".
@@ -1029,10 +1029,10 @@ class Structures_DataGrid
             switch ($position) {
                 case 'first':
                     array_unshift($this->columnSet, '');
-                    $this->columnSet[0] =& $column;
+                    $this->columnSet[0] = $column;
                     break;
                 case 'last':    
-                    $this->columnSet[] =& $column;
+                    $this->columnSet[] = $column;
                     break;
                 case 'after':
                 case 'before':
@@ -1060,10 +1060,10 @@ class Structures_DataGrid
                     // It exists, add the column after or before it
                     if ($position == 'after') {
                         array_splice($this->columnSet, $relIndex + 1,  0, '');
-                        $this->columnSet[$relIndex + 1] =& $column;
+                        $this->columnSet[$relIndex + 1] = $column;
                     } else {
                         array_splice($this->columnSet, $relIndex,  0, '');
-                        $this->columnSet[$relIndex] =& $column;
+                        $this->columnSet[$relIndex] = $column;
                     }
                     break;
             }
@@ -1087,7 +1087,7 @@ class Structures_DataGrid
 
         $columnCount = $this->getColumnCount();
         for ($i = 0; $i < $columnCount; $i++) {
-            $columnSetClone[$i] =& $this->columnSet[$i];
+            $columnSetClone[$i] = $this->columnSet[$i];
         }
 
         return $columnSetClone;
@@ -1101,7 +1101,7 @@ class Structures_DataGrid
      * @return  object              Either the column object (reference to) or 
      *                              false if there is no such column
      */
-    function &getColumnByName($name)
+    function getColumnByName($name)
     {
         $this->_createDefaultColumns();
         foreach ($this->columnSet as $key => $column) {
@@ -1121,7 +1121,7 @@ class Structures_DataGrid
      * @return  object              Either the column object (reference to) or 
      *                              false if there is no such column
      */
-    function &getColumnByField($fieldName)
+    function getColumnByField($fieldName)
     {
         $this->_createDefaultColumns();
         foreach ($this->columnSet as $key => $column) {
@@ -1142,13 +1142,13 @@ class Structures_DataGrid
      *                              (reference to) 
      * @return  void
      */
-    function removeColumn(&$column)
+    function removeColumn($column)
     {
         $columnCount = count($this->columnSet);
         for ($i = 0; $i < $columnCount; $i++) {
             if ($this->columnSet[$i]->id == $column->id) {
                 for ($i++; $i < $columnCount; $i++) {
-                    $this->columnSet[$i - 1] =& $this->columnSet[$i];
+                    $this->columnSet[$i - 1] = $this->columnSet[$i];
                 }
                 array_pop($this->columnSet);
             }
@@ -1170,7 +1170,7 @@ class Structures_DataGrid
      */
     function bind($container, $options = array(), $type = null)
     {
-        $source =& Structures_DataGrid::dataSourceFactory($container, $options,
+        $source = Structures_DataGrid::dataSourceFactory($container, $options,
                                                           $type);
         if (!PEAR::isError($source)) {
             return $this->bindDataSource($source);
@@ -1183,13 +1183,13 @@ class Structures_DataGrid
      * Bind an already instantiated DataSource driver
      *
      * @access  public
-     * @param   mixed   &$source    The data source driver object
+     * @param   mixed   $source    The data source driver object
      * @return  mixed               True if successful, otherwise PEAR_Error
      */
-    function bindDataSource(&$source)
+    function bindDataSource($source)
     {
         if (is_subclass_of($source, 'structures_datagrid_datasource')) {
-            $this->_dataSource =& $source;
+            $this->_dataSource = $source;
             $result = $this->fetchDataSource();
             if (PEAR::isError($result)) {
                 return $result;
@@ -1489,7 +1489,7 @@ class Structures_DataGrid
      * @return string           The container type or null if unrecognized
      * @access private
      */
-    function _detectRendererType(&$container)
+    function _detectRendererType($container)
     {
         foreach ($this->_rendererTypes as $class => $type) {
             if (is_a($container, $class)) {

@@ -2,7 +2,7 @@
 /**
  * HTML table rendering driver with a checkbox for each row of the grid
  * 
- * PHP versions 4 and 5
+ * PHP version 5
  *
  * LICENSE:
  * 
