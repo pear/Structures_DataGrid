@@ -98,9 +98,9 @@ class Structures_DataGrid_DataSource_PDO
      *
      * @access public
      */
-    function Structures_DataGrid_DataSource_PDO()
+    public function __construct()
     {
-        parent::Structures_DataGrid_DataSource_SQLQuery();
+        parent::__construct();
         $this->_addDefaultOptions(array('username'    => null,
                                         'password'    => null));
     }
