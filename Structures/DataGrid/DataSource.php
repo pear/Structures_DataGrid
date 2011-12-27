@@ -606,9 +606,9 @@ class Structures_DataGrid_DataSource_SQLQuery
             $appendOrderBy = false;
             // search for the last ORDER BY statement
             $orderByPos = strripos($query, 'ORDER BY');
-            // does another (sub)query follow after this ORDER BY statement?
+            // does another (sub)query or from clause follow after this ORDER BY statement?
             if (   $orderByPos !== false
-                && strpos($query, 'SELECT', $orderByPos) !== false
+                && preg_match('/[ \t\n]FROM[ \t\n]/i', substr($query, $orderByPos))
             ) {
                 // yes => new ORDER BY statement needs to be appended
                 $appendOrderBy = true;
