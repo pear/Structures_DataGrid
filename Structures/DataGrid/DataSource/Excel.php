@@ -146,6 +146,8 @@ class Structures_DataGrid_DataSource_Excel extends
                     }
                     if (isset($reader->sheets[0]['cells'][$i][$j])) {
                         $rowAssoc[$key] = $reader->sheets[0]['cells'][$i][$j];
+                    } elseif (!empty($keys[$j - 1])) { //Preserve empty rows
+                        $rowAssoc[$key] = null;
                     }
                 }
                 $this->_ar[] = $rowAssoc;
