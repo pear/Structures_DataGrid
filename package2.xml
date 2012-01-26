@@ -37,7 +37,7 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <date>2007-12-18</date>
  <time>17:15:00</time>
  <version>
-  <release>0.9.1dev1</release>
+  <release>0.9.2</release>
   <api>0.9.0</api>
  </version>
  <stability>
@@ -47,21 +47,12 @@ http://pear.php.net/dtd/package-2.0.xsd">
  <license uri="http://opensource.org/licenses/bsd-license.php">New BSD</license>
  <notes>
 QA release
-Directory layout
-- Bug #13025: field names in the form "table.field" could lead to syntax errors
-  in the SQL queries of the DBQuery, MDB2, and PDO DataSource drivers
-  (thanks to Matt Rosenquist)
-- Bug #13339: Automatic ORDER BY sort string addition can fail if subqueries
-  are used in the the DBQuery, MDB2, and PDO DataSource drivers
-  (thanks to Issac Navanick)
-- Bug #14078: SQL errors weren't returned
-  (thanks to Antonino Balsamo)
-- Added encoding unit tests
-- Added DataObject datasource unit tests
-- New XML datasource example about parsing an Atom feed
-- Improved XML datasource test suite
-- Bug #17731 - avoid ereg
- </notes>
+Bug #14427 Empty SQL-Result + Array_Merge
+Bug #15769 setURLFormat method does not return clean query string 
+Bug #16002 ORDER clause not stripped in count()
+Bug #18952 PHP 5.3 Support
+Bug #19026 remove error_reporting (for PEAR QA team)
+</notes>
  <contents>
   <dir baseinstalldir="/" name="/">
    <dir name="Structures">
