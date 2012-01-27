@@ -70,6 +70,7 @@ Directory layout
     <file  name="Column.php" role="php" />
     <file  name="DataSource.php" role="php" />
     <file  name="Renderer.php" role="php" />
+    <file name="Exception.php" role="php" />
    </dir> <!-- /DataGrid -->
    </dir>
    <dir name="docs">
