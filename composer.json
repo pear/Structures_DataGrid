@@ -18,7 +18,7 @@
     ],
     "autoload": {
         "psr-0": {
-            "Structures_DataGrid": "./"
+            "Structures": "./"
         }
     },
     "description": "More info available on: http://pear.php.net/package/Structures_DataGrid",
@@ -37,5 +37,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "*"
+    },
+    "suggest": {
+        "pear/phpunit": "Install optionally via your project's composer.json"
     }
 }
