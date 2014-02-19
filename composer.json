@@ -1,0 +1,44 @@
+{
+    "authors": [
+        {
+            "email": "asnagy@webitecture.org",
+            "name": "Andrew S. Nagy",
+            "role": "Lead"
+        },
+        {
+            "email": "olivier@samalyse.com",
+            "name": "Olivier Guilyardi",
+            "role": "Lead"
+        },
+        {
+            "email": "wiesemann@php.net",
+            "name": "Mark Wiesemann",
+            "role": "Lead"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Structures": "./"
+        }
+    },
+    "description": "More info available on: http://pear.php.net/package/Structures_DataGrid",
+    "include-path": [
+        "./"
+    ],
+    "license": "New BSD",
+    "name": "pear/structures_datagrid",
+    "support": {
+        "issues": "http://pear.php.net/bugs/search.php?cmd=display&package_name[]=Structures_DataGrid",
+        "source": "https://github.com/pear/Structures_DataGrid"
+    },
+    "type": "library",
+    "require": {
+        "pear/pear_exception": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*"
+    },
+    "suggest": {
+        "pear/phpunit": "Install optionally via your project's composer.json"
+    }
+}
